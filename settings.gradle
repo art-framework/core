@@ -1,1 +1,3 @@
-rootProject.name = 'spigot-plugin-template'
+rootProject.name = 'art-framework'
+include 'art-core'
+include 'art-bukkit'

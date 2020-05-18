@@ -1,0 +1,45 @@
+plugins {
+    id 'kr.entree.spigradle' version '1.2.1'
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+spigot {
+    authors = [project.property("author")]
+    apiVersion = project.property("apiVersion")
+    load = STARTUP
+    //    depends = ['']
+}
+
+dependencies {
+    implementation project(':art-core')
+
+    implementation "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"
+}
+
+shadowJar {
+    classifier = ''
+    dependencies {
+        include(dependency(':art-core'))
+    }
+}
+
+tasks.build.dependsOn(shadowJar)
+tasks.publish.dependsOn(shadowJar)
+
+task copyPluginYaml(type: Copy, dependsOn: spigotPluginYaml) {
+    from(new File(spigotPluginYaml.temporaryDir, "plugin.yml"))
+    into(sourceSets.main.resources.srcDirs[0])
+}
+
+task deploy(type: Copy, dependsOn: [
+        'cleanPlugin',
+        'jar'
+]) {
+    group 'deploy'
+    description 'Exports you plugin to the plugin directory in your test server'
+
+    def pluginFolder = project.property('pluginFolder').toString()
+
+    from jar
+    into pluginFolder.isEmpty() ? 'working/plugins' : pluginFolder
+}

@@ -1,0 +1,18 @@
+plugins {
+    id 'com.github.johnrengelman.shadow' version '5.2.0'
+}
+
+dependencies {
+    implementation 'de.exlll:configlib-bukkit:2.6.0'
+}
+
+shadowJar {
+    classifier = ''
+    dependencies {
+        include(dependency('de.exlll:configlib-bukkit:2.6.0'))
+    }
+    relocate 'de.exlll.configlib', "net.silthus.art.configlib"
+}
+
+tasks.build.dependsOn(shadowJar)
+tasks.publish.dependsOn(shadowJar)
