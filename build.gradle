@@ -5,11 +5,7 @@ buildscript {
     }
 }
 
-plugins {
-    id 'org.hibernate.build.maven-repo-auth' version "3.0.2"
-}
-
-allprojects {
+subprojects {
     repositories {
         mavenCentral()
         jcenter()
@@ -27,6 +23,10 @@ allprojects {
         maven {
             name = "github"
             url = 'https://maven.pkg.github.com/Silthus/ConfigLib'
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
         }
 
         maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }

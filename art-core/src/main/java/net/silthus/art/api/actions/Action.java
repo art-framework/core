@@ -1,6 +1,6 @@
 package net.silthus.art.api.actions;
 
-import net.silthus.art.api.ARTContext;
+import net.silthus.art.ARTObject;
 
 /**
  * Defines an action that can get executed if the right {@link net.silthus.art.api.trigger.Trigger} was called.
@@ -13,7 +13,7 @@ import net.silthus.art.api.ARTContext;
  *                 You can provide your own type safe configs or use generic implementations like the Bukkit ConfigurationSection.
  */
 @FunctionalInterface
-public interface Action<TTarget, TConfig> {
+public interface Action<TTarget, TConfig> extends ARTObject<TTarget, TConfig> {
 
     /**
      * Called when the action is executed.

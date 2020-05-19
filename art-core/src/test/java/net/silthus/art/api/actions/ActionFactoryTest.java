@@ -1,6 +1,6 @@
 package net.silthus.art.api.actions;
 
-import jdk.internal.joptsimple.internal.Strings;
+import net.silthus.art.api.ARTObjectRegistrationException;
 import net.silthus.art.api.annotations.Configurable;
 import net.silthus.art.api.annotations.Name;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("ActionFactory")
 public class ActionFactoryTest {
@@ -63,7 +62,7 @@ public class ActionFactoryTest {
 
             factory = new ActionFactory<>(String.class, (s, context) -> {});
 
-            assertThatExceptionOfType(ActionRegistrationException.class)
+            assertThatExceptionOfType(ARTObjectRegistrationException.class)
                     .isThrownBy(() -> factory.initialize());
         }
 
@@ -113,6 +112,44 @@ public class ActionFactoryTest {
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
             assertThat(factory.getName()).isEqualTo("foo");
             assertThat(factory.getConfigInformation()).containsExactly("bar");
+        }
+    }
+
+    @Nested
+    @DisplayName("create(ActionConfig<TConfig>)")
+    public class Create {
+
+        @BeforeEach
+        public void beforeEach() {
+
+            assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("should create an action context")
+        public void shouldCreateActionContext() {
+
+            ActionContext<String, String> context = factory.create(new ActionConfig<>());
+
+            assertThat(context).isNotNull();
+            assertThat(context.getAction().equals(factory.getArtObject()));
+            assertThat(context.getTargetClass()).isEqualTo(factory.getTargetClass());
+            assertThat(context.getConfig()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("should not cache action context if config is different")
+        public void shouldNotCacheContext() {
+
+            ActionConfig<String> config1 = new ActionConfig<>();
+            config1.setCooldown("2s");
+            ActionContext<String, String> context1 = factory.create(config1);
+            ActionContext<String, String> context2 = factory.create(new ActionConfig<>());
+
+            assertThat(context1).isNotNull();
+            assertThat(context2).isNotNull();
+
+            assertThat(context1).isNotSameAs(context2);
         }
     }
 

@@ -3,7 +3,7 @@ package net.silthus.art.api;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-@EqualsAndHashCode
+@EqualsAndHashCode(of = {"targetClass"})
 public abstract class ARTContext<TTarget> {
 
     @Getter
