@@ -10,7 +10,7 @@ public final class ART {
         return new ARTBuilder();
     }
 
-    public static <TContext extends ActionContext<TTarget, TConfig>, TTarget, TConfig> void setActionContext(Class<TContext> context) {
+    public static <TContext extends ActionContext<TTarget, TConfig>, TTarget, TConfig> void useActionContext(Class<TContext> context) {
         throw new NotImplementedException();
     }
 }

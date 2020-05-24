@@ -25,8 +25,9 @@ import java.lang.reflect.Method;
 @Data
 public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject<TTarget, TConfig>, TContext extends ARTContext<TTarget>, TARTObjectConfig extends ARTConfig<TConfig>> {
 
-    protected final Class<TTarget> targetClass;
-    protected final TARTObject artObject;
+    private final Class<TTarget> targetClass;
+    private final Class<TConfig> configClass;
+    private final TARTObject artObject;
     private String name;
     private String[] configInformation = new String[0];
 

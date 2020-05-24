@@ -46,6 +46,8 @@ subprojects {
         compile 'org.projectlombok:lombok:1.+'
         annotationProcessor 'org.projectlombok:lombok:1.+'
 
+        implementation group: 'com.google.inject', name: 'guice', version: '4.2.3'
+
         //Test dependencies
         testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
         testImplementation "org.mockito:mockito-core:3.+"

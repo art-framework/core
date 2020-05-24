@@ -1,5 +1,6 @@
 package net.silthus.art.api.actions;
 
+import net.silthus.art.ART;
 import net.silthus.art.ARTObject;
 
 /**
@@ -14,6 +15,21 @@ import net.silthus.art.ARTObject;
  */
 @FunctionalInterface
 public interface Action<TTarget, TConfig> extends ARTObject<TTarget, TConfig> {
+
+    /**
+     * The execute method is called by {@link ART} when this {@link Action} should be executed.
+     * This method handles the actual execution of the {@link Action} applying checks and delays.
+     * <br>
+     * Override this method in a custom {@link ActionContext} to control how actions are executed.
+     * <br>
+     * If the {@link Action} has not been wrapped inside an {@link ActionContext} a {@link UnsupportedOperationException} will be thrown.
+     *
+     * @param target target instance to execute the {@link Action} on.
+     * @throws UnsupportedOperationException if the {@link Action} is not wrapped in an {@link ActionContext}
+     */
+    default void execute(TTarget target) {
+        throw new UnsupportedOperationException("ActionContext has not been initialized. This method can only be called on actions wrapped in an ActionContext.");
+    }
 
     /**
      * Called when the action is executed.

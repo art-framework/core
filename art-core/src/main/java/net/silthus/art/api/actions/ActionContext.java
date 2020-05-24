@@ -5,19 +5,20 @@ import lombok.Getter;
 import net.silthus.art.ART;
 import net.silthus.art.api.ARTContext;
 
+import java.util.Objects;
 import java.util.Optional;
 
 /**
  * The action context is created for every unique {@link Action} configuration.
  * It holds all relevant information to execute the action and tracks the dependencies.
  * <br>
- * You can create your own {@link ActionContext} and set it with {@link ART#setActionContext(Class)} )}.
+ * You can create your own {@link ActionContext} and set it with {@link ART#useActionContext(Class)} )}.
  *
  * @param <TTarget> target type of the action
  * @param <TConfig> config type of the action
  */
 @EqualsAndHashCode(callSuper = true, of = {"action", "config"})
-public class ActionContext<TTarget, TConfig> extends ARTContext<TTarget> {
+public class ActionContext<TTarget, TConfig> extends ARTContext<TTarget> implements Action<TTarget, TConfig> {
 
     @Getter
     private final Action<TTarget, TConfig> action;
@@ -39,19 +40,17 @@ public class ActionContext<TTarget, TConfig> extends ARTContext<TTarget> {
         return config.getWith();
     }
 
-    /**
-     * The execute method is called by {@link ART} when this {@link Action} should be executed.
-     * This method handles the actual execution of the {@link Action} applying checks and delays.
-     * <br>
-     * Override this method in a custom {@link ActionContext} to control how actions are executed.
-     *
-     * @param target target instance to execute the {@link Action} on.
-     */
+    @Override
     public void execute(TTarget target) {
 
         if (!isTargetType(target)) return;
 
         getAction().execute(target, this);
+    }
+
+    @Override
+    public void execute(TTarget target, ActionContext<TTarget, TConfig> context) {
+        getAction().execute(target, Objects.isNull(context) ? this : context);
     }
 
     private boolean isTargetType(Object target) {
