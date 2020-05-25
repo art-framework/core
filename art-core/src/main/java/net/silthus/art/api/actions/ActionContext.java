@@ -12,12 +12,12 @@ import java.util.Optional;
  * The action context is created for every unique {@link Action} configuration.
  * It holds all relevant information to execute the action and tracks the dependencies.
  * <br>
- * You can create your own {@link ActionContext} and set it with {@link ART#useActionContext(Class)} )}.
+ * You can create your own {@link ActionContext} and set it with {@link ART#setActionContext(Class)} )}.
  *
  * @param <TTarget> target type of the action
  * @param <TConfig> config type of the action
  */
-@EqualsAndHashCode(callSuper = true, of = {"action", "config"})
+@EqualsAndHashCode(callSuper = true)
 public class ActionContext<TTarget, TConfig> extends ARTContext<TTarget> implements Action<TTarget, TConfig> {
 
     @Getter

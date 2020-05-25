@@ -11,7 +11,7 @@ shadowJar {
     dependencies {
         include(dependency('de.exlll:configlib-bukkit:2.6.0'))
     }
-    relocate 'de.exlll.configlib', "net.silthus.art.configlib"
+    relocate 'de.exlll.configlib', "${packageName}.configlib"
 }
 
 tasks.build.dependsOn(shadowJar)

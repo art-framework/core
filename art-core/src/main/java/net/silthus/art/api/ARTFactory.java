@@ -28,7 +28,7 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject<
     private final Class<TTarget> targetClass;
     private final Class<TConfig> configClass;
     private final TARTObject artObject;
-    private String name;
+    private String identifier;
     private String[] configInformation = new String[0];
 
     public void setConfigInformation(String... configInformation) {
@@ -53,8 +53,9 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject<
             throw new ARTObjectRegistrationException(artObject, e);
         }
 
-        if (Strings.isNullOrEmpty(getName())) {
-            throw new ARTObjectRegistrationException(artObject, "Action has no defined name. Use the @Name annotation or registration method to register it with a name.");
+        if (Strings.isNullOrEmpty(getIdentifier())) {
+            throw new ARTObjectRegistrationException(artObject,
+                    String.format("%s has no defined name. Use the @Name annotation or registration method to register it with a name.", artObject.getClass().getCanonicalName()));
         }
     }
 
@@ -68,12 +69,12 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject<
     public abstract TContext create(TARTObjectConfig config);
 
     private void tryGetName(Method method) {
-        if (!Strings.isNullOrEmpty(getName())) return;
+        if (!Strings.isNullOrEmpty(getIdentifier())) return;
 
         if (artObject.getClass().isAnnotationPresent(Name.class)) {
-            setName(artObject.getClass().getAnnotation(Name.class).value());
+            setIdentifier(artObject.getClass().getAnnotation(Name.class).value());
         } else if (method.isAnnotationPresent(Name.class)) {
-            setName(method.getAnnotation(Name.class).value());
+            setIdentifier(method.getAnnotation(Name.class).value());
         }
     }
 

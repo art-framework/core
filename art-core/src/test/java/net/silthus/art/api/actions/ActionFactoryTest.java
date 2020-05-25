@@ -27,7 +27,7 @@ public class ActionFactoryTest {
         @BeforeEach
         public void beforeEach() {
 
-            assertThat(factory.getName()).isNullOrEmpty();
+            assertThat(factory.getIdentifier()).isNullOrEmpty();
             assertThat(factory.getConfigInformation()).isEmpty();
         }
 
@@ -38,7 +38,7 @@ public class ActionFactoryTest {
             assertThatCode(() -> factory.initialize())
                     .doesNotThrowAnyException();
 
-            assertThat(factory.getName()).isEqualTo("Test");
+            assertThat(factory.getIdentifier()).isEqualTo("Test");
             assertThat(factory.getConfigInformation()).containsExactly("test-string");
         }
 
@@ -46,13 +46,13 @@ public class ActionFactoryTest {
         @DisplayName("should not override manually set name and config information")
         public void shouldNotOverrideManualSetters() {
 
-            factory.setName("foo");
+            factory.setIdentifier("foo");
             factory.setConfigInformation("bar");
 
             assertThatCode(() -> factory.initialize())
                     .doesNotThrowAnyException();
 
-            assertThat(factory.getName()).isEqualTo("foo");
+            assertThat(factory.getIdentifier()).isEqualTo("foo");
             assertThat(factory.getConfigInformation()).containsExactly("bar");
         }
 
@@ -71,11 +71,11 @@ public class ActionFactoryTest {
         public void shouldNotThrowIfNoAnnotationButManualInfo() {
 
             factory = new ActionFactory<>(String.class, String.class, (s, context) -> {});
-            factory.setName("foo");
+            factory.setIdentifier("foo");
             factory.setConfigInformation("bar");
 
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-            assertThat(factory.getName()).isEqualTo("foo");
+            assertThat(factory.getIdentifier()).isEqualTo("foo");
             assertThat(factory.getConfigInformation()).containsExactly("bar");
         }
 
@@ -84,10 +84,10 @@ public class ActionFactoryTest {
         public void shouldNotThrowIfMissingConfigInformation() {
 
             factory = new ActionFactory<>(String.class, String.class, (s, context) -> {});
-            factory.setName("foobar");
+            factory.setIdentifier("foobar");
 
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-            assertThat(factory.getName())
+            assertThat(factory.getIdentifier())
                     .isEqualTo("foobar");
             assertThat(factory.getConfigInformation())
                     .isNotNull()
@@ -110,7 +110,7 @@ public class ActionFactoryTest {
             });
 
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-            assertThat(factory.getName()).isEqualTo("foo");
+            assertThat(factory.getIdentifier()).isEqualTo("foo");
             assertThat(factory.getConfigInformation()).containsExactly("bar");
         }
     }
