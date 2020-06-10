@@ -1,8 +1,6 @@
 package net.silthus.art.api.trigger;
 
-import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import net.silthus.art.api.ARTContext;
 
 import java.util.Optional;

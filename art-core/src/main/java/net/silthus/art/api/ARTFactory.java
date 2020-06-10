@@ -2,7 +2,6 @@ package net.silthus.art.api;
 
 import com.google.common.base.Strings;
 import lombok.Data;
-import net.silthus.art.ARTObject;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
@@ -23,13 +22,17 @@ import java.lang.reflect.Method;
  * @param <TARTObjectConfig> the custom config type of the {@link ARTObject}
  */
 @Data
-public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject<TTarget, TConfig>, TContext extends ARTContext<TTarget>, TARTObjectConfig extends ARTConfig<TConfig>> {
+public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject, TContext extends ARTContext<TTarget>, TARTObjectConfig extends ARTConfig<TConfig>> {
 
     private final Class<TTarget> targetClass;
     private final Class<TConfig> configClass;
     private final TARTObject artObject;
     private String identifier;
     private String[] configInformation = new String[0];
+
+    public ARTType getARTType() {
+        return getArtObject().getARTType();
+    }
 
     public void setConfigInformation(String... configInformation) {
         this.configInformation = configInformation;

@@ -11,8 +11,6 @@ import java.util.Optional;
 /**
  * The action context is created for every unique {@link Action} configuration.
  * It holds all relevant information to execute the action and tracks the dependencies.
- * <br>
- * You can create your own {@link ActionContext} and set it with {@link ART#setActionContext(Class)} )}.
  *
  * @param <TTarget> target type of the action
  * @param <TConfig> config type of the action

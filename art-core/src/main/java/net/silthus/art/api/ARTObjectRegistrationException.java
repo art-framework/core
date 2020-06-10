@@ -1,8 +1,6 @@
 package net.silthus.art.api;
 
-import net.silthus.art.ARTObject;
-
-public class ARTObjectRegistrationException extends ARTException {
+public class ARTObjectRegistrationException extends ARTRegistrationException {
 
     private final ARTObject action;
 

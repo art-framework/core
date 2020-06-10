@@ -5,6 +5,11 @@ buildscript {
     }
 }
 
+plugins {
+    id 'kr.entree.spigradle' version '1.2.1' apply false
+    id 'com.github.johnrengelman.shadow' version '5.2.0' apply false
+}
+
 subprojects {
     repositories {
         mavenCentral()
@@ -39,8 +44,8 @@ subprojects {
     apply from: "$rootDir/gradle/jacoco.gradle"
     apply from: "$rootDir/gradle/publish.gradle"
 
-    sourceCompatibility = 1.8
-    targetCompatibility = 1.8
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
     dependencies {
         compile 'org.projectlombok:lombok:1.+'
@@ -64,6 +69,100 @@ subprojects {
             events "passed", "skipped", "failed"
         }
     }
+}
+
+configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-example' }) {
+
+    apply plugin: 'kr.entree.spigradle'
+    apply plugin: 'com.github.johnrengelman.shadow'
+
+    spigot {
+        name = "${project.property("pluginName")}"
+        authors = [project.property("author")]
+        apiVersion = project.property("apiVersion")
+        load = STARTUP
+    }
+
+    dependencies {
+        implementation project(':art-core')
+
+        implementation "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"
+    }
+
+    shadowJar {
+        classifier = ''
+        dependencies {
+            include(dependency(':art-core'))
+        }
+    }
+
+    tasks.build.dependsOn(shadowJar)
+    tasks.publish.dependsOn(shadowJar)
+
+    task copyPluginYaml(type: Copy, dependsOn: spigotPluginYaml) {
+        from(new File(spigotPluginYaml.temporaryDir, "plugin.yml"))
+        into(sourceSets.test.resources.srcDirs[0])
+    }
+
+    task deploy(type: Copy, dependsOn: [
+            'cleanPlugin',
+            'jar'
+    ]) {
+        group 'deploy'
+        description 'Exports you plugin to the plugin directory in your test server'
+
+        def pluginFolder = project.property('pluginFolder').toString()
+
+        from shadowJar
+        into pluginFolder.isEmpty() ? "${project.rootDir}/working/plugins" : pluginFolder
+    }
+
+    task cleanPlugin() {
+        group 'deploy'
+        description 'Cleans the plugin in the working directory up'
+        delete "${project.rootDir}/working/plugins/" + project.property("pluginName") + '*.jar'
+    }
+
+    task setupServer {
+        group 'server'
+        description 'Downloads the server jar'
+
+        def server = new File("${project.rootDir}/working/server.jar")
+
+        if (server.exists()) {
+            server.delete()
+        }
+
+        def url = ''
+        switch (mcVersion) {
+            case '1.8.8':
+                url = 'https://cdn.getbukkit.org/spigot/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar'
+                break
+
+            case '1.12.2':
+                url = 'https://cdn.getbukkit.org/spigot/spigot-1.12.2.jar'
+                break
+
+            case '1.13.2':
+                url = 'https://cdn.getbukkit.org/spigot/spigot-1.13.2.jar'
+                break
+
+            case '1.14.4':
+                url = 'https://cdn.getbukkit.org/spigot/spigot-1.14.4.jar'
+                break
+            case '1.15.2':
+                url = 'https://cdn.getbukkit.org/spigot/spigot-1.15.2.jar'
+                break
+        }
+
+        if (url.isEmpty()) {
+            throw new GradleException('NOT A SUPPORTED VERSION, PLEASE USE [1.8.8, 1.12.2, 1.13.2, 1.14.4, 1.15.2]!')
+        }
+
+        new URL(url).withInputStream { i -> server.withOutputStream { it << i } }
+    }
+
+    defaultTasks 'build', 'deploy'
 }
 
 defaultTasks 'build'

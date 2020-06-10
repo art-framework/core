@@ -1,0 +1,14 @@
+packageName = 'net.silthus.examples.art'
+
+spigot {
+    name = "${project.property("pluginName")}-example"
+    depends = ['ART']
+}
+
+shadowJar {
+    classifier = ''
+    dependencies {
+        include(dependency(':art-core'))
+    }
+    relocate 'net.silthus.art', "${packageName}.art"
+}

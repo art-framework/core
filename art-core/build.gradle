@@ -1,17 +1,21 @@
 plugins {
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'com.github.johnrengelman.shadow'
 }
 
 dependencies {
+    implementation group: 'com.google.inject', name: 'guice', version: '4.2.3'
+
     implementation 'de.exlll:configlib-bukkit:2.6.0'
 }
 
 shadowJar {
     classifier = ''
     dependencies {
-        include(dependency('de.exlll:configlib-bukkit:2.6.0'))
+        include(dependency('de.exlll:configlib-bukkit:'))
+        include(dependency('com.google.inject:guice:'))
     }
     relocate 'de.exlll.configlib', "${packageName}.configlib"
+    relocate 'com.google.inject', "${packageName}.guice"
 }
 
 tasks.build.dependsOn(shadowJar)

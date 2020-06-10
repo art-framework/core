@@ -1,9 +1,12 @@
-package net.silthus.art.builder;
+package net.silthus.art;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.silthus.art.ARTObject;
+import net.silthus.art.api.ARTObject;
 import net.silthus.art.api.ARTFactory;
 import net.silthus.art.api.ARTObjectRegistrationException;
+import net.silthus.art.api.ARTType;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.requirements.Requirement;
@@ -12,26 +15,33 @@ import net.silthus.art.api.requirements.RequirementFactory;
 import java.util.*;
 import java.util.logging.Logger;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 
 public class ARTBuilder {
 
+    @Getter(AccessLevel.PACKAGE)
+    private final String pluginName;
     private final Logger logger = Logger.getLogger("ARTBuilder");
     private final Map<Class<?>, TargetBuilder<?>> builders = new HashMap<>();
 
+    public ARTBuilder(String pluginName) {
+        this.pluginName = pluginName;
+    }
+
     /**
-     * Collects all registered {@link ARTObject}s and their corresponding {@link ARTFactory}.
-     * Then calls {@link ARTFactory#initialize()} on all collected factories to generate the corresponding {@link ARTFactory#getIdentifier()}.
+     * Collects all registered {@link ARTObject}s and their corresponding {@link ARTFactory} grouped by their {@link ARTType}.
+     * Then calls {@link ARTFactory#initialize()} on all collected factories to generate the corresponding identifier.
      * <br>
      * If an {@link ARTObject} is invalid, e.g. has no name a log message will be output and the object filtered out.
      * <br>
      * Then the unique identifier of each object will be mapped to its factory and returned.
      * If a duplicate identifier is found, only the first object will be registered and a log message written.
      *
-     * @return identifier to factory mapping
+     * @return identifier to factory mapping grouped by the {@link ARTType}
      */
     @SuppressWarnings("rawtypes")
-    public Map<String, ARTFactory> build() {
+    Map<ARTType, Map<String, ARTFactory>> build() {
 
         return builders.values().stream()
                 .flatMap(targetBuilder -> targetBuilder.artFactories.stream())
@@ -46,16 +56,16 @@ public class ARTBuilder {
                     }
                 })
                 .filter(Objects::nonNull)
-                .collect(toMap(ARTFactory::getIdentifier, artFactory -> artFactory, (artFactory, artFactory2) -> {
+                .collect(groupingBy(ARTFactory::getARTType, toMap(ARTFactory::getIdentifier, artFactory -> artFactory, (artFactory, artFactory2) -> {
                     // we got a duplicate identifier
                     logger.warning(String.format("Duplicate identifier \"%1$s\" in %2$s and %3$s detected. Only %2$s will be registered.",
-                                artFactory.getIdentifier(),
-                                artFactory.getArtObject().getClass().getCanonicalName(),
-                                artFactory2.getArtObject().getClass().getCanonicalName()
+                            artFactory.getIdentifier(),
+                            artFactory.getArtObject().getClass().getCanonicalName(),
+                            artFactory2.getArtObject().getClass().getCanonicalName()
                             )
                     );
                     return artFactory;
-                }));
+                })));
     }
 
     @SuppressWarnings("unchecked")
@@ -100,7 +110,8 @@ public class ARTBuilder {
             @SuppressWarnings("rawtypes")
             private final ARTFactory artFactory;
 
-            public FactoryBuilder(Class<TConfig> configClass, ARTObject<TTarget, TConfig> artObject) {
+            @SuppressWarnings("unchecked")
+            public FactoryBuilder(Class<TConfig> configClass, ARTObject artObject) {
                 if (artObject instanceof Action) {
                     this.artFactory = new ActionFactory<>(targetClass, configClass, (Action<TTarget, TConfig>) artObject);
                 } else if (artObject instanceof Requirement) {
