@@ -3,6 +3,8 @@ package net.silthus.art.api;
 import com.google.inject.ImplementedBy;
 import net.silthus.art.DefaultARTManager;
 import net.silthus.art.api.actions.Action;
+import net.silthus.art.api.actions.ActionManager;
+import net.silthus.art.api.config.ARTConfig;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.ARTBuilder;
@@ -37,9 +39,11 @@ public interface ARTManager {
 
     void register(String pluginName, Consumer<ARTBuilder> builder) throws ARTRegistrationException;
 
+    ActionManager actions();
+
     <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context);
 
-    List<Action<?, ?>> createActions(Object config);
+    List<Action<?, ?>> createActions(ARTConfig config);
 
-    <TTarget> List<Action<TTarget, ?>> createActions(Class<TTarget> targetClass, Object config);
+    <TTarget> List<Action<TTarget, ?>> createActions(Class<TTarget> targetClass, ARTConfig config);
 }

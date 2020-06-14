@@ -3,8 +3,8 @@ package net.silthus.art.api.actions;
 import de.exlll.configlib.annotation.ConfigurationElement;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.silthus.art.api.ARTConfig;
-import org.apache.commons.lang.NotImplementedException;
+import net.silthus.art.api.config.ARTObjectConfig;
+import org.apache.commons.lang3.NotImplementedException;
 
 /**
  * The {@link ActionConfig} holds general information about the execution
@@ -15,7 +15,7 @@ import org.apache.commons.lang.NotImplementedException;
 @Data
 @ConfigurationElement
 @EqualsAndHashCode(callSuper = true)
-public class ActionConfig<TConfig> extends ARTConfig<TConfig> {
+public class ActionConfig<TConfig> extends ARTObjectConfig<TConfig> {
 
     private String delay = "0s";
     private String cooldown = "0s";

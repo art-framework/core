@@ -3,6 +3,7 @@ package net.silthus.art;
 import lombok.Getter;
 import net.silthus.art.api.ARTManager;
 import net.silthus.art.api.ARTRegistrationException;
+import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.trigger.TriggerContext;
 
 import java.util.HashMap;
@@ -32,6 +33,10 @@ public final class ART {
 
     public static Optional<ARTManager> getInstance() {
         return Optional.ofNullable(instance);
+    }
+
+    public static ActionManager actions() {
+        return getInstance().map(ARTManager::actions).orElseGet(ActionManager::nullManager);
     }
 
     public static void load() {

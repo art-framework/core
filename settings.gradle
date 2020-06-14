@@ -2,4 +2,5 @@ rootProject.name = 'art'
 include 'art-core'
 include 'art-bukkit'
 include 'art-example'
+include 'art-parser-flow'
 

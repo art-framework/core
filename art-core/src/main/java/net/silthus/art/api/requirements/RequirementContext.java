@@ -5,25 +5,17 @@ import lombok.Getter;
 import net.silthus.art.api.ARTContext;
 
 import java.util.Objects;
-import java.util.Optional;
 
 @EqualsAndHashCode(callSuper = true)
-public class RequirementContext<TTarget, TConfig> extends ARTContext<TTarget> implements Requirement<TTarget, TConfig> {
+public class RequirementContext<TTarget, TConfig> extends ARTContext<TTarget, TConfig> implements Requirement<TTarget, TConfig> {
 
     @Getter
     private final Requirement<TTarget, TConfig> requirement;
-    private final RequirementConfig<TConfig> config;
 
     public RequirementContext(Class<TTarget> targetClass, Requirement<TTarget, TConfig> requirement, RequirementConfig<TConfig> config) {
-        super(targetClass);
+        super(targetClass, config);
         this.requirement = requirement;
-        this.config = config;
     }
-
-    public Optional<TConfig> getConfig() {
-        return config.getWith();
-    }
-
     @Override
     public boolean test(TTarget target) {
         return test(target, this);

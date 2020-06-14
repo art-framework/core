@@ -3,19 +3,19 @@ plugins {
 }
 
 dependencies {
-    implementation group: 'com.google.inject', name: 'guice', version: '4.2.3'
-
-    implementation 'de.exlll:configlib-bukkit:2.6.0'
+    implementation 'de.exlll:configlib-core:2.6.0'
 }
 
 shadowJar {
     classifier = ''
     dependencies {
-        include(dependency('de.exlll:configlib-bukkit:'))
+        include(dependency('de.exlll:configlib-core:'))
         include(dependency('com.google.inject:guice:'))
+        include(dependency('org.apache.commons:commons-lang3:'))
     }
     relocate 'de.exlll.configlib', "${packageName}.configlib"
     relocate 'com.google.inject', "${packageName}.guice"
+    relocate 'org.apache.commons', "${packageName}.apachecommons"
 }
 
 tasks.build.dependsOn(shadowJar)

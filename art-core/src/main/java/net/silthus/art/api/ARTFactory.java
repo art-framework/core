@@ -7,6 +7,7 @@ import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.annotations.Configurable;
 import net.silthus.art.api.annotations.Name;
+import net.silthus.art.api.config.ARTObjectConfig;
 import net.silthus.art.api.requirements.Requirement;
 
 import java.lang.reflect.Method;
@@ -22,7 +23,7 @@ import java.lang.reflect.Method;
  * @param <TARTObjectConfig> the custom config type of the {@link ARTObject}
  */
 @Data
-public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject, TContext extends ARTContext<TTarget>, TARTObjectConfig extends ARTConfig<TConfig>> {
+public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject, TContext extends ARTContext<TTarget, TConfig>, TARTObjectConfig extends ARTObjectConfig<TConfig>> {
 
     private final Class<TTarget> targetClass;
     private final Class<TConfig> configClass;
@@ -64,7 +65,7 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject,
 
     /**
      * Creates a new {@link ARTContext} for the given {@link ARTObject} type.
-     * Call this once for every unique {@link ARTConfig} of a given {@link ARTObject}.
+     * Call this once for every unique {@link ARTObjectConfig} of a given {@link ARTObject}.
      *
      * @param config config to instantiate the {@link ARTContext} with
      * @return new {@link ARTContext} that accepts the given target and config type for the given {@link ARTObject} type.

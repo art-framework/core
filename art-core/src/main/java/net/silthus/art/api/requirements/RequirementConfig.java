@@ -3,8 +3,7 @@ package net.silthus.art.api.requirements;
 import de.exlll.configlib.annotation.ConfigurationElement;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.silthus.art.api.ARTConfig;
-import org.apache.commons.lang.NotImplementedException;
+import net.silthus.art.api.config.ARTObjectConfig;
 
 /**
  * The {@link RequirementConfig} holds general information about the execution
@@ -16,7 +15,7 @@ import org.apache.commons.lang.NotImplementedException;
 @Data
 @ConfigurationElement
 @EqualsAndHashCode(callSuper = true)
-public class RequirementConfig<TConfig> extends ARTConfig<TConfig> {
+public class RequirementConfig<TConfig> extends ARTObjectConfig<TConfig> {
 
     private boolean persistent = false;
     private int order = 0;
