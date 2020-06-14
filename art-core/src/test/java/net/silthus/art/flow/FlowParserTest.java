@@ -1,8 +1,10 @@
-package net.silthus.art.parser.flow;
+package net.silthus.art.flow;
 
 import net.silthus.art.api.actions.*;
+import net.silthus.art.api.config.ARTConfig;
 import net.silthus.art.api.config.ARTObjectConfig;
 import net.silthus.art.api.parser.ARTParseException;
+import net.silthus.art.parser.FlowParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -41,14 +43,18 @@ class FlowParserTest {
         @Test
         @DisplayName("should return false if not instance of string")
         public void shouldReturnFalseIfInstanceDoesNotMatch() {
-            assertThat(parser.matches(new ARTObjectConfig<>()))
+            ARTConfig config = new ARTConfig();
+            config.getArt().add(new ARTObjectConfig<>());
+            assertThat(parser.matches(config))
                     .isFalse();
         }
 
         @Test
         @DisplayName("should return true if instance of string")
         public void shouldReturnTrueIfString() {
-            assertThat(parser.matches("foobar"))
+            ARTConfig config = new ARTConfig();
+            config.getArt().add("!foobar");
+            assertThat(parser.matches(config))
                     .isTrue();
         }
     }
@@ -61,14 +67,14 @@ class FlowParserTest {
         @DisplayName("should throw if config object is null")
         public void shouldThrowIfObjectIsNull() {
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> parser.next(null));
+                    .isThrownBy(() -> parser.parseActions(null));
         }
 
         @Test
         @DisplayName("should throw if config object is of invalid type")
         public void shouldThrowIfInvalidType() {
             assertThatExceptionOfType(ARTParseException.class)
-                    .isThrownBy(() -> parser.next(new ARTObjectConfig<>()));
+                    .isThrownBy(() -> parser.parseActions(new ARTConfig()));
         }
 
         @Nested
@@ -86,8 +92,11 @@ class FlowParserTest {
                 when(foobarFactory.create(any()))
                         .thenReturn(new ActionContext<>(String.class, (s, context) -> {}, new ActionConfig<>()));
 
+                ARTConfig config = new ARTConfig();
+                config.getArt().add("!foobar");
+
                 assertThatCode(() -> {
-                    assertThat(parser.next("!foobar"))
+                    assertThat(parser.parseActions(config))
                             .isNotNull()
                             .isInstanceOf(ActionContext.class);
                 }).doesNotThrowAnyException();

@@ -43,7 +43,17 @@ public final class ART {
         if (getInstance().isEmpty()) {
             throw new UnsupportedOperationException("No ARTManger found. Cannot load() ART. Make sure to provide an ARTManager with ART.setARTManager(...) before calling ART.load()");
         }
-        getInstance().ifPresent(ARTManager::load);
+        ARTManager artManager = getInstance().get();
+
+        for (Map.Entry<String, Consumer<ARTBuilder>> entry : queuedRegistrations.entrySet()) {
+            try {
+                artManager.register(entry.getKey(), entry.getValue());
+            } catch (ARTRegistrationException e) {
+                getLogger().warning(e.getMessage());
+            }
+        }
+        queuedRegistrations.clear();
+        artManager.load();
     }
 
     public static void register(String pluginName, Consumer<ARTBuilder> builder) throws ARTRegistrationException {

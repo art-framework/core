@@ -14,5 +14,5 @@ repositories {
 }
 
 dependencies {
-    implementation 'net.silthus:slib:1.4.0'
+    implementation 'net.silthus:slib:1.5.1'
 }

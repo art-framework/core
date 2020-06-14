@@ -16,7 +16,7 @@ public class ExampleARTPlugin extends JavaPlugin {
             ART.register(getName(), artBuilder -> {
                 artBuilder.target(Player.class)
                         .action(ConfigurationSection.class,
-                                (player, context) -> player.damage(context.getConfig().map(config -> config.getDouble("damage")).orElse(0d)))
+                                (player, context) -> player.damage(context.getConfig().getDouble("damage")))
                             .withName("player:damage");
             });
         } catch (ARTRegistrationException e) {

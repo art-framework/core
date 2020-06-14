@@ -5,10 +5,14 @@ spigot {
     depends = ['ART']
 }
 
+dependencies {
+    implementation 'de.exlll:configlib-core:2.6.0'
+}
+
 shadowJar {
     classifier = ''
     dependencies {
-        include(dependency(':art-core'))
+        include(dependency('de.exlll:configlib-core:'))
     }
-    relocate 'net.silthus.art', "${packageName}.art"
+    relocate 'de.exlll.configlib', "${packageName}.configlib"
 }

@@ -94,6 +94,8 @@ configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-examp
         classifier = ''
         dependencies {
             include(dependency(':art-core'))
+            include(dependency('com.google.inject:guice:'))
+            include(dependency('org.apache.commons:commons-lang3:'))
         }
     }
 

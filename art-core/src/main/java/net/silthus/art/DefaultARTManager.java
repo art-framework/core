@@ -1,13 +1,15 @@
 package net.silthus.art;
 
 import com.google.inject.Inject;
-import com.google.inject.internal.cglib.core.$RejectModifierPredicate;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Data;
+import lombok.Setter;
 import net.silthus.art.api.ARTFactory;
 import net.silthus.art.api.ARTManager;
 import net.silthus.art.api.ARTRegistrationException;
 import net.silthus.art.api.ARTType;
 import net.silthus.art.api.actions.Action;
+import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ARTConfig;
 import net.silthus.art.api.trigger.TriggerContext;
@@ -19,6 +21,8 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
+
+import static java.util.stream.Collectors.toMap;
 
 @Data
 public class DefaultARTManager implements ARTManager {
@@ -41,6 +45,7 @@ public class DefaultARTManager implements ARTManager {
     public void load() {
 
         setLoaded(true);
+        getLogger().info("ART LOADED --- initialization finished ---");
     }
 
     @Override
@@ -72,11 +77,18 @@ public class DefaultARTManager implements ARTManager {
 
         builder.andThen(art -> registeredPlugins.put(pluginName, art))
                 .andThen(art -> {
-                    getLogger().info(pluginName + " registered their ART:");
+                    getLogger().info(pluginName + " plugin registered their ART:");
 
                     Map<ARTType, Map<String, ARTFactory>> createdART = art.build();
-                    for (ARTType artType : createdART.keySet()) {
-                        getLogger().info("    - " + artType.name() + ": " + createdART.get(artType).size());
+                    for (Map.Entry<ARTType, Map<String, ARTFactory>> entry : createdART.entrySet()) {
+                        switch (entry.getKey()) {
+                            case ACTION:
+                                actions().register(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (ActionFactory<?, ?>) artFactory.getValue())));
+                                getLogger().info("  --- " + entry.getValue().size() + "x ACTIONS ---");
+                                entry.getValue().keySet().forEach(actionIdentifier -> getLogger().info("     " + actionIdentifier));
+                                break;
+                            // TODO: register other art types
+                        }
                     }
                 })
                 .accept(artBuilder);
@@ -89,17 +101,6 @@ public class DefaultARTManager implements ARTManager {
 
     @Override
     public <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context) {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public List<Action<?, ?>> createActions(ARTConfig config) {
-
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public <TTarget> List<Action<TTarget, ?>> createActions(Class<TTarget> targetClass, ARTConfig config) {
         throw new NotImplementedException();
     }
 }

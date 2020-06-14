@@ -1,15 +1,13 @@
 package net.silthus.art.api;
 
 import com.google.inject.ImplementedBy;
+import net.silthus.art.ARTBuilder;
 import net.silthus.art.DefaultARTManager;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionManager;
-import net.silthus.art.api.config.ARTConfig;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.trigger.TriggerContext;
-import net.silthus.art.ARTBuilder;
 
-import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -42,8 +40,4 @@ public interface ARTManager {
     ActionManager actions();
 
     <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context);
-
-    List<Action<?, ?>> createActions(ARTConfig config);
-
-    <TTarget> List<Action<TTarget, ?>> createActions(Class<TTarget> targetClass, ARTConfig config);
 }
