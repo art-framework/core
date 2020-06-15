@@ -44,7 +44,7 @@ public class DefaultActionManager implements ActionManager {
                 getLogger().warning("duplicate actions detected for identifier " + entry.getKey() + ": " + entry.getValue().getArtObject().getClass().getCanonicalName() + " <--> " + actionFactories.get(entry.getKey()).getArtObject().getClass().getCanonicalName());
                 getLogger().warning("not registering: " + entry.getValue().getArtObject().getClass().getCanonicalName());
             } else {
-                actionFactories.put(entry.getKey(), entry.getValue());
+                this.actionFactories.put(entry.getKey(), entry.getValue());
             }
         }
     }
@@ -63,11 +63,9 @@ public class DefaultActionManager implements ActionManager {
                     .collect(Collectors.toList());
 
             if (parsers.size() > 1) {
-                logger.warning("Multiple parsers matched the config with id " + config.getId());
-                return new ArrayList<>();
+                throw new ARTParseException("Multiple parsers matched the config with id " + config.getId());
             } else if (parsers.isEmpty()) {
-                logger.warning("No parser matched the config with id " + config.getId());
-                return new ArrayList<>();
+                throw new ARTParseException("No parser matched the config with id " + config.getId());
             }
 
             return parsers.get(0).parseActions(config);

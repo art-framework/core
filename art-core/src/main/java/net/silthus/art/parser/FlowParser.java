@@ -11,6 +11,7 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import javax.inject.Inject;
 import java.util.List;
+import java.util.Objects;
 
 public class FlowParser implements ARTParser {
 
@@ -23,7 +24,8 @@ public class FlowParser implements ARTParser {
 
     @Override
     public boolean matches(ARTConfig config) {
-        return config.getArt() != null
+        return Objects.nonNull(config)
+                && Objects.nonNull(config.getArt())
                 && !config.getArt().isEmpty()
                 && config.getArt().parallelStream().allMatch(o -> o instanceof String);
     }

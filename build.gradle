@@ -159,10 +159,14 @@ configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-examp
         }
 
         if (url.isEmpty()) {
-            throw new GradleException('NOT A SUPPORTED VERSION, PLEASE USE [1.8.8, 1.12.2, 1.13.2, 1.14.4, 1.15.2]!')
+            throw new Exception('NOT A SUPPORTED VERSION, PLEASE USE [1.8.8, 1.12.2, 1.13.2, 1.14.4, 1.15.2]!')
         }
 
-        new URL(url).withInputStream { i -> server.withOutputStream { it << i } }
+        try {
+            new URL(url).withInputStream { i -> server.withOutputStream { it << i } }
+        } catch(Exception e) {
+            println(e.getMessage())
+        }
     }
 
     defaultTasks 'build', 'deploy'
