@@ -15,8 +15,8 @@ import net.silthus.art.api.ARTFactory;
 @EqualsAndHashCode(callSuper = true)
 public class ActionFactory<TTarget, TConfig> extends ARTFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionContext<TTarget, TConfig>, ActionConfig<TConfig>> {
 
-    public ActionFactory(Class<TTarget> targetClass, Class<TConfig> configClass, Action<TTarget, TConfig> action) {
-        super(targetClass, configClass, action);
+    public ActionFactory(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
+        super(targetClass, action);
     }
 
     public ActionContext<TTarget, TConfig> create(ActionConfig<TConfig> config) {

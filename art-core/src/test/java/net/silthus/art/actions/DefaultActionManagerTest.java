@@ -2,9 +2,7 @@ package net.silthus.art.actions;
 
 import lombok.SneakyThrows;
 import net.silthus.art.api.ARTManager;
-import net.silthus.art.api.actions.Action;
-import net.silthus.art.api.actions.ActionContext;
-import net.silthus.art.api.actions.ActionFactory;
+import net.silthus.art.api.actions.*;
 import net.silthus.art.api.config.ARTConfig;
 import net.silthus.art.api.parser.ARTParser;
 import org.junit.jupiter.api.BeforeEach;
@@ -24,13 +22,11 @@ import static org.mockito.Mockito.*;
 @DisplayName("DefaultActionManager")
 class DefaultActionManagerTest {
 
-    private ARTManager artManager;
     private DefaultActionManager actionManager;
 
     @BeforeEach
     void beforeEach() {
-        this.artManager = mock(ARTManager.class);
-        this.actionManager = new DefaultActionManager(artManager, new HashSet<>());
+        this.actionManager = new DefaultActionManager(new HashSet<>());
         actionManager.setLogger(Logger.getGlobal());
     }
 
@@ -168,6 +164,51 @@ class DefaultActionManagerTest {
             actionManager.create(config);
 
             verify(parser, times(1)).parseActions(config);
+        }
+    }
+
+
+    @Nested
+    @DisplayName("create(...) with TypeFilter")
+    class createWithType {
+
+        @Test
+        @DisplayName("should filter out actions without matching types")
+        void shouldFilterActions() {
+
+            DefaultActionManager actionManager = mock(DefaultActionManager.class);
+            when(actionManager.create(any(), any())).thenCallRealMethod();
+            when(actionManager.create(any())).thenReturn(List.of(
+                    new ActionContext<>(String.class, (s, context) -> {}, new ActionConfig<>()),
+                    new ActionContext<>(Integer.class, (s, context) -> {}, new ActionConfig<>()),
+                    new ActionContext<>(String.class, (s, context) -> {}, new ActionConfig<>())
+            ));
+
+            assertThat(actionManager.create(String.class, new ARTConfig()))
+                    .hasSize(2);
+        }
+    }
+
+    @Nested
+    @DisplayName("getFactory(...)")
+    class getFactory {
+
+        @Test
+        @DisplayName("should return wrapped optional")
+        void shouldReturnWrappedOptional() {
+
+            actionManager.getActionFactories().put("foobar", mock(ActionFactory.class));
+
+            assertThat(actionManager.getFactory("foobar"))
+                    .isNotEmpty();
+        }
+
+        @Test
+        @DisplayName("should return empty optional if action factory does not exist")
+        void shouldReturnEmptyOptional() {
+
+            assertThat(actionManager.getFactory("foobar"))
+                    .isEmpty();
         }
     }
 }

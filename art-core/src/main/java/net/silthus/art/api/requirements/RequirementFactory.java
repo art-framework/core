@@ -6,8 +6,8 @@ import net.silthus.art.api.ARTFactory;
 @EqualsAndHashCode(callSuper = true)
 public class RequirementFactory<TTarget, TConfig> extends ARTFactory<TTarget, TConfig, Requirement<TTarget, TConfig>, RequirementContext<TTarget, TConfig>, RequirementConfig<TConfig>> {
 
-    public RequirementFactory(Class<TTarget> targetClass, Class<TConfig> configClass, Requirement<TTarget, TConfig> artObject) {
-        super(targetClass, configClass, artObject);
+    public RequirementFactory(Class<TTarget> targetClass, Requirement<TTarget, TConfig> artObject) {
+        super(targetClass, artObject);
     }
 
     @Override

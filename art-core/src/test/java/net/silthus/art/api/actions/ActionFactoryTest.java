@@ -17,7 +17,7 @@ public class ActionFactoryTest {
 
     @BeforeEach
     public void beforeEach() {
-        this.factory = new ActionFactory<>(String.class, String.class, new TestAction());
+        this.factory = new ActionFactory<>(String.class, new TestAction());
     }
 
     @Nested
@@ -60,7 +60,7 @@ public class ActionFactoryTest {
         @DisplayName("should throw ActionRegistrationException if missing annotations")
         public void shouldThrowIfMissingAnnotations() {
 
-            factory = new ActionFactory<>(String.class, String.class, (s, context) -> {});
+            factory = new ActionFactory<>(String.class, (s, context) -> {});
 
             assertThatExceptionOfType(ARTObjectRegistrationException.class)
                     .isThrownBy(() -> factory.initialize());
@@ -70,7 +70,7 @@ public class ActionFactoryTest {
         @DisplayName("should not throw if manual set but has missing annotations")
         public void shouldNotThrowIfNoAnnotationButManualInfo() {
 
-            factory = new ActionFactory<>(String.class, String.class, (s, context) -> {});
+            factory = new ActionFactory<>(String.class, (s, context) -> {});
             factory.setIdentifier("foo");
             factory.setConfigInformation("bar");
 
@@ -83,7 +83,7 @@ public class ActionFactoryTest {
         @DisplayName("should not throw if missing config information")
         public void shouldNotThrowIfMissingConfigInformation() {
 
-            factory = new ActionFactory<>(String.class, String.class, (s, context) -> {});
+            factory = new ActionFactory<>(String.class, (s, context) -> {});
             factory.setIdentifier("foobar");
 
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
@@ -98,7 +98,7 @@ public class ActionFactoryTest {
         @DisplayName("should use annotations on method")
         public void shouldUseMethodAnnotation() {
 
-            factory = new ActionFactory<>(String.class, String.class, new Action<String, String>() {
+            factory = new ActionFactory<>(String.class, new Action<>() {
                 @Name("foo")
                 @Configurable({
                         "bar"

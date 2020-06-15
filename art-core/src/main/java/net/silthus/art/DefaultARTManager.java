@@ -12,6 +12,8 @@ import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ARTConfig;
+import net.silthus.art.api.requirements.RequirementFactory;
+import net.silthus.art.api.trigger.Trigger;
 import net.silthus.art.api.trigger.TriggerContext;
 import org.apache.commons.lang3.NotImplementedException;
 
@@ -62,6 +64,7 @@ public class DefaultARTManager implements ARTManager {
     }
 
     @Override
+    @SuppressWarnings("rawtypes")
     public void register(String pluginName, Consumer<ARTBuilder> builder) throws ARTRegistrationException {
 
         if (isLoaded()) {
@@ -83,15 +86,26 @@ public class DefaultARTManager implements ARTManager {
                     for (Map.Entry<ARTType, Map<String, ARTFactory>> entry : createdART.entrySet()) {
                         switch (entry.getKey()) {
                             case ACTION:
-                                actions().register(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (ActionFactory<?, ?>) artFactory.getValue())));
-                                getLogger().info("  --- " + entry.getValue().size() + "x ACTIONS ---");
-                                entry.getValue().keySet().forEach(actionIdentifier -> getLogger().info("     " + actionIdentifier));
+                                registerActions(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (ActionFactory<?, ?>) artFactory.getValue())));
                                 break;
+                            case REQUIREMENT:
+                                registerRequirements(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (RequirementFactory<?, ?>) artFactory.getValue())));
                             // TODO: register other art types
                         }
                     }
                 })
                 .accept(artBuilder);
+    }
+
+    void registerActions(Map<String, ActionFactory<?, ?>> actions) {
+
+        actions().register(actions);
+        getLogger().info("  --- " + actions.size() + "x ACTIONS ---");
+        actions.keySet().forEach(actionIdentifier -> getLogger().info("     " + actionIdentifier));
+    }
+
+    void registerRequirements(Map<String, RequirementFactory<?, ?>> requirements) {
+        throw new NotImplementedException();
     }
 
     @Override

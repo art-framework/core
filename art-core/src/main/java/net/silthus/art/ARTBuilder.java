@@ -11,7 +11,9 @@ import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.requirements.RequirementFactory;
+import util.ReflectionUtil;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -78,12 +80,17 @@ public class ARTBuilder {
         return (TargetBuilder<TTarget>) builders.get(targetClass);
     }
 
-    public <TTarget, TConfig> TargetBuilder<TTarget>.FactoryBuilder<TConfig> action(Class<TTarget> targetClass, Class<TConfig> configClass, Action<TTarget, TConfig> action) {
-        return target(targetClass).action(configClass, action);
+    @SuppressWarnings({"unchecked"})
+    public <TTarget, TConfig> TargetBuilder<TTarget>.FactoryBuilder action(Action<TTarget, TConfig> action) {
+        return target(ReflectionUtil.getTypeArgument(action, 0)).action(action);
     }
 
-    public <TTarget, TConfig> TargetBuilder<TTarget>.FactoryBuilder<TConfig> requirement(Class<TTarget> targetClass, Class<TConfig> configClass, Requirement<TTarget, TConfig> requirement) {
-        return target(targetClass).requirement(configClass, requirement);
+    public <TTarget, TConfig> TargetBuilder<TTarget>.FactoryBuilder action(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
+        return target(targetClass).action(action);
+    }
+
+    public <TTarget, TConfig> TargetBuilder<TTarget>.FactoryBuilder requirement(Class<TTarget> targetClass, Requirement<TTarget, TConfig> requirement) {
+        return target(targetClass).requirement(requirement);
     }
 
     @RequiredArgsConstructor
@@ -93,29 +100,29 @@ public class ARTBuilder {
         @SuppressWarnings("rawtypes")
         private final List<ARTFactory> artFactories = new ArrayList<>();
 
-        public <TConfig> FactoryBuilder<TConfig> action(Class<TConfig> configClass, Action<TTarget, TConfig> action) {
-            FactoryBuilder<TConfig> factoryBuilder = new FactoryBuilder<>(configClass, action);
+        public <TConfig> FactoryBuilder action(Action<TTarget, TConfig> action) {
+            FactoryBuilder factoryBuilder = new FactoryBuilder(action);
             factoryBuilder.getArtFactory().ifPresent(artFactories::add);
             return factoryBuilder;
         }
 
-        public <TConfig> FactoryBuilder<TConfig> requirement(Class<TConfig> configClass, Requirement<TTarget, TConfig> requirement) {
-            FactoryBuilder<TConfig> factoryBuilder = new FactoryBuilder<>(configClass, requirement);
+        public <TConfig> FactoryBuilder requirement(Requirement<TTarget, TConfig> requirement) {
+            FactoryBuilder factoryBuilder = new FactoryBuilder(requirement);
             factoryBuilder.getArtFactory().ifPresent(artFactories::add);
             return factoryBuilder;
         }
 
-        public class FactoryBuilder<TConfig> {
+        public class FactoryBuilder {
 
             @SuppressWarnings("rawtypes")
             private final ARTFactory artFactory;
 
             @SuppressWarnings("unchecked")
-            public FactoryBuilder(Class<TConfig> configClass, ARTObject artObject) {
+            public FactoryBuilder(ARTObject artObject) {
                 if (artObject instanceof Action) {
-                    this.artFactory = new ActionFactory<>(targetClass, configClass, (Action<TTarget, TConfig>) artObject);
+                    this.artFactory = new ActionFactory<>(targetClass, (Action<TTarget, ?>) artObject);
                 } else if (artObject instanceof Requirement) {
-                    this.artFactory = new RequirementFactory<>(targetClass, configClass, (Requirement<TTarget, TConfig>) artObject);
+                    this.artFactory = new RequirementFactory<>(targetClass, (Requirement<TTarget, ?>) artObject);
                 } else {
                     this.artFactory = null;
                     logger.warning(String.format("%s is not a valid Action or Requirement. Make sure you implement the right interface.", artObject.getClass().getCanonicalName()));
@@ -131,15 +138,15 @@ public class ARTBuilder {
                 return ARTBuilder.this.target(targetClass);
             }
 
-            public <TNextConfig> FactoryBuilder<TNextConfig> action(Class<TNextConfig> configClass, Action<TTarget, TNextConfig> action) {
-                return TargetBuilder.this.action(configClass, action);
+            public <TNextConfig> FactoryBuilder action(Action<TTarget, TNextConfig> action) {
+                return TargetBuilder.this.action(action);
             }
 
-            public <TNextConfig> FactoryBuilder<TNextConfig> requirement(Class<TNextConfig> configClass, Requirement<TTarget, TNextConfig> requirement) {
-                return TargetBuilder.this.requirement(configClass, requirement);
+            public <TNextConfig> FactoryBuilder requirement(Requirement<TTarget, TNextConfig> requirement) {
+                return TargetBuilder.this.requirement(requirement);
             }
 
-            public FactoryBuilder<TConfig> withName(String name) {
+            public FactoryBuilder withName(String name) {
                 getArtFactory().ifPresent(artFactory -> artFactory.setIdentifier(name));
                 return this;
             }

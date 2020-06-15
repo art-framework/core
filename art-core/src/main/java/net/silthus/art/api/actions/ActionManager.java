@@ -2,7 +2,6 @@ package net.silthus.art.api.actions;
 
 import com.google.inject.ImplementedBy;
 import net.silthus.art.actions.DefaultActionManager;
-import net.silthus.art.api.ARTFactory;
 import net.silthus.art.api.config.ARTConfig;
 
 import java.util.List;
