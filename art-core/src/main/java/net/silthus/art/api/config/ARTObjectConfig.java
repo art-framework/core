@@ -6,16 +6,16 @@ import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Data
 @ConfigurationElement
 public class ARTObjectConfig<TConfig> {
 
     private String name;
-    private Map<String, Object> with = new HashMap<>();
+    private TConfig with;
 
-    public TConfig getWith() {
-        // TODO: parse config map
-        throw new NotImplementedException();
+    public Optional<TConfig> getWith() {
+        return Optional.ofNullable(with);
     }
 }

@@ -12,7 +12,7 @@ public class PlayerDamageAction implements Action<Player, PlayerDamageAction.Act
 
     @Override
     public void execute(Player player, ActionContext<Player, ActionConfig> context) {
-        player.damage(context.getConfig().amount);
+        player.damage(context.getConfig().map(actionConfig -> actionConfig.amount).orElse(0d));
     }
 
     public static class ActionConfig {

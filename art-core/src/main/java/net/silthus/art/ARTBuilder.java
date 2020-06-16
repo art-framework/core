@@ -11,9 +11,8 @@ import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.requirements.RequirementFactory;
-import util.ReflectionUtil;
+import net.silthus.art.util.ReflectionUtil;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.*;
 import java.util.logging.Logger;
 

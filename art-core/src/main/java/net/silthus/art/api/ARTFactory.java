@@ -15,6 +15,7 @@ import net.silthus.art.api.requirements.Requirement;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,10 +63,10 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject,
             Method method = artObject.getClass().getDeclaredMethod("execute", Object.class, ActionContext.class);
             setIdentifier(tryGetIdentifier(method));
             setConfigClass(tryGetConfigClass(method));
-            getConfigClass().ifPresent(configClass -> {
+            if (getConfigClass().isPresent()) {
                 configInformation.clear();
-                configInformation.putAll(tryGetConfigFieldInformation(configClass));
-            });
+                configInformation.putAll(tryGetConfigFieldInformation(getConfigClass().get()));
+            }
         } catch (NoSuchMethodException e) {
             throw new ARTObjectRegistrationException(artObject, e);
         }
@@ -110,19 +111,28 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject,
         return null;
     }
 
-    private Map<String, ConfigFieldInformation> tryGetConfigFieldInformation(Class<TConfig> configClass) {
+    private Map<String, ConfigFieldInformation> tryGetConfigFieldInformation(Class<TConfig> configClass) throws ARTObjectRegistrationException {
 
         Map<String, ConfigFieldInformation> fields = new HashMap<>();
 
-        for (Field field : FieldUtils.getAllFields(configClass)) {
-            ConfigFieldInformation configInformation = new ConfigFieldInformation(field.getName());
-            if (field.isAnnotationPresent(Description.class)) {
-                configInformation.setDescription(field.getAnnotation(Description.class).value());
+        try {
+            TConfig config = configClass.getDeclaredConstructor().newInstance();
+            for (Field field : FieldUtils.getAllFields(configClass)) {
+                ConfigFieldInformation configInformation = new ConfigFieldInformation(field.getName());
+
+                if (field.isAnnotationPresent(Description.class)) {
+                    configInformation.setDescription(field.getAnnotation(Description.class).value());
+                }
+                if (field.isAnnotationPresent(Required.class)) {
+                    configInformation.setRequired(true);
+                }
+                field.setAccessible(true);
+                configInformation.setDefaultValue(field.get(config));
+
+                fields.put(field.getName(), configInformation);
             }
-            if (field.isAnnotationPresent(Required.class)) {
-                configInformation.setRequired(true);
-            }
-            fields.put(field.getName(), configInformation);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            throw new ARTObjectRegistrationException(getArtObject(), e);
         }
 
         return fields;

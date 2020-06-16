@@ -7,10 +7,7 @@ import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ARTConfig;
 import net.silthus.art.api.config.ARTObjectConfig;
 import net.silthus.art.api.parser.ARTParseException;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Optional;
 
@@ -62,6 +59,7 @@ class FlowParserTest {
     }
 
     @Nested
+    @Disabled
     @DisplayName("next(Object)")
     class next {
 

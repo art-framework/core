@@ -4,6 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.silthus.art.api.config.ARTObjectConfig;
 
+import java.util.Optional;
+
 @EqualsAndHashCode(of = {"targetClass"})
 public abstract class ARTContext<TTarget, TConfig> {
 
@@ -22,7 +24,7 @@ public abstract class ARTContext<TTarget, TConfig> {
      *
      * @return ARTObject specific config.
      */
-    public TConfig getConfig() {
+    public Optional<TConfig> getConfig() {
         return config.getWith();
     }
 }

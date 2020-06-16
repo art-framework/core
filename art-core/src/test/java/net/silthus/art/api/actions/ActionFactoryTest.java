@@ -2,7 +2,10 @@ package net.silthus.art.api.actions;
 
 import net.silthus.art.api.ARTObjectRegistrationException;
 import net.silthus.art.api.annotations.Config;
+import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Name;
+import net.silthus.art.api.annotations.Required;
+import net.silthus.art.api.config.ConfigFieldInformation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -60,7 +63,8 @@ public class ActionFactoryTest {
         @DisplayName("should throw ActionRegistrationException if missing annotations")
         public void shouldThrowIfMissingAnnotations() {
 
-            factory = new ActionFactory<>(String.class, (s, context) -> {});
+            factory = new ActionFactory<>(String.class, (s, context) -> {
+            });
 
             assertThatExceptionOfType(ARTObjectRegistrationException.class)
                     .isThrownBy(() -> factory.initialize());
@@ -70,7 +74,8 @@ public class ActionFactoryTest {
         @DisplayName("should not throw if manual set but has missing annotations")
         public void shouldNotThrowIfNoAnnotationButManualInfo() {
 
-            factory = new ActionFactory<>(String.class, (s, context) -> {});
+            factory = new ActionFactory<>(String.class, (s, context) -> {
+            });
             factory.setIdentifier("foo");
             factory.setConfigClass(TestConfig.class);
 
@@ -83,7 +88,8 @@ public class ActionFactoryTest {
         @DisplayName("should not throw if missing config information")
         public void shouldNotThrowIfMissingConfigInformation() {
 
-            factory = new ActionFactory<>(String.class, (s, context) -> {});
+            factory = new ActionFactory<>(String.class, (s, context) -> {
+            });
             factory.setIdentifier("foobar");
 
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
@@ -112,6 +118,67 @@ public class ActionFactoryTest {
             assertThat(factory.getIdentifier()).isEqualTo("foo");
             assertThat(factory.getConfigClass()).contains(TestConfig.class);
         }
+
+        @Nested
+        @DisplayName("creates ConfigFieldInformation that")
+        class ConfigAnnotations {
+
+            @Test
+            @DisplayName("should load all fields including superclass")
+            public void shouldLoadAllFields() {
+
+                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
+                assertThat(factory.getConfigInformation())
+                        .hasSize(5)
+                        .containsKeys(
+                                "parentField",
+                                "noAnnotations",
+                                "required",
+                                "defaultField",
+                                "allAnnotations"
+                        );
+            }
+
+            @Test
+            @DisplayName("should load required annotation")
+            public void shouldLoadRequiredAttribute() {
+
+                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
+                assertThat(factory.getConfigInformation().get("required"))
+                        .extracting(ConfigFieldInformation::isRequired)
+                        .isEqualTo(true);
+            }
+
+            @Test
+            @DisplayName("should load description annotation")
+            public void shouldLoadDescriptionAttribute() {
+
+                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
+                assertThat(factory.getConfigInformation().get("defaultField"))
+                        .extracting(ConfigFieldInformation::getDescription)
+                        .isEqualTo("World to teleport the player to.");
+            }
+
+            @Test
+            @DisplayName("should load default value")
+            public void shouldLoadDefaultValue() {
+
+                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
+                assertThat(factory.getConfigInformation().get("defaultField"))
+                        .extracting(ConfigFieldInformation::getDefaultValue)
+                        .isEqualTo("world");
+            }
+
+            @Test
+            @DisplayName("should load required field with default value")
+            public void shouldLoadRequiredDefaultValue() {
+
+                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
+                assertThat(factory.getConfigInformation().get("allAnnotations"))
+                        .extracting(ConfigFieldInformation::getDefaultValue, ConfigFieldInformation::getDescription)
+                        .contains(2.0d, "Required field with default value.");
+            }
+        }
     }
 
     @Nested
@@ -133,7 +200,7 @@ public class ActionFactoryTest {
             assertThat(context).isNotNull();
             assertThat(context.getAction().equals(factory.getArtObject()));
             assertThat(context.getTargetClass()).isEqualTo(factory.getTargetClass());
-            assertThat(context.getConfig()).isNull();
+            assertThat(context.getConfig()).isEmpty();
         }
 
         @Test
@@ -161,7 +228,21 @@ public class ActionFactoryTest {
         }
     }
 
-    public static class TestConfig {
+    public static class ConfigBase {
 
+        private String parentField = "foobar";
+    }
+
+    public static class TestConfig extends ConfigBase {
+
+        private boolean noAnnotations;
+        @Required
+        private int required;
+        @Description("World to teleport the player to.")
+        private String defaultField = "world";
+
+        @Required
+        @Description("Required field with default value.")
+        private double allAnnotations = 2.0d;
     }
 }
