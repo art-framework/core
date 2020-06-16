@@ -14,5 +14,13 @@ repositories {
 }
 
 dependencies {
+    implementation project(':art-flow-parser')
+
     implementation 'net.silthus:slib:1.5.1'
+}
+
+shadowJar {
+    dependencies {
+        include(dependency(':art-flow-parser'))
+    }
 }

@@ -6,6 +6,7 @@ import lombok.Getter;
 import net.silthus.art.ART;
 import net.silthus.art.ARTModule;
 import net.silthus.art.api.ARTManager;
+import net.silthus.art.parser.flow.FlowParserModule;
 import net.silthus.slib.bukkit.BasePlugin;
 
 import javax.inject.Inject;
@@ -34,5 +35,6 @@ public class ARTPlugin extends BasePlugin {
     public void configure(Binder binder) {
 
         binder.install(new ARTModule());
+        binder.install(new FlowParserModule());
     }
 }

@@ -1,0 +1,15 @@
+apply plugin: 'com.github.johnrengelman.shadow'
+
+dependencies {
+    implementation project(':art-core')
+}
+
+shadowJar {
+    classifier = ''
+    dependencies {
+        include(dependency(':art-core'))
+    }
+}
+
+tasks.build.dependsOn(shadowJar)
+tasks.publish.dependsOn(shadowJar)

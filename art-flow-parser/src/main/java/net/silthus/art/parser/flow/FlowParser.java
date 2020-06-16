@@ -1,4 +1,4 @@
-package net.silthus.art.parser;
+package net.silthus.art.parser.flow;
 
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionManager;
@@ -12,6 +12,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class FlowParser implements ARTParser {
 
@@ -28,6 +29,13 @@ public class FlowParser implements ARTParser {
                 && Objects.nonNull(config.getArt())
                 && !config.getArt().isEmpty()
                 && config.getArt().parallelStream().allMatch(o -> o instanceof String);
+    }
+
+    private List<String> extract(ARTConfig config) {
+        return config.getArt().stream()
+                .filter(object -> object instanceof String)
+                .map(object -> (String) object)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -11,6 +11,7 @@ import net.silthus.art.api.config.ARTObjectConfig;
 import net.silthus.art.api.requirements.Requirement;
 
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 /**
  * The {@link ARTFactory} handles the creation of the {@link ARTContext}.
@@ -27,11 +28,16 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject,
 
     private final Class<TTarget> targetClass;
     private final TARTObject artObject;
+    private Class<TConfig> configClass = null;
     private String identifier;
     private String[] configInformation = new String[0];
 
     public ARTType getARTType() {
         return getArtObject().getARTType();
+    }
+
+    public Optional<Class<TConfig>> getConfigClass() {
+        return Optional.ofNullable(configClass);
     }
 
     public void setConfigInformation(String... configInformation) {

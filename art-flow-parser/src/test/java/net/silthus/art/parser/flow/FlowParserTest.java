@@ -1,10 +1,12 @@
-package net.silthus.art.flow;
+package net.silthus.art.parser.flow;
 
-import net.silthus.art.api.actions.*;
+import net.silthus.art.api.actions.ActionConfig;
+import net.silthus.art.api.actions.ActionContext;
+import net.silthus.art.api.actions.ActionFactory;
+import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ARTConfig;
 import net.silthus.art.api.config.ARTObjectConfig;
 import net.silthus.art.api.parser.ARTParseException;
-import net.silthus.art.parser.FlowParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
