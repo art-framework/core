@@ -29,12 +29,13 @@ public class ActionTypeParser extends ARTTypeParser<ConfiguredARTType<ActionConf
 
 
         String identifier = getMatcher().group("name");
+        Optional<ActionFactory<?, ?>> optionalAction = getActionManager().getFactory(identifier);
 
-        if (!getActionManager().exists(identifier)) {
+        if (optionalAction.isEmpty()) {
             throw new ARTParseException("No action with identifier \"" + identifier + "\" found!");
         }
 
-        ActionFactory<?, ?> actionFactory = getActionManager().getFactory(identifier).get();
+        ActionFactory<?, ?> actionFactory = optionalAction.get();
 
         return new ConfiguredARTType<>(ARTType.ACTION, "foobar", new ActionConfig<>());
 

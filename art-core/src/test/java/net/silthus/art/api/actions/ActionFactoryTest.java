@@ -1,7 +1,7 @@
 package net.silthus.art.api.actions;
 
 import net.silthus.art.api.ARTObjectRegistrationException;
-import net.silthus.art.api.annotations.Configurable;
+import net.silthus.art.api.annotations.Config;
 import net.silthus.art.api.annotations.Name;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +13,7 @@ import static org.assertj.core.api.Assertions.*;
 @DisplayName("ActionFactory")
 public class ActionFactoryTest {
 
-    private ActionFactory<String, String> factory;
+    private ActionFactory<String, TestConfig> factory;
 
     @BeforeEach
     public void beforeEach() {
@@ -28,7 +28,7 @@ public class ActionFactoryTest {
         public void beforeEach() {
 
             assertThat(factory.getIdentifier()).isNullOrEmpty();
-            assertThat(factory.getConfigInformation()).isEmpty();
+            assertThat(factory.getConfigClass()).isEmpty();
         }
 
         @Test
@@ -39,7 +39,7 @@ public class ActionFactoryTest {
                     .doesNotThrowAnyException();
 
             assertThat(factory.getIdentifier()).isEqualTo("Test");
-            assertThat(factory.getConfigInformation()).containsExactly("test-string");
+            assertThat(factory.getConfigClass()).contains(TestConfig.class);
         }
 
         @Test
@@ -47,13 +47,13 @@ public class ActionFactoryTest {
         public void shouldNotOverrideManualSetters() {
 
             factory.setIdentifier("foo");
-            factory.setConfigInformation("bar");
+            factory.setConfigClass(null);
 
             assertThatCode(() -> factory.initialize())
                     .doesNotThrowAnyException();
 
             assertThat(factory.getIdentifier()).isEqualTo("foo");
-            assertThat(factory.getConfigInformation()).containsExactly("bar");
+            assertThat(factory.getConfigClass()).contains(TestConfig.class);
         }
 
         @Test
@@ -72,11 +72,11 @@ public class ActionFactoryTest {
 
             factory = new ActionFactory<>(String.class, (s, context) -> {});
             factory.setIdentifier("foo");
-            factory.setConfigInformation("bar");
+            factory.setConfigClass(TestConfig.class);
 
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
             assertThat(factory.getIdentifier()).isEqualTo("foo");
-            assertThat(factory.getConfigInformation()).containsExactly("bar");
+            assertThat(factory.getConfigClass()).contains(TestConfig.class);
         }
 
         @Test
@@ -89,7 +89,7 @@ public class ActionFactoryTest {
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
             assertThat(factory.getIdentifier())
                     .isEqualTo("foobar");
-            assertThat(factory.getConfigInformation())
+            assertThat(factory.getConfigClass())
                     .isNotNull()
                     .isEmpty();
         }
@@ -99,19 +99,18 @@ public class ActionFactoryTest {
         public void shouldUseMethodAnnotation() {
 
             factory = new ActionFactory<>(String.class, new Action<>() {
+
                 @Name("foo")
-                @Configurable({
-                        "bar"
-                })
+                @Config(TestConfig.class)
                 @Override
-                public void execute(String s, ActionContext<String, String> context) {
+                public void execute(String s, ActionContext<String, TestConfig> context) {
 
                 }
             });
 
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
             assertThat(factory.getIdentifier()).isEqualTo("foo");
-            assertThat(factory.getConfigInformation()).containsExactly("bar");
+            assertThat(factory.getConfigClass()).contains(TestConfig.class);
         }
     }
 
@@ -129,22 +128,22 @@ public class ActionFactoryTest {
         @DisplayName("should create an action context")
         public void shouldCreateActionContext() {
 
-            ActionContext<String, String> context = factory.create(new ActionConfig<>());
+            ActionContext<String, TestConfig> context = factory.create(new ActionConfig<>());
 
             assertThat(context).isNotNull();
             assertThat(context.getAction().equals(factory.getArtObject()));
             assertThat(context.getTargetClass()).isEqualTo(factory.getTargetClass());
-            assertThat(context.getConfig()).isEmpty();
+            assertThat(context.getConfig()).isNull();
         }
 
         @Test
         @DisplayName("should not cache action context if config is different")
         public void shouldNotCacheContext() {
 
-            ActionConfig<String> config1 = new ActionConfig<>();
+            ActionConfig<TestConfig> config1 = new ActionConfig<>();
             config1.setCooldown("2s");
-            ActionContext<String, String> context1 = factory.create(config1);
-            ActionContext<String, String> context2 = factory.create(new ActionConfig<>());
+            ActionContext<String, TestConfig> context1 = factory.create(config1);
+            ActionContext<String, TestConfig> context2 = factory.create(new ActionConfig<>());
 
             assertThat(context1).isNotNull();
             assertThat(context2).isNotNull();
@@ -154,14 +153,15 @@ public class ActionFactoryTest {
     }
 
     @Name("Test")
-    @Configurable({
-            "test-string"
-    })
-    public static class TestAction implements Action<String, String> {
+    @Config(TestConfig.class)
+    public static class TestAction implements Action<String, TestConfig> {
         @Override
-        public void execute(String s, ActionContext<String, String> context) {
+        public void execute(String s, ActionContext<String, TestConfig> context) {
 
         }
     }
 
+    public static class TestConfig {
+
+    }
 }

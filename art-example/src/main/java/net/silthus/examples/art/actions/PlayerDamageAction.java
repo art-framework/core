@@ -7,6 +7,7 @@ import net.silthus.art.api.annotations.Name;
 import org.bukkit.entity.Player;
 
 @Name("player.damage")
+@Config(PlayerDamageAction.ActionConfig.class)
 public class PlayerDamageAction implements Action<Player, PlayerDamageAction.ActionConfig> {
 
     @Override
@@ -14,7 +15,6 @@ public class PlayerDamageAction implements Action<Player, PlayerDamageAction.Act
         player.damage(context.getConfig().amount);
     }
 
-    @Config(of = PlayerDamageAction.class)
     public static class ActionConfig {
 
         private double amount = 0;

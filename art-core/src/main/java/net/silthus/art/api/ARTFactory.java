@@ -5,12 +5,19 @@ import lombok.Data;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
-import net.silthus.art.api.annotations.Configurable;
+import net.silthus.art.api.annotations.Config;
+import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Name;
+import net.silthus.art.api.annotations.Required;
 import net.silthus.art.api.config.ARTObjectConfig;
+import net.silthus.art.api.config.ConfigFieldInformation;
 import net.silthus.art.api.requirements.Requirement;
+import org.apache.commons.lang3.reflect.FieldUtils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -30,7 +37,8 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject,
     private final TARTObject artObject;
     private Class<TConfig> configClass = null;
     private String identifier;
-    private String[] configInformation = new String[0];
+
+    private final Map<String, ConfigFieldInformation> configInformation = new HashMap<>();
 
     public ARTType getARTType() {
         return getArtObject().getARTType();
@@ -38,10 +46,6 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject,
 
     public Optional<Class<TConfig>> getConfigClass() {
         return Optional.ofNullable(configClass);
-    }
-
-    public void setConfigInformation(String... configInformation) {
-        this.configInformation = configInformation;
     }
 
     /**
@@ -56,8 +60,12 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject,
     public void initialize() throws ARTObjectRegistrationException {
         try {
             Method method = artObject.getClass().getDeclaredMethod("execute", Object.class, ActionContext.class);
-            tryGetName(method);
-            tryGetConfigInformation(method);
+            setIdentifier(tryGetIdentifier(method));
+            setConfigClass(tryGetConfigClass(method));
+            getConfigClass().ifPresent(configClass -> {
+                configInformation.clear();
+                configInformation.putAll(tryGetConfigFieldInformation(configClass));
+            });
         } catch (NoSuchMethodException e) {
             throw new ARTObjectRegistrationException(artObject, e);
         }
@@ -77,23 +85,46 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject,
      */
     public abstract TContext create(TARTObjectConfig config);
 
-    private void tryGetName(Method method) {
-        if (!Strings.isNullOrEmpty(getIdentifier())) return;
+    private String tryGetIdentifier(Method method) {
+        if (!Strings.isNullOrEmpty(getIdentifier())) return getIdentifier();
 
         if (artObject.getClass().isAnnotationPresent(Name.class)) {
-            setIdentifier(artObject.getClass().getAnnotation(Name.class).value());
+            return artObject.getClass().getAnnotation(Name.class).value();
         } else if (method.isAnnotationPresent(Name.class)) {
-            setIdentifier(method.getAnnotation(Name.class).value());
+            return method.getAnnotation(Name.class).value();
         }
+
+        return null;
     }
 
-    private void tryGetConfigInformation(Method method) {
-        if (getConfigInformation().length > 0) return;
+    @SuppressWarnings("unchecked")
+    private Class<TConfig> tryGetConfigClass(Method method) {
+        if (getConfigClass().isPresent()) return getConfigClass().get();
 
-        if (artObject.getClass().isAnnotationPresent(Configurable.class)) {
-            setConfigInformation(artObject.getClass().getAnnotation(Configurable.class).value());
-        } else if (method.isAnnotationPresent(Configurable.class)) {
-            setConfigInformation(method.getAnnotation(Configurable.class).value());
+        if (artObject.getClass().isAnnotationPresent(Config.class)) {
+            return (Class<TConfig>) artObject.getClass().getAnnotation(Config.class).value();
+        } else if (method.isAnnotationPresent(Config.class)) {
+            return (Class<TConfig>) method.getAnnotation(Config.class).value();
         }
+
+        return null;
+    }
+
+    private Map<String, ConfigFieldInformation> tryGetConfigFieldInformation(Class<TConfig> configClass) {
+
+        Map<String, ConfigFieldInformation> fields = new HashMap<>();
+
+        for (Field field : FieldUtils.getAllFields(configClass)) {
+            ConfigFieldInformation configInformation = new ConfigFieldInformation(field.getName());
+            if (field.isAnnotationPresent(Description.class)) {
+                configInformation.setDescription(field.getAnnotation(Description.class).value());
+            }
+            if (field.isAnnotationPresent(Required.class)) {
+                configInformation.setRequired(true);
+            }
+            fields.put(field.getName(), configInformation);
+        }
+
+        return fields;
     }
 }

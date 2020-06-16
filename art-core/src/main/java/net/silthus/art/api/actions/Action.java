@@ -44,7 +44,7 @@ public interface Action<TTarget, TConfig> extends ARTObject {
      * Use the config to provide configuration options for users of this action.
      * <br>
      * Make sure to annotate this {@link Action} with a @{@link net.silthus.art.api.annotations.Name} and
-     * optionally @{@link net.silthus.art.api.annotations.Configurable} or it wont be loaded.
+     * optionally @{@link net.silthus.art.api.annotations.Config} or it wont be loaded.
      *
      * @param target target to apply this action to.
      * @param context context of this action.
