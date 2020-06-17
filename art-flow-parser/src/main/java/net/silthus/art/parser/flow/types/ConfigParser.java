@@ -1,4 +1,4 @@
-package net.silthus.art.api.parser.flow;
+package net.silthus.art.parser.flow.types;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.Getter;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import net.silthus.art.api.parser.ARTParseException;
+import net.silthus.art.api.parser.flow.Parser;
 import net.silthus.art.util.ReflectionUtil;
 import org.apache.commons.lang3.StringUtils;
 
@@ -39,6 +40,12 @@ public class ConfigParser<TConfig> extends Parser<TConfig> {
             ConfigFieldInformation configFieldInformation;
             if (keyValue.getKey().isPresent() && getConfigMap().containsKey(keyValue.getKey().get())) {
                 configFieldInformation = getConfigMap().get(keyValue.getKey().get());
+            } else if (getConfigMap().size() == 1) {
+                Optional<ConfigFieldInformation> fieldInformation = getConfigMap().values().stream().findFirst();
+                if (fieldInformation.isEmpty()) {
+                    throw new ARTParseException("Config should only defines one parameter, but none was found.");
+                }
+                configFieldInformation = fieldInformation.get();
             } else {
                 int finalI = i;
                 Optional<ConfigFieldInformation> optionalFieldInformation = getConfigMap().values().stream().filter(info -> info.getPosition() == finalI).findFirst();
@@ -60,7 +67,7 @@ public class ConfigParser<TConfig> extends Parser<TConfig> {
 
         List<ConfigFieldInformation> missingRequiredFields = getConfigMap().values().stream()
                 .filter(ConfigFieldInformation::isRequired)
-                .filter(mappedFields::contains)
+                .filter(configFieldInformation -> !mappedFields.contains(configFieldInformation))
                 .collect(Collectors.toList());
 
         if (!missingRequiredFields.isEmpty()) {

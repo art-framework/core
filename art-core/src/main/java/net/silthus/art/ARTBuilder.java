@@ -79,11 +79,6 @@ public class ARTBuilder {
         return (TargetBuilder<TTarget>) builders.get(targetClass);
     }
 
-    @SuppressWarnings({"unchecked"})
-    public <TTarget, TConfig> TargetBuilder<TTarget>.FactoryBuilder action(Action<TTarget, TConfig> action) {
-        return target(ReflectionUtil.getTypeArgument(action, 0)).action(action);
-    }
-
     public <TTarget, TConfig> TargetBuilder<TTarget>.FactoryBuilder action(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
         return target(targetClass).action(action);
     }

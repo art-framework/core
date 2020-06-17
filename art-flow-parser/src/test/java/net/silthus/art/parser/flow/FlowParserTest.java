@@ -39,15 +39,6 @@ class FlowParserTest {
         }
 
         @Test
-        @DisplayName("should return false if not instance of string")
-        public void shouldReturnFalseIfInstanceDoesNotMatch() {
-            ARTConfig config = new ARTConfig();
-            config.getArt().add(new ARTObjectConfig<>());
-            assertThat(parser.matches(config))
-                    .isFalse();
-        }
-
-        @Test
         @DisplayName("should return true if instance of string")
         public void shouldReturnTrueIfString() {
             ARTConfig config = new ARTConfig();

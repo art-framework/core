@@ -8,6 +8,7 @@ import net.silthus.art.api.config.ARTConfigException;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
@@ -21,7 +22,9 @@ public final class ConfigUtil {
     public static Map<String, ConfigFieldInformation> getConfigFields(Class<?> configClass) throws ARTConfigException {
 
         try {
-            return getConfigFields("", configClass, configClass.getConstructor().newInstance());
+            Constructor<?> constructor = configClass.getConstructor();
+            constructor.setAccessible(true);
+            return getConfigFields("", configClass, constructor.newInstance());
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new ARTConfigException(e);
         }

@@ -9,10 +9,10 @@ dependencies {
     implementation 'de.exlll:configlib-core:2.6.0'
 }
 
-shadowJar {
-    classifier = ''
-    dependencies {
-        include(dependency('de.exlll:configlib-core:'))
-    }
-    relocate 'de.exlll.configlib', "${packageName}.configlib"
-}
+//shadowJar {
+//    classifier = ''
+//    dependencies {
+//        include(dependency('de.exlll:configlib-core:'))
+//    }
+//    relocate 'de.exlll.configlib', "${packageName}.configlib"
+//}

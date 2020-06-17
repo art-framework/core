@@ -28,22 +28,14 @@ public class FlowParser implements ARTParser {
     public boolean matches(ARTConfig config) {
         return Objects.nonNull(config)
                 && Objects.nonNull(config.getArt())
-                && !config.getArt().isEmpty()
-                && config.getArt().parallelStream().allMatch(o -> o instanceof String);
-    }
-
-    private List<String> extract(ARTConfig config) {
-        return config.getArt().stream()
-                .filter(object -> object instanceof String)
-                .map(object -> (String) object)
-                .collect(Collectors.toList());
+                && !config.getArt().isEmpty();
     }
 
     @Override
     public List<ActionContext<?, ?>> parseActions(ARTConfig config) throws ARTParseException {
         ActionTypeParser actionParser = new ActionTypeParser(actionManager);
 
-        return extract(config).stream()
+        return config.getArt().stream()
                 .filter(actionParser::accept)
                 .map(s -> {
                     try {

@@ -36,6 +36,7 @@ public class ActionContextTest {
         }
 
         @Test
+        @SuppressWarnings({"unchecked", "rawtypes"})
         @DisplayName("should verify that target types match")
         public void shouldVerifyTargetType() {
 

@@ -1,0 +1,3 @@
+actions:
+  art:
+    - '!player:damage 10'

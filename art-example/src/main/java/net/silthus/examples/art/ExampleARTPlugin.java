@@ -2,7 +2,9 @@ package net.silthus.examples.art;
 
 import de.exlll.configlib.configs.yaml.YamlConfiguration;
 import kr.entree.spigradle.Plugin;
+import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import net.silthus.art.ART;
 import net.silthus.art.api.ARTRegistrationException;
 import net.silthus.art.api.actions.Action;
@@ -13,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -28,7 +31,8 @@ public class ExampleARTPlugin extends JavaPlugin implements Listener {
     public void onLoad() {
         try {
             ART.register(getName(), artBuilder -> {
-                artBuilder.action(new PlayerDamageAction());
+                artBuilder.target(Player.class)
+                        .action(new PlayerDamageAction());
             });
         } catch (ARTRegistrationException e) {
             e.printStackTrace();
@@ -39,24 +43,26 @@ public class ExampleARTPlugin extends JavaPlugin implements Listener {
     public void onEnable() {
 
         Bukkit.getPluginManager().registerEvents(this, this);
+        saveResource("example.yml", false);
 
         ART.getInstance().ifPresent(artManager -> {
-            Config config = new Config(new File(getDataFolder(), "config.yaml"));
+            Config config = new Config(new File(getDataFolder(), "example.yml"));
             config.loadAndSave();
             actions.addAll(artManager.actions().create(Player.class, config.getActions()));
         });
     }
 
     @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
+    public void onPlayerMove(PlayerMoveEvent event) {
 
         actions.forEach(playerAction -> playerAction.execute(event.getPlayer()));
     }
 
-    public static class Config extends YamlConfiguration {
+    @Getter
+    @Setter
+    public class Config extends YamlConfiguration {
 
-        @Getter
-        private final ARTConfig actions = new ARTConfig();
+        private ARTConfig actions = new ARTConfig();
 
         protected Config(File file) {
             super(file.toPath());

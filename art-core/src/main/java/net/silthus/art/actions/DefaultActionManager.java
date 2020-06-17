@@ -9,6 +9,7 @@ import net.silthus.art.api.parser.ARTParseException;
 import net.silthus.art.api.parser.ARTParser;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.util.*;
 import java.util.logging.Logger;
@@ -18,14 +19,14 @@ import java.util.stream.Collectors;
 @Singleton
 public class DefaultActionManager implements ActionManager {
 
-    private final Set<ARTParser> parser;
+    private final Map<String, Provider<ARTParser>> parser;
     private final Map<String, ActionFactory<?, ?>> actionFactories = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     @Inject
     private Logger logger;
 
     @Inject
-    public DefaultActionManager(Set<ARTParser> parser) {
+    public DefaultActionManager(Map<String, Provider<ARTParser>> parser) {
         this.parser = parser;
     }
 
@@ -55,17 +56,13 @@ public class DefaultActionManager implements ActionManager {
     public List<ActionContext<?, ?>> create(ARTConfig config) {
 
         try {
-            List<ARTParser> parsers = parser.stream()
-                    .filter(parser -> parser.matches(config))
-                    .collect(Collectors.toList());
-
-            if (parsers.size() > 1) {
-                throw new ARTParseException("Multiple parsers matched the config with id " + config.getId());
-            } else if (parsers.isEmpty()) {
-                throw new ARTParseException("No parser matched the config with id " + config.getId());
+            if (!getParser().containsKey(config.getParser())) {
+                throw new ARTParseException("Config " + config + " requires an unknown parser of type " + config.getParser());
             }
 
-            return parsers.get(0).parseActions(config);
+            List<ActionContext<?, ?>> actions = getParser().get(config.getParser()).get().parseActions(config);
+            getLogger().fine("parsed " + actions.size() + " actions from " + config);
+            return actions;
         } catch (ARTParseException e) {
             logger.warning(e.getMessage());
             return new ArrayList<>();

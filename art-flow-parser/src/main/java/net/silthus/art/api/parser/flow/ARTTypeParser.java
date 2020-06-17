@@ -6,6 +6,7 @@ import net.silthus.art.api.ARTFactory;
 import net.silthus.art.api.config.ARTObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import net.silthus.art.api.parser.ARTParseException;
+import net.silthus.art.parser.flow.types.ConfigParser;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;

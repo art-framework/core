@@ -40,6 +40,7 @@ subprojects {
 
     apply plugin: 'java'
     apply plugin: 'jacoco'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
     apply from: "$rootDir/gradle/jacoco.gradle"
     apply from: "$rootDir/gradle/publish.gradle"
@@ -64,6 +65,19 @@ subprojects {
         testAnnotationProcessor 'org.projectlombok:lombok:1.+'
     }
 
+    shadowJar {
+        classifier = ''
+        dependencies {
+            include(dependency('com.google.inject:guice:'))
+            include(dependency('org.apache.commons:commons-lang3:'))
+        }
+        relocate 'com.google.injection', "${packageName}.guice"
+        relocate 'com.apache.commons', "${packageName}.commonslang"
+    }
+
+    tasks.build.dependsOn(shadowJar)
+    tasks.publish.dependsOn(shadowJar)
+
     test {
         useJUnitPlatform()
         testLogging {
@@ -75,7 +89,6 @@ subprojects {
 configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-example' }) {
 
     apply plugin: 'kr.entree.spigradle'
-    apply plugin: 'com.github.johnrengelman.shadow'
 
     spigot {
         name = "${project.property("pluginName")}"
@@ -89,18 +102,6 @@ configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-examp
 
         implementation "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"
     }
-
-    shadowJar {
-        classifier = ''
-        dependencies {
-            include(dependency(':art-core'))
-            include(dependency('com.google.inject:guice:'))
-            include(dependency('org.apache.commons:commons-lang3:'))
-        }
-    }
-
-    tasks.build.dependsOn(shadowJar)
-    tasks.publish.dependsOn(shadowJar)
 
     task copyPluginYaml(type: Copy, dependsOn: spigotPluginYaml) {
         from(new File(spigotPluginYaml.temporaryDir, "plugin.yml"))

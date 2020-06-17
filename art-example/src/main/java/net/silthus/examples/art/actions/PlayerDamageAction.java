@@ -8,7 +8,7 @@ import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.annotations.Required;
 import org.bukkit.entity.Player;
 
-@Name("player.damage")
+@Name("player:damage")
 @Config(PlayerDamageAction.ActionConfig.class)
 public class PlayerDamageAction implements Action<Player, PlayerDamageAction.ActionConfig> {
 

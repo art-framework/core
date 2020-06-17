@@ -21,6 +21,7 @@ dependencies {
 
 shadowJar {
     dependencies {
+        include(dependency(':art-core'))
         include(dependency(':art-flow-parser'))
     }
 }

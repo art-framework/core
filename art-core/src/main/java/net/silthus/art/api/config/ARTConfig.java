@@ -1,6 +1,8 @@
 package net.silthus.art.api.config;
 
+import de.exlll.configlib.annotation.Comment;
 import de.exlll.configlib.annotation.ConfigurationElement;
+import de.exlll.configlib.annotation.ElementType;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -11,10 +13,21 @@ import java.util.UUID;
 @ConfigurationElement
 public class ARTConfig {
 
+    @Comment("DO NOT CHANGE OR REMOVE THIS LINE")
     private String id = UUID.randomUUID().toString();
+    private String parser = "flow";
+    @ElementType(AliasGroupConfig.class)
     private List<AliasGroupConfig> groups = new ArrayList<>();
     private Options options = new Options();
-    private List<Object> art = new ArrayList<>();
+    private List<String> art = new ArrayList<>();
+
+    public ARTConfig() {
+    }
+
+    @Override
+    public String toString() {
+        return getId();
+    }
 
     @Data
     @ConfigurationElement

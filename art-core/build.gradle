@@ -9,11 +9,9 @@ dependencies {
 shadowJar {
     classifier = ''
     dependencies {
-        include(dependency('de.exlll:configlib-core:'))
         include(dependency('com.google.inject:guice:'))
         include(dependency('org.apache.commons:commons-lang3:'))
     }
-    relocate 'de.exlll.configlib', "${packageName}.configlib"
     relocate 'com.google.inject', "${packageName}.guice"
     relocate 'org.apache.commons', "${packageName}.apachecommons"
 }

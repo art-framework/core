@@ -1,5 +1,6 @@
 package net.silthus.art.actions;
 
+import com.google.inject.Provider;
 import lombok.SneakyThrows;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionConfig;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +29,7 @@ class DefaultActionManagerTest {
 
     @BeforeEach
     void beforeEach() {
-        this.actionManager = new DefaultActionManager(new HashSet<>());
+        this.actionManager = new DefaultActionManager(new HashMap<>());
         actionManager.setLogger(Logger.getGlobal());
     }
 
@@ -121,32 +123,8 @@ class DefaultActionManagerTest {
         }
 
         @Test
-        @DisplayName("should return an empty list of multiple parsers match")
-        void shouldReturnEmptyListIfMultipleParsersMatch() {
-
-            ARTParser parser1 = mock(ARTParser.class);
-            when(parser1.matches(config)).thenReturn(true);
-            ARTParser parser2 = mock(ARTParser.class);
-            when(parser2.matches(config)).thenReturn(true);
-
-            actionManager.getParser().add(parser1);
-            actionManager.getParser().add(parser2);
-
-            assertThat(actionManager.create(config))
-                    .isEmpty();
-        }
-
-        @Test
         @DisplayName("should return an empty list if no parsers match")
         void shouldReturnEmptyListIfNoParserMatches() {
-
-            ARTParser parser1 = mock(ARTParser.class);
-            when(parser1.matches(config)).thenReturn(false);
-            ARTParser parser2 = mock(ARTParser.class);
-            when(parser2.matches(config)).thenReturn(false);
-
-            actionManager.getParser().add(parser1);
-            actionManager.getParser().add(parser2);
 
             assertThat(actionManager.create(config))
                     .isEmpty();
@@ -154,13 +132,16 @@ class DefaultActionManagerTest {
 
         @Test
         @SneakyThrows
-        @DisplayName("should parse the config if exactly one parser matches")
+        @SuppressWarnings("unchecked")
+        @DisplayName("should parse the config if parser matches")
         void shouldParseTheConfigIfExactlyOneParserMatches() {
 
             ARTParser parser = mock(ARTParser.class);
             when(parser.matches(config)).thenReturn(true);
+            Provider<ARTParser> provider = (Provider<ARTParser>) mock(Provider.class);
+            when(provider.get()).thenReturn(parser);
 
-            actionManager.getParser().add(parser);
+            actionManager.getParser().put("flow", provider);
 
             actionManager.create(config);
 
