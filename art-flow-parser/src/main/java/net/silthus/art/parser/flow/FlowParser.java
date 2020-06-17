@@ -7,6 +7,7 @@ import net.silthus.art.api.parser.ARTParseException;
 import net.silthus.art.api.parser.ARTParser;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.trigger.TriggerContext;
+import net.silthus.art.parser.flow.types.ActionTypeParser;
 import org.apache.commons.lang3.NotImplementedException;
 
 import javax.inject.Inject;
@@ -40,7 +41,18 @@ public class FlowParser implements ARTParser {
 
     @Override
     public List<ActionContext<?, ?>> parseActions(ARTConfig config) throws ARTParseException {
-        throw new NotImplementedException();
+        ActionTypeParser actionParser = new ActionTypeParser(actionManager);
+
+        return extract(config).stream()
+                .filter(actionParser::accept)
+                .map(s -> {
+                    try {
+                        return actionParser.parse();
+                    } catch (ARTParseException e) {
+                        return null;
+                    }
+                }).filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -1,11 +1,10 @@
 package net.silthus.art.api.actions;
 
 import net.silthus.art.api.ARTObjectRegistrationException;
-import net.silthus.art.api.annotations.Config;
-import net.silthus.art.api.annotations.Description;
-import net.silthus.art.api.annotations.Name;
-import net.silthus.art.api.annotations.Required;
+import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.config.ConfigFieldInformation;
+import org.assertj.core.api.InstanceOfAssertFactories;
+import org.assertj.core.api.InstanceOfAssertFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -129,7 +128,7 @@ public class ActionFactoryTest {
 
                 assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
                 assertThat(factory.getConfigInformation())
-                        .hasSize(5)
+                        .hasSizeGreaterThanOrEqualTo(5)
                         .containsKeys(
                                 "parentField",
                                 "noAnnotations",
@@ -177,6 +176,65 @@ public class ActionFactoryTest {
                 assertThat(factory.getConfigInformation().get("allAnnotations"))
                         .extracting(ConfigFieldInformation::getDefaultValue, ConfigFieldInformation::getDescription)
                         .contains(2.0d, "Required field with default value.");
+            }
+
+            @Test
+            @DisplayName("should load nested config objects")
+            public void shouldLoadNestedObjects() {
+
+                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
+                assertThat(factory.getConfigInformation())
+                        .containsKeys("nested.nestedField");
+                assertThat(factory.getConfigInformation().get("nested.nestedField"))
+                        .extracting(ConfigFieldInformation::getDescription, ConfigFieldInformation::getDefaultValue)
+                        .contains("nested config field", "foobar");
+            }
+
+            @Test
+            @DisplayName("should not load nested object fields")
+            public void shouldNotAddNestedBase() {
+                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
+                assertThat(factory.getConfigInformation())
+                        .doesNotContainKey("nested");
+            }
+
+            @Test
+            @DisplayName("should ignore @Ignored fields")
+            public void shouldIgnoredIgnored() {
+                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
+                assertThat(factory.getConfigInformation())
+                        .doesNotContainKey("ignored");
+            }
+
+            @Test
+            @DisplayName("should load field position annotation")
+            public void shouldLoadFieldPosition() {
+
+                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
+                assertThat(factory.getConfigInformation().get("required"))
+                        .extracting(ConfigFieldInformation::getPosition)
+                        .isEqualTo(1);
+                assertThat(factory.getConfigInformation().get("parentField"))
+                        .extracting(ConfigFieldInformation::getPosition)
+                        .isEqualTo(0);
+            }
+
+            @Test
+            @DisplayName("should throw if same field position is found")
+            public void shouldThrowExceptionForSamePosition() {
+
+                ActionFactory<String, ErrorConfig> factory = new ActionFactory<>(String.class, new Action<>() {
+                    @Name("test")
+                    @Config(ErrorConfig.class)
+                    @Override
+                    public void execute(String s, ActionContext<String, ErrorConfig> context) {
+
+                    }
+                });
+
+                assertThatExceptionOfType(ARTObjectRegistrationException.class)
+                        .isThrownBy(factory::initialize)
+                        .withMessageContaining("found same position");
             }
         }
     }
@@ -230,6 +288,7 @@ public class ActionFactoryTest {
 
     public static class ConfigBase {
 
+        @Position(0)
         private String parentField = "foobar";
     }
 
@@ -237,6 +296,7 @@ public class ActionFactoryTest {
 
         private boolean noAnnotations;
         @Required
+        @Position(1)
         private int required;
         @Description("World to teleport the player to.")
         private String defaultField = "world";
@@ -244,5 +304,21 @@ public class ActionFactoryTest {
         @Required
         @Description("Required field with default value.")
         private double allAnnotations = 2.0d;
+
+        @Ignore
+        private String ignored = "";
+
+        private NestedConfig nested = new NestedConfig();
+    }
+
+    public static class NestedConfig {
+        @Description("nested config field")
+        private String nestedField = "foobar";
+    }
+
+    public static class ErrorConfig extends ConfigBase {
+
+        @Position(0)
+        private int error = 2;
     }
 }

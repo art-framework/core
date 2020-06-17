@@ -1,9 +1,6 @@
 package net.silthus.art.parser.flow;
 
-import net.silthus.art.api.actions.ActionConfig;
-import net.silthus.art.api.actions.ActionContext;
-import net.silthus.art.api.actions.ActionFactory;
-import net.silthus.art.api.actions.ActionManager;
+import net.silthus.art.api.actions.*;
 import net.silthus.art.api.config.ARTConfig;
 import net.silthus.art.api.config.ARTObjectConfig;
 import net.silthus.art.api.parser.ARTParseException;
@@ -59,7 +56,6 @@ class FlowParserTest {
     }
 
     @Nested
-    @Disabled
     @DisplayName("next(Object)")
     class next {
 
@@ -68,13 +64,6 @@ class FlowParserTest {
         public void shouldThrowIfObjectIsNull() {
             assertThatExceptionOfType(NullPointerException.class)
                     .isThrownBy(() -> parser.parseActions(null));
-        }
-
-        @Test
-        @DisplayName("should throw if config object is of invalid type")
-        public void shouldThrowIfInvalidType() {
-            assertThatExceptionOfType(ARTParseException.class)
-                    .isThrownBy(() -> parser.parseActions(new ARTConfig()));
         }
 
         @Nested
@@ -89,16 +78,19 @@ class FlowParserTest {
                 when(actionManager.getFactory("foobar"))
                         .thenReturn(Optional.of(foobarFactory));
 
+                Action<String, String> action = (s, context) -> {};
                 when(foobarFactory.create(any()))
-                        .thenReturn(new ActionContext<>(String.class, (s, context) -> {}, new ActionConfig<>()));
+                        .thenReturn(new ActionContext<>(String.class, action, new ActionConfig<>()));
 
                 ARTConfig config = new ARTConfig();
                 config.getArt().add("!foobar");
 
                 assertThatCode(() -> {
                     assertThat(parser.parseActions(config))
-                            .isNotNull()
-                            .isInstanceOf(ActionContext.class);
+                            .hasSize(1)
+                            .first()
+                            .extracting(ActionContext::getAction)
+                            .isEqualTo(action);
                 }).doesNotThrowAnyException();
             }
         }
