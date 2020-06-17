@@ -3,7 +3,9 @@ package net.silthus.examples.art.actions;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.annotations.Config;
+import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Name;
+import net.silthus.art.api.annotations.Required;
 import org.bukkit.entity.Player;
 
 @Name("player.damage")
@@ -17,6 +19,8 @@ public class PlayerDamageAction implements Action<Player, PlayerDamageAction.Act
 
     public static class ActionConfig {
 
-        private double amount = 0;
+        @Required
+        @Description("damage amount")
+        private double amount;
     }
 }
