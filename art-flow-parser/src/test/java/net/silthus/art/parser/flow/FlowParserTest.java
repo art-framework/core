@@ -3,8 +3,10 @@ package net.silthus.art.parser.flow;
 import net.silthus.art.api.actions.*;
 import net.silthus.art.api.config.ARTConfig;
 import net.silthus.art.api.config.ARTObjectConfig;
-import net.silthus.art.api.parser.ARTParseException;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
@@ -72,6 +74,7 @@ class FlowParserTest {
 
             @Test
             @DisplayName("should return action context")
+            @SuppressWarnings("unchecked")
             public void shouldReturnAction() {
 
                 ActionFactory<String, String> foobarFactory = mock(ActionFactory.class);

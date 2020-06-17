@@ -1,13 +1,11 @@
 package net.silthus.examples.art;
 
-import de.exlll.configlib.annotation.ConfigurationElement;
 import de.exlll.configlib.configs.yaml.YamlConfiguration;
 import kr.entree.spigradle.Plugin;
 import lombok.Getter;
 import net.silthus.art.ART;
 import net.silthus.art.api.ARTRegistrationException;
 import net.silthus.art.api.actions.Action;
-import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.config.ARTConfig;
 import net.silthus.examples.art.actions.PlayerDamageAction;
 import org.bukkit.Bukkit;
@@ -18,7 +16,6 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,7 +56,7 @@ public class ExampleARTPlugin extends JavaPlugin implements Listener {
     public static class Config extends YamlConfiguration {
 
         @Getter
-        private ARTConfig actions = new ARTConfig();
+        private final ARTConfig actions = new ARTConfig();
 
         protected Config(File file) {
             super(file.toPath());

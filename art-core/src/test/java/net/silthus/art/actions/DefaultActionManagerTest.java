@@ -1,8 +1,10 @@
 package net.silthus.art.actions;
 
 import lombok.SneakyThrows;
-import net.silthus.art.api.ARTManager;
-import net.silthus.art.api.actions.*;
+import net.silthus.art.api.actions.Action;
+import net.silthus.art.api.actions.ActionConfig;
+import net.silthus.art.api.actions.ActionContext;
+import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.config.ARTConfig;
 import net.silthus.art.api.parser.ARTParser;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +12,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;

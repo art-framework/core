@@ -1,7 +1,6 @@
 package net.silthus.art.api.actions;
 
 import lombok.EqualsAndHashCode;
-import net.silthus.art.api.ARTContext;
 import net.silthus.art.api.ARTFactory;
 import net.silthus.art.api.config.ARTObjectConfig;
 

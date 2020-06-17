@@ -3,8 +3,6 @@ package net.silthus.art.api.actions;
 import net.silthus.art.api.ARTObjectRegistrationException;
 import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.config.ConfigFieldInformation;
-import org.assertj.core.api.InstanceOfAssertFactories;
-import org.assertj.core.api.InstanceOfAssertFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -289,7 +287,7 @@ public class ActionFactoryTest {
     public static class ConfigBase {
 
         @Position(0)
-        private String parentField = "foobar";
+        private final String parentField = "foobar";
     }
 
     public static class TestConfig extends ConfigBase {
@@ -299,26 +297,26 @@ public class ActionFactoryTest {
         @Position(1)
         private int required;
         @Description("World to teleport the player to.")
-        private String defaultField = "world";
+        private final String defaultField = "world";
 
         @Required
         @Description("Required field with default value.")
-        private double allAnnotations = 2.0d;
+        private final double allAnnotations = 2.0d;
 
         @Ignore
-        private String ignored = "";
+        private final String ignored = "";
 
-        private NestedConfig nested = new NestedConfig();
+        private final NestedConfig nested = new NestedConfig();
     }
 
     public static class NestedConfig {
         @Description("nested config field")
-        private String nestedField = "foobar";
+        private final String nestedField = "foobar";
     }
 
     public static class ErrorConfig extends ConfigBase {
 
         @Position(0)
-        private int error = 2;
+        private final int error = 2;
     }
 }

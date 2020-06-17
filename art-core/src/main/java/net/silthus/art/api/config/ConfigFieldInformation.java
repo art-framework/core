@@ -2,9 +2,6 @@ package net.silthus.art.api.config;
 
 import lombok.Data;
 
-import java.lang.reflect.Field;
-import java.util.Optional;
-
 @Data
 public class ConfigFieldInformation {
 

@@ -3,8 +3,6 @@ package net.silthus.art.api.actions;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.silthus.art.api.ARTContext;
-import net.silthus.art.api.ARTObject;
-import net.silthus.art.api.config.ARTObjectConfig;
 
 import java.util.Objects;
 

@@ -1,6 +1,5 @@
 package net.silthus.art.util;
 
-import net.silthus.art.api.ARTObjectRegistrationException;
 import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Ignore;
 import net.silthus.art.api.annotations.Position;
