@@ -2,25 +2,74 @@ package net.silthus.examples.art.actions;
 
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionContext;
-import net.silthus.art.api.annotations.Config;
-import net.silthus.art.api.annotations.Description;
-import net.silthus.art.api.annotations.Name;
-import net.silthus.art.api.annotations.Required;
+import net.silthus.art.api.annotations.*;
+import org.bukkit.attribute.Attribute;
 import org.bukkit.entity.Player;
 
-@Name("player:damage")
+/**
+ * Every action needs a unique name across all plugins.
+ * It is recommended to prefix it with your plugin name to make sure it is unique.
+ *
+ * The @Name annotation is required on all actions or else the registration will fail.
+ *
+ * You can optionally provide a @Config that will be used to describe the parameter your action takes.
+ */
+@Name("art-example:player.damage")
 @Config(PlayerDamageAction.ActionConfig.class)
 public class PlayerDamageAction implements Action<Player, PlayerDamageAction.ActionConfig> {
 
+    /**
+     * This method will be called everytime your action is executed.
+     *
+     * @param player the player or other target object your action is executed against
+     * @param context context of this action.
+     *                Use the {@link ActionContext} to retrieve the config
+     */
     @Override
     public void execute(Player player, ActionContext<Player, ActionConfig> context) {
-        player.damage(context.getConfig().map(actionConfig -> actionConfig.amount).orElse(0d));
+        context.getConfig().ifPresent(config -> {
+            double damage;
+            double health = player.getHealth();
+            double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+
+            if (config.percentage) {
+                if (config.fromCurrent) {
+                    damage = health * config.amount;
+                } else {
+                    damage = maxHealth * config.amount;
+                }
+            } else {
+                damage = config.amount;
+            }
+
+            player.damage(damage);
+        });
     }
 
+    /**
+     * You should annotate all of your config parameters with a @Description.
+     * This will make it easier for the admins to decide what to configure.
+     *
+     * You can also tag config fields with a @Required flag.
+     * The action caller will get an error if the parameter is not defined inside the config.
+     *
+     * Additionally to that you have to option to mark your parameters with the @Position position.
+     * Start in an indexed manner at 0 and count upwards. This is optional.
+     *
+     * This means your action can be called like this: !art-example:player.damage 10
+     * instead of: !art-example:player.damage amount=10
+     */
     public static class ActionConfig {
 
         @Required
-        @Description("damage amount")
+        @Position(0)
+        @Description("Damage amount in percent or health points. Use a value between 0 and 1 if percentage=true.")
         private double amount;
+
+        @Description("Set to true if you want the player to be damaged based on his maximum life")
+        private boolean percentage = false;
+
+        @Description("Set to true if you want to damage the player based on his current health. Only makes sense in combination with percentage=true.")
+        private boolean fromCurrent = false;
     }
 }

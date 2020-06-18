@@ -24,7 +24,7 @@ public class ConfigParser<TConfig> extends Parser<TConfig> {
 
     public ConfigParser(TConfig config, Map<String, ConfigFieldInformation> configMap) {
         // regexr.com/56s0f
-        super(Pattern.compile("^(?<keyValue>((?<key>[\\w\\d.]+)?[:=] ?)?(?<value>[\\w\\d. \"]+))([,;] ?(?<config>.*))?$"));
+        super(Pattern.compile("^(?<keyValue>((?<key>[\\w\\d.]+)?[:=] ?)?(?<value>[\\w\\d. !?&$\\/\\\\\"]+))([,;] ?(?<config>.*))?$"));
         this.config = config;
         this.configMap = ImmutableMap.copyOf(configMap);
     }

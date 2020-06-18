@@ -43,29 +43,19 @@ public class DefaultARTManager implements ARTManager {
     public void load() {
 
         setLoaded(true);
-        getLogger().info("ART LOADED --- initialization finished ---");
+        getLogger().info("--- ART MANAGER LOADED ---");
     }
 
     @Override
     public void unload() {
 
         setLoaded(false);
-    }
-
-    @Override
-    public void reload() {
-
-        unload();
-        load();
+        getLogger().info("--- ART MANAGER UNLOADED ---");
     }
 
     @Override
     @SuppressWarnings("rawtypes")
-    public void register(String pluginName, Consumer<ARTBuilder> builder) throws ARTRegistrationException {
-
-        if (isLoaded()) {
-            throw new ARTRegistrationException("ART already initialized! Make sure you register your ART directly after your plugin was loaded.");
-        }
+    public void register(String pluginName, Consumer<ARTBuilder> builder) {
 
         ARTBuilder artBuilder;
         if (registeredPlugins.containsKey(pluginName)) {
@@ -86,7 +76,7 @@ public class DefaultARTManager implements ARTManager {
                                 break;
                             case REQUIREMENT:
                                 registerRequirements(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (RequirementFactory<?, ?>) artFactory.getValue())));
-                            // TODO: register other art types
+                                // TODO: register other art types
                         }
                     }
                 })

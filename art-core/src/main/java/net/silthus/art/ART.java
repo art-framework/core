@@ -16,18 +16,21 @@ import java.util.logging.Logger;
 public final class ART {
 
     @Getter
-    private static Logger logger = Logger.getLogger("ART");
+    private static final Logger logger = Logger.getLogger("ART");
     private static ARTManager instance;
 
     private static final Map<String, Consumer<ARTBuilder>> queuedRegistrations = new HashMap<>();
 
     public static void setInstance(ARTManager artManager) {
+
         if (getInstance().isPresent() && getInstance().get().isLoaded()) {
             throw new UnsupportedOperationException("Cannot change the ARTManager after loading ART. Make sure to change it before calling ART.load()");
         }
+
         if (getInstance().isPresent()) {
             getLogger().warning("Overriding already registered ARTManager " + instance.getClass().getCanonicalName() + " with " + artManager.getClass().getCanonicalName());
         }
+
         instance = artManager;
     }
 
@@ -46,17 +49,14 @@ public final class ART {
         ARTManager artManager = getInstance().get();
 
         for (Map.Entry<String, Consumer<ARTBuilder>> entry : queuedRegistrations.entrySet()) {
-            try {
-                artManager.register(entry.getKey(), entry.getValue());
-            } catch (ARTRegistrationException e) {
-                getLogger().warning(e.getMessage());
-            }
+            artManager.register(entry.getKey(), entry.getValue());
         }
+
         queuedRegistrations.clear();
         artManager.load();
     }
 
-    public static void register(String pluginName, Consumer<ARTBuilder> builder) throws ARTRegistrationException {
+    public static void register(String pluginName, Consumer<ARTBuilder> builder) {
 
         if (getInstance().isEmpty()) {
             queuedRegistrations.put(pluginName, builder);

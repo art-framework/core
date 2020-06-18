@@ -33,9 +33,7 @@ public interface ARTManager {
 
     void unload();
 
-    void reload();
-
-    void register(String pluginName, Consumer<ARTBuilder> builder) throws ARTRegistrationException;
+    void register(String pluginName, Consumer<ARTBuilder> builder);
 
     ActionManager actions();
 
