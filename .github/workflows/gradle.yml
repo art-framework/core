@@ -23,9 +23,6 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
 
-      - name: Grant execute permissions to scripts
-        run: chmod +x *.sh
-
       - name: Build
         run: ./gradlew
         env:
@@ -81,6 +78,9 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
+      - name: Grant execute permission for update-versions.sh
+        run: chmod +x update-versions.sh
 
       - name: Import GPG key
         id: import_gpg
