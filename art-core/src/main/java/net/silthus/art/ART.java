@@ -2,8 +2,8 @@ package net.silthus.art;
 
 import lombok.Getter;
 import net.silthus.art.api.ARTManager;
-import net.silthus.art.api.ARTRegistrationException;
-import net.silthus.art.api.actions.ActionManager;
+import net.silthus.art.api.config.ARTConfig;
+import net.silthus.art.api.parser.ARTResult;
 import net.silthus.art.api.trigger.TriggerContext;
 
 import java.util.HashMap;
@@ -38,10 +38,6 @@ public final class ART {
         return Optional.ofNullable(instance);
     }
 
-    public static ActionManager actions() {
-        return getInstance().map(ARTManager::actions).orElseGet(ActionManager::nullManager);
-    }
-
     public static void load() {
         if (getInstance().isEmpty()) {
             throw new UnsupportedOperationException("No ARTManger found. Cannot load() ART. Make sure to provide an ARTManager with ART.setARTManager(...) before calling ART.load()");
@@ -56,6 +52,9 @@ public final class ART {
         artManager.load();
     }
 
+    /**
+     * @see ARTManager#register(String, Consumer)
+     */
     public static void register(String pluginName, Consumer<ARTBuilder> builder) {
 
         if (getInstance().isEmpty()) {
@@ -65,6 +64,21 @@ public final class ART {
         }
     }
 
+    /**
+     * @see ARTManager#create(ARTConfig)
+     */
+    public static ARTResult create(ARTConfig config) {
+
+        if (getInstance().isEmpty()) {
+            return new EmptyARTResult();
+        } else {
+            return getInstance().get().create(config);
+        }
+    }
+
+    /**
+     * @see ARTManager#trigger(String, Object, Predicate)
+     */
     public static <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context) {
         getInstance().ifPresent(artManager -> artManager.trigger(identifier, target, context));
     }

@@ -1,19 +1,23 @@
 package net.silthus.art;
 
-import com.google.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
 import net.silthus.art.api.ARTFactory;
 import net.silthus.art.api.ARTManager;
-import net.silthus.art.api.ARTRegistrationException;
 import net.silthus.art.api.ARTType;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
+import net.silthus.art.api.config.ARTConfig;
+import net.silthus.art.api.parser.ARTParseException;
+import net.silthus.art.api.parser.ARTParser;
+import net.silthus.art.api.parser.ARTResult;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.trigger.TriggerContext;
 import org.apache.commons.lang3.NotImplementedException;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -29,11 +33,13 @@ public class DefaultARTManager implements ARTManager {
 
     @Inject
     private Logger logger;
+    private final Map<String, Provider<ARTParser>> parser;
     private final Map<String, ARTBuilder> registeredPlugins = new HashMap<>();
 
     @Inject
-    public DefaultARTManager(ActionManager actionManager) {
+    public DefaultARTManager(ActionManager actionManager, Map<String, Provider<ARTParser>> parser) {
         this.actionManager = actionManager;
+        this.parser = parser;
     }
 
     @Setter(AccessLevel.PACKAGE)
@@ -92,6 +98,20 @@ public class DefaultARTManager implements ARTManager {
 
     void registerRequirements(Map<String, RequirementFactory<?, ?>> requirements) {
         throw new NotImplementedException();
+    }
+
+    @Override
+    public ARTResult create(ARTConfig config) {
+        try {
+            if (!getParser().containsKey(config.getParser())) {
+                throw new ARTParseException("Config " + config + " requires an unknown parser of type " + config.getParser());
+            }
+
+            return getParser().get(config.getParser()).get().parse(config);
+        } catch (ARTParseException e) {
+            logger.warning(e.getMessage());
+            return new EmptyARTResult();
+        }
     }
 
     @Override

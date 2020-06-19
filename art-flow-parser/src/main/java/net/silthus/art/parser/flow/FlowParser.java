@@ -1,59 +1,45 @@
 package net.silthus.art.parser.flow;
 
-import net.silthus.art.api.actions.ActionContext;
-import net.silthus.art.api.actions.ActionManager;
+import net.silthus.art.api.ARTContext;
 import net.silthus.art.api.config.ARTConfig;
 import net.silthus.art.api.parser.ARTParseException;
 import net.silthus.art.api.parser.ARTParser;
-import net.silthus.art.api.requirements.RequirementContext;
-import net.silthus.art.api.trigger.TriggerContext;
-import net.silthus.art.parser.flow.types.ActionTypeParser;
-import org.apache.commons.lang3.NotImplementedException;
+import net.silthus.art.api.parser.ARTResult;
+import net.silthus.art.api.parser.flow.ARTTypeParser;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class FlowParser implements ARTParser {
 
-    private final ActionManager actionManager;
+    private final Set<Provider<ARTTypeParser<?>>> parsers;
 
     @Inject
-    public FlowParser(ActionManager actionManager) {
-        this.actionManager = actionManager;
+    public FlowParser(Set<Provider<ARTTypeParser<?>>> parsers) {
+        this.parsers = parsers;
     }
 
     @Override
-    public boolean matches(ARTConfig config) {
-        return Objects.nonNull(config)
-                && Objects.nonNull(config.getArt())
-                && !config.getArt().isEmpty();
-    }
+    public ARTResult parse(ARTConfig config) throws ARTParseException {
 
-    @Override
-    public List<ActionContext<?, ?>> parseActions(ARTConfig config) throws ARTParseException {
-        ActionTypeParser actionParser = new ActionTypeParser(actionManager);
+        ArrayList<ARTContext<?, ?>> contexts = new ArrayList<>();
 
-        return config.getArt().stream()
-                .filter(actionParser::accept)
-                .map(s -> {
-                    try {
-                        return actionParser.parse();
-                    } catch (ARTParseException e) {
-                        return null;
-                    }
-                }).filter(Objects::nonNull)
-                .collect(Collectors.toList());
-    }
+        List<String> art = config.getArt();
+        List<? extends ARTTypeParser<?>> parsers = this.parsers.stream().map(Provider::get).collect(Collectors.toList());
 
-    @Override
-    public List<RequirementContext<?, ?>> parseRequirements(ARTConfig config) throws ARTParseException {
-        throw new NotImplementedException();
-    }
+        for (String line : art) {
+            for (ARTTypeParser<?> parser : parsers) {
+                if (parser.accept(line)) {
+                    contexts.add(parser.parse());
+                    break;
+                }
+            }
+        }
 
-    @Override
-    public List<TriggerContext<?, ?>> parseTrigger(ARTConfig config) throws ARTParseException {
-        throw new NotImplementedException();
+        return new FlowParserResult(contexts);
     }
 }

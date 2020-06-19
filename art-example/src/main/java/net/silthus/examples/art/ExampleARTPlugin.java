@@ -4,10 +4,10 @@ import de.exlll.configlib.configs.yaml.YamlConfiguration;
 import kr.entree.spigradle.Plugin;
 import lombok.Getter;
 import lombok.Setter;
+import net.silthus.art.ART;
 import net.silthus.art.api.ARTManager;
-import net.silthus.art.api.actions.Action;
-import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.config.ARTConfig;
+import net.silthus.art.api.parser.ARTResult;
 import net.silthus.examples.art.actions.PlayerDamageAction;
 import net.silthus.examples.art.listener.PlayerListener;
 import org.bukkit.Bukkit;
@@ -16,15 +16,14 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Plugin
 public class ExampleARTPlugin extends JavaPlugin {
 
     @Getter
-    private final List<Action<Player, ?>> actions = new ArrayList<>();
+    @Setter
+    private ARTResult artResult;
 
     @Override
     public void onEnable() {
@@ -61,14 +60,10 @@ public class ExampleARTPlugin extends JavaPlugin {
             return;
         }
 
-        ARTManager artManager = getARTManager().get();
-
         Config config = new Config(new File(getDataFolder(), "example.yml"));
         config.loadAndSave();
 
-        List<ActionContext<Player, ?>> actions = artManager.actions().create(Player.class, config.getActions());
-
-        this.actions.addAll(actions);
+        setArtResult(ART.create(config.getActions()));
     }
 
     private boolean isARTLoaded() {
@@ -78,11 +73,7 @@ public class ExampleARTPlugin extends JavaPlugin {
         }
 
         RegisteredServiceProvider<ARTManager> registration = Bukkit.getServicesManager().getRegistration(ARTManager.class);
-        if (registration == null) {
-            return false;
-        }
-
-        return true;
+        return registration != null;
     }
 
     private Optional<ARTManager> getARTManager() {

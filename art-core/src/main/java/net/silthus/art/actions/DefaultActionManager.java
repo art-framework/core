@@ -1,19 +1,17 @@
 package net.silthus.art.actions;
 
 import lombok.Data;
-import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
-import net.silthus.art.api.config.ARTConfig;
-import net.silthus.art.api.parser.ARTParseException;
 import net.silthus.art.api.parser.ARTParser;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
 import javax.inject.Singleton;
-import java.util.*;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 @Data
 @Singleton
@@ -50,32 +48,5 @@ public class DefaultActionManager implements ActionManager {
     @Override
     public Optional<ActionFactory<?, ?>> getFactory(String identifier) {
         return Optional.ofNullable(actionFactories.get(identifier));
-    }
-
-    @Override
-    public List<ActionContext<?, ?>> create(ARTConfig config) {
-
-        try {
-            if (!getParser().containsKey(config.getParser())) {
-                throw new ARTParseException("Config " + config + " requires an unknown parser of type " + config.getParser());
-            }
-
-            List<ActionContext<?, ?>> actions = getParser().get(config.getParser()).get().parseActions(config);
-            getLogger().fine("parsed " + actions.size() + " actions from " + config);
-            return actions;
-        } catch (ARTParseException e) {
-            logger.warning(e.getMessage());
-            return new ArrayList<>();
-        }
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <TTarget> List<ActionContext<TTarget, ?>> create(Class<TTarget> targetClass, ARTConfig config) {
-
-        return create(config).stream()
-                .filter(action -> action.getTargetClass().equals(targetClass))
-                .map(actionContext -> (ActionContext<TTarget, ?>) actionContext)
-                .collect(Collectors.toList());
     }
 }

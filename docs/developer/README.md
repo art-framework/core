@@ -166,10 +166,10 @@ public class PlayerDamageAction implements Action<Player, PlayerDamageAction.Act
         private double amount;
 
         @Description("Set to true if you want the player to be damaged based on his maximum life")
-        private boolean percentage = false;
+        private final boolean percentage = false;
 
         @Description("Set to true if you want to damage the player based on his current health. Only makes sense in combination with percentage=true.")
-        private boolean fromCurrent = false;
+        private final boolean fromCurrent = false;
     }
 }
 ```
@@ -246,11 +246,7 @@ public class ExampleARTPlugin extends JavaPlugin {
         }
 
         RegisteredServiceProvider<ARTManager> registration = Bukkit.getServicesManager().getRegistration(ARTManager.class);
-        if (registration == null) {
-            return false;
-        }
-
-        return true;
+        return registration!=null;
     }
 
     private Optional<ARTManager> getARTManager() {
@@ -294,7 +290,7 @@ actions:
 public class ExampleARTPlugin extends JavaPlugin implements Listener {
 
     @Getter
-    private final List<Action<Player, ?>> actions = new ArrayList<>();
+    private ARTResult artResult;
 
     @Override
     public void onEnable() {
@@ -312,7 +308,9 @@ public class ExampleARTPlugin extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
 
-        this.actions.forEach(action -> action.execute(event.getPlayer()));
+        if (getArtResult() == null) return;
+
+        getArtResult().execute(event.getPlayer());
     }
 
     private void loadARTConfig() {
@@ -327,9 +325,7 @@ public class ExampleARTPlugin extends JavaPlugin implements Listener {
         Config config = new Config(new File(getDataFolder(), "example.yml"));
         config.loadAndSave();
 
-        List<ActionContext<Player, ?>> actions = ART.actions().create(Player.class, config.getActions());
-
-        this.actions.addAll(actions);
+        artResult = ART.create(config);
     }
 
     private boolean isARTLoaded() {
@@ -340,7 +336,7 @@ public class ExampleARTPlugin extends JavaPlugin implements Listener {
     @Setter
     public static class Config extends YamlConfiguration {
 
-        private ARTConfig actions = new ARTConfig();
+        private final ARTConfig actions = new ARTConfig();
 
         protected Config(File file) {
             super(file.toPath());

@@ -2,7 +2,6 @@ package net.silthus.art.parser.flow;
 
 import net.silthus.art.api.actions.*;
 import net.silthus.art.api.config.ARTConfig;
-import net.silthus.art.api.config.ARTObjectConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -10,7 +9,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -24,7 +24,7 @@ class FlowParserTest {
     @BeforeEach
     void beforeEach() {
         actionManager = mock(ActionManager.class);
-        parser = new FlowParser(actionManager);
+        parser = new FlowParser(actionManager, parsers);
     }
 
     @Nested

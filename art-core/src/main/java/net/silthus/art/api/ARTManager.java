@@ -5,6 +5,8 @@ import net.silthus.art.ARTBuilder;
 import net.silthus.art.DefaultARTManager;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionManager;
+import net.silthus.art.api.config.ARTConfig;
+import net.silthus.art.api.parser.ARTResult;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.trigger.TriggerContext;
 
@@ -36,6 +38,19 @@ public interface ARTManager {
     void register(String pluginName, Consumer<ARTBuilder> builder);
 
     ActionManager actions();
+
+    /**
+     * Parses the given {@link ARTConfig} and creates {@link ARTObject} instances wrapped as {@link ARTContext}.
+     * <br>
+     * Use this to create a list of {@link ARTObject}s that you can use inside your plugin, e.g. to check requirements.
+     *
+     * @param config art config to parse and create {@link ARTResult} from.
+     * @return an {@link ARTResult} containing all parsed {@link ARTObject}s.
+     * @see ARTResult
+     * @see ARTObject
+     * @see ARTContext
+     */
+    ARTResult create(ARTConfig config);
 
     <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context);
 }

@@ -2,9 +2,7 @@ package net.silthus.art.api.actions;
 
 import com.google.inject.ImplementedBy;
 import net.silthus.art.actions.DefaultActionManager;
-import net.silthus.art.api.config.ARTConfig;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -51,33 +49,4 @@ public interface ActionManager {
      * @see net.silthus.art.api.ARTFactory
      */
     Optional<ActionFactory<?, ?>> getFactory(String identifier);
-
-    /**
-     * Parses the given {@link ARTConfig} and creates {@link Action} instances wrapped as {@link ActionContext}.
-     * <br>
-     * Use this to create a list of {@link Action}s that you can use inside your plugin, e.g. to check requirements.
-     *
-     * @param config art config to parse and create {@link Action}s from.
-     * @return a list of {@link Action}s found inside the {@link ARTConfig} wrapped as {@link ActionContext}
-     * @see Action
-     * @see ARTConfig
-     * @see ActionContext
-     */
-    List<ActionContext<?, ?>> create(ARTConfig config);
-
-    /**
-     * Parses the given {@link ARTConfig} and creates {@link Action} instances wrapped as {@link ActionContext}.
-     * Filters out any {@link Action} not matching the given target Type TTarget.
-     * <br>
-     * Use this to create a list of {@link Action}s that you can use inside your plugin, e.g. to check requirements.
-     *
-     * @param targetClass target type to filter actions for
-     * @param config art config to parse and create {@link Action}s from.
-     * @param <TTarget> type of the target
-     * @return a list of {@link Action}s found inside the {@link ARTConfig} wrapped as {@link ActionContext}
-     * @see Action
-     * @see ARTConfig
-     * @see ActionContext
-     */
-    <TTarget> List<ActionContext<TTarget, ?>> create(Class<TTarget> targetClass, ARTConfig config);
 }

@@ -14,13 +14,13 @@ import net.silthus.art.parser.flow.Constants;
 import javax.inject.Inject;
 import java.util.Optional;
 
-public class ActionTypeParser extends ARTTypeParser<ActionContext<?, ?>> {
+public class ActionParser extends ARTTypeParser<ActionContext<?, ?>> {
 
     @Getter
     private final ActionManager actionManager;
 
     @Inject
-    public ActionTypeParser(ActionManager actionManager) {
+    public ActionParser(ActionManager actionManager) {
         super(Constants.ART_TYPE_MATCHER_CHARS.get(ARTType.ACTION));
         this.actionManager = actionManager;
     }

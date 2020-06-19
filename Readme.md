@@ -16,7 +16,7 @@ This framework is for [**DEVELOPERS**](docs/developer/README.md) and [**SERVER A
 
 ## Getting started
 
-* [Developer API Documentation](docs/developer/README.md)
+* [Developer Documentation](docs/developer/README.md)
 * [Server Admin Documentation](docs/admin/README.md)
 
 ## Features
@@ -64,11 +64,16 @@ And this is just using actions for rewards. We dind't even get to the requiremen
 It is as easy as parsing a config and creating your ART. After that you can use the actions anywhere you want.
 
 ```java
-// parse the config and load your list of actions
-List<ActionContext<Player, ?>> actions = ART.actions().create(Player.class, config);
+// parse the config and get your art result
+ARTResult result = ART.create(config);
 
-// use them somewhere in your plugin, e.g. in an event or command
-actions.forEach(action -> action.execute(player));
+// use it somewhere in your plugin, e.g. in an event or command
+result.execute(player);
+
+// or test if all requirements are met
+if (result.test(player)) {
+  // do stuff
+}
 ```
 
 ## Roadmap

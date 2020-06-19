@@ -18,6 +18,8 @@ public class PlayerListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
 
-        getPlugin().getActions().forEach(playerAction -> playerAction.execute(event.getPlayer()));
+        if (getPlugin().getArtResult() == null) return;
+
+        getPlugin().getArtResult().execute(event.getPlayer());
     }
 }
