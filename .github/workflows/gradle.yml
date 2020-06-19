@@ -55,7 +55,7 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x gradlew
 
-      - name: Build
+      - name: Test
         run: ./gradlew test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -73,7 +73,7 @@ jobs:
           path: "**/build/reports"
 
   release:
-    needs: [build]
+    needs: [build, test]
 
     runs-on: ubuntu-18.04
 
@@ -116,8 +116,6 @@ jobs:
         with:
           git_user_signingkey: true
           git_commit_gpgsign: true
-          git_tag_gpgsign: true
-          git_push_gpgsign: true
         env:
           GPG_PRIVATE_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
           PASSPHRASE: ${{ secrets.PASSPHRASE }}
