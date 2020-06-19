@@ -3,7 +3,7 @@ package net.silthus.art;
 import lombok.Getter;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.parser.ArtResult;
+import net.silthus.art.api.ArtResult;
 import net.silthus.art.api.trigger.TriggerContext;
 
 import java.util.HashMap;
@@ -19,7 +19,7 @@ public final class ART {
     private static final Logger logger = Logger.getLogger("ART");
     private static ArtManager instance;
 
-    private static final Map<String, Consumer<ArtBuilder>> queuedRegistrations = new HashMap<>();
+    private static final Map<ArtModuleDescription, Consumer<ArtBuilder>> queuedRegistrations = new HashMap<>();
 
     public static void setInstance(ArtManager artManager) {
 
@@ -44,7 +44,7 @@ public final class ART {
         }
         ArtManager artManager = getInstance().get();
 
-        for (Map.Entry<String, Consumer<ArtBuilder>> entry : queuedRegistrations.entrySet()) {
+        for (Map.Entry<ArtModuleDescription, Consumer<ArtBuilder>> entry : queuedRegistrations.entrySet()) {
             artManager.register(entry.getKey(), entry.getValue());
         }
 
@@ -55,18 +55,18 @@ public final class ART {
     /**
      * Use this method to register all of your ART.
      * <br>
-     * You can use {@link ArtManager#register(String, Consumer)} interchangeable with this method.
+     * You can use {@link ArtManager#register(ArtModuleDescription, Consumer)} interchangeable with this method.
      *
-     * @param pluginName
-     * @param builder
-     * @see ArtManager#register(String, Consumer)
+     * @param moduleDescription description of the module registering with ART
+     * @param builder builder that will be used to register the ART
+     * @see ArtManager#register(ArtModuleDescription, Consumer)
      */
-    public static void register(String pluginName, Consumer<ArtBuilder> builder) {
+    public static void register(ArtModuleDescription moduleDescription, Consumer<ArtBuilder> builder) {
 
         if (getInstance().isEmpty()) {
-            queuedRegistrations.put(pluginName, builder);
+            queuedRegistrations.put(moduleDescription, builder);
         } else {
-            getInstance().get().register(pluginName, builder);
+            getInstance().get().register(moduleDescription, builder);
         }
     }
 
@@ -91,6 +91,12 @@ public final class ART {
     }
 
     /**
+     *
+     * @param identifier
+     * @param target
+     * @param context
+     * @param <TTarget>
+     * @param <TConfig>
      * @see ArtManager#trigger(String, Object, Predicate)
      */
     public static <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context) {

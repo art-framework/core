@@ -27,4 +27,14 @@ public abstract class ArtContext<TTarget, TConfig> {
     public Optional<TConfig> getConfig() {
         return config.getWith();
     }
+
+    /**
+     * Tests if the given object matches the required target type of the ARTObject.
+     *
+     * @param target target object to test
+     * @return true if types match
+     */
+    public boolean isTargetType(Object target) {
+        return getTargetClass().isInstance(target);
+    }
 }

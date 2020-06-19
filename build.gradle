@@ -8,7 +8,7 @@ buildscript {
 plugins {
     id 'kr.entree.spigradle' version '1.2.1' apply false
     id 'com.github.johnrengelman.shadow' version '5.2.0' apply false
-    id "de.marcphilipp.nexus-publish" version "0.3.0"
+    id "de.marcphilipp.nexus-publish" version "0.4.0"
     id 'io.codearte.nexus-staging' version '0.21.2'
 }
 
@@ -77,11 +77,9 @@ subprojects {
         relocate 'com.apache.commons', "${packageName}.commonslang"
     }
 
-
     tasks.build.dependsOn(shadowJar)
     tasks.publish.dependsOn(shadowJar)
-//    tasks.publish.finalizedBy(publishToSonatype)
-//    tasks.publishToSonatype.finalizedBy(closeAndReleaseRepository)
+    tasks.publish.finalizedBy(closeAndReleaseRepository)
 
     test {
         useJUnitPlatform()
@@ -103,8 +101,6 @@ configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-examp
     }
 
     dependencies {
-        api project(':art-core')
-
         implementation "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"
     }
 

@@ -36,8 +36,4 @@ public class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig
     public void execute(TTarget target, ActionContext<TTarget, TConfig> context) {
         getAction().execute(target, Objects.isNull(context) ? this : context);
     }
-
-    private boolean isTargetType(Object target) {
-        return getTargetClass().isInstance(target);
-    }
 }

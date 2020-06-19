@@ -14,6 +14,7 @@ repositories {
 }
 
 dependencies {
+    api project(':art-core')
     implementation project(':art-flow-parser')
 
     implementation 'net.silthus:slib:1.5.1'

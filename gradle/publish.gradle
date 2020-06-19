@@ -76,14 +76,22 @@ publishing {
                 password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
             }
         }
+        maven {
+            name = "OSSHR"
+            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username = project.findProperty("sonatypeUser")
+                password = project.findProperty("sonatypePassword")
+            }
+        }
     }
 }
 
 signing {
-//    def signingKeyId = findProperty("signingKeyId")
-//    def signingKey = findProperty("signingKey")
-//    def signingPassword = findProperty("signingPassword")
-//    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
+    def signingKeyId = findProperty("signingKeyId")
+    def signingKey = findProperty("signingKey")
+    def signingPassword = findProperty("signingPassword")
+    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
     sign publishing.publications.mavenJava
 }
 

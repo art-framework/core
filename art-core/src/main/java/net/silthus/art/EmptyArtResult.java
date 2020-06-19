@@ -1,6 +1,6 @@
 package net.silthus.art;
 
-import net.silthus.art.api.parser.ArtResult;
+import net.silthus.art.api.ArtResult;
 
 class EmptyArtResult implements ArtResult {
 

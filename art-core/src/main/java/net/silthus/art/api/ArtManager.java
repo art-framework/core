@@ -2,11 +2,11 @@ package net.silthus.art.api;
 
 import com.google.inject.ImplementedBy;
 import net.silthus.art.ArtBuilder;
+import net.silthus.art.ArtModuleDescription;
 import net.silthus.art.DefaultArtManager;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.trigger.TriggerContext;
 
@@ -21,7 +21,7 @@ import java.util.function.Predicate;
  * You can also provide your own implementation by calling {@link net.silthus.art.ART#setInstance(ArtManager)}.
  * <br>
  *     <ul>
- *         <li>Register your {@link ArtObject}s by creating an {@link ArtBuilder} with {@link #register(String, Consumer)}.</li>
+ *         <li>Register your {@link ArtObject}s by creating an {@link ArtBuilder} with {@link #register(ArtModuleDescription, Consumer)}.</li>
  *         <li>Trigger {@link Action}s and {@link Requirement}s with {@link #trigger(String, Object, Predicate)}.</li>
  *         <li></li>
  *     </ul>
@@ -35,7 +35,7 @@ public interface ArtManager {
 
     void unload();
 
-    void register(String pluginName, Consumer<ArtBuilder> builder);
+    void register(ArtModuleDescription moduleDescription, Consumer<ArtBuilder> builder);
 
     ActionManager actions();
 

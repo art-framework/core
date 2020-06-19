@@ -1,12 +1,12 @@
 package net.silthus.art.parser.flow;
 
+import com.google.inject.Provider;
 import net.silthus.art.api.parser.flow.ArtTypeParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import javax.inject.Provider;
 import java.util.HashSet;
 import java.util.Set;
 

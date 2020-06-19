@@ -13,7 +13,10 @@ import java.util.UUID;
 @ConfigurationElement
 public class ArtConfig {
 
-    @Comment("DO NOT CHANGE OR REMOVE THIS LINE")
+    @Comment({
+            "DO NOT CHANGE THIS LINE",
+            "REMOVE THIS LINE IF COPIED"
+    })
     private String id = UUID.randomUUID().toString();
     private String parser = "flow";
     @ElementType(AliasGroupConfig.class)

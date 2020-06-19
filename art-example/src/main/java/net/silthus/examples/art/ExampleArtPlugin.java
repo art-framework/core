@@ -6,9 +6,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.ART;
 import net.silthus.art.api.ArtManager;
-import net.silthus.art.api.ArtModule;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.parser.ArtResult;
+import net.silthus.art.api.ArtResult;
+import net.silthus.art.bukkit.ArtBukkitDescription;
 import net.silthus.examples.art.actions.PlayerDamageAction;
 import net.silthus.examples.art.listener.PlayerListener;
 import org.bukkit.Bukkit;
@@ -20,7 +20,7 @@ import java.io.File;
 import java.util.Optional;
 
 @Plugin
-public class ExampleArtPlugin extends JavaPlugin implements ArtModule {
+public class ExampleArtPlugin extends JavaPlugin {
 
     @Getter
     @Setter
@@ -48,7 +48,7 @@ public class ExampleArtPlugin extends JavaPlugin implements ArtModule {
             return;
         }
 
-        getARTManager().get().register(getName(), artBuilder -> {
+        getARTManager().get().register(ArtBukkitDescription.ofPlugin(this), artBuilder -> {
             artBuilder.target(Player.class)
                     .action(new PlayerDamageAction());
         });
@@ -90,11 +90,6 @@ public class ExampleArtPlugin extends JavaPlugin implements ArtModule {
         }
 
         return Optional.of(registration.getProvider());
-    }
-
-    @Override
-    public String getVersion() {
-        return getDescription().getVersion();
     }
 
     @Getter

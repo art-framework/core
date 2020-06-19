@@ -8,13 +8,20 @@ import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public final class ConfigUtil {
@@ -79,5 +86,46 @@ public final class ConfigUtil {
         }
 
         return fields;
+    }
+
+    /**
+     * Tries to find the config file containing the given id.
+     *
+     * @param id id of the ART config
+     * @return null if no config file containing the id was found.
+     *          the absolute path to the config file if found.
+     */
+    public static Optional<String> getFileName(String id) {
+
+        try {
+            return Files.walk(Path.of(""))
+                    .filter(Files::isRegularFile)
+                    .filter(file -> containsString(file.toFile(), id))
+                    .map(Path::toFile)
+                    .map(File::getAbsolutePath)
+                    .findFirst();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    private static boolean containsString(File file, String string) {
+        try {
+            Scanner scanner = new Scanner(file);
+
+            //now read the file line by line...
+            int lineNum = 0;
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                lineNum++;
+                if(line.contains(string)) {
+                    return true;
+                }
+            }
+        } catch(FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

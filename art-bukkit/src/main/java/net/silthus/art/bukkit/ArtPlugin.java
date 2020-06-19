@@ -13,7 +13,7 @@ import org.bukkit.plugin.ServicePriority;
 import javax.inject.Inject;
 
 @Plugin
-public class ARTPlugin extends BasePlugin {
+public class ArtPlugin extends BasePlugin {
 
     @Inject
     @Getter
@@ -39,7 +39,6 @@ public class ARTPlugin extends BasePlugin {
     @Override
     public void configure(Binder binder) {
 
-        binder.install(new ARTModule());
         binder.install(new FlowParserModule());
     }
 }

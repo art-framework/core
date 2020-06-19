@@ -1,3 +1,3 @@
 actions:
   art:
-    - '!player:damage 10'
+    - '!art-example:player.damage 10'

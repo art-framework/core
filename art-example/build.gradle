@@ -6,13 +6,6 @@ spigot {
 }
 
 dependencies {
+    implementation project(':art-bukkit')
     implementation 'de.exlll:configlib-core:2.6.0'
 }
-
-//shadowJar {
-//    classifier = ''
-//    dependencies {
-//        include(dependency('de.exlll:configlib-core:'))
-//    }
-//    relocate 'de.exlll.configlib', "${packageName}.configlib"
-//}

@@ -33,7 +33,7 @@ public class ActionParser extends ArtTypeParser<ActionContext<?, ?>> {
         Optional<ActionFactory<?, ?>> optionalAction = getActionManager().getFactory(identifier);
 
         if (optionalAction.isEmpty()) {
-            throw new ArtParseException("No action with identifier \"" + identifier + "\" found!");
+            throw new ArtParseException("No action with identifier \"" + identifier + "\" found");
         }
 
         ActionFactory<?, ?> actionFactory = optionalAction.get();

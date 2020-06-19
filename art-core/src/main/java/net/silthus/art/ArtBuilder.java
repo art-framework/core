@@ -20,14 +20,8 @@ import static java.util.stream.Collectors.toMap;
 
 public class ArtBuilder {
 
-    @Getter(AccessLevel.PACKAGE)
-    private final String pluginName;
     private final Logger logger = Logger.getLogger("ARTBuilder");
     private final Map<Class<?>, TargetBuilder<?>> builders = new HashMap<>();
-
-    public ArtBuilder(String pluginName) {
-        this.pluginName = pluginName;
-    }
 
     /**
      * Collects all registered {@link ArtObject}s and their corresponding {@link ArtFactory} grouped by their {@link ArtType}.
@@ -40,8 +34,7 @@ public class ArtBuilder {
      *
      * @return identifier to factory mapping grouped by the {@link ArtType}
      */
-    @SuppressWarnings("rawtypes")
-    Map<ArtType, Map<String, ArtFactory>> build() {
+    Map<ArtType, Map<String, ArtFactory<?, ?, ?>>> build() {
 
         return builders.values().stream()
                 .flatMap(targetBuilder -> targetBuilder.artFactories.stream())
@@ -91,8 +84,7 @@ public class ArtBuilder {
     public class TargetBuilder<TTarget> {
 
         private final Class<TTarget> targetClass;
-        @SuppressWarnings("rawtypes")
-        private final List<ArtFactory> artFactories = new ArrayList<>();
+        private final List<ArtFactory<TTarget, ?, ?>> artFactories = new ArrayList<>();
 
         public <TConfig> FactoryBuilder action(Action<TTarget, TConfig> action) {
             FactoryBuilder factoryBuilder = new FactoryBuilder(action);
@@ -108,8 +100,7 @@ public class ArtBuilder {
 
         public class FactoryBuilder {
 
-            @SuppressWarnings("rawtypes")
-            private final ArtFactory artFactory;
+            private final ArtFactory<TTarget, ?, ?> artFactory;
 
             @SuppressWarnings("unchecked")
             public FactoryBuilder(ArtObject artObject) {
@@ -123,8 +114,7 @@ public class ArtBuilder {
                 }
             }
 
-            @SuppressWarnings("rawtypes")
-            public Optional<ArtFactory> getArtFactory() {
+            public Optional<ArtFactory<TTarget, ?, ?>> getArtFactory() {
                 return Optional.ofNullable(artFactory);
             }
 

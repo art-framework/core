@@ -3,6 +3,7 @@ package net.silthus.art;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
+import lombok.extern.java.Log;
 import net.silthus.art.api.ArtFactory;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.ArtType;
@@ -11,9 +12,10 @@ import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.ArtParser;
-import net.silthus.art.api.parser.ArtResult;
+import net.silthus.art.api.ArtResult;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.trigger.TriggerContext;
+import net.silthus.art.util.ConfigUtil;
 import org.apache.commons.lang3.NotImplementedException;
 
 import javax.inject.Inject;
@@ -31,10 +33,9 @@ public class DefaultArtManager implements ArtManager {
 
     private final ActionManager actionManager;
 
-    @Inject
-    private Logger logger;
+    private Logger logger = Logger.getLogger("ART");
     private final Map<String, Provider<ArtParser>> parser;
-    private final Map<String, ArtBuilder> registeredPlugins = new HashMap<>();
+    private final Map<ArtModuleDescription, ArtBuilder> registeredPlugins = new HashMap<>();
 
     @Inject
     public DefaultArtManager(ActionManager actionManager, Map<String, Provider<ArtParser>> parser) {
@@ -49,33 +50,34 @@ public class DefaultArtManager implements ArtManager {
     public void load() {
 
         setLoaded(true);
-        getLogger().info("--- ART MANAGER LOADED ---");
+        getLogger().info("-------- ART MANAGER LOADED --------");
     }
 
     @Override
     public void unload() {
 
         setLoaded(false);
-        getLogger().info("--- ART MANAGER UNLOADED ---");
+        getLogger().info("-------- ART MANAGER UNLOADED --------");
     }
 
     @Override
-    @SuppressWarnings("rawtypes")
-    public void register(String pluginName, Consumer<ArtBuilder> builder) {
+    public void register(ArtModuleDescription moduleDescription, Consumer<ArtBuilder> builder) {
 
         ArtBuilder artBuilder;
-        if (registeredPlugins.containsKey(pluginName)) {
-            artBuilder = registeredPlugins.get(pluginName);
+        if (registeredPlugins.containsKey(moduleDescription)) {
+            artBuilder = registeredPlugins.get(moduleDescription);
         } else {
-            artBuilder = new ArtBuilder(pluginName);
+            artBuilder = new ArtBuilder();
         }
 
-        builder.andThen(art -> registeredPlugins.put(pluginName, art))
+        builder.andThen(art -> registeredPlugins.put(moduleDescription, art))
                 .andThen(art -> {
-                    getLogger().info(pluginName + " plugin registered their ART:");
+                    getLogger().info("--------------------------------------------------");
+                    getLogger().info("   " + moduleDescription.getName() + " v" + moduleDescription.getVersion() + " registered their ART.");
+                    getLogger().info("");
 
-                    Map<ArtType, Map<String, ArtFactory>> createdART = art.build();
-                    for (Map.Entry<ArtType, Map<String, ArtFactory>> entry : createdART.entrySet()) {
+                    Map<ArtType, Map<String, ArtFactory<?, ?, ?>>> createdART = art.build();
+                    for (Map.Entry<ArtType, Map<String, ArtFactory<?, ?, ?>>> entry : createdART.entrySet()) {
                         switch (entry.getKey()) {
                             case ACTION:
                                 registerActions(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (ActionFactory<?, ?>) artFactory.getValue())));
@@ -85,6 +87,9 @@ public class DefaultArtManager implements ArtManager {
                                 // TODO: register other art types
                         }
                     }
+
+                    getLogger().info("--------------------------------------------------");
+                    getLogger().info("");
                 })
                 .accept(artBuilder);
     }
@@ -92,8 +97,9 @@ public class DefaultArtManager implements ArtManager {
     void registerActions(Map<String, ActionFactory<?, ?>> actions) {
 
         actions().register(actions);
-        getLogger().info("  --- " + actions.size() + "x ACTIONS ---");
-        actions.keySet().forEach(actionIdentifier -> getLogger().info("     " + actionIdentifier));
+        getLogger().info("   " + actions.size() + "x Action(s):");
+        actions.keySet().forEach(actionIdentifier -> getLogger().info("    - " + actionIdentifier));
+        getLogger().info("");
     }
 
     void registerRequirements(Map<String, RequirementFactory<?, ?>> requirements) {
@@ -109,7 +115,8 @@ public class DefaultArtManager implements ArtManager {
 
             return getParser().get(config.getParser()).get().parse(config);
         } catch (ArtParseException e) {
-            logger.warning(e.getMessage());
+            logger.severe("ERROR in " + ConfigUtil.getFileName(config.getId()).orElse("unknown config") + ":");
+            logger.severe("  --> " + e.getMessage());
             return new EmptyArtResult();
         }
     }
