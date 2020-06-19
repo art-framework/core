@@ -2,6 +2,9 @@ package net.silthus.art.api.actions;
 
 import com.google.inject.ImplementedBy;
 import net.silthus.art.actions.DefaultActionManager;
+import net.silthus.art.api.ArtContext;
+import net.silthus.art.api.ArtFactory;
+import net.silthus.art.api.ArtObject;
 
 import java.util.Map;
 import java.util.Optional;
@@ -23,10 +26,10 @@ public interface ActionManager {
     }
 
     /**
-     * Checks if a {@link net.silthus.art.api.ARTFactory} exists for the given identifier.
+     * Checks if a {@link ArtFactory} exists for the given identifier.
      *
-     * @param identifier identifier of the {@link net.silthus.art.api.ARTObject}
-     * @return true if an {@link net.silthus.art.api.ARTFactory} exists, false otherwise
+     * @param identifier identifier of the {@link ArtObject}
+     * @return true if an {@link ArtFactory} exists, false otherwise
      */
     boolean exists(String identifier);
 
@@ -39,14 +42,14 @@ public interface ActionManager {
     void register(Map<String, ActionFactory<?, ?>> actionFactories);
 
     /**
-     * Tries to find a matching {@link net.silthus.art.api.ARTFactory} for the given identifier.
-     * Use the factory to crate instances of the {@link net.silthus.art.api.ARTObject} wrapped as {@link net.silthus.art.api.ARTContext}.
+     * Tries to find a matching {@link ArtFactory} for the given identifier.
+     * Use the factory to crate instances of the {@link ArtObject} wrapped as {@link ArtContext}.
      * <br>
-     * Returns {@link Optional#empty()} if no {@link net.silthus.art.api.ARTObject} with a matching identifier is found.
+     * Returns {@link Optional#empty()} if no {@link ArtObject} with a matching identifier is found.
      *
-     * @param identifier identifier of the {@link net.silthus.art.api.ARTObject}
-     * @return matching {@link net.silthus.art.api.ARTFactory} or an empty {@link Optional} if no {@link net.silthus.art.api.ARTObject} with the identifier was found
-     * @see net.silthus.art.api.ARTFactory
+     * @param identifier identifier of the {@link ArtObject}
+     * @return matching {@link ArtFactory} or an empty {@link Optional} if no {@link ArtObject} with the identifier was found
+     * @see ArtFactory
      */
     Optional<ActionFactory<?, ?>> getFactory(String identifier);
 }

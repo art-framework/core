@@ -8,16 +8,16 @@ import net.silthus.art.api.trigger.Trigger;
 /**
  * Maps the available ART types to their corresponding implementations.
  */
-public enum  ARTType {
+public enum ArtType {
 
     ACTION(Action.class),
     REQUIREMENT(Requirement.class),
     TRIGGER(Trigger.class);
 
     @Getter
-    private final Class<? extends ARTObject> artType;
+    private final Class<? extends ArtObject> artType;
 
-    ARTType(Class<? extends ARTObject> artType) {
+    ArtType(Class<? extends ArtObject> artType) {
         this.artType = artType;
     }
 }

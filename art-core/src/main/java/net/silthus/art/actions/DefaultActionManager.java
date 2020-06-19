@@ -3,7 +3,7 @@ package net.silthus.art.actions;
 import lombok.Data;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
-import net.silthus.art.api.parser.ARTParser;
+import net.silthus.art.api.parser.ArtParser;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -17,14 +17,14 @@ import java.util.logging.Logger;
 @Singleton
 public class DefaultActionManager implements ActionManager {
 
-    private final Map<String, Provider<ARTParser>> parser;
+    private final Map<String, Provider<ArtParser>> parser;
     private final Map<String, ActionFactory<?, ?>> actionFactories = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     @Inject
     private Logger logger;
 
     @Inject
-    public DefaultActionManager(Map<String, Provider<ARTParser>> parser) {
+    public DefaultActionManager(Map<String, Provider<ArtParser>> parser) {
         this.parser = parser;
     }
 

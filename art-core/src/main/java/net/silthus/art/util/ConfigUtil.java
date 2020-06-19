@@ -4,7 +4,7 @@ import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Ignore;
 import net.silthus.art.api.annotations.Position;
 import net.silthus.art.api.annotations.Required;
-import net.silthus.art.api.config.ARTConfigException;
+import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -19,18 +19,18 @@ import java.util.stream.Collectors;
 
 public final class ConfigUtil {
 
-    public static Map<String, ConfigFieldInformation> getConfigFields(Class<?> configClass) throws ARTConfigException {
+    public static Map<String, ConfigFieldInformation> getConfigFields(Class<?> configClass) throws ArtConfigException {
 
         try {
             Constructor<?> constructor = configClass.getConstructor();
             constructor.setAccessible(true);
             return getConfigFields("", configClass, constructor.newInstance());
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new ARTConfigException(e);
+            throw new ArtConfigException(e);
         }
     }
 
-    private static Map<String, ConfigFieldInformation> getConfigFields(String basePath, Class<?> configClass, Object configInstance) throws ARTConfigException {
+    private static Map<String, ConfigFieldInformation> getConfigFields(String basePath, Class<?> configClass, Object configInstance) throws ArtConfigException {
         Map<String, ConfigFieldInformation> fields = new HashMap<>();
 
         try {
@@ -70,12 +70,12 @@ public final class ConfigUtil {
                             && field1.getPosition() == field2.getPosition()
             )).collect(Collectors.toList());
             if (!sameFieldPosition.isEmpty()) {
-                throw new ARTConfigException("found same position " + sameFieldPosition.get(0).getPosition() + " on the following fields: "
+                throw new ArtConfigException("found same position " + sameFieldPosition.get(0).getPosition() + " on the following fields: "
                         + sameFieldPosition.stream().map(ConfigFieldInformation::getIdentifier).collect(Collectors.joining(",")));
             }
 
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException e) {
-            throw new ARTConfigException(e);
+            throw new ArtConfigException(e);
         }
 
         return fields;

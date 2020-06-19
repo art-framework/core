@@ -1,6 +1,6 @@
 package net.silthus.art.api.trigger;
 
-import net.silthus.art.api.config.ARTObjectConfig;
+import net.silthus.art.api.config.ArtObjectConfig;
 
-public class TriggerConfig<TConfig> extends ARTObjectConfig<TConfig> {
+public class TriggerConfig<TConfig> extends ArtObjectConfig<TConfig> {
 }

@@ -1,6 +1,6 @@
 package net.silthus.art.api.actions;
 
-import net.silthus.art.api.ARTObjectRegistrationException;
+import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +63,7 @@ public class ActionFactoryTest {
             factory = new ActionFactory<>(String.class, (s, context) -> {
             });
 
-            assertThatExceptionOfType(ARTObjectRegistrationException.class)
+            assertThatExceptionOfType(ArtObjectRegistrationException.class)
                     .isThrownBy(() -> factory.initialize());
         }
 
@@ -230,7 +230,7 @@ public class ActionFactoryTest {
                     }
                 });
 
-                assertThatExceptionOfType(ARTObjectRegistrationException.class)
+                assertThatExceptionOfType(ArtObjectRegistrationException.class)
                         .isThrownBy(factory::initialize)
                         .withMessageContaining("found same position");
             }

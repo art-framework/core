@@ -1,21 +1,13 @@
 package net.silthus.art.actions;
 
-import com.google.inject.Provider;
-import lombok.SneakyThrows;
 import net.silthus.art.api.actions.Action;
-import net.silthus.art.api.actions.ActionConfig;
-import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
-import net.silthus.art.api.config.ARTConfig;
-import net.silthus.art.api.parser.ARTParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -108,66 +100,6 @@ class DefaultActionManagerTest {
             assertThat(actionManager.getActionFactories())
                     .hasSize(5)
                     .containsKeys("test1", "test2","test3","test4","test5");
-        }
-    }
-
-    @Nested
-    @DisplayName("create(ARTConfig)")
-    class create {
-
-        private ARTConfig config;
-
-        @BeforeEach
-        void beforeEach() {
-            config = new ARTConfig();
-        }
-
-        @Test
-        @DisplayName("should return an empty list if no parsers match")
-        void shouldReturnEmptyListIfNoParserMatches() {
-
-            assertThat(actionManager.create(config))
-                    .isEmpty();
-        }
-
-        @Test
-        @SneakyThrows
-        @SuppressWarnings("unchecked")
-        @DisplayName("should parse the config if parser matches")
-        void shouldParseTheConfigIfExactlyOneParserMatches() {
-
-            ARTParser parser = mock(ARTParser.class);
-            when(parser.matches(config)).thenReturn(true);
-            Provider<ARTParser> provider = (Provider<ARTParser>) mock(Provider.class);
-            when(provider.get()).thenReturn(parser);
-
-            actionManager.getParser().put("flow", provider);
-
-            actionManager.create(config);
-
-            verify(parser, times(1)).parseActions(config);
-        }
-    }
-
-
-    @Nested
-    @DisplayName("create(...) with TypeFilter")
-    class createWithType {
-
-        @Test
-        @DisplayName("should filter out actions without matching types")
-        void shouldFilterActions() {
-
-            DefaultActionManager actionManager = mock(DefaultActionManager.class);
-            when(actionManager.create(any(), any())).thenCallRealMethod();
-            when(actionManager.create(any())).thenReturn(List.of(
-                    new ActionContext<>(String.class, (s, context) -> {}, new ActionConfig<>()),
-                    new ActionContext<>(Integer.class, (s, context) -> {}, new ActionConfig<>()),
-                    new ActionContext<>(String.class, (s, context) -> {}, new ActionConfig<>())
-            ));
-
-            assertThat(actionManager.create(String.class, new ARTConfig()))
-                    .hasSize(2);
         }
     }
 

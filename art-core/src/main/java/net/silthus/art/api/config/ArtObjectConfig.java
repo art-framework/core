@@ -8,7 +8,7 @@ import java.util.Optional;
 
 @Data
 @ConfigurationElement
-public class ARTObjectConfig<TConfig> {
+public class ArtObjectConfig<TConfig> {
 
     private String name;
     @Ignore

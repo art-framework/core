@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableMap;
 import lombok.Data;
 import lombok.Getter;
 import net.silthus.art.api.config.ConfigFieldInformation;
-import net.silthus.art.api.parser.ARTParseException;
+import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.flow.Parser;
 import net.silthus.art.util.ReflectionUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -30,7 +30,7 @@ public class ConfigParser<TConfig> extends Parser<TConfig> {
     }
 
     @Override
-    public TConfig parse() throws ARTParseException {
+    public TConfig parse() throws ArtParseException {
 
         List<KeyValuePair> keyValuePairs = extractKeyValuePairs(getMatcher());
         Set<ConfigFieldInformation> mappedFields = new HashSet<>();
@@ -43,20 +43,20 @@ public class ConfigParser<TConfig> extends Parser<TConfig> {
             } else if (getConfigMap().size() == 1) {
                 Optional<ConfigFieldInformation> fieldInformation = getConfigMap().values().stream().findFirst();
                 if (fieldInformation.isEmpty()) {
-                    throw new ARTParseException("Config should only defines one parameter, but none was found.");
+                    throw new ArtParseException("Config should only defines one parameter, but none was found.");
                 }
                 configFieldInformation = fieldInformation.get();
             } else {
                 int finalI = i;
                 Optional<ConfigFieldInformation> optionalFieldInformation = getConfigMap().values().stream().filter(info -> info.getPosition() == finalI).findFirst();
                 if (optionalFieldInformation.isEmpty()) {
-                    throw new ARTParseException("Config does not define positioned parameters. Use key value pairs instead.");
+                    throw new ArtParseException("Config does not define positioned parameters. Use key value pairs instead.");
                 }
                 configFieldInformation = optionalFieldInformation.get();
             }
 
             if (keyValue.getValue().isEmpty()) {
-                throw new ARTParseException("Config " + configFieldInformation.getIdentifier() + " has an empty value.");
+                throw new ArtParseException("Config " + configFieldInformation.getIdentifier() + " has an empty value.");
             }
 
             Object value = ReflectionUtil.toObject(configFieldInformation.getType(), keyValue.getValue().get());
@@ -71,7 +71,7 @@ public class ConfigParser<TConfig> extends Parser<TConfig> {
                 .collect(Collectors.toList());
 
         if (!missingRequiredFields.isEmpty()) {
-            throw new ARTParseException("Config is missing " + missingRequiredFields.size() + " required fields: "
+            throw new ArtParseException("Config is missing " + missingRequiredFields.size() + " required fields: "
                     + missingRequiredFields.stream().map(ConfigFieldInformation::getIdentifier).collect(Collectors.joining(",")));
         }
 
@@ -95,7 +95,7 @@ public class ConfigParser<TConfig> extends Parser<TConfig> {
         return pairs;
     }
 
-    private void setConfigField(Object config, ConfigFieldInformation fieldInformation, Object value) throws ARTParseException {
+    private void setConfigField(Object config, ConfigFieldInformation fieldInformation, Object value) throws ArtParseException {
 
         try {
             if (fieldInformation.getIdentifier().contains(".")) {
@@ -111,7 +111,7 @@ public class ConfigParser<TConfig> extends Parser<TConfig> {
                 field.set(config, value);
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new ARTParseException(e);
+            throw new ArtParseException(e);
         }
     }
 

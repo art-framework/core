@@ -8,6 +8,8 @@ buildscript {
 plugins {
     id 'kr.entree.spigradle' version '1.2.1' apply false
     id 'com.github.johnrengelman.shadow' version '5.2.0' apply false
+    id "de.marcphilipp.nexus-publish" version "0.3.0"
+    id 'io.codearte.nexus-staging' version '0.21.2'
 }
 
 subprojects {
@@ -38,7 +40,7 @@ subprojects {
         maven { url = 'https://oss.sonatype.org/content/repositories/central' }
     }
 
-    apply plugin: 'java'
+    apply plugin: 'java-library'
     apply plugin: 'jacoco'
     apply plugin: 'com.github.johnrengelman.shadow'
 
@@ -52,7 +54,7 @@ subprojects {
         compile 'org.projectlombok:lombok:1.+'
         annotationProcessor 'org.projectlombok:lombok:1.+'
 
-        implementation group: 'com.google.inject', name: 'guice', version: '4.2.3'
+        api group: 'com.google.inject', name: 'guice', version: '4.2.3'
         implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 
         //Test dependencies
@@ -75,8 +77,11 @@ subprojects {
         relocate 'com.apache.commons', "${packageName}.commonslang"
     }
 
+
     tasks.build.dependsOn(shadowJar)
     tasks.publish.dependsOn(shadowJar)
+//    tasks.publish.finalizedBy(publishToSonatype)
+//    tasks.publishToSonatype.finalizedBy(closeAndReleaseRepository)
 
     test {
         useJUnitPlatform()
@@ -98,7 +103,7 @@ configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-examp
     }
 
     dependencies {
-        implementation project(':art-core')
+        api project(':art-core')
 
         implementation "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"
     }

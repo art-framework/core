@@ -1,8 +1,8 @@
 package net.silthus.art;
 
-import net.silthus.art.api.parser.ARTResult;
+import net.silthus.art.api.parser.ArtResult;
 
-class EmptyARTResult implements ARTResult {
+class EmptyArtResult implements ArtResult {
 
     @Override
     public boolean test(Object target) {

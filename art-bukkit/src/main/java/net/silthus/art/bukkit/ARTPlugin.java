@@ -4,8 +4,7 @@ import com.google.inject.Binder;
 import kr.entree.spigradle.Plugin;
 import lombok.Getter;
 import net.silthus.art.ART;
-import net.silthus.art.ARTModule;
-import net.silthus.art.api.ARTManager;
+import net.silthus.art.api.ArtManager;
 import net.silthus.art.parser.flow.FlowParserModule;
 import net.silthus.slib.bukkit.BasePlugin;
 import org.bukkit.Bukkit;
@@ -18,7 +17,7 @@ public class ARTPlugin extends BasePlugin {
 
     @Inject
     @Getter
-    private ARTManager artManager;
+    private ArtManager artManager;
 
     @Override
     public void enable() {
@@ -26,13 +25,13 @@ public class ARTPlugin extends BasePlugin {
         ART.setInstance(artManager);
         ART.load();
 
-        Bukkit.getServicesManager().register(ARTManager.class, artManager, this, ServicePriority.Normal);
+        Bukkit.getServicesManager().register(ArtManager.class, artManager, this, ServicePriority.Normal);
     }
 
     @Override
     public void disable() {
 
-        ART.getInstance().ifPresent(ARTManager::unload);
+        ART.getInstance().ifPresent(ArtManager::unload);
 
         Bukkit.getServicesManager().unregisterAll(this);
     }

@@ -3,15 +3,15 @@ package net.silthus.art;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import net.silthus.art.api.ARTFactory;
-import net.silthus.art.api.ARTManager;
-import net.silthus.art.api.ARTType;
+import net.silthus.art.api.ArtFactory;
+import net.silthus.art.api.ArtManager;
+import net.silthus.art.api.ArtType;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
-import net.silthus.art.api.config.ARTConfig;
-import net.silthus.art.api.parser.ARTParseException;
-import net.silthus.art.api.parser.ARTParser;
-import net.silthus.art.api.parser.ARTResult;
+import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.parser.ArtParseException;
+import net.silthus.art.api.parser.ArtParser;
+import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.trigger.TriggerContext;
 import org.apache.commons.lang3.NotImplementedException;
@@ -27,17 +27,17 @@ import java.util.logging.Logger;
 import static java.util.stream.Collectors.toMap;
 
 @Data
-public class DefaultARTManager implements ARTManager {
+public class DefaultArtManager implements ArtManager {
 
     private final ActionManager actionManager;
 
     @Inject
     private Logger logger;
-    private final Map<String, Provider<ARTParser>> parser;
-    private final Map<String, ARTBuilder> registeredPlugins = new HashMap<>();
+    private final Map<String, Provider<ArtParser>> parser;
+    private final Map<String, ArtBuilder> registeredPlugins = new HashMap<>();
 
     @Inject
-    public DefaultARTManager(ActionManager actionManager, Map<String, Provider<ARTParser>> parser) {
+    public DefaultArtManager(ActionManager actionManager, Map<String, Provider<ArtParser>> parser) {
         this.actionManager = actionManager;
         this.parser = parser;
     }
@@ -61,21 +61,21 @@ public class DefaultARTManager implements ARTManager {
 
     @Override
     @SuppressWarnings("rawtypes")
-    public void register(String pluginName, Consumer<ARTBuilder> builder) {
+    public void register(String pluginName, Consumer<ArtBuilder> builder) {
 
-        ARTBuilder artBuilder;
+        ArtBuilder artBuilder;
         if (registeredPlugins.containsKey(pluginName)) {
             artBuilder = registeredPlugins.get(pluginName);
         } else {
-            artBuilder = new ARTBuilder(pluginName);
+            artBuilder = new ArtBuilder(pluginName);
         }
 
         builder.andThen(art -> registeredPlugins.put(pluginName, art))
                 .andThen(art -> {
                     getLogger().info(pluginName + " plugin registered their ART:");
 
-                    Map<ARTType, Map<String, ARTFactory>> createdART = art.build();
-                    for (Map.Entry<ARTType, Map<String, ARTFactory>> entry : createdART.entrySet()) {
+                    Map<ArtType, Map<String, ArtFactory>> createdART = art.build();
+                    for (Map.Entry<ArtType, Map<String, ArtFactory>> entry : createdART.entrySet()) {
                         switch (entry.getKey()) {
                             case ACTION:
                                 registerActions(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (ActionFactory<?, ?>) artFactory.getValue())));
@@ -101,16 +101,16 @@ public class DefaultARTManager implements ARTManager {
     }
 
     @Override
-    public ARTResult create(ARTConfig config) {
+    public ArtResult create(ArtConfig config) {
         try {
             if (!getParser().containsKey(config.getParser())) {
-                throw new ARTParseException("Config " + config + " requires an unknown parser of type " + config.getParser());
+                throw new ArtParseException("Config " + config + " requires an unknown parser of type " + config.getParser());
             }
 
             return getParser().get(config.getParser()).get().parse(config);
-        } catch (ARTParseException e) {
+        } catch (ArtParseException e) {
             logger.warning(e.getMessage());
-            return new EmptyARTResult();
+            return new EmptyArtResult();
         }
     }
 

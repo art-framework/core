@@ -7,8 +7,8 @@ import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.annotations.Config;
 import net.silthus.art.api.annotations.Name;
-import net.silthus.art.api.config.ARTConfigException;
-import net.silthus.art.api.config.ARTObjectConfig;
+import net.silthus.art.api.config.ArtConfigException;
+import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import net.silthus.art.util.ConfigUtil;
 
@@ -18,11 +18,11 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * The {@link ARTFactory} handles the creation of the {@link ARTContext}.
- * Each combination of a target type, config type and {@link ARTObject} has its own unique {@link ARTFactory} instance.
+ * The {@link ArtFactory} handles the creation of the {@link ArtContext}.
+ * Each combination of a target type, config type and {@link ArtObject} has its own unique {@link ArtFactory} instance.
  */
 @Data
-public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject> {
+public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject> {
 
     private final Class<TTarget> targetClass;
     private final TARTObject artObject;
@@ -31,7 +31,7 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject>
 
     private final Map<String, ConfigFieldInformation> configInformation = new HashMap<>();
 
-    public ARTType getARTType() {
+    public ArtType getARTType() {
         return getArtObject().getARTType();
     }
 
@@ -40,24 +40,24 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject>
     }
 
     /**
-     * Creates a new {@link ARTContext} for the given {@link ARTObject} type.
-     * Call this once for every unique {@link ARTObjectConfig} of a given {@link ARTObject}.
+     * Creates a new {@link ArtContext} for the given {@link ArtObject} type.
+     * Call this once for every unique {@link ArtObjectConfig} of a given {@link ArtObject}.
      *
-     * @param config config to instantiate the {@link ARTContext} with
-     * @return new {@link ARTContext} that accepts the given target and config type for the given {@link ARTObject} type.
+     * @param config config to instantiate the {@link ArtContext} with
+     * @return new {@link ArtContext} that accepts the given target and config type for the given {@link ArtObject} type.
      */
-    public abstract ARTContext<TTarget, TConfig> create(ARTObjectConfig<TConfig> config);
+    public abstract ArtContext<TTarget, TConfig> create(ArtObjectConfig<TConfig> config);
 
     /**
      * Initializes the {@link ActionFactory}, loads all annotations and checks
      * if the {@link Action} is configured correctly.
      * <br>
      * If everything looks good the action is registered for execution.
-     * If not a {@link ARTObjectRegistrationException} is thrown.
+     * If not a {@link ArtObjectRegistrationException} is thrown.
      *
-     * @throws ARTObjectRegistrationException if the action could not be registered.
+     * @throws ArtObjectRegistrationException if the action could not be registered.
      */
-    public void initialize() throws ARTObjectRegistrationException {
+    public void initialize() throws ArtObjectRegistrationException {
         try {
             Method method = artObject.getClass().getDeclaredMethod("execute", Object.class, ActionContext.class);
             setIdentifier(tryGetIdentifier(method));
@@ -66,12 +66,12 @@ public abstract class ARTFactory<TTarget, TConfig, TARTObject extends ARTObject>
                 configInformation.clear();
                 configInformation.putAll(ConfigUtil.getConfigFields(getConfigClass().get()));
             }
-        } catch (ARTConfigException | NoSuchMethodException e) {
-            throw new ARTObjectRegistrationException(artObject, e);
+        } catch (ArtConfigException | NoSuchMethodException e) {
+            throw new ArtObjectRegistrationException(artObject, e);
         }
 
         if (Strings.isNullOrEmpty(getIdentifier())) {
-            throw new ARTObjectRegistrationException(artObject,
+            throw new ArtObjectRegistrationException(artObject,
                     String.format("%s has no defined name. Use the @Name annotation or registration method to register it with a name.", artObject.getClass().getCanonicalName()));
         }
     }

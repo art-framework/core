@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Data
 @ConfigurationElement
-public class ARTConfig {
+public class ArtConfig {
 
     @Comment("DO NOT CHANGE OR REMOVE THIS LINE")
     private String id = UUID.randomUUID().toString();
@@ -21,7 +21,7 @@ public class ARTConfig {
     private Options options = new Options();
     private List<String> art = new ArrayList<>();
 
-    public ARTConfig() {
+    public ArtConfig() {
     }
 
     @Override

@@ -12,4 +12,3 @@ shadowJar {
 }
 
 tasks.build.dependsOn(shadowJar)
-tasks.publish.dependsOn(shadowJar)

@@ -1,14 +1,14 @@
 package net.silthus.art.api.requirements;
 
-import net.silthus.art.api.ARTObject;
-import net.silthus.art.api.ARTType;
+import net.silthus.art.api.ArtObject;
+import net.silthus.art.api.ArtType;
 
 @FunctionalInterface
-public interface Requirement<TTarget, TConfig> extends ARTObject {
+public interface Requirement<TTarget, TConfig> extends ArtObject {
 
     @Override
-    default ARTType getARTType() {
-        return ARTType.REQUIREMENT;
+    default ArtType getARTType() {
+        return ArtType.REQUIREMENT;
     }
 
     default boolean test(TTarget target) {

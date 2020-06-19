@@ -1,8 +1,8 @@
 package net.silthus.art.api.actions;
 
 import lombok.EqualsAndHashCode;
-import net.silthus.art.api.ARTFactory;
-import net.silthus.art.api.config.ARTObjectConfig;
+import net.silthus.art.api.ArtFactory;
+import net.silthus.art.api.config.ArtObjectConfig;
 
 /**
  * The {@link ActionFactory} creates a fresh {@link ActionContext} for each unique
@@ -14,14 +14,14 @@ import net.silthus.art.api.config.ARTObjectConfig;
  * @param <TConfig> custom action config type used when creating the {@link ActionContext}.
  */
 @EqualsAndHashCode(callSuper = true)
-public class ActionFactory<TTarget, TConfig> extends ARTFactory<TTarget, TConfig, Action<TTarget, TConfig>> {
+public class ActionFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>> {
 
     public ActionFactory(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
         super(targetClass, action);
     }
 
     @Override
-    public ActionContext<TTarget, TConfig> create(ARTObjectConfig<TConfig> config) {
+    public ActionContext<TTarget, TConfig> create(ArtObjectConfig<TConfig> config) {
         return new ActionContext<>(getTargetClass(), getArtObject(), (ActionConfig<TConfig>) config);
     }
 }

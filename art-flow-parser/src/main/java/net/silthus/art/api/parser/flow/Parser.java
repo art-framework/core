@@ -1,7 +1,7 @@
 package net.silthus.art.api.parser.flow;
 
 import lombok.Data;
-import net.silthus.art.api.parser.ARTParseException;
+import net.silthus.art.api.parser.ArtParseException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,5 +21,5 @@ public abstract class Parser<TOutput> {
         return matcher.matches();
     }
 
-    public abstract TOutput parse() throws ARTParseException;
+    public abstract TOutput parse() throws ArtParseException;
 }

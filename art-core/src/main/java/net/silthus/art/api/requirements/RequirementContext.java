@@ -2,12 +2,12 @@ package net.silthus.art.api.requirements;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import net.silthus.art.api.ARTContext;
+import net.silthus.art.api.ArtContext;
 
 import java.util.Objects;
 
 @EqualsAndHashCode(callSuper = true)
-public class RequirementContext<TTarget, TConfig> extends ARTContext<TTarget, TConfig> implements Requirement<TTarget, TConfig> {
+public class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig> implements Requirement<TTarget, TConfig> {
 
     @Getter
     private final Requirement<TTarget, TConfig> requirement;

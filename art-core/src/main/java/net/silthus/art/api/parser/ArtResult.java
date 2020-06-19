@@ -1,6 +1,6 @@
 package net.silthus.art.api.parser;
 
-public interface ARTResult {
+public interface ArtResult {
 
     boolean test(Object target);
 

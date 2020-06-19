@@ -3,15 +3,14 @@ package net.silthus.art;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.silthus.art.api.ARTFactory;
-import net.silthus.art.api.ARTObject;
-import net.silthus.art.api.ARTObjectRegistrationException;
-import net.silthus.art.api.ARTType;
+import net.silthus.art.api.ArtFactory;
+import net.silthus.art.api.ArtObject;
+import net.silthus.art.api.ArtObjectRegistrationException;
+import net.silthus.art.api.ArtType;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.requirements.RequirementFactory;
-import net.silthus.art.util.ReflectionUtil;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -19,30 +18,30 @@ import java.util.logging.Logger;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 
-public class ARTBuilder {
+public class ArtBuilder {
 
     @Getter(AccessLevel.PACKAGE)
     private final String pluginName;
     private final Logger logger = Logger.getLogger("ARTBuilder");
     private final Map<Class<?>, TargetBuilder<?>> builders = new HashMap<>();
 
-    public ARTBuilder(String pluginName) {
+    public ArtBuilder(String pluginName) {
         this.pluginName = pluginName;
     }
 
     /**
-     * Collects all registered {@link ARTObject}s and their corresponding {@link ARTFactory} grouped by their {@link ARTType}.
-     * Then calls {@link ARTFactory#initialize()} on all collected factories to generate the corresponding identifier.
+     * Collects all registered {@link ArtObject}s and their corresponding {@link ArtFactory} grouped by their {@link ArtType}.
+     * Then calls {@link ArtFactory#initialize()} on all collected factories to generate the corresponding identifier.
      * <br>
-     * If an {@link ARTObject} is invalid, e.g. has no name a log message will be output and the object filtered out.
+     * If an {@link ArtObject} is invalid, e.g. has no name a log message will be output and the object filtered out.
      * <br>
      * Then the unique identifier of each object will be mapped to its factory and returned.
      * If a duplicate identifier is found, only the first object will be registered and a log message written.
      *
-     * @return identifier to factory mapping grouped by the {@link ARTType}
+     * @return identifier to factory mapping grouped by the {@link ArtType}
      */
     @SuppressWarnings("rawtypes")
-    Map<ARTType, Map<String, ARTFactory>> build() {
+    Map<ArtType, Map<String, ArtFactory>> build() {
 
         return builders.values().stream()
                 .flatMap(targetBuilder -> targetBuilder.artFactories.stream())
@@ -51,13 +50,14 @@ public class ARTBuilder {
                     try {
                         artFactory.initialize();
                         return artFactory;
-                    } catch (ARTObjectRegistrationException e) {
+                    } catch (ArtObjectRegistrationException e) {
                         logger.severe(e.getMessage());
                         return null;
                     }
                 })
                 .filter(Objects::nonNull)
-                .collect(groupingBy(ARTFactory::getARTType, toMap(ARTFactory::getIdentifier, artFactory -> artFactory, (artFactory, artFactory2) -> {
+                // TODO: refactor to group by instance of same type
+                .collect(groupingBy(ArtFactory::getARTType, toMap(ArtFactory::getIdentifier, artFactory -> artFactory, (artFactory, artFactory2) -> {
                     // we got a duplicate identifier
                     logger.warning(String.format("Duplicate identifier \"%1$s\" in %2$s and %3$s detected. Only %2$s will be registered.",
                             artFactory.getIdentifier(),
@@ -92,7 +92,7 @@ public class ARTBuilder {
 
         private final Class<TTarget> targetClass;
         @SuppressWarnings("rawtypes")
-        private final List<ARTFactory> artFactories = new ArrayList<>();
+        private final List<ArtFactory> artFactories = new ArrayList<>();
 
         public <TConfig> FactoryBuilder action(Action<TTarget, TConfig> action) {
             FactoryBuilder factoryBuilder = new FactoryBuilder(action);
@@ -109,10 +109,10 @@ public class ARTBuilder {
         public class FactoryBuilder {
 
             @SuppressWarnings("rawtypes")
-            private final ARTFactory artFactory;
+            private final ArtFactory artFactory;
 
             @SuppressWarnings("unchecked")
-            public FactoryBuilder(ARTObject artObject) {
+            public FactoryBuilder(ArtObject artObject) {
                 if (artObject instanceof Action) {
                     this.artFactory = new ActionFactory<>(targetClass, (Action<TTarget, ?>) artObject);
                 } else if (artObject instanceof Requirement) {
@@ -124,12 +124,12 @@ public class ARTBuilder {
             }
 
             @SuppressWarnings("rawtypes")
-            public Optional<ARTFactory> getArtFactory() {
+            public Optional<ArtFactory> getArtFactory() {
                 return Optional.ofNullable(artFactory);
             }
 
             public <TNextTarget> TargetBuilder<TNextTarget> target(Class<TNextTarget> targetClass) {
-                return ARTBuilder.this.target(targetClass);
+                return ArtBuilder.this.target(targetClass);
             }
 
             public <TNextConfig> FactoryBuilder action(Action<TTarget, TNextConfig> action) {

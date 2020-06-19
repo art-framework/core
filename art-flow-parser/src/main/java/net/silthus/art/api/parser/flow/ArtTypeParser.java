@@ -1,11 +1,11 @@
 package net.silthus.art.api.parser.flow;
 
 import com.google.common.base.Strings;
-import net.silthus.art.api.ARTContext;
-import net.silthus.art.api.ARTFactory;
-import net.silthus.art.api.config.ARTObjectConfig;
+import net.silthus.art.api.ArtContext;
+import net.silthus.art.api.ArtFactory;
+import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
-import net.silthus.art.api.parser.ARTParseException;
+import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.parser.flow.types.ConfigParser;
 
 import java.lang.reflect.InvocationTargetException;
@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public abstract class ARTTypeParser<TContext extends ARTContext<?, ?>> extends Parser<TContext> {
+public abstract class ArtTypeParser<TContext extends ArtContext<?, ?>> extends Parser<TContext> {
 
-    public ARTTypeParser(char typeMatcher) {
+    public ArtTypeParser(char typeMatcher) {
         // regexr.com/56s09
         super(Pattern.compile("^" + typeMatcher + "(?<identifier>[\\w\\-.\\d:]+)(\\[(?<config>[\\w\\d:., ]*\\]))? ?(?<userConfig>[\\w\\d:., ]+)?$"));
     }
@@ -34,7 +34,7 @@ public abstract class ARTTypeParser<TContext extends ARTContext<?, ?>> extends P
         return getMatcher().group("userConfig");
     }
 
-    protected <TConfig extends ARTObjectConfig<?>> TConfig parseARTConfig(ARTFactory<?, ?, ?> factory, TConfig artConfig, Map<String, ConfigFieldInformation> configFieldInformationMap) throws ARTParseException {
+    protected <TConfig extends ArtObjectConfig<?>> TConfig parseARTConfig(ArtFactory<?, ?, ?> factory, TConfig artConfig, Map<String, ConfigFieldInformation> configFieldInformationMap) throws ArtParseException {
 
         ConfigParser<TConfig> actionConfigParser = new ConfigParser<>(artConfig, configFieldInformationMap);
         Optional<String> config = getConfig();
@@ -51,7 +51,7 @@ public abstract class ARTTypeParser<TContext extends ARTContext<?, ?>> extends P
                 }
 
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new ARTParseException("Unable to parse config of " + factory.getIdentifier(), e);
+                throw new ArtParseException("Unable to parse config of " + factory.getIdentifier(), e);
             }
         }
 

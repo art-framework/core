@@ -2,7 +2,7 @@ package net.silthus.art.api.actions;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import net.silthus.art.api.ARTContext;
+import net.silthus.art.api.ArtContext;
 
 import java.util.Objects;
 
@@ -14,7 +14,7 @@ import java.util.Objects;
  * @param <TConfig> config type of the action
  */
 @EqualsAndHashCode(callSuper = true)
-public class ActionContext<TTarget, TConfig> extends ARTContext<TTarget, TConfig> implements Action<TTarget, TConfig> {
+public class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig> implements Action<TTarget, TConfig> {
 
     @Getter
     private final Action<TTarget, TConfig> action;

@@ -5,9 +5,10 @@ import kr.entree.spigradle.Plugin;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.ART;
-import net.silthus.art.api.ARTManager;
-import net.silthus.art.api.config.ARTConfig;
-import net.silthus.art.api.parser.ARTResult;
+import net.silthus.art.api.ArtManager;
+import net.silthus.art.api.ArtModule;
+import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.parser.ArtResult;
 import net.silthus.examples.art.actions.PlayerDamageAction;
 import net.silthus.examples.art.listener.PlayerListener;
 import org.bukkit.Bukkit;
@@ -19,11 +20,11 @@ import java.io.File;
 import java.util.Optional;
 
 @Plugin
-public class ExampleARTPlugin extends JavaPlugin {
+public class ExampleArtPlugin extends JavaPlugin implements ArtModule {
 
     @Getter
     @Setter
-    private ARTResult artResult;
+    private ArtResult artResult;
 
     @Override
     public void onEnable() {
@@ -72,18 +73,18 @@ public class ExampleARTPlugin extends JavaPlugin {
             return false;
         }
 
-        RegisteredServiceProvider<ARTManager> registration = Bukkit.getServicesManager().getRegistration(ARTManager.class);
+        RegisteredServiceProvider<ArtManager> registration = Bukkit.getServicesManager().getRegistration(ArtManager.class);
         return registration != null;
     }
 
-    private Optional<ARTManager> getARTManager() {
+    private Optional<ArtManager> getARTManager() {
 
         org.bukkit.plugin.Plugin plugin = Bukkit.getPluginManager().getPlugin("ART");
         if (plugin == null) {
             return Optional.empty();
         }
 
-        RegisteredServiceProvider<ARTManager> registration = Bukkit.getServicesManager().getRegistration(ARTManager.class);
+        RegisteredServiceProvider<ArtManager> registration = Bukkit.getServicesManager().getRegistration(ArtManager.class);
         if (registration == null) {
             return Optional.empty();
         }
@@ -91,11 +92,16 @@ public class ExampleARTPlugin extends JavaPlugin {
         return Optional.of(registration.getProvider());
     }
 
+    @Override
+    public String getVersion() {
+        return getDescription().getVersion();
+    }
+
     @Getter
     @Setter
     public static class Config extends YamlConfiguration {
 
-        private ARTConfig actions = new ARTConfig();
+        private ArtConfig actions = new ArtConfig();
 
         protected Config(File file) {
             super(file.toPath());
