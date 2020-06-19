@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'net.silthus.art', name: 'art-core', version: '1.0.0-beta.1'
+    implementation group: 'net.silthus.art', name: 'art-core', version: '1.0.0-alpha.1-beta.1'
 }
 ```
 
@@ -34,7 +34,7 @@ Shade ART into your plugin if you don't want to depend on the ART-Plugin being p
 
 ```gradle
 plugins {
-    id 'com.github.johnrengelman.shadow' version '5.2.0'
+    id 'com.github.johnrengelman.shadow' version '1.0.0-alpha.1'
 }
 
 ...
@@ -57,7 +57,7 @@ shadowJar {
     <dependency>
       <groupId>net.silthus.art</groupId>
       <artifactId>art-core</artifactId>
-      <version>1.0.0-beta.1</version>
+      <version>1.0.0-alpha.1-beta.1</version>
     </dependency>
   </dependencies>
   ...
@@ -73,7 +73,7 @@ Shade ART into your plugin if you don't want to depend on the ART-Plugin being p
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.0.0</version>
+        <version>1.0.0-alpha.1</version>
         <executions>
             <execution>
             <phase>package</phase>
