@@ -13,19 +13,6 @@ import java.util.Optional;
 public interface ActionManager {
 
     /**
-     * Creates a dummy implementation of an {@link ActionManager}.
-     * The implementation returns empty but not null values for every method.
-     * Use it to mock your tests.
-     * <br>
-     * The null instance will also be returned if ART was not properly initialized before making the first call.
-     *
-     * @return empty implementation of the {@link ActionManager}
-     */
-    static ActionManager nullManager() {
-        return new NullActionManager();
-    }
-
-    /**
      * Checks if a {@link ArtFactory} exists for the given identifier.
      *
      * @param identifier identifier of the {@link ArtObject}

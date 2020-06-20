@@ -13,7 +13,7 @@ public class FlowParserModule extends AbstractModule {
     @Override
     protected void configure() {
 
-        var multibinder = Multibinder.newSetBinder(binder(), new TypeLiteral<ArtTypeParser<?>>() {});
+        var multibinder = Multibinder.newSetBinder(binder(), new TypeLiteral<ArtTypeParser<?, ?>>() {});
         multibinder.addBinding().to(ActionParser.class);
 
         MapBinder<String, ArtParser> mapBinder = MapBinder.newMapBinder(binder(), String.class, ArtParser.class);

@@ -1,15 +1,14 @@
 package net.silthus.art.api;
 
-import lombok.EqualsAndHashCode;
+import lombok.AccessLevel;
 import lombok.Getter;
 import net.silthus.art.api.config.ArtObjectConfig;
 
 import java.util.Optional;
 
-@EqualsAndHashCode(of = {"targetClass"})
 public abstract class ArtContext<TTarget, TConfig> {
 
-    @Getter
+    @Getter(AccessLevel.PACKAGE)
     private final Class<TTarget> targetClass;
     private final ArtObjectConfig<TConfig> config;
 

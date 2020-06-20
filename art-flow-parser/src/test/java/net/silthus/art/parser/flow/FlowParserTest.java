@@ -1,6 +1,8 @@
 package net.silthus.art.parser.flow;
 
 import com.google.inject.Provider;
+import net.silthus.art.api.AbstractArtResult;
+import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.parser.flow.ArtTypeParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,11 +18,16 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 class FlowParserTest {
 
     private FlowParser parser;
-    private Set<Provider<ArtTypeParser<?>>> parsers = new HashSet<>();
+    private final Set<Provider<ArtTypeParser<?, ?>>> parsers = new HashSet<>();
 
     @BeforeEach
     void beforeEach() {
-        parser = new FlowParser(parsers);
+        parser = new FlowParser((config, artContexts) -> new AbstractArtResult(config, artContexts) {
+            @Override
+            protected <TTarget> boolean filter(TTarget target, ArtContext<TTarget, ?> context) {
+                return false;
+            }
+        }, parsers);
     }
 
     @Nested

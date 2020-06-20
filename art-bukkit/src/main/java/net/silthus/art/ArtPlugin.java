@@ -1,10 +1,10 @@
-package net.silthus.art.bukkit;
+package net.silthus.art;
 
 import com.google.inject.Binder;
 import kr.entree.spigradle.Plugin;
 import lombok.Getter;
-import net.silthus.art.ART;
 import net.silthus.art.api.ArtManager;
+import net.silthus.art.api.parser.ArtResultFactory;
 import net.silthus.art.parser.flow.FlowParserModule;
 import net.silthus.slib.bukkit.BasePlugin;
 import org.bukkit.Bukkit;
@@ -40,5 +40,7 @@ public class ArtPlugin extends BasePlugin {
     public void configure(Binder binder) {
 
         binder.install(new FlowParserModule());
+
+        binder.bind(ArtResultFactory.class).to(BukkitArtResultFactory.class);
     }
 }

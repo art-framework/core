@@ -65,7 +65,7 @@ It is as easy as parsing a config and creating your ART. After that you can use 
 
 ```java
 // parse the config and get your art result
-ARTResult result = ART.create(config);
+ARTResult result = ART.load(config);
 
 // use it somewhere in your plugin, e.g. in an event or command
 result.execute(player);

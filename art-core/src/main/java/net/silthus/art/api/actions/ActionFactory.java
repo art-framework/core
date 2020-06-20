@@ -1,6 +1,6 @@
 package net.silthus.art.api.actions;
 
-import lombok.EqualsAndHashCode;
+import net.silthus.art.api.ActionContext;
 import net.silthus.art.api.ArtFactory;
 import net.silthus.art.api.config.ArtObjectConfig;
 
@@ -13,7 +13,6 @@ import net.silthus.art.api.config.ArtObjectConfig;
  * @param <TTarget> target type this factory accepts.
  * @param <TConfig> custom action config type used when creating the {@link ActionContext}.
  */
-@EqualsAndHashCode(callSuper = true)
 public class ActionFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>> {
 
     public ActionFactory(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {

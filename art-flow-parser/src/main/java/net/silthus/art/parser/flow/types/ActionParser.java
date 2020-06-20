@@ -1,12 +1,11 @@
 package net.silthus.art.parser.flow.types;
 
 import lombok.Getter;
-import net.silthus.art.api.ArtType;
+import net.silthus.art.api.ActionContext;
+import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionConfig;
-import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
-import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.flow.ArtTypeParser;
 import net.silthus.art.parser.flow.Constants;
@@ -14,15 +13,20 @@ import net.silthus.art.parser.flow.Constants;
 import javax.inject.Inject;
 import java.util.Optional;
 
-public class ActionParser extends ArtTypeParser<ActionContext<?, ?>> {
+public class ActionParser extends ArtTypeParser<ActionContext<?, ?>, ActionConfig<?>> {
 
     @Getter
     private final ActionManager actionManager;
 
     @Inject
     public ActionParser(ActionManager actionManager) {
-        super(Constants.ART_TYPE_MATCHER_CHARS.get(ArtType.ACTION));
+        super(Constants.ART_TYPE_MATCHER_CHARS.get(Action.class));
         this.actionManager = actionManager;
+    }
+
+    @Override
+    protected ActionConfig<?> createConfig(Object config) {
+        return new ActionConfig<>(config);
     }
 
     @Override
@@ -37,8 +41,8 @@ public class ActionParser extends ArtTypeParser<ActionContext<?, ?>> {
         }
 
         ActionFactory<?, ?> actionFactory = optionalAction.get();
-        ArtObjectConfig actionConfig = parseARTConfig(actionFactory, new ActionConfig<>(), ActionConfig.CONFIG_FIELD_INFORMATION);
+        ActionConfig actionConfig = parseARTConfig(actionFactory, ActionConfig.CONFIG_FIELD_INFORMATION);
 
-        return (ActionContext<?, ?>) actionFactory.create(actionConfig);
+        return actionFactory.create(actionConfig);
     }
 }

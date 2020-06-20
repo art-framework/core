@@ -128,8 +128,6 @@ public class PlayerDamageAction implements Action<Player, PlayerDamageAction.Act
 
 You need to register your actions, requirements and trigger when your plugin is enabled. Before you can do that, you need to make sure ART is loaded and enabled.
 
-### Using the ART static class
-
 You can use the static `ART` class to register your actions, requirements and trigger. However you need to make sure ART is loaded before calling it, to avoid `ClassNotFoundExceptions`.
 
 ```java
@@ -149,7 +147,7 @@ public class ExampleARTPlugin extends JavaPlugin {
             return;
         }
 
-        ART.register(getName(), artBuilder -> {
+        ART.register(ArtBukkitDescription.ofPlugin(this), artBuilder -> {
             artBuilder.target(Player.class)
                     .action(new PlayerDamageAction());
         });
@@ -157,61 +155,6 @@ public class ExampleARTPlugin extends JavaPlugin {
 
     private boolean isARTLoaded() {
         return Bukkit.getPluginManager().getPlugin("ART") != null;
-    }
-}
-```
-
-### Using the Bukkit ServiceManager
-
-As an alternative you can use the Bukkit `ServiceManager` to get an instance of the `ARTManager` and register your actions, requirements and trigger with it.
-
-```java
-public class ExampleARTPlugin extends JavaPlugin {
-
-    @Override
-    public void onEnable() {
-
-        // register your actions, requirements and trigger when enabling your plugin
-        // this needs to be done before loading configs
-        registerART();
-    }
-
-    private void registerART() {
-
-        if (!isARTLoaded() || getARTManager().isEmpty()) {
-            getLogger().warning("ART plugin not found. Not registering ART.");
-            return;
-        }
-
-        getARTManager().get().register(getName(), artBuilder -> {
-            artBuilder.target(Player.class)
-                    .action(new PlayerDamageAction());
-        });
-    }
-
-    private boolean isARTLoaded() {
-        org.bukkit.plugin.Plugin plugin = Bukkit.getPluginManager().getPlugin("ART");
-        if (plugin == null) {
-            return false;
-        }
-
-        RegisteredServiceProvider<ARTManager> registration = Bukkit.getServicesManager().getRegistration(ARTManager.class);
-        return registration!=null;
-    }
-
-    private Optional<ARTManager> getARTManager() {
-
-        org.bukkit.plugin.Plugin plugin = Bukkit.getPluginManager().getPlugin("ART");
-        if (plugin == null) {
-            return Optional.empty();
-        }
-
-        RegisteredServiceProvider<ARTManager> registration = Bukkit.getServicesManager().getRegistration(ARTManager.class);
-        if (registration == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(registration.getProvider());
     }
 }
 ```
@@ -275,7 +218,7 @@ public class ExampleARTPlugin extends JavaPlugin implements Listener {
         Config config = new Config(new File(getDataFolder(), "example.yml"));
         config.loadAndSave();
 
-        artResult = ART.create(config);
+        artResult = ART.load(config);
     }
 
     private boolean isARTLoaded() {

@@ -1,9 +1,10 @@
 package net.silthus.examples.art.actions;
 
+import net.silthus.art.api.ActionContext;
 import net.silthus.art.api.actions.Action;
-import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.annotations.*;
 import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
 
 /**
@@ -30,7 +31,8 @@ public class PlayerDamageAction implements Action<Player, PlayerDamageAction.Act
         context.getConfig().ifPresent(config -> {
             double damage;
             double health = player.getHealth();
-            double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
+            AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            double maxHealth = attribute == null ? health : attribute.getValue();
 
             if (config.percentage) {
                 if (config.fromCurrent) {
@@ -67,9 +69,9 @@ public class PlayerDamageAction implements Action<Player, PlayerDamageAction.Act
         private double amount;
 
         @Description("Set to true if you want the player to be damaged based on his maximum life")
-        private boolean percentage = false;
+        private final boolean percentage = false;
 
         @Description("Set to true if you want to damage the player based on his current health. Only makes sense in combination with percentage=true.")
-        private boolean fromCurrent = false;
+        private final boolean fromCurrent = false;
     }
 }

@@ -3,16 +3,14 @@ package net.silthus.art;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import lombok.extern.java.Log;
 import net.silthus.art.api.ArtFactory;
 import net.silthus.art.api.ArtManager;
-import net.silthus.art.api.ArtType;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.ArtParser;
-import net.silthus.art.api.ArtResult;
+import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.util.ConfigUtil;
@@ -76,15 +74,12 @@ public class DefaultArtManager implements ArtManager {
                     getLogger().info("   " + moduleDescription.getName() + " v" + moduleDescription.getVersion() + " registered their ART.");
                     getLogger().info("");
 
-                    Map<ArtType, Map<String, ArtFactory<?, ?, ?>>> createdART = art.build();
-                    for (Map.Entry<ArtType, Map<String, ArtFactory<?, ?, ?>>> entry : createdART.entrySet()) {
-                        switch (entry.getKey()) {
-                            case ACTION:
-                                registerActions(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (ActionFactory<?, ?>) artFactory.getValue())));
-                                break;
-                            case REQUIREMENT:
-                                registerRequirements(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (RequirementFactory<?, ?>) artFactory.getValue())));
-                                // TODO: register other art types
+                    Map<Class<?>, Map<String, ArtFactory<?, ?, ?>>> createdART = art.build();
+                    for (Map.Entry<Class<?>, Map<String, ArtFactory<?, ?, ?>>> entry : createdART.entrySet()) {
+                        if (entry.getKey() == ActionFactory.class) {
+                            registerActions(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (ActionFactory<?, ?>) artFactory.getValue())));
+                        } else if (entry.getKey() == RequirementFactory.class) {
+                            registerRequirements(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (RequirementFactory<?, ?>) artFactory.getValue())));
                         }
                     }
 
@@ -107,7 +102,7 @@ public class DefaultArtManager implements ArtManager {
     }
 
     @Override
-    public ArtResult create(ArtConfig config) {
+    public ArtResult load(ArtConfig config) {
         try {
             if (!getParser().containsKey(config.getParser())) {
                 throw new ArtParseException("Config " + config + " requires an unknown parser of type " + config.getParser());
@@ -121,7 +116,6 @@ public class DefaultArtManager implements ArtManager {
         }
     }
 
-    @Override
     public ActionManager actions() {
         return actionManager;
     }

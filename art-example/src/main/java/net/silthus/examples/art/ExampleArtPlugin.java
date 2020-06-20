@@ -5,10 +5,10 @@ import kr.entree.spigradle.Plugin;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.ART;
+import net.silthus.art.ArtBukkitDescription;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.ArtResult;
-import net.silthus.art.bukkit.ArtBukkitDescription;
+import net.silthus.art.api.parser.ArtResult;
 import net.silthus.examples.art.actions.PlayerDamageAction;
 import net.silthus.examples.art.listener.PlayerListener;
 import org.bukkit.Bukkit;
@@ -48,10 +48,8 @@ public class ExampleArtPlugin extends JavaPlugin {
             return;
         }
 
-        getARTManager().get().register(ArtBukkitDescription.ofPlugin(this), artBuilder -> {
-            artBuilder.target(Player.class)
-                    .action(new PlayerDamageAction());
-        });
+        getARTManager().get().register(ArtBukkitDescription.ofPlugin(this), artBuilder -> artBuilder.target(Player.class)
+                .action(new PlayerDamageAction()));
     }
 
     private void loadARTConfig() {
@@ -64,7 +62,7 @@ public class ExampleArtPlugin extends JavaPlugin {
         Config config = new Config(new File(getDataFolder(), "example.yml"));
         config.loadAndSave();
 
-        setArtResult(ART.create(config.getActions()));
+        setArtResult(ART.load(config.getActions()));
     }
 
     private boolean isARTLoaded() {

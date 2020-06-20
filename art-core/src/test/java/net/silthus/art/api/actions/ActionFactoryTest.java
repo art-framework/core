@@ -1,5 +1,6 @@
 package net.silthus.art.api.actions;
 
+import net.silthus.art.api.ActionContext;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.config.ConfigFieldInformation;
@@ -254,8 +255,8 @@ public class ActionFactoryTest {
             ActionContext<String, TestConfig> context = factory.create(new ActionConfig<>());
 
             assertThat(context).isNotNull();
-            assertThat(context.getAction().equals(factory.getArtObject()));
-            assertThat(context.getTargetClass()).isEqualTo(factory.getTargetClass());
+            assertThat(context).extracting("action").isEqualTo(factory.getArtObject());
+            assertThat(context).extracting("targetClass").isEqualTo(factory.getTargetClass());
             assertThat(context.getConfig()).isEmpty();
         }
 

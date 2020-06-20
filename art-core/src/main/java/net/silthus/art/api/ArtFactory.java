@@ -3,7 +3,6 @@ package net.silthus.art.api;
 import com.google.common.base.Strings;
 import lombok.Data;
 import net.silthus.art.api.actions.Action;
-import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.annotations.Config;
 import net.silthus.art.api.annotations.Name;
@@ -30,10 +29,6 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject>
     private String identifier;
 
     private final Map<String, ConfigFieldInformation> configInformation = new HashMap<>();
-
-    public ArtType getARTType() {
-        return getArtObject().getARTType();
-    }
 
     public Optional<Class<TConfig>> getConfigClass() {
         return Optional.ofNullable(configClass);

@@ -1,8 +1,10 @@
 package net.silthus.art.api.actions;
 
 import de.exlll.configlib.annotation.ConfigurationElement;
-import lombok.Data;
+import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
@@ -18,10 +20,11 @@ import java.util.Map;
  *
  * @param <TConfig> custom config type of the action
  */
-@Data
+@Getter
+@Setter(AccessLevel.PACKAGE)
 @ConfigurationElement
 @EqualsAndHashCode(callSuper = true)
-public class ActionConfig<TConfig> extends ArtObjectConfig<TConfig> {
+public final class ActionConfig<TConfig> extends ArtObjectConfig<TConfig> {
 
     public static final Map<String, ConfigFieldInformation> CONFIG_FIELD_INFORMATION = new HashMap<>();
 
@@ -31,6 +34,14 @@ public class ActionConfig<TConfig> extends ArtObjectConfig<TConfig> {
         } catch (ArtConfigException e) {
             e.printStackTrace();
         }
+    }
+
+    public ActionConfig() {
+        super(null);
+    }
+
+    public ActionConfig(TConfig with) {
+        super(with);
     }
 
     private String delay = "0s";

@@ -7,31 +7,29 @@ import lombok.Getter;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.flow.Parser;
+import net.silthus.art.util.ConfigUtil;
 import net.silthus.art.util.ReflectionUtil;
-import org.apache.commons.lang3.StringUtils;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ConfigParser<TConfig> extends Parser<TConfig> {
+public class ConfigParser extends Parser<ConfigParser.Result> {
 
-    private final TConfig config;
     @Getter
     private final Map<String, ConfigFieldInformation> configMap;
 
-    public ConfigParser(TConfig config, Map<String, ConfigFieldInformation> configMap) {
+    public ConfigParser(Map<String, ConfigFieldInformation> configMap) {
         // regexr.com/56s0f
-        super(Pattern.compile("^(?<keyValue>((?<key>[\\w\\d.]+)?[:=] ?)?(?<value>[\\w\\d. !?&$\\/\\\\\"]+))([,;] ?(?<config>.*))?$"));
-        this.config = config;
+        super(Pattern.compile("^(?<keyValue>((?<key>[\\w\\d.]+)?[:=] ?)?(?<value>[\\w\\d. !?&$/\\\\\"]+))([,;] ?(?<config>.*))?$"));
         this.configMap = ImmutableMap.copyOf(configMap);
     }
 
     @Override
-    public TConfig parse() throws ArtParseException {
+    public Result parse() throws ArtParseException {
 
+        Map<ConfigFieldInformation, Object> fieldValueMap = new HashMap<>();
         List<KeyValuePair> keyValuePairs = extractKeyValuePairs(getMatcher());
         Set<ConfigFieldInformation> mappedFields = new HashSet<>();
 
@@ -61,7 +59,7 @@ public class ConfigParser<TConfig> extends Parser<TConfig> {
 
             Object value = ReflectionUtil.toObject(configFieldInformation.getType(), keyValue.getValue().get());
 
-            setConfigField(config, configFieldInformation, value);
+            fieldValueMap.put(configFieldInformation, value);
             mappedFields.add(configFieldInformation);
         }
 
@@ -75,7 +73,7 @@ public class ConfigParser<TConfig> extends Parser<TConfig> {
                     + missingRequiredFields.stream().map(ConfigFieldInformation::getIdentifier).collect(Collectors.joining(",")));
         }
 
-        return config;
+        return new Result(fieldValueMap);
     }
 
     protected List<KeyValuePair> extractKeyValuePairs(Matcher matcher) {
@@ -95,26 +93,6 @@ public class ConfigParser<TConfig> extends Parser<TConfig> {
         return pairs;
     }
 
-    private void setConfigField(Object config, ConfigFieldInformation fieldInformation, Object value) throws ArtParseException {
-
-        try {
-            if (fieldInformation.getIdentifier().contains(".")) {
-                // handle nested config objects
-                String nestedIdentifier = StringUtils.substringBefore(fieldInformation.getIdentifier(), ".");
-                Field parentField = config.getClass().getDeclaredField(nestedIdentifier);
-                parentField.setAccessible(true);
-                Object nestedConfigObject = parentField.get(config);
-                setConfigField(nestedConfigObject, fieldInformation.copyOf(nestedIdentifier), value);
-            } else {
-                Field field = config.getClass().getDeclaredField(fieldInformation.getName());
-                field.setAccessible(true);
-                field.set(config, value);
-            }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new ArtParseException(e);
-        }
-    }
-
     @Data
     static class KeyValuePair {
 
@@ -127,6 +105,20 @@ public class ConfigParser<TConfig> extends Parser<TConfig> {
 
         public Optional<String> getValue() {
             return Optional.ofNullable(value);
+        }
+    }
+
+    public static class Result {
+
+        private final Map<ConfigFieldInformation, Object> keyValueMap;
+
+        private Result(Map<ConfigFieldInformation, Object> keyValueMap) {
+            this.keyValueMap = ImmutableMap.copyOf(keyValueMap);
+        }
+
+        public <TConfig> TConfig applyTo(TConfig config) {
+            ConfigUtil.setConfigFields(config, keyValueMap);
+            return config;
         }
     }
 

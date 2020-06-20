@@ -1,12 +1,9 @@
 package net.silthus.art;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.silthus.art.api.ArtFactory;
 import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.ArtObjectRegistrationException;
-import net.silthus.art.api.ArtType;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.requirements.Requirement;
@@ -23,8 +20,11 @@ public class ArtBuilder {
     private final Logger logger = Logger.getLogger("ARTBuilder");
     private final Map<Class<?>, TargetBuilder<?>> builders = new HashMap<>();
 
+    ArtBuilder() {
+    }
+
     /**
-     * Collects all registered {@link ArtObject}s and their corresponding {@link ArtFactory} grouped by their {@link ArtType}.
+     * Collects all registered {@link ArtObject}s and their corresponding {@link ArtFactory} grouped by their class.
      * Then calls {@link ArtFactory#initialize()} on all collected factories to generate the corresponding identifier.
      * <br>
      * If an {@link ArtObject} is invalid, e.g. has no name a log message will be output and the object filtered out.
@@ -32,9 +32,9 @@ public class ArtBuilder {
      * Then the unique identifier of each object will be mapped to its factory and returned.
      * If a duplicate identifier is found, only the first object will be registered and a log message written.
      *
-     * @return identifier to factory mapping grouped by the {@link ArtType}
+     * @return identifier to factory mapping grouped by their class
      */
-    Map<ArtType, Map<String, ArtFactory<?, ?, ?>>> build() {
+    Map<Class<?>, Map<String, ArtFactory<?, ?, ?>>> build() {
 
         return builders.values().stream()
                 .flatMap(targetBuilder -> targetBuilder.artFactories.stream())
@@ -50,7 +50,7 @@ public class ArtBuilder {
                 })
                 .filter(Objects::nonNull)
                 // TODO: refactor to group by instance of same type
-                .collect(groupingBy(ArtFactory::getARTType, toMap(ArtFactory::getIdentifier, artFactory -> artFactory, (artFactory, artFactory2) -> {
+                .collect(groupingBy(ArtFactory::getClass, toMap(ArtFactory::getIdentifier, artFactory -> artFactory, (artFactory, artFactory2) -> {
                     // we got a duplicate identifier
                     logger.warning(String.format("Duplicate identifier \"%1$s\" in %2$s and %3$s detected. Only %2$s will be registered.",
                             artFactory.getIdentifier(),

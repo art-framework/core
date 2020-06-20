@@ -1,6 +1,9 @@
 package net.silthus.art.actions;
 
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.parser.ArtParser;
@@ -13,14 +16,17 @@ import java.util.Optional;
 import java.util.TreeMap;
 import java.util.logging.Logger;
 
-@Data
 @Singleton
+@EqualsAndHashCode
 public class DefaultActionManager implements ActionManager {
 
     private final Map<String, Provider<ArtParser>> parser;
+    @Getter(AccessLevel.PACKAGE)
     private final Map<String, ActionFactory<?, ?>> actionFactories = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
     @Inject
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PACKAGE)
     private Logger logger;
 
     @Inject

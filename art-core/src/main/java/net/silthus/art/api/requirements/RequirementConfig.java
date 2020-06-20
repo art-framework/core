@@ -1,8 +1,8 @@
 package net.silthus.art.api.requirements;
 
 import de.exlll.configlib.annotation.ConfigurationElement;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import net.silthus.art.api.config.ArtObjectConfig;
 
 /**
@@ -12,12 +12,19 @@ import net.silthus.art.api.config.ArtObjectConfig;
  *
  * @param <TConfig> custom config type of the requirement
  */
-@Data
+@Getter
 @ConfigurationElement
 @EqualsAndHashCode(callSuper = true)
 public class RequirementConfig<TConfig> extends ArtObjectConfig<TConfig> {
 
-    private boolean persistent = false;
-    private int order = 0;
-    private int requiredCount = 0;
+    private final boolean persistent = false;
+    private final int order = 0;
+    private final int requiredCount = 0;
+
+    public RequirementConfig() {
+    }
+
+    public RequirementConfig(TConfig with) {
+        super(with);
+    }
 }

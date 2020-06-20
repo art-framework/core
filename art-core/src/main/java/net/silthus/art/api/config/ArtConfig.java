@@ -2,7 +2,6 @@ package net.silthus.art.api.config;
 
 import de.exlll.configlib.annotation.Comment;
 import de.exlll.configlib.annotation.ConfigurationElement;
-import de.exlll.configlib.annotation.ElementType;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -19,8 +18,6 @@ public class ArtConfig {
     })
     private String id = UUID.randomUUID().toString();
     private String parser = "flow";
-    @ElementType(AliasGroupConfig.class)
-    private List<AliasGroupConfig> groups = new ArrayList<>();
     private Options options = new Options();
     private List<String> art = new ArrayList<>();
 

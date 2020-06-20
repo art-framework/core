@@ -1,5 +1,7 @@
-package net.silthus.art.api.actions;
+package net.silthus.art.api;
 
+import net.silthus.art.api.actions.Action;
+import net.silthus.art.api.actions.ActionConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

@@ -12,11 +12,14 @@ public class ArtObjectConfig<TConfig> {
 
     private String name;
     @Ignore
-    private TConfig with;
+    private final TConfig with;
 
-    @SuppressWarnings("unchecked")
-    public void setWith(Object object) {
-        this.with = (TConfig) object;
+    public ArtObjectConfig() {
+        this.with = null;
+    }
+
+    public ArtObjectConfig(TConfig with) {
+        this.with = with;
     }
 
     public Optional<TConfig> getWith() {

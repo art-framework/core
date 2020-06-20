@@ -1,4 +1,4 @@
-package net.silthus.art.api;
+package net.silthus.art.api.parser;
 
 public interface ArtResult {
 

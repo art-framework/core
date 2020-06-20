@@ -1,27 +1,26 @@
 package net.silthus.art;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.ArtResult;
-import net.silthus.art.api.trigger.TriggerContext;
+import net.silthus.art.api.parser.ArtResult;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 public final class ART {
 
-    @Getter
+    @Getter(AccessLevel.PRIVATE)
     private static final Logger logger = Logger.getLogger("ART");
     private static ArtManager instance;
 
     private static final Map<ArtModuleDescription, Consumer<ArtBuilder>> queuedRegistrations = new HashMap<>();
 
-    public static void setInstance(ArtManager artManager) {
+    static void setInstance(ArtManager artManager) {
 
         if (getInstance().isPresent() && getInstance().get().isLoaded()) {
             throw new UnsupportedOperationException("Cannot change the ARTManager after loading ART. Make sure to change it before calling ART.load()");
@@ -34,11 +33,11 @@ public final class ART {
         instance = artManager;
     }
 
-    public static Optional<ArtManager> getInstance() {
+    static Optional<ArtManager> getInstance() {
         return Optional.ofNullable(instance);
     }
 
-    public static void load() {
+    static void load() {
         if (getInstance().isEmpty()) {
             throw new UnsupportedOperationException("No ARTManger found. Cannot load() ART. Make sure to provide an ARTManager with ART.setARTManager(...) before calling ART.load()");
         }
@@ -79,27 +78,14 @@ public final class ART {
      *
      * @param config config to parse and create ART from
      * @return ARTResult containing the parsed config
-     * @see ArtManager#create(ArtConfig)
+     * @see ArtManager#load(ArtConfig)
      */
-    public static ArtResult create(ArtConfig config) {
+    public static ArtResult load(ArtConfig config) {
 
         if (getInstance().isEmpty()) {
             return new EmptyArtResult();
         } else {
-            return getInstance().get().create(config);
+            return getInstance().get().load(config);
         }
-    }
-
-    /**
-     *
-     * @param identifier
-     * @param target
-     * @param context
-     * @param <TTarget>
-     * @param <TConfig>
-     * @see ArtManager#trigger(String, Object, Predicate)
-     */
-    public static <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context) {
-        getInstance().ifPresent(artManager -> artManager.trigger(identifier, target, context));
     }
 }

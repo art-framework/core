@@ -13,11 +13,11 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public abstract class ArtTypeParser<TContext extends ArtContext<?, ?>> extends Parser<TContext> {
+public abstract class ArtTypeParser<TContext extends ArtContext<?, ?>, TConfig extends ArtObjectConfig<?>> extends Parser<TContext> {
 
     public ArtTypeParser(char typeMatcher) {
         // regexr.com/56s09
-        super(Pattern.compile("^" + typeMatcher + "(?<identifier>[\\w\\-.\\d:]+)(\\[(?<config>[\\w\\d:., ]*\\]))? ?(?<userConfig>[\\w\\d:., ]+)?$"));
+        super(Pattern.compile("^" + typeMatcher + "(?<identifier>[\\w\\-.\\d:]+)(\\[(?<config>[\\w\\d:., ]*]))? ?(?<userConfig>[\\w\\d:., ]+)?$"));
     }
 
     public String getIdentifier() {
@@ -34,25 +34,37 @@ public abstract class ArtTypeParser<TContext extends ArtContext<?, ?>> extends P
         return getMatcher().group("userConfig");
     }
 
-    protected <TConfig extends ArtObjectConfig<?>> TConfig parseARTConfig(ArtFactory<?, ?, ?> factory, TConfig artConfig, Map<String, ConfigFieldInformation> configFieldInformationMap) throws ArtParseException {
+    protected abstract TConfig createConfig(Object config);
 
-        ConfigParser<TConfig> actionConfigParser = new ConfigParser<>(artConfig, configFieldInformationMap);
+    protected TConfig parseARTConfig(ArtFactory<?, ?, ?> factory, Map<String, ConfigFieldInformation> configFieldInformationMap) throws ArtParseException {
+
+        ConfigParser.Result result = null;
+        Object artObjectConfig = null;
+
+        ConfigParser actionConfigParser = new ConfigParser(configFieldInformationMap);
         Optional<String> config = getConfig();
         if (config.isPresent() && actionConfigParser.accept(config.get())) {
-            artConfig = actionConfigParser.parse();
+            result = actionConfigParser.parse();
         }
 
         if (factory.getConfigClass().isPresent()) {
             try {
-                ConfigParser<?> configParser = new ConfigParser<>(factory.getConfigClass().get().getConstructor().newInstance(), factory.getConfigInformation());
+                artObjectConfig = factory.getConfigClass().get().getConstructor().newInstance();
+                ConfigParser configParser = new ConfigParser(factory.getConfigInformation());
                 String userConfig = getUserConfig();
                 if (configParser.accept(userConfig)) {
-                    artConfig.setWith(configParser.parse());
+                    configParser.parse().applyTo(artObjectConfig);
                 }
 
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 throw new ArtParseException("Unable to parse config of " + factory.getIdentifier(), e);
             }
+        }
+
+        TConfig artConfig = createConfig(artObjectConfig);
+
+        if (result != null) {
+            result.applyTo(artConfig);
         }
 
         return artConfig;

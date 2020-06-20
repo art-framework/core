@@ -15,12 +15,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("ConfigParser")
 class ConfigParserTest {
 
-    private ConfigParser<TestConfig> parser;
+    private ConfigParser parser;
 
     @BeforeEach
     @SneakyThrows
     void beforeEach() {
-        this.parser = new ConfigParser<>(new TestConfig(), ConfigUtil.getConfigFields(TestConfig.class));
+        this.parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
     }
 
     @Nested
@@ -34,10 +34,11 @@ class ConfigParserTest {
         @DisplayName("should parse single config setting without position annotation")
         void shouldParseConfigWithSingleField() {
 
-            ConfigParser<SingleFieldConfig> parser = new ConfigParser<>(new SingleFieldConfig(), ConfigUtil.getConfigFields(SingleFieldConfig.class));
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(SingleFieldConfig.class));
 
             parser.accept("10");
-            assertThat(parser.parse())
+            ConfigParser.Result result = parser.parse();
+            assertThat(result.applyTo(new SingleFieldConfig()))
                     .extracting(SingleFieldConfig::getAmount)
                     .isEqualTo(10.0);
         }
