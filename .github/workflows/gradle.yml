@@ -126,12 +126,3 @@ jobs:
           yarn semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ORG_GRADLE_PROJECT_signingKeyId: ${{ steps.import_gpg.outputs.keyid }}
-          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
-          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.PASSPHRASE }}
-          OSSHR_USER: ${{ secrets.OSSHR_USER }}
-          ORG_GRADLE_PROJECT_nexusUser: ${{ secrets.OSSHR_USER }}
-          OSSHR_PASSWORD: ${{ secrets.OSSHR_PASSWORD }}
-          ORG_GRADLE_PROJECT_nexusPassword: ${{ secrets.OSSHR_PASSWORD }}
-          ORG_GRADLE_PROJECT_sonatypePassword: ${{ secrets.OSSHR_PASSWORD }}
-          ORG_GRADLE_PROJECT_sonatypeUser: ${{ secrets.OSSHR_USER }}

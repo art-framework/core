@@ -70,31 +70,14 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/${project.findProperty("GITHUB_REPOSITORY")?: System.getenv("GITHUB_REPOSITORY")}")
+            url = uri("https://maven.pkg.github.com/${project.findProperty("GITHUB_REPOSITORY") ?: System.getenv("GITHUB_REPOSITORY")}")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
                 password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
             }
         }
-//        maven {
-//            name = "OSSHR"
-//            url = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
-//            credentials {
-//                username = project.findProperty("sonatypeUser")
-//                password = project.findProperty("sonatypePassword")
-//            }
-//        }
     }
 }
-
-signing {
-    def signingKeyId = findProperty("signingKeyId")
-    def signingKey = findProperty("signingKey")
-    def signingPassword = findProperty("signingPassword")
-    useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
-    sign publishing.publications.mavenJava
-}
-
 
 javadoc {
     if(JavaVersion.current().isJava9Compatible()) {

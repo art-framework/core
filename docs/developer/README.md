@@ -26,25 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'net.silthus.art', name: 'art-core', version: '1.0.0-alpha.1-alpha.1-beta.1'
-}
-```
-
-Shade ART into your plugin if you don't want to depend on the ART-Plugin being present on the server.
-
-```gradle
-plugins {
-    id 'com.github.johnrengelman.shadow' version '1.0.0-alpha.1-alpha.1'
-}
-
-...
-
-shadowJar {
-    classifier = ''
-    dependencies {
-        include(dependency('net.silthus.art:art-core:'))
-    }
-    relocate 'net.silthus.art', "${YOUR_PACKAGE_NAME}.art"
+    implementation group: 'net.silthus.art', name: 'art-core', version: '1.0.0-beta.2'
 }
 ```
 
@@ -57,41 +39,9 @@ shadowJar {
     <dependency>
       <groupId>net.silthus.art</groupId>
       <artifactId>art-core</artifactId>
-      <version>1.0.0-alpha.1-alpha.1-beta.1</version>
+      <version>1.0.0-beta.2</version>
     </dependency>
   </dependencies>
-  ...
-</project>
-```
-
-Shade ART into your plugin if you don't want to depend on the ART-Plugin being present on the server.
-
-```xml
-<project>
-  ...
-  <plugins>
-    <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>1.0.0-alpha.1-alpha.1</version>
-        <executions>
-            <execution>
-            <phase>package</phase>
-            <goals>
-                <goal>shade</goal>
-            </goals>
-            <configuration>
-                <relocations>
-                <relocation>
-                    <pattern>net.silthus.art</pattern>
-                    <shadedPattern>your.package.name.art</shadedPattern>
-                </relocation>
-                </relocations>
-            </configuration>
-            </execution>
-        </executions>
-    </plugin>
-  </plugins>
   ...
 </project>
 ```
