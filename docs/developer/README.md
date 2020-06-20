@@ -16,7 +16,7 @@ All of these code examples can also be found inside the [art-example](../../art-
 
 ## Dependencies
 
-You only need to depend on the `net.silthus.art:art-core` maven packge and shade it into your plugin or require the admin to provide the corresponding plugin to be present.
+You only need to depend on the `net.silthus.art:art-core` or the corresponding implementation, e.g. `net.silthus.art:art-bukkit`.
 
 ### Gradle
 

@@ -17,7 +17,7 @@ This framework is for [**DEVELOPERS**](docs/developer/README.md) and [**SERVER A
 ## Getting started
 
 * [Developer Documentation](docs/developer/README.md)
-* [Server Admin Documentation](docs/admin/README.md)
+* [Admin Documentation](docs/admin/README.md)
 
 ## Features
 
