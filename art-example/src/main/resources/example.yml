@@ -1,3 +1,4 @@
 actions:
   art:
-    - '!art-example:player.damage 10'
+    - '?art-example:location z:100, radius:10'
+    - '!art-example:player.damage 1'

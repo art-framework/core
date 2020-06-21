@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.silthus.examples.art;
 
 import de.exlll.configlib.configs.yaml.YamlConfiguration;
@@ -11,7 +27,9 @@ import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.examples.art.actions.PlayerDamageAction;
 import net.silthus.examples.art.listener.PlayerListener;
+import net.silthus.examples.art.requirements.EntityLocationRequirement;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -48,8 +66,11 @@ public class ExampleArtPlugin extends JavaPlugin {
             return;
         }
 
-        getARTManager().get().register(ArtBukkitDescription.ofPlugin(this), artBuilder -> artBuilder.target(Player.class)
-                .action(new PlayerDamageAction()));
+        getARTManager().get().register(ArtBukkitDescription.ofPlugin(this), artBuilder -> artBuilder
+                .target(Player.class)
+                    .action(new PlayerDamageAction())
+                .target(Entity.class)
+                    .requirement(new EntityLocationRequirement()));
     }
 
     private void loadARTConfig() {

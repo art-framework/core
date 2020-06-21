@@ -14,13 +14,23 @@
  * limitations under the License.
  */
 
-package net.silthus.art.parser.flow;
+package net.silthus.art.api.actions;
 
-import net.silthus.art.api.actions.Action;
-import net.silthus.art.api.requirements.Requirement;
+import lombok.EqualsAndHashCode;
+import net.silthus.art.api.factory.AbstractFactoryManager;
+import net.silthus.art.api.parser.ArtParser;
 
-public final class Constants {
+import javax.inject.Inject;
+import javax.inject.Provider;
+import javax.inject.Singleton;
+import java.util.Map;
 
-    public static final ArtType ACTION = new ArtType("action", Action.class, '!');
-    public static final ArtType REQUIREMENT = new ArtType("requirement", Requirement.class, '?');
+@Singleton
+@EqualsAndHashCode(callSuper = true)
+public class ActionFactoryManager extends AbstractFactoryManager<ActionFactory<?, ?>> implements ActionManager {
+
+    @Inject
+    public ActionFactoryManager(Map<String, Provider<ArtParser>> parser) {
+        super(parser);
+    }
 }
