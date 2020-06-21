@@ -14,13 +14,11 @@
  * limitations under the License.
  */
 
-package net.silthus.art.parser.flow;
+package net.silthus.art.api.requirements;
 
-import net.silthus.art.api.actions.Action;
-import net.silthus.art.api.requirements.Requirement;
+import com.google.inject.ImplementedBy;
+import net.silthus.art.api.factory.ArtFactoryManager;
 
-public final class Constants {
-
-    public static final ArtType ACTION = new ArtType("action", Action.class, '!');
-    public static final ArtType REQUIREMENT = new ArtType("requirement", Requirement.class, '?');
+@ImplementedBy(RequirementFactoryManager.class)
+public interface RequirementManager extends ArtFactoryManager<RequirementFactory<?, ?>> {
 }

@@ -1,17 +1,34 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.silthus.art;
 
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import net.silthus.art.api.ArtFactory;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.ArtParser;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.requirements.RequirementFactory;
+import net.silthus.art.api.requirements.RequirementManager;
 import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.util.ConfigUtil;
 import org.apache.commons.lang3.NotImplementedException;
@@ -30,14 +47,16 @@ import static java.util.stream.Collectors.toMap;
 public class DefaultArtManager implements ArtManager {
 
     private final ActionManager actionManager;
+    private final RequirementManager requirementManager;
 
     private Logger logger = Logger.getLogger("ART");
     private final Map<String, Provider<ArtParser>> parser;
     private final Map<ArtModuleDescription, ArtBuilder> registeredPlugins = new HashMap<>();
 
     @Inject
-    public DefaultArtManager(ActionManager actionManager, Map<String, Provider<ArtParser>> parser) {
+    public DefaultArtManager(ActionManager actionManager, RequirementManager requirementManager, Map<String, Provider<ArtParser>> parser) {
         this.actionManager = actionManager;
+        this.requirementManager = requirementManager;
         this.parser = parser;
     }
 
@@ -74,8 +93,8 @@ public class DefaultArtManager implements ArtManager {
                     getLogger().info("   " + moduleDescription.getName() + " v" + moduleDescription.getVersion() + " registered their ART.");
                     getLogger().info("");
 
-                    Map<Class<?>, Map<String, ArtFactory<?, ?, ?>>> createdART = art.build();
-                    for (Map.Entry<Class<?>, Map<String, ArtFactory<?, ?, ?>>> entry : createdART.entrySet()) {
+                    Map<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> createdART = art.build();
+                    for (Map.Entry<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> entry : createdART.entrySet()) {
                         if (entry.getKey() == ActionFactory.class) {
                             registerActions(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (ActionFactory<?, ?>) artFactory.getValue())));
                         } else if (entry.getKey() == RequirementFactory.class) {
@@ -98,7 +117,11 @@ public class DefaultArtManager implements ArtManager {
     }
 
     void registerRequirements(Map<String, RequirementFactory<?, ?>> requirements) {
-        throw new NotImplementedException();
+
+        requirements().register(requirements);
+        getLogger().info("   " + requirements.size() + "x Requirement(s):");
+        requirements.keySet().forEach(actionIdentifier -> getLogger().info("    - " + actionIdentifier));
+        getLogger().info("");
     }
 
     @Override
@@ -118,6 +141,10 @@ public class DefaultArtManager implements ArtManager {
 
     public ActionManager actions() {
         return actionManager;
+    }
+
+    public RequirementManager requirements() {
+        return requirementManager;
     }
 
     @Override

@@ -1,7 +1,27 @@
-package net.silthus.art.api.actions;
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import net.silthus.art.api.ActionContext;
+package net.silthus.art.api.factory;
+
+import net.silthus.art.ActionContext;
+import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtObjectRegistrationException;
+import net.silthus.art.api.actions.Action;
+import net.silthus.art.api.actions.ActionConfig;
+import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,13 +32,13 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("ActionFactory")
-public class ActionFactoryTest {
+public class ArtFactoryTest {
 
-    private ActionFactory<String, TestConfig> factory;
+    private ActionFactory<String, TestConfig> actionFactory;
 
     @BeforeEach
     public void beforeEach() {
-        this.factory = new ActionFactory<>(String.class, new TestAction());
+        this.actionFactory = new ActionFactory<>(String.class, new TestAction());
     }
 
     @Nested
@@ -28,72 +48,72 @@ public class ActionFactoryTest {
         @BeforeEach
         public void beforeEach() {
 
-            assertThat(factory.getIdentifier()).isNullOrEmpty();
-            assertThat(factory.getConfigClass()).isEmpty();
+            assertThat(actionFactory.getIdentifier()).isNullOrEmpty();
+            assertThat(actionFactory.getConfigClass()).isEmpty();
         }
 
         @Test
         @DisplayName("should use annotations")
         public void shouldUseAnnotations() {
 
-            assertThatCode(() -> factory.initialize())
+            assertThatCode(() -> actionFactory.initialize())
                     .doesNotThrowAnyException();
 
-            assertThat(factory.getIdentifier()).isEqualTo("Test");
-            assertThat(factory.getConfigClass()).contains(TestConfig.class);
+            assertThat(actionFactory.getIdentifier()).isEqualTo("Test");
+            assertThat(actionFactory.getConfigClass()).contains(TestConfig.class);
         }
 
         @Test
         @DisplayName("should not override manually set name and config information")
         public void shouldNotOverrideManualSetters() {
 
-            factory.setIdentifier("foo");
-            factory.setConfigClass(null);
+            actionFactory.setIdentifier("foo");
+            actionFactory.setConfigClass(null);
 
-            assertThatCode(() -> factory.initialize())
+            assertThatCode(() -> actionFactory.initialize())
                     .doesNotThrowAnyException();
 
-            assertThat(factory.getIdentifier()).isEqualTo("foo");
-            assertThat(factory.getConfigClass()).contains(TestConfig.class);
+            assertThat(actionFactory.getIdentifier()).isEqualTo("foo");
+            assertThat(actionFactory.getConfigClass()).contains(TestConfig.class);
         }
 
         @Test
         @DisplayName("should throw ActionRegistrationException if missing annotations")
         public void shouldThrowIfMissingAnnotations() {
 
-            factory = new ActionFactory<>(String.class, (s, context) -> {
+            actionFactory = new ActionFactory<>(String.class, (s, context) -> {
             });
 
             assertThatExceptionOfType(ArtObjectRegistrationException.class)
-                    .isThrownBy(() -> factory.initialize());
+                    .isThrownBy(() -> actionFactory.initialize());
         }
 
         @Test
         @DisplayName("should not throw if manual set but has missing annotations")
         public void shouldNotThrowIfNoAnnotationButManualInfo() {
 
-            factory = new ActionFactory<>(String.class, (s, context) -> {
+            actionFactory = new ActionFactory<>(String.class, (s, context) -> {
             });
-            factory.setIdentifier("foo");
-            factory.setConfigClass(TestConfig.class);
+            actionFactory.setIdentifier("foo");
+            actionFactory.setConfigClass(TestConfig.class);
 
-            assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-            assertThat(factory.getIdentifier()).isEqualTo("foo");
-            assertThat(factory.getConfigClass()).contains(TestConfig.class);
+            assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
+            assertThat(actionFactory.getIdentifier()).isEqualTo("foo");
+            assertThat(actionFactory.getConfigClass()).contains(TestConfig.class);
         }
 
         @Test
         @DisplayName("should not throw if missing config information")
         public void shouldNotThrowIfMissingConfigInformation() {
 
-            factory = new ActionFactory<>(String.class, (s, context) -> {
+            actionFactory = new ActionFactory<>(String.class, (s, context) -> {
             });
-            factory.setIdentifier("foobar");
+            actionFactory.setIdentifier("foobar");
 
-            assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-            assertThat(factory.getIdentifier())
+            assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
+            assertThat(actionFactory.getIdentifier())
                     .isEqualTo("foobar");
-            assertThat(factory.getConfigClass())
+            assertThat(actionFactory.getConfigClass())
                     .isNotNull()
                     .isEmpty();
         }
@@ -102,7 +122,7 @@ public class ActionFactoryTest {
         @DisplayName("should use annotations on method")
         public void shouldUseMethodAnnotation() {
 
-            factory = new ActionFactory<>(String.class, new Action<>() {
+            actionFactory = new ActionFactory<>(String.class, new Action<>() {
 
                 @Name("foo")
                 @Config(TestConfig.class)
@@ -112,9 +132,9 @@ public class ActionFactoryTest {
                 }
             });
 
-            assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-            assertThat(factory.getIdentifier()).isEqualTo("foo");
-            assertThat(factory.getConfigClass()).contains(TestConfig.class);
+            assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
+            assertThat(actionFactory.getIdentifier()).isEqualTo("foo");
+            assertThat(actionFactory.getConfigClass()).contains(TestConfig.class);
         }
 
         @Nested
@@ -125,8 +145,8 @@ public class ActionFactoryTest {
             @DisplayName("should load all fields including superclass")
             public void shouldLoadAllFields() {
 
-                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-                assertThat(factory.getConfigInformation())
+                assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
+                assertThat(actionFactory.getConfigInformation())
                         .hasSizeGreaterThanOrEqualTo(5)
                         .containsKeys(
                                 "parentField",
@@ -141,8 +161,8 @@ public class ActionFactoryTest {
             @DisplayName("should load required annotation")
             public void shouldLoadRequiredAttribute() {
 
-                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-                assertThat(factory.getConfigInformation().get("required"))
+                assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
+                assertThat(actionFactory.getConfigInformation().get("required"))
                         .extracting(ConfigFieldInformation::isRequired)
                         .isEqualTo(true);
             }
@@ -151,18 +171,18 @@ public class ActionFactoryTest {
             @DisplayName("should load description annotation")
             public void shouldLoadDescriptionAttribute() {
 
-                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-                assertThat(factory.getConfigInformation().get("defaultField"))
+                assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
+                assertThat(actionFactory.getConfigInformation().get("defaultField"))
                         .extracting(ConfigFieldInformation::getDescription)
-                        .isEqualTo("World to teleport the player to.");
+                        .isEqualTo(new String[] {"World to teleport the player to."});
             }
 
             @Test
             @DisplayName("should load default value")
             public void shouldLoadDefaultValue() {
 
-                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-                assertThat(factory.getConfigInformation().get("defaultField"))
+                assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
+                assertThat(actionFactory.getConfigInformation().get("defaultField"))
                         .extracting(ConfigFieldInformation::getDefaultValue)
                         .isEqualTo("world");
             }
@@ -171,37 +191,37 @@ public class ActionFactoryTest {
             @DisplayName("should load required field with default value")
             public void shouldLoadRequiredDefaultValue() {
 
-                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-                assertThat(factory.getConfigInformation().get("allAnnotations"))
+                assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
+                assertThat(actionFactory.getConfigInformation().get("allAnnotations"))
                         .extracting(ConfigFieldInformation::getDefaultValue, ConfigFieldInformation::getDescription)
-                        .contains(2.0d, "Required field with default value.");
+                        .contains(2.0d, new String[] {"Required field with default value."});
             }
 
             @Test
             @DisplayName("should load nested config objects")
             public void shouldLoadNestedObjects() {
 
-                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-                assertThat(factory.getConfigInformation())
+                assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
+                assertThat(actionFactory.getConfigInformation())
                         .containsKeys("nested.nestedField");
-                assertThat(factory.getConfigInformation().get("nested.nestedField"))
+                assertThat(actionFactory.getConfigInformation().get("nested.nestedField"))
                         .extracting(ConfigFieldInformation::getDescription, ConfigFieldInformation::getDefaultValue)
-                        .contains("nested config field", "foobar");
+                        .contains(new String[] {"nested config field"}, "foobar");
             }
 
             @Test
             @DisplayName("should not load nested object fields")
             public void shouldNotAddNestedBase() {
-                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-                assertThat(factory.getConfigInformation())
+                assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
+                assertThat(actionFactory.getConfigInformation())
                         .doesNotContainKey("nested");
             }
 
             @Test
             @DisplayName("should ignore @Ignored fields")
             public void shouldIgnoredIgnored() {
-                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-                assertThat(factory.getConfigInformation())
+                assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
+                assertThat(actionFactory.getConfigInformation())
                         .doesNotContainKey("ignored");
             }
 
@@ -209,11 +229,11 @@ public class ActionFactoryTest {
             @DisplayName("should load field position annotation")
             public void shouldLoadFieldPosition() {
 
-                assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-                assertThat(factory.getConfigInformation().get("required"))
+                assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
+                assertThat(actionFactory.getConfigInformation().get("required"))
                         .extracting(ConfigFieldInformation::getPosition)
                         .isEqualTo(1);
-                assertThat(factory.getConfigInformation().get("parentField"))
+                assertThat(actionFactory.getConfigInformation().get("parentField"))
                         .extracting(ConfigFieldInformation::getPosition)
                         .isEqualTo(0);
             }
@@ -245,34 +265,19 @@ public class ActionFactoryTest {
         @BeforeEach
         public void beforeEach() {
 
-            assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
+            assertThatCode(() -> actionFactory.initialize()).doesNotThrowAnyException();
         }
 
         @Test
         @DisplayName("should create an action context")
         public void shouldCreateActionContext() {
 
-            ActionContext<String, TestConfig> context = factory.create(new ActionConfig<>());
+            ArtContext<String, TestConfig> context = actionFactory.create(new ActionConfig<>());
 
             assertThat(context).isNotNull();
-            assertThat(context).extracting("action").isEqualTo(factory.getArtObject());
-            assertThat(context).extracting("targetClass").isEqualTo(factory.getTargetClass());
+            assertThat(context).extracting("action").isEqualTo(actionFactory.getArtObject());
+            assertThat(context).extracting("targetClass").isEqualTo(actionFactory.getTargetClass());
             assertThat(context.getConfig()).isEmpty();
-        }
-
-        @Test
-        @DisplayName("should not cache action context if config is different")
-        public void shouldNotCacheContext() {
-
-            ActionConfig<TestConfig> config1 = new ActionConfig<>();
-            config1.setCooldown("2s");
-            ActionContext<String, TestConfig> context1 = factory.create(config1);
-            ActionContext<String, TestConfig> context2 = factory.create(new ActionConfig<>());
-
-            assertThat(context1).isNotNull();
-            assertThat(context2).isNotNull();
-
-            assertThat(context1).isNotSameAs(context2);
         }
     }
 

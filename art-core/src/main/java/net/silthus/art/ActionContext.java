@@ -1,8 +1,24 @@
-package net.silthus.art.api;
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.silthus.art;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import net.silthus.art.ART;
+import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionConfig;
 
@@ -25,26 +41,16 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
         this.action = action;
     }
 
-    /**
-     * The execute method is called by {@link ART} when this {@link Action} should be executed.
-     * This method handles the actual execution of the {@link Action} applying checks and delays.
-     * <br>
-     * Override this method in a custom {@link ActionContext} to control how actions are executed.
-     * <br>
-     * If the {@link Action} has not been wrapped inside an {@link ActionContext} a {@link UnsupportedOperationException} will be thrown.
-     *
-     * @param target target instance to execute the {@link Action} on.
-     * @throws UnsupportedOperationException if the {@link Action} is not wrapped in an {@link ActionContext}
-     */
-    void execute(TTarget target) {
-
-        if (!isTargetType(target)) return;
+    final void execute(TTarget target) {
 
         getAction().execute(target, this);
     }
 
     @Override
     public void execute(TTarget target, ActionContext<TTarget, TConfig> context) {
+
+        if (!isTargetType(target)) return;
+
         getAction().execute(target, Objects.isNull(context) ? this : context);
     }
 }

@@ -1,12 +1,30 @@
-package net.silthus.art.api.parser.flow;
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.silthus.art.parser.flow.parser;
 
 import com.google.common.base.Strings;
+import lombok.Getter;
 import net.silthus.art.api.ArtContext;
-import net.silthus.art.api.ArtFactory;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
+import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.parser.ArtParseException;
-import net.silthus.art.parser.flow.types.ConfigParser;
+import net.silthus.art.api.parser.flow.Parser;
+import net.silthus.art.parser.flow.ArtType;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
@@ -15,9 +33,13 @@ import java.util.regex.Pattern;
 
 public abstract class ArtTypeParser<TContext extends ArtContext<?, ?>, TConfig extends ArtObjectConfig<?>> extends Parser<TContext> {
 
-    public ArtTypeParser(char typeMatcher) {
+    @Getter
+    private final ArtType artType;
+
+    public ArtTypeParser(ArtType artType) {
         // regexr.com/56s09
-        super(Pattern.compile("^" + typeMatcher + "(?<identifier>[\\w\\-.\\d:]+)(\\[(?<config>[\\w\\d:., ]*]))? ?(?<userConfig>[\\w\\d:., ]+)?$"));
+        super(Pattern.compile("^" + artType.getTypeIdentifier() + "(?<identifier>[\\w\\-.\\d:]+)(\\[(?<config>[\\w\\d:., ]*]))? ?(?<userConfig>[\\w\\d:., ]+)?$"));
+        this.artType = artType;
     }
 
     public String getIdentifier() {
@@ -36,7 +58,28 @@ public abstract class ArtTypeParser<TContext extends ArtContext<?, ?>, TConfig e
 
     protected abstract TConfig createConfig(Object config);
 
-    protected TConfig parseARTConfig(ArtFactory<?, ?, ?> factory, Map<String, ConfigFieldInformation> configFieldInformationMap) throws ArtParseException {
+    protected abstract <TFactory extends ArtFactory<?, ?, ?, TConfig>> Optional<TFactory> getFactory(String identifier);
+
+    protected abstract Map<String, ConfigFieldInformation> getConfigFieldMap();
+
+    @Override
+    @SuppressWarnings({"unchecked"})
+    public TContext parse() throws ArtParseException {
+
+        String identifier = getMatcher().group("identifier");
+        Optional<ArtFactory<?, ?, ?, TConfig>> factoryOptional = getFactory(identifier);
+
+        if (factoryOptional.isEmpty()) {
+            throw new ArtParseException("No " + getArtType().getName() + " with identifier \"" + identifier + "\" found");
+        }
+
+        ArtFactory<?, ?, ?, TConfig> factory = factoryOptional.get();
+        TConfig config = parseARTConfig(factory, getConfigFieldMap());
+
+        return (TContext) factory.create(config);
+    }
+
+    protected TConfig parseARTConfig(ArtFactory<?, ?, ?, ?> factory, Map<String, ConfigFieldInformation> configFieldInformationMap) throws ArtParseException {
 
         ConfigParser.Result result = null;
         Object artObjectConfig = null;

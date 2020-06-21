@@ -16,11 +16,19 @@
 
 package net.silthus.art.parser.flow;
 
-import net.silthus.art.api.actions.Action;
-import net.silthus.art.api.requirements.Requirement;
+import lombok.Data;
+import net.silthus.art.api.ArtObject;
 
-public final class Constants {
+@Data
+public final class ArtType {
 
-    public static final ArtType ACTION = new ArtType("action", Action.class, '!');
-    public static final ArtType REQUIREMENT = new ArtType("requirement", Requirement.class, '?');
+    private final String name;
+    private final Class<? extends ArtObject> type;
+    private final char typeIdentifier;
+
+    ArtType(String name, Class<? extends ArtObject> type, char typeIdentifier) {
+        this.name = name;
+        this.type = type;
+        this.typeIdentifier = typeIdentifier;
+    }
 }

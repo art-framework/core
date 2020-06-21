@@ -1,11 +1,27 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.silthus.art;
 
 import lombok.RequiredArgsConstructor;
-import net.silthus.art.api.ArtFactory;
 import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
+import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.requirements.RequirementFactory;
 
@@ -34,7 +50,7 @@ public class ArtBuilder {
      *
      * @return identifier to factory mapping grouped by their class
      */
-    Map<Class<?>, Map<String, ArtFactory<?, ?, ?>>> build() {
+    Map<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> build() {
 
         return builders.values().stream()
                 .flatMap(targetBuilder -> targetBuilder.artFactories.stream())
@@ -45,6 +61,7 @@ public class ArtBuilder {
                         return artFactory;
                     } catch (ArtObjectRegistrationException e) {
                         logger.severe(e.getMessage());
+                        e.printStackTrace();
                         return null;
                     }
                 })
@@ -84,7 +101,7 @@ public class ArtBuilder {
     public class TargetBuilder<TTarget> {
 
         private final Class<TTarget> targetClass;
-        private final List<ArtFactory<TTarget, ?, ?>> artFactories = new ArrayList<>();
+        private final List<ArtFactory<TTarget, ?, ?, ?>> artFactories = new ArrayList<>();
 
         public <TConfig> FactoryBuilder action(Action<TTarget, TConfig> action) {
             FactoryBuilder factoryBuilder = new FactoryBuilder(action);
@@ -100,7 +117,7 @@ public class ArtBuilder {
 
         public class FactoryBuilder {
 
-            private final ArtFactory<TTarget, ?, ?> artFactory;
+            private final ArtFactory<TTarget, ?, ?, ?> artFactory;
 
             @SuppressWarnings("unchecked")
             public FactoryBuilder(ArtObject artObject) {
@@ -114,7 +131,7 @@ public class ArtBuilder {
                 }
             }
 
-            public Optional<ArtFactory<TTarget, ?, ?>> getArtFactory() {
+            public Optional<ArtFactory<TTarget, ?, ?, ?>> getArtFactory() {
                 return Optional.ofNullable(artFactory);
             }
 
