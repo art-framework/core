@@ -53,6 +53,7 @@ subprojects {
         annotationProcessor 'org.projectlombok:lombok:1.+'
 
         api group: 'com.google.inject', name: 'guice', version: '4.2.3'
+        api group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '4.2.3'
         implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 
         //Test dependencies

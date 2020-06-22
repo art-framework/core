@@ -17,33 +17,34 @@
 package net.silthus.art.parser.flow;
 
 import com.google.inject.Provider;
-import net.silthus.art.AbstractArtResult;
-import net.silthus.art.api.ArtContext;
+import net.silthus.art.DefaultArtResult;
+import net.silthus.art.api.ArtManager;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @DisplayName("FlowParser")
 class FlowParserTest {
 
+    private ArtManager artManager;
     private FlowParser parser;
     private final Set<Provider<ArtTypeParser<?, ?>>> parsers = new HashSet<>();
 
     @BeforeEach
     void beforeEach() {
-        parser = new FlowParser((config, artContexts) -> new AbstractArtResult(config, artContexts) {
-            @Override
-            protected <TTarget> boolean filter(TTarget target, ArtContext<TTarget, ?> context) {
-                return false;
-            }
-        }, parsers);
+        artManager = mock(ArtManager.class);
+        when(artManager.getGlobalFilters()).thenReturn(new HashMap<>());
+        parser = new FlowParser(artManager, DefaultArtResult::new, parsers);
     }
 
     @Nested

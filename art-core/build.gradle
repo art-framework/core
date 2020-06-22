@@ -10,6 +10,7 @@ shadowJar {
     classifier = ''
     dependencies {
         include(dependency('com.google.inject:guice:'))
+        include(dependency('com.google.inject.extensions::'))
         include(dependency('org.apache.commons:commons-lang3:'))
     }
     relocate 'com.google.inject', "${packageName}.guice"
