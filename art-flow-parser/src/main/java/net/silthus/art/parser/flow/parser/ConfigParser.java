@@ -37,8 +37,10 @@ public class ConfigParser extends Parser<ConfigParser.Result> {
     private final Map<String, ConfigFieldInformation> configMap;
 
     public ConfigParser(Map<String, ConfigFieldInformation> configMap) {
-        // regexr.com/56s0f
-        super(Pattern.compile("^(?<keyValue>((?<key>[\\w\\d.]+)?[:=] ?)?(?<value>[\\w\\d. !?&$/\\\\\"]+))([,;] ?(?<config>.*))?$"));
+        // always edit the regexr link and update the link below!
+        // the regexr link and the regex should always match
+        // regexr.com/575ss
+        super(Pattern.compile("^(?<keyValue>((?<key>[\\w\\d._-]+)?[:=])?((\"(?<quotedValue>.*?)\")|((?<value>[\\w\\d]+)[,; ]?)))(?<config>.*)?$"));
         this.configMap = ImmutableMap.copyOf(configMap);
     }
 
@@ -49,18 +51,24 @@ public class ConfigParser extends Parser<ConfigParser.Result> {
         List<KeyValuePair> keyValuePairs = extractKeyValuePairs(getMatcher());
         Set<ConfigFieldInformation> mappedFields = new HashSet<>();
 
+        boolean usedKeyValue = false;
+
         for (int i = 0; i < keyValuePairs.size(); i++) {
             KeyValuePair keyValue = keyValuePairs.get(i);
             ConfigFieldInformation configFieldInformation;
             if (keyValue.getKey().isPresent() && getConfigMap().containsKey(keyValue.getKey().get())) {
                 configFieldInformation = getConfigMap().get(keyValue.getKey().get());
+                usedKeyValue = true;
             } else if (getConfigMap().size() == 1) {
                 Optional<ConfigFieldInformation> fieldInformation = getConfigMap().values().stream().findFirst();
                 if (fieldInformation.isEmpty()) {
-                    throw new ArtParseException("Config should only defines one parameter, but none was found.");
+                    throw new ArtParseException("Config should only define one parameter, but none was found.");
                 }
                 configFieldInformation = fieldInformation.get();
             } else {
+                if (usedKeyValue) {
+                    throw new ArtParseException("Positioned parameter found after key=value pair usage. Positioned parameters must come first.");
+                }
                 int finalI = i;
                 Optional<ConfigFieldInformation> optionalFieldInformation = getConfigMap().values().stream().filter(info -> info.getPosition() == finalI).findFirst();
                 if (optionalFieldInformation.isEmpty()) {
@@ -96,7 +104,10 @@ public class ConfigParser extends Parser<ConfigParser.Result> {
 
         ArrayList<KeyValuePair> pairs = new ArrayList<>();
 
-        pairs.add(new KeyValuePair(matcher.group("key"), matcher.group("value")));
+        String quotedValue = matcher.group("quotedValue");
+        String value = Strings.isNullOrEmpty(quotedValue) ? matcher.group("value") : quotedValue;
+
+        pairs.add(new KeyValuePair(matcher.group("key"), value));
 
         String config = matcher.group("config");
         if (!Strings.isNullOrEmpty(config)) {

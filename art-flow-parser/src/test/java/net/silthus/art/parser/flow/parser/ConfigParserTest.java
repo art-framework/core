@@ -18,7 +18,9 @@ package net.silthus.art.parser.flow.parser;
 
 import lombok.Data;
 import lombok.SneakyThrows;
+import net.silthus.art.api.annotations.Position;
 import net.silthus.art.api.annotations.Required;
+import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.util.ConfigUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +28,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DisplayName("ConfigParser")
 class ConfigParserTest {
@@ -57,16 +60,187 @@ class ConfigParserTest {
                     .extracting(SingleFieldConfig::getAmount)
                     .isEqualTo(10.0);
         }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should parse config with key=value parameters")
+        void shouldParseConfigWithKeyValueParameter() {
+
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
+
+            assertThat(parser.accept("name=foobar, required=true")).isTrue();
+            ConfigParser.Result result = parser.parse();
+            assertThat(result.applyTo(new TestConfig()))
+                    .extracting(TestConfig::getName, TestConfig::isRequired)
+                    .contains("foobar", true);
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should parse config with key:value parameters")
+        void shouldParseConfigWithKeyValueParameterWithColons() {
+
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
+
+            assertThat(parser.accept("name:foobar, required:true")).isTrue();
+            ConfigParser.Result result = parser.parse();
+            assertThat(result.applyTo(new TestConfig()))
+                    .extracting(TestConfig::getName, TestConfig::isRequired)
+                    .contains("foobar", true);
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should parse config with key:value,key=value parameters without space")
+        void shouldParseConfigWithKeyValueParameterWithoutSpace() {
+
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
+
+            assertThat(parser.accept("name:foobar,required=true")).isTrue();
+            ConfigParser.Result result = parser.parse();
+            assertThat(result.applyTo(new TestConfig()))
+                    .extracting(TestConfig::getName, TestConfig::isRequired)
+                    .contains("foobar", true);
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should parse config with key:value; key=value parameters with semicolon")
+        void shouldParseConfigWithKeyValueParameterWithSemicolon() {
+
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
+
+            assertThat(parser.accept("name:foobar; required=true")).isTrue();
+            ConfigParser.Result result = parser.parse();
+            assertThat(result.applyTo(new TestConfig()))
+                    .extracting(TestConfig::getName, TestConfig::isRequired)
+                    .contains("foobar", true);
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should throw if positioned parameters do not come first: key=value, value, value")
+        void shouldThrowIfPositionedParameterIsNotFirst() {
+
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
+
+            assertThat(parser.accept("name:foobar, true, barfoo")).isTrue();
+            assertThatExceptionOfType(ArtParseException.class)
+                    .isThrownBy(parser::parse)
+                    .withMessageContaining("Positioned parameters must come first");
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should parse config with key=value and position parameters")
+        void shouldParseConfigWithKeyValueAndPositionParameters() {
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
+
+            assertThat(parser.accept("foobar, optional=barfoo")).isTrue();
+            ConfigParser.Result result = parser.parse();
+            assertThat(result.applyTo(new TestConfig()))
+                    .extracting(TestConfig::getName, TestConfig::getOptional)
+                    .contains("foobar", "barfoo");
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should parse value of string inside \"foobar with spaces\"")
+        void shouldParseValueOfString() {
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
+
+            assertThat(parser.accept("\"foobar with spaces\"")).isTrue();
+            ConfigParser.Result result = parser.parse();
+            assertThat(result.applyTo(new TestConfig()))
+                    .extracting(TestConfig::getName)
+                    .isEqualTo("foobar with spaces");
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should parse value of string with key inside name=\"foobar with spaces\"")
+        void shouldParseValueOfStringWithKey() {
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
+
+            assertThat(parser.accept("\"foobar with spaces\"")).isTrue();
+            ConfigParser.Result result = parser.parse();
+            assertThat(result.applyTo(new TestConfig()))
+                    .extracting(TestConfig::getName)
+                    .isEqualTo("foobar with spaces");
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should parse values with spaces foobar true spaces")
+        void shouldParseValuesWithSpaces() {
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
+
+            assertThat(parser.accept("foobar true spaces")).isTrue();
+            ConfigParser.Result result = parser.parse();
+            assertThat(result.applyTo(new TestConfig()))
+                    .extracting(TestConfig::getName, TestConfig::isRequired, TestConfig::getOptional)
+                    .contains("foobar", true, "spaces");
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should parse values with quotes in between spaces: foobar optional=\"with spaces\"")
+        void shouldParseQuotedValueInBetween() {
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
+
+            assertThat(parser.accept("foobar true spaces")).isTrue();
+            ConfigParser.Result result = parser.parse();
+            assertThat(result.applyTo(new TestConfig()))
+                    .extracting(TestConfig::getName, TestConfig::getOptional)
+                    .contains("foobar", "with spaces");
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should throw if config needs explicit parameters and does not define positions")
+        void shouldThrowIfExplicitParamsAreNeeded() {
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(ConfigWithoutPositions.class));
+
+            assertThat(parser.accept("foobar spaces")).isTrue();
+            assertThatExceptionOfType(ArtParseException.class)
+                    .isThrownBy(parser::parse)
+                    .withMessageContaining("Config does not define positioned parameters");
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should throw if required parameter is missing")
+        void shouldThrowIfRequiredParamIsMissing() {
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(ConfigWithoutPositions.class));
+
+            assertThat(parser.accept("foobar spaces")).isTrue();
+            assertThatExceptionOfType(ArtParseException.class)
+                    .isThrownBy(parser::parse)
+                    .withMessageContaining("Config does not define positioned parameters");
+        }
     }
 
     @Data
     static class TestConfig {
 
+        @Position(0)
+        private String name;
+        @Position(1)
+        private boolean required = false;
+        @Position(2)
+        private String optional;
     }
 
     @Data
     static class SingleFieldConfig {
         @Required
         private double amount;
+    }
+
+    @Data
+    static class ConfigWithoutPositions {
+
+        private String name;
+        private String optional;
     }
 }
