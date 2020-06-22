@@ -7,9 +7,12 @@ import net.silthus.art.DefaultArtManager;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
+import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.trigger.TriggerContext;
 
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -34,6 +37,8 @@ public interface ArtManager {
 
     void unload();
 
+    Map<Class<?>, List<ArtResultFilter<?>>> getGlobalFilters();
+
     void register(ArtModuleDescription moduleDescription, Consumer<ArtBuilder> builder);
 
     /**
@@ -50,4 +55,6 @@ public interface ArtManager {
     ArtResult load(ArtConfig config);
 
     <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context);
+
+    <TTarget> void addGlobalFilter(Class<TTarget> targetClass, ArtResultFilter<TTarget> filter);
 }

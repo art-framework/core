@@ -27,15 +27,17 @@ import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.ArtParser;
 import net.silthus.art.api.parser.ArtResult;
+import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
 import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.util.ConfigUtil;
-import org.apache.commons.lang3.NotImplementedException;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -51,6 +53,7 @@ public class DefaultArtManager implements ArtManager {
 
     private Logger logger = Logger.getLogger("ART");
     private final Map<String, Provider<ArtParser>> parser;
+    private final Map<Class<?>, List<ArtResultFilter<?>>> globalFilters = new HashMap<>();
     private final Map<ArtModuleDescription, ArtBuilder> registeredPlugins = new HashMap<>();
 
     @Inject
@@ -93,8 +96,8 @@ public class DefaultArtManager implements ArtManager {
                     getLogger().info("   " + moduleDescription.getName() + " v" + moduleDescription.getVersion() + " registered their ART.");
                     getLogger().info("");
 
-                    Map<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> createdART = art.build();
-                    for (Map.Entry<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> entry : createdART.entrySet()) {
+                    ArtBuilder.Result createdART = art.build();
+                    for (Map.Entry<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> entry : createdART.getFactories().entrySet()) {
                         if (entry.getKey() == ActionFactory.class) {
                             registerActions(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (ActionFactory<?, ?>) artFactory.getValue())));
                         } else if (entry.getKey() == RequirementFactory.class) {
@@ -102,10 +105,28 @@ public class DefaultArtManager implements ArtManager {
                         }
                     }
 
+                    for (Map.Entry<Class<?>, List<ArtResultFilter<?>>> entry : createdART.getFilters().entrySet()) {
+                        if (!globalFilters.containsKey(entry.getKey())) {
+                            globalFilters.put(entry.getKey(), new ArrayList<>());
+                        }
+                        globalFilters.get(entry.getKey()).addAll(entry.getValue());
+
+                        getLogger().info("   " + entry.getValue().size() + "x " + entry.getKey().getName() + " Filter(s)");
+                    }
+                    getLogger().info("");
+
                     getLogger().info("--------------------------------------------------");
                     getLogger().info("");
                 })
                 .accept(artBuilder);
+    }
+
+    @Override
+    public <TTarget> void addGlobalFilter(Class<TTarget> targetClass, ArtResultFilter<TTarget> filter) {
+        if (!globalFilters.containsKey(targetClass)) {
+            globalFilters.put(targetClass, new ArrayList<>());
+        }
+        globalFilters.get(targetClass).add(filter);
     }
 
     void registerActions(Map<String, ActionFactory<?, ?>> actions) {
@@ -149,6 +170,5 @@ public class DefaultArtManager implements ArtManager {
 
     @Override
     public <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context) {
-        throw new NotImplementedException();
     }
 }

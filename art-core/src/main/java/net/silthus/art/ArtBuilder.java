@@ -16,17 +16,20 @@
 
 package net.silthus.art;
 
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.factory.ArtFactory;
+import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.requirements.RequirementFactory;
 
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
@@ -50,9 +53,9 @@ public class ArtBuilder {
      *
      * @return identifier to factory mapping grouped by their class
      */
-    Map<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> build() {
+    Result build() {
 
-        return builders.values().stream()
+        Map<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> factories = builders.values().stream()
                 .flatMap(targetBuilder -> targetBuilder.artFactories.stream())
                 .filter(Objects::nonNull)
                 .map(artFactory -> {
@@ -77,6 +80,12 @@ public class ArtBuilder {
                     );
                     return artFactory;
                 })));
+
+        Map<Class<?>, List<ArtResultFilter<?>>> filters = builders.values().stream()
+                .collect(toMap(builder -> builder.targetClass,
+                        builder -> builder.globalFilters.stream().map(artResultFilter -> (ArtResultFilter<?>) artResultFilter).collect(Collectors.toList())));
+
+        return new Result(factories, filters);
     }
 
     @SuppressWarnings("unchecked")
@@ -102,6 +111,7 @@ public class ArtBuilder {
 
         private final Class<TTarget> targetClass;
         private final List<ArtFactory<TTarget, ?, ?, ?>> artFactories = new ArrayList<>();
+        private final List<ArtResultFilter<TTarget>> globalFilters = new ArrayList<>();
 
         public <TConfig> FactoryBuilder action(Action<TTarget, TConfig> action) {
             FactoryBuilder factoryBuilder = new FactoryBuilder(action);
@@ -113,6 +123,15 @@ public class ArtBuilder {
             FactoryBuilder factoryBuilder = new FactoryBuilder(requirement);
             factoryBuilder.getArtFactory().ifPresent(artFactories::add);
             return factoryBuilder;
+        }
+
+        public TargetBuilder<TTarget> globalFilter(ArtResultFilter<TTarget> filter) {
+            globalFilters.add(filter);
+            return this;
+        }
+
+        public <NewTarget> TargetBuilder<NewTarget> target(Class<NewTarget> newTargetClass) {
+            return ArtBuilder.this.target(newTargetClass);
         }
 
         public class FactoryBuilder {
@@ -151,6 +170,18 @@ public class ArtBuilder {
                 getArtFactory().ifPresent(artFactory -> artFactory.setIdentifier(name));
                 return this;
             }
+        }
+    }
+
+    @Getter
+    static class Result {
+
+        private final Map<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> factories;
+        private final Map<Class<?>, List<ArtResultFilter<?>>> filters;
+
+        public Result(Map<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> factories, Map<Class<?>, List<ArtResultFilter<?>>> filters) {
+            this.factories = factories;
+            this.filters = filters;
         }
     }
 }

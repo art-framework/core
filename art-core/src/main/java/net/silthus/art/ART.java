@@ -5,6 +5,7 @@ import lombok.Getter;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
+import net.silthus.art.api.parser.ArtResultFilter;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -87,5 +88,9 @@ public final class ART {
         } else {
             return getInstance().get().load(config);
         }
+    }
+
+    public static <TTarget> void addGlobalFilter(Class<TTarget> targetClass, ArtResultFilter<TTarget> filter) {
+        getInstance().ifPresent(artManager -> artManager.addGlobalFilter(targetClass, filter));
     }
 }

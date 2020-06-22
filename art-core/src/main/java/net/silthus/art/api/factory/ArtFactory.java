@@ -18,22 +18,21 @@ package net.silthus.art.api.factory;
 
 import com.google.common.base.Strings;
 import lombok.Data;
-import net.silthus.art.ActionContext;
-import net.silthus.art.RequirementContext;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.annotations.Config;
+import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
-import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.util.ConfigUtil;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -49,6 +48,7 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
     private final TARTObject artObject;
     private Class<TConfig> configClass = null;
     private String identifier;
+    private String[] description = new String[0];
 
     private final Map<String, ConfigFieldInformation> configInformation = new HashMap<>();
 
@@ -76,21 +76,15 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
      */
     public void initialize() throws ArtObjectRegistrationException {
         try {
-            Method method;
-            if (artObject instanceof Action) {
-                method = artObject.getClass().getDeclaredMethod("execute", Object.class, ActionContext.class);
-            } else if (artObject instanceof Requirement) {
-                method = artObject.getClass().getDeclaredMethod("test", Object.class, RequirementContext.class);
-            } else {
-                throw new ArtObjectRegistrationException(artObject, "unable to register ArtObject of type " + artObject.getClass().getCanonicalName());
-            }
-            setIdentifier(tryGetIdentifier(method));
-            setConfigClass(tryGetConfigClass(method));
+            Method[] methods = artObject.getClass().getMethods();
+            setIdentifier(tryGetIdentifier(methods));
+            setConfigClass(tryGetConfigClass(methods));
+            setDescription(tryGetDescription(methods));
             if (getConfigClass().isPresent()) {
                 configInformation.clear();
                 configInformation.putAll(ConfigUtil.getConfigFields(getConfigClass().get()));
             }
-        } catch (ArtConfigException | NoSuchMethodException e) {
+        } catch (ArtConfigException e) {
             throw new ArtObjectRegistrationException(artObject, e);
         }
 
@@ -100,28 +94,46 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
         }
     }
 
-    private String tryGetIdentifier(Method method) {
+    private String tryGetIdentifier(Method... methods) {
         if (!Strings.isNullOrEmpty(getIdentifier())) return getIdentifier();
 
         if (artObject.getClass().isAnnotationPresent(Name.class)) {
             return artObject.getClass().getAnnotation(Name.class).value();
-        } else if (method.isAnnotationPresent(Name.class)) {
-            return method.getAnnotation(Name.class).value();
+        } else {
+            return Arrays.stream(methods)
+                    .filter(method -> method.isAnnotationPresent(Name.class))
+                    .findFirst()
+                    .map(method -> method.getAnnotation(Name.class).value())
+                    .orElse(null);
         }
-
-        return null;
     }
 
     @SuppressWarnings("unchecked")
-    private Class<TConfig> tryGetConfigClass(Method method) {
+    private Class<TConfig> tryGetConfigClass(Method... methods) {
         if (getConfigClass().isPresent()) return getConfigClass().get();
 
         if (artObject.getClass().isAnnotationPresent(Config.class)) {
             return (Class<TConfig>) artObject.getClass().getAnnotation(Config.class).value();
-        } else if (method.isAnnotationPresent(Config.class)) {
-            return (Class<TConfig>) method.getAnnotation(Config.class).value();
+        } else {
+            return Arrays.stream(methods)
+                    .filter(method -> method.isAnnotationPresent(Config.class))
+                    .findFirst()
+                    .map(method -> (Class<TConfig>) method.getAnnotation(Config.class).value())
+                    .orElse(null);
         }
+    }
 
-        return null;
+    private String[] tryGetDescription(Method... methods) {
+        if (description.length > 0) return description;
+
+        if (artObject.getClass().isAnnotationPresent(Description.class)) {
+            return artObject.getClass().getAnnotation(Description.class).value();
+        } else {
+            return Arrays.stream(methods)
+                    .filter(method -> method.isAnnotationPresent(Description.class))
+                    .findFirst()
+                    .map(method -> method.getAnnotation(Description.class).value())
+                    .orElse(new String[0]);
+        }
     }
 }

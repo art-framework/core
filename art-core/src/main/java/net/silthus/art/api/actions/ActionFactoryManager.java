@@ -16,7 +16,6 @@
 
 package net.silthus.art.api.actions;
 
-import lombok.EqualsAndHashCode;
 import net.silthus.art.api.factory.AbstractFactoryManager;
 import net.silthus.art.api.parser.ArtParser;
 
@@ -26,7 +25,6 @@ import javax.inject.Singleton;
 import java.util.Map;
 
 @Singleton
-@EqualsAndHashCode(callSuper = true)
 public class ActionFactoryManager extends AbstractFactoryManager<ActionFactory<?, ?>> implements ActionManager {
 
     @Inject

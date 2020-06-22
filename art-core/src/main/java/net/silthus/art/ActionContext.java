@@ -31,7 +31,7 @@ import java.util.Objects;
  * @param <TTarget> target type of the action
  * @param <TConfig> config type of the action
  */
-public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig> implements Action<TTarget, TConfig> {
+public class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig> implements Action<TTarget, TConfig> {
 
     @Getter(AccessLevel.PROTECTED)
     private final Action<TTarget, TConfig> action;

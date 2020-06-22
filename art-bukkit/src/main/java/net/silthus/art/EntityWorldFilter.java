@@ -16,30 +16,22 @@
 
 package net.silthus.art;
 
-import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.parser.ArtResultFilter;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
 import java.util.List;
 
-public class BukkitArtResult extends AbstractArtResult {
-
-    BukkitArtResult(ArtConfig config, List<ArtContext<?, ?>> art) {
-        super(config, art);
-    }
+public class EntityWorldFilter implements ArtResultFilter<Entity> {
 
     @Override
-    protected <TTarget> boolean filter(TTarget target, ArtContext<TTarget, ?> context) {
-
-        if (target instanceof Entity) {
-            List<String> worlds = getConfig().getOptions().getWorlds();
-            if (worlds.size() > 0) {
-                World world = ((Entity) target).getLocation().getWorld();
-                return world == null || worlds.contains(world.getName());
-            }
+    public boolean test(Entity entity, ArtConfig config) {
+        List<String> worlds = config.getOptions().getWorlds();
+        if (worlds.size() > 0) {
+            World world = entity.getLocation().getWorld();
+            return world == null || worlds.contains(world.getName());
         }
-
-        return false;
+        return true;
     }
 }

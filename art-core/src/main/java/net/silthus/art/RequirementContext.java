@@ -32,7 +32,7 @@ import java.util.Objects;
  * @param <TConfig> config type of the requirement
  */
 @EqualsAndHashCode(callSuper = true)
-public final class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig> implements Requirement<TTarget, TConfig> {
+public class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig> implements Requirement<TTarget, TConfig> {
 
     @Getter
     private final Requirement<TTarget, TConfig> requirement;

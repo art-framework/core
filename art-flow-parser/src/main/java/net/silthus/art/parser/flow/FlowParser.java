@@ -19,6 +19,7 @@ package net.silthus.art.parser.flow;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import net.silthus.art.api.ArtContext;
+import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.ArtParser;
@@ -34,11 +35,13 @@ import java.util.stream.Collectors;
 
 public class FlowParser implements ArtParser {
 
+    private final ArtManager artManager;
     private final ArtResultFactory resultFactory;
     private final Collection<Provider<ArtTypeParser<?, ?>>> parsers;
 
     @Inject
-    public FlowParser(ArtResultFactory resultFactory, Collection<Provider<ArtTypeParser<?, ?>>> parsers) {
+    public FlowParser(ArtManager artManager, ArtResultFactory resultFactory, Collection<Provider<ArtTypeParser<?, ?>>> parsers) {
+        this.artManager = artManager;
         this.resultFactory = resultFactory;
         this.parsers = parsers;
     }
@@ -68,6 +71,6 @@ public class FlowParser implements ArtParser {
             lineCount++;
         }
 
-        return resultFactory.create(config, contexts);
+        return resultFactory.create(config, contexts, artManager.getGlobalFilters());
     }
 }

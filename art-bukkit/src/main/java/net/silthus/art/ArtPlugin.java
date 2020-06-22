@@ -4,10 +4,10 @@ import com.google.inject.Binder;
 import kr.entree.spigradle.Plugin;
 import lombok.Getter;
 import net.silthus.art.api.ArtManager;
-import net.silthus.art.api.parser.ArtResultFactory;
 import net.silthus.art.parser.flow.FlowParserModule;
 import net.silthus.slib.bukkit.BasePlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.ServicePriority;
 
 import javax.inject.Inject;
@@ -25,6 +25,9 @@ public class ArtPlugin extends BasePlugin {
         ART.setInstance(artManager);
         ART.load();
 
+        ART.register(new ArtBukkitDescription(this), artBuilder ->
+                artBuilder.target(Entity.class).globalFilter(new EntityWorldFilter()));
+
         Bukkit.getServicesManager().register(ArtManager.class, artManager, this, ServicePriority.Normal);
     }
 
@@ -39,8 +42,7 @@ public class ArtPlugin extends BasePlugin {
     @Override
     public void configure(Binder binder) {
 
+        binder.install(new ArtGuiceModule());
         binder.install(new FlowParserModule());
-
-        binder.bind(ArtResultFactory.class).to(BukkitArtResultFactory.class);
     }
 }
