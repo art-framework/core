@@ -22,6 +22,9 @@ import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionConfig;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -35,10 +38,22 @@ public class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig
 
     @Getter(AccessLevel.PROTECTED)
     private final Action<TTarget, TConfig> action;
+    @Getter(AccessLevel.PROTECTED)
+    private final List<ActionContext<?, ?>> nestedActions = new ArrayList<>();
+    @Getter(AccessLevel.PROTECTED)
+    private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
 
     public ActionContext(Class<TTarget> tTargetClass, Action<TTarget, TConfig> action, ActionConfig<TConfig> config) {
         super(tTargetClass, config);
         this.action = action;
+    }
+
+    public void addNestedAction(ActionContext<?, ?> action) {
+        this.nestedActions.add(action);
+    }
+
+    public void addRequirements(Collection<RequirementContext<?, ?>> requirements) {
+        this.requirements.addAll(requirements);
     }
 
     final void execute(TTarget target) {
