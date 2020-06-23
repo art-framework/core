@@ -30,7 +30,7 @@ public class RequirementFactory<TTarget, TConfig> extends ArtFactory<TTarget, TC
 
 
     @Override
-    public ArtContext<TTarget, TConfig> create(RequirementConfig<TConfig> config) {
+    public ArtContext<TTarget, TConfig, RequirementConfig<TConfig>> create(RequirementConfig<TConfig> config) {
         return new RequirementContext<>(getTargetClass(), getArtObject(), config);
     }
 }

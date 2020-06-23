@@ -2,6 +2,7 @@ package net.silthus.art;
 
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.trigger.TriggerContext;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.*;
 class DefaultArtResultTest {
 
     private ArtConfig config;
-    private List<ArtContext<?, ?>> contexts;
+    private List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts;
     private ArtResult result;
 
     @BeforeEach
@@ -42,7 +43,7 @@ class DefaultArtResultTest {
             requirement = (RequirementContext<String, ?>) mock(RequirementContext.class);
             when(requirement.isTargetType(anyString())).thenReturn(true);
 
-            contexts.addAll(List.<ArtContext<?, ?>>of(
+            contexts.addAll(List.<ArtContext<?, ?, ? extends ArtObjectConfig<?>>>of(
                     mock(ActionContext.class),
                     mock(TriggerContext.class),
                     requirement

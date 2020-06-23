@@ -27,8 +27,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("ConfigParser")
 class ConfigParserTest {
@@ -188,7 +187,7 @@ class ConfigParserTest {
         void shouldParseQuotedValueInBetween() {
             ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
 
-            assertThat(parser.accept("foobar true spaces")).isTrue();
+            assertThat(parser.accept("foobar optional=\"with spaces\"")).isTrue();
             ConfigParser.Result result = parser.parse();
             assertThat(result.applyTo(new TestConfig()))
                     .extracting(TestConfig::getName, TestConfig::getOptional)
@@ -211,12 +210,38 @@ class ConfigParserTest {
         @SneakyThrows
         @DisplayName("should throw if required parameter is missing")
         void shouldThrowIfRequiredParamIsMissing() {
-            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(ConfigWithoutPositions.class));
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(ConfigWithRequired.class));
 
-            assertThat(parser.accept("foobar spaces")).isTrue();
+            assertThat(parser.accept("foobar")).isTrue();
             assertThatExceptionOfType(ArtParseException.class)
                     .isThrownBy(parser::parse)
-                    .withMessageContaining("Config does not define positioned parameters");
+                    .withMessageContaining("required");
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should throw if value is missing: name=")
+        void shouldThrowIfValueIsMissing() {
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
+
+            assertThat(parser.accept("name=")).isTrue();
+            assertThatExceptionOfType(ArtParseException.class)
+                    .isThrownBy(parser::parse)
+                    .withMessageContaining("empty value");
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should not throw if value is missing between quotes: name=\"\"")
+        void shouldNotThrowIfValueIsMissingBetweenQuotes() {
+            ConfigParser parser = new ConfigParser(ConfigUtil.getConfigFields(TestConfig.class));
+
+            assertThat(parser.accept("name=\"\"")).isTrue();
+            assertThatCode(() -> {
+                TestConfig result = parser.parse().applyTo(new TestConfig());
+                assertThat(result).extracting(TestConfig::getName)
+                        .isEqualTo("");
+            }).doesNotThrowAnyException();
         }
     }
 
@@ -243,4 +268,15 @@ class ConfigParserTest {
         private String name;
         private String optional;
     }
+
+    @Data
+    static class ConfigWithRequired {
+
+        @Position(0)
+        private String name;
+        @Required
+        private String required;
+        private String optional;
+    }
+
 }

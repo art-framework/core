@@ -2,6 +2,7 @@ package net.silthus.art.api.parser;
 
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.config.ArtObjectConfig;
 
 import java.util.List;
 import java.util.Map;
@@ -15,5 +16,5 @@ public interface ArtResultFactory {
      * @param artContexts context to create result with
      * @return new {@link ArtResult}
      */
-    ArtResult create(ArtConfig config, List<ArtContext<?, ?>> artContexts, Map<Class<?>, List<ArtResultFilter<?>>> globalFilter);
+    ArtResult create(ArtConfig config, List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> artContexts, Map<Class<?>, List<ArtResultFilter<?>>> globalFilter);
 }

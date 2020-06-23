@@ -272,7 +272,7 @@ public class ArtFactoryTest {
         @DisplayName("should create an action context")
         public void shouldCreateActionContext() {
 
-            ArtContext<String, TestConfig> context = actionFactory.create(new ActionConfig<>());
+            ArtContext<String, TestConfig, ActionConfig<TestConfig>> context = actionFactory.create(new ActionConfig<>());
 
             assertThat(context).isNotNull();
             assertThat(context).extracting("action").isEqualTo(actionFactory.getArtObject());

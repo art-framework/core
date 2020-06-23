@@ -39,8 +39,8 @@ public class ConfigParser extends Parser<ConfigParser.Result> {
     public ConfigParser(Map<String, ConfigFieldInformation> configMap) {
         // always edit the regexr link and update the link below!
         // the regexr link and the regex should always match
-        // regexr.com/575ss
-        super(Pattern.compile("^(?<keyValue>((?<key>[\\w\\d._-]+)?[:=])?((\"(?<quotedValue>.*?)\")|((?<value>[\\w\\d]+)[,; ]?)))(?<config>.*)?$"));
+        // regexr.com/576km
+        super(Pattern.compile("^(?<keyValue>((?<key>[\\w\\d._-]+)?[:=])?((\"(?<quotedValue>.*?)\")|((?<value>[^;, ]*)[,; ]?)))(?<config>.*)?$"));
         this.configMap = ImmutableMap.copyOf(configMap);
     }
 
@@ -60,11 +60,8 @@ public class ConfigParser extends Parser<ConfigParser.Result> {
                 configFieldInformation = getConfigMap().get(keyValue.getKey().get());
                 usedKeyValue = true;
             } else if (getConfigMap().size() == 1) {
-                Optional<ConfigFieldInformation> fieldInformation = getConfigMap().values().stream().findFirst();
-                if (fieldInformation.isEmpty()) {
-                    throw new ArtParseException("Config should only define one parameter, but none was found.");
-                }
-                configFieldInformation = fieldInformation.get();
+                //noinspection OptionalGetWithoutIsPresent
+                configFieldInformation = getConfigMap().values().stream().findFirst().get();
             } else {
                 if (usedKeyValue) {
                     throw new ArtParseException("Positioned parameter found after key=value pair usage. Positioned parameters must come first.");
@@ -93,7 +90,7 @@ public class ConfigParser extends Parser<ConfigParser.Result> {
                 .collect(Collectors.toList());
 
         if (!missingRequiredFields.isEmpty()) {
-            throw new ArtParseException("Config is missing " + missingRequiredFields.size() + " required fields: "
+            throw new ArtParseException("Config is missing " + missingRequiredFields.size() + " required parameters: "
                     + missingRequiredFields.stream().map(ConfigFieldInformation::getIdentifier).collect(Collectors.joining(",")));
         }
 
@@ -105,7 +102,8 @@ public class ConfigParser extends Parser<ConfigParser.Result> {
         ArrayList<KeyValuePair> pairs = new ArrayList<>();
 
         String quotedValue = matcher.group("quotedValue");
-        String value = Strings.isNullOrEmpty(quotedValue) ? matcher.group("value") : quotedValue;
+        String unqotedValue = matcher.group("value");
+        String value = Strings.isNullOrEmpty(unqotedValue) ? quotedValue : unqotedValue;
 
         pairs.add(new KeyValuePair(matcher.group("key"), value));
 

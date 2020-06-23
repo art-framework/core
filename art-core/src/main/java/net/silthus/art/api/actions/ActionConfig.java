@@ -9,7 +9,7 @@ import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import net.silthus.art.util.ConfigUtil;
-import org.apache.commons.lang3.NotImplementedException;
+import net.silthus.art.util.TimeUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,7 +54,7 @@ public final class ActionConfig<TConfig> extends ArtObjectConfig<TConfig> {
      * @return delay in milliseconds
      */
     public long getDelay() {
-        throw new NotImplementedException();
+        return TimeUtil.parseTimeAsMillis(delay);
     }
 
     /**
@@ -63,6 +63,6 @@ public final class ActionConfig<TConfig> extends ArtObjectConfig<TConfig> {
      * @return cooldown in milliseconds
      */
     public long getCooldown() {
-        throw new NotImplementedException();
+        return TimeUtil.parseTimeAsMillis(cooldown);
     }
 }

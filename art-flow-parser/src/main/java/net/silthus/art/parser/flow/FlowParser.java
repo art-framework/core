@@ -18,9 +18,12 @@ package net.silthus.art.parser.flow;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import net.silthus.art.ActionContext;
+import net.silthus.art.RequirementContext;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.ArtParser;
 import net.silthus.art.api.parser.ArtResult;
@@ -51,17 +54,29 @@ public class FlowParser implements ArtParser {
 
         Objects.requireNonNull(config);
 
-        ArrayList<ArtContext<?, ?>> contexts = new ArrayList<>();
+        ArrayList<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts = new ArrayList<>();
 
         List<String> art = config.getArt();
         List<? extends ArtTypeParser<?, ?>> parsers = this.parsers.stream().map(Provider::get).collect(Collectors.toList());
 
+        ActionContext<?, ?> activeAction;
+        List<RequirementContext<?, ?>> requirements = new ArrayList<>();
+        // rules for matching and combining actions, requirements and trigger
+        // - requirements can neither have actions nor trigger
+        // - actions can have requirements that are checked before execution and nested actions
+        // - trigger can have requirements and execute actions
         int lineCount = 1;
         for (String line : art) {
             for (ArtTypeParser<?, ?> parser : parsers) {
                 try {
                     if (parser.accept(line)) {
-                        contexts.add(parser.parse());
+                        ArtContext<?, ?, ? extends ArtObjectConfig<?>> artContext = parser.parse();
+                        if (artContext instanceof RequirementContext) {
+                            requirements.add((RequirementContext<?, ?>) artContext);
+                        } else if (artContext instanceof ActionContext) {
+
+                        }
+                        contexts.add(artContext);
                         break;
                     }
                 } catch (ArtParseException e) {

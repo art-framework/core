@@ -63,7 +63,7 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
      * @param config config to instantiate the {@link ArtContext} with
      * @return new {@link ArtContext} that accepts the given target and config type for the given {@link ArtObject} type.
      */
-    public abstract ArtContext<TTarget, TConfig> create(TArtConfig config);
+    public abstract ArtContext<TTarget, TConfig, TArtConfig> create(TArtConfig config);
 
     /**
      * Initializes the {@link ActionFactory}, loads all annotations and checks

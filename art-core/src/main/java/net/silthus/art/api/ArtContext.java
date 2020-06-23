@@ -6,15 +6,19 @@ import net.silthus.art.api.config.ArtObjectConfig;
 
 import java.util.Optional;
 
-public abstract class ArtContext<TTarget, TConfig> {
+public abstract class ArtContext<TTarget, TConfig, TContextOptions extends ArtObjectConfig<TConfig>> {
 
     @Getter(AccessLevel.PACKAGE)
     private final Class<TTarget> targetClass;
-    private final ArtObjectConfig<TConfig> config;
+    private final TContextOptions config;
 
-    public ArtContext(Class<TTarget> targetClass, ArtObjectConfig<TConfig> config) {
+    public ArtContext(Class<TTarget> targetClass, TContextOptions config) {
         this.targetClass = targetClass;
         this.config = config;
+    }
+
+    public TContextOptions getOptions() {
+        return config;
     }
 
     /**

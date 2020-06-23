@@ -36,7 +36,7 @@ public class ActionFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig
     }
 
     @Override
-    public ArtContext<TTarget, TConfig> create(ActionConfig<TConfig> config) {
+    public ArtContext<TTarget, TConfig, ActionConfig<TConfig>> create(ActionConfig<TConfig> config) {
         return new ActionContext<>(getTargetClass(), getArtObject(), config);
     }
 }

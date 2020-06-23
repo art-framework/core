@@ -1,5 +1,6 @@
 package net.silthus.art.api.parser.flow;
 
+import com.google.common.base.Strings;
 import lombok.Data;
 import net.silthus.art.api.parser.ArtParseException;
 
@@ -15,6 +16,8 @@ public abstract class Parser<TOutput> {
     private Class<?> type;
 
     public boolean accept(String line) {
+
+        if (Strings.isNullOrEmpty(line)) return false;
 
         matcher = pattern.matcher(line);
         input = line;
