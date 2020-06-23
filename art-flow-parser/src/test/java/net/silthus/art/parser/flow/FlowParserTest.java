@@ -17,8 +17,11 @@
 package net.silthus.art.parser.flow;
 
 import com.google.inject.Provider;
+import lombok.SneakyThrows;
+import net.silthus.art.ActionContext;
 import net.silthus.art.DefaultArtResult;
 import net.silthus.art.api.ArtManager;
+import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,6 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -38,17 +42,24 @@ class FlowParserTest {
 
     private ArtManager artManager;
     private FlowParser parser;
+    private ArtTypeParser artTypeParser;
     private final Set<Provider<ArtTypeParser<?, ?>>> parsers = new HashSet<>();
 
     @BeforeEach
     void beforeEach() {
         artManager = mock(ArtManager.class);
         when(artManager.getGlobalFilters()).thenReturn(new HashMap<>());
+
+        Provider<ArtTypeParser<?, ?>> actionParserProvider = mock(Provider.class);
+        artTypeParser = mock(ArtTypeParser.class);
+        when(actionParserProvider.get()).thenReturn(artTypeParser);
+        parsers.add(actionParserProvider);
+
         parser = new FlowParser(artManager, DefaultArtResult::new, parsers);
     }
 
     @Nested
-    @DisplayName("next(Object)")
+    @DisplayName("parse(ArtConfig)")
     class parse {
 
         @Test
@@ -56,6 +67,25 @@ class FlowParserTest {
         public void shouldThrowIfObjectIsNull() {
             assertThatExceptionOfType(NullPointerException.class)
                     .isThrownBy(() -> parser.parse(null));
+        }
+
+        @Nested
+        @DisplayName("with a list of actions")
+        class PureActionConfig {
+
+            private ArtConfig config;
+
+            @BeforeEach
+            @SneakyThrows
+            void beforeEach() {
+                config = new ArtConfig();
+                config.getArt().addAll(List.of(
+                        "!foobar",
+                        "!action",
+                        "!gogo"
+                ));
+                when(artTypeParser.parse()).thenReturn(mock(ActionContext.class));
+            }
         }
     }
 }
