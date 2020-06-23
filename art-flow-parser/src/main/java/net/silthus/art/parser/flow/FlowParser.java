@@ -54,29 +54,17 @@ public class FlowParser implements ArtParser {
 
         Objects.requireNonNull(config);
 
-        ArrayList<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts = new ArrayList<>();
+        List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts = new ArrayList<>();
 
         List<String> art = config.getArt();
         List<? extends ArtTypeParser<?, ?>> parsers = this.parsers.stream().map(Provider::get).collect(Collectors.toList());
 
-        ActionContext<?, ?> activeAction;
-        List<RequirementContext<?, ?>> requirements = new ArrayList<>();
-        // rules for matching and combining actions, requirements and trigger
-        // - requirements can neither have actions nor trigger
-        // - actions can have requirements that are checked before execution and nested actions
-        // - trigger can have requirements and execute actions
         int lineCount = 1;
         for (String line : art) {
             for (ArtTypeParser<?, ?> parser : parsers) {
                 try {
                     if (parser.accept(line)) {
-                        ArtContext<?, ?, ? extends ArtObjectConfig<?>> artContext = parser.parse();
-                        if (artContext instanceof RequirementContext) {
-                            requirements.add((RequirementContext<?, ?>) artContext);
-                        } else if (artContext instanceof ActionContext) {
-
-                        }
-                        contexts.add(artContext);
+                        contexts.add(parser.parse());
                         break;
                     }
                 } catch (ArtParseException e) {
@@ -86,6 +74,44 @@ public class FlowParser implements ArtParser {
             lineCount++;
         }
 
+        contexts = sortAndCombineArtContexts(contexts);
+
         return resultFactory.create(config, contexts, artManager.getGlobalFilters());
+    }
+
+    // rules for matching and combining actions, requirements and trigger
+    // - requirements can neither have actions nor trigger
+    // - actions can have requirements that are checked before execution and nested actions that are executed in sequence after the first action
+    // - trigger can have requirements and execute actions
+    List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> sortAndCombineArtContexts(List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts) {
+
+        ArrayList<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> result = new ArrayList<>();
+
+        ActionContext<?, ?> activeAction = null;
+        List<RequirementContext<?, ?>> requirements = new ArrayList<>();
+
+        for (ArtContext<?, ?, ? extends ArtObjectConfig<?>> context : contexts) {
+            if (context instanceof RequirementContext) {
+                requirements.add((RequirementContext<?, ?>) context);
+                result.add(activeAction);
+                activeAction = null;
+            } else if (context instanceof ActionContext) {
+                if (Objects.isNull(activeAction)) {
+                    activeAction = (ActionContext<?, ?>) context;
+                    activeAction.addRequirements(requirements);
+                    requirements.clear();
+                } else {
+                    activeAction.addNestedAction((ActionContext<?, ?>) context);
+                }
+            }
+        }
+
+        if (Objects.isNull(activeAction)) {
+            result.addAll(requirements);
+        } else {
+            result.add(activeAction);
+        }
+
+        return result.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 }

@@ -20,19 +20,20 @@ import com.google.inject.Provider;
 import lombok.SneakyThrows;
 import net.silthus.art.ActionContext;
 import net.silthus.art.DefaultArtResult;
+import net.silthus.art.RequirementContext;
+import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -86,6 +87,45 @@ class FlowParserTest {
                 ));
                 when(artTypeParser.parse()).thenReturn(mock(ActionContext.class));
             }
+        }
+    }
+
+    @Nested
+    @DisplayName("sortAndCombineArtContexts(...)")
+    class sortAndCombine {
+
+        private List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts;
+
+        @BeforeEach
+        void beforeEach() {
+            contexts = new ArrayList<>();
+        }
+
+        private ActionContext<?, ?> action() {
+            return new ActionContext<>(null, null, null);
+        }
+
+        private RequirementContext<?, ?> requirement() {
+            return new RequirementContext<>(null, null, null);
+        }
+
+        @Test
+        @DisplayName("should nest actions if requirements for action exist")
+        void shouldNestActionsIfRequirementsExist() {
+
+            ActionContext<?, ?> action = action();
+            contexts.addAll(List.of(
+                    requirement(),
+                    requirement(),
+                    action,
+                    action(),
+                    action()
+            ));
+
+            assertThat(parser.sortAndCombineArtContexts(contexts))
+                    .containsExactly(action)
+                    .flatExtracting("nestedActions")
+                    .hasSize(2);
         }
     }
 }
