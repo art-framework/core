@@ -103,11 +103,8 @@ public abstract class ArtTypeParser<TContext extends ArtContext<?, ?, ? extends 
                 if (configParser.accept(userConfig)) {
                     configParser.parse().applyTo(artObjectConfig);
                 }
-
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                throw new ArtParseException("Unable to parse config: " + e.getMessage(), e);
-            } catch (NoSuchMethodException e) {
-                throw new ArtParseException("Unable to find a parameterless constructor for config type " + factory.getConfigClass().get().getCanonicalName() + ". Make sure your config class has a public constructor without arguments.", e);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                throw new ArtParseException("Unable to find a parameterless public constructor for config type " + factory.getConfigClass().get().getCanonicalName() + ". Make sure your config class is static (if nested) has a public constructor without arguments.", e);
             }
         }
 
