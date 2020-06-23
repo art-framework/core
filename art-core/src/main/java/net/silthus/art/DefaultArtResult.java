@@ -24,6 +24,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
 
@@ -37,12 +38,12 @@ import java.util.function.BiPredicate;
 public class DefaultArtResult implements ArtResult {
 
     private final ArtConfig config;
-    private final List<ArtContext<?, ?>> art;
+    private final List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art;
     private final Map<Class<?>, List<ArtResultFilter<?>>> globalFilters;
     private final List<Map.Entry<Class<?>, BiPredicate<?, ArtConfig>>> additionalFilters = new ArrayList<>();
 
     @Inject
-    public DefaultArtResult(@Assisted ArtConfig config, @Assisted List<ArtContext<?, ?>> art, @Assisted Map<Class<?>, List<ArtResultFilter<?>>> globalFilters) {
+    public DefaultArtResult(@Assisted ArtConfig config, @Assisted List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art, @Assisted Map<Class<?>, List<ArtResultFilter<?>>> globalFilters) {
         this.config = config;
         this.art = ImmutableList.copyOf(art);
         this.globalFilters = globalFilters;

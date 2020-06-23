@@ -26,19 +26,22 @@ import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.flow.Parser;
 import net.silthus.art.parser.flow.ArtType;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public abstract class ArtTypeParser<TContext extends ArtContext<?, ?>, TConfig extends ArtObjectConfig<?>> extends Parser<TContext> {
+public abstract class ArtTypeParser<TContext extends ArtContext<?, ?, ? extends ArtObjectConfig<?>>, TConfig extends ArtObjectConfig<?>> extends Parser<TContext> {
 
     @Getter
     private final ArtType artType;
 
     public ArtTypeParser(ArtType artType) {
+        // always edit the regexr link and update the link below!
+        // the regexr link and the regex should always match
         // regexr.com/56s09
-        super(Pattern.compile("^" + artType.getTypeIdentifier() + "(?<identifier>[\\w\\-.\\d:]+)(\\[(?<config>[\\w\\d:., ]*]))? ?(?<userConfig>[\\w\\d:., ]+)?$"));
+        super(Pattern.compile("^" + artType.getTypeIdentifier() + "(?<identifier>[\\w\\d:._-]+)([\\[\\(](?<config>[^\\]\\)]*?)[\\]\\)])?( (?<userConfig>.+))?$"));
         this.artType = artType;
     }
 
@@ -66,7 +69,7 @@ public abstract class ArtTypeParser<TContext extends ArtContext<?, ?>, TConfig e
     @SuppressWarnings({"unchecked"})
     public TContext parse() throws ArtParseException {
 
-        String identifier = getMatcher().group("identifier");
+        String identifier = getIdentifier();
         Optional<ArtFactory<?, ?, ?, TConfig>> factoryOptional = getFactory(identifier);
 
         if (factoryOptional.isEmpty()) {
@@ -92,15 +95,19 @@ public abstract class ArtTypeParser<TContext extends ArtContext<?, ?>, TConfig e
 
         if (factory.getConfigClass().isPresent()) {
             try {
-                artObjectConfig = factory.getConfigClass().get().getConstructor().newInstance();
+                Constructor<?> constructor = factory.getConfigClass().get().getConstructor();
+                constructor.setAccessible(true);
+                artObjectConfig = constructor.newInstance();
                 ConfigParser configParser = new ConfigParser(factory.getConfigInformation());
                 String userConfig = getUserConfig();
                 if (configParser.accept(userConfig)) {
                     configParser.parse().applyTo(artObjectConfig);
                 }
 
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new ArtParseException("Unable to parse config of " + factory.getIdentifier(), e);
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new ArtParseException("Unable to parse config: " + e.getMessage(), e);
+            } catch (NoSuchMethodException e) {
+                throw new ArtParseException("Unable to find a parameterless constructor for config type " + factory.getConfigClass().get().getCanonicalName() + ". Make sure your config class has a public constructor without arguments.", e);
             }
         }
 

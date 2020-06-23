@@ -47,7 +47,7 @@ public class ActionParser extends ArtTypeParser<ActionContext<?, ?>, ActionConfi
     @Override
     @SuppressWarnings("unchecked")
     protected  Optional<ActionFactory<?, ?>> getFactory(String identifier) {
-        return actionManager.getFactory(identifier);
+        return getActionManager().getFactory(identifier);
     }
 
     @Override

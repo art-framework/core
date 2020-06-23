@@ -24,9 +24,9 @@ public final class ArtType {
 
     private final String name;
     private final Class<? extends ArtObject> type;
-    private final char typeIdentifier;
+    private final String typeIdentifier;
 
-    ArtType(String name, Class<? extends ArtObject> type, char typeIdentifier) {
+    ArtType(String name, Class<? extends ArtObject> type, String typeIdentifier) {
         this.name = name;
         this.type = type;
         this.typeIdentifier = typeIdentifier;
