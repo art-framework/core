@@ -20,7 +20,6 @@ import com.google.common.collect.ImmutableList;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.config.ArtConfig;
@@ -33,13 +32,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.BiPredicate;
 
-@Getter(AccessLevel.PROTECTED)
-@EqualsAndHashCode
 public class DefaultArtResult implements ArtResult {
 
     private final ArtConfig config;
+    @Getter(AccessLevel.PACKAGE)
     private final List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art;
+    @Getter(AccessLevel.PACKAGE)
     private final Map<Class<?>, List<ArtResultFilter<?>>> globalFilters;
+    @Getter(AccessLevel.PACKAGE)
     private final List<Map.Entry<Class<?>, BiPredicate<?, ArtConfig>>> additionalFilters = new ArrayList<>();
 
     @Inject

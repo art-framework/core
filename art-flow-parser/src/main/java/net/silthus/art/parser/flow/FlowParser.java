@@ -61,15 +61,20 @@ public class FlowParser implements ArtParser {
 
         int lineCount = 1;
         for (String line : art) {
+            boolean matched = false;
             for (ArtTypeParser<?, ?> parser : parsers) {
                 try {
                     if (parser.accept(line)) {
+                        matched = true;
                         contexts.add(parser.parse());
                         break;
                     }
                 } catch (ArtParseException e) {
                     throw new ArtParseException(e.getMessage() + " on ART line " + lineCount, e);
                 }
+            }
+            if (!matched) {
+                throw new ArtParseException("Unable to find matching parser for \"" + line + "\" on line " + lineCount);
             }
             lineCount++;
         }
@@ -106,7 +111,7 @@ public class FlowParser implements ArtParser {
             }
         }
 
-        if (Objects.isNull(activeAction)) {
+        if (Objects.isNull(activeAction) && result.stream().noneMatch(artContext -> artContext instanceof ActionContext)) {
             result.addAll(requirements);
         } else {
             result.add(activeAction);

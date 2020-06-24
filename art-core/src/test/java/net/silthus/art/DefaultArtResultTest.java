@@ -4,15 +4,14 @@ import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtResult;
+import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.trigger.TriggerContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -29,6 +28,28 @@ class DefaultArtResultTest {
         this.config = new ArtConfig();
         this.contexts = new ArrayList<>();
         this.result = new DefaultArtResult(config, contexts, new HashMap<>());
+    }
+
+    private DefaultArtResult withResultOf(ArtContext<?, ?, ? extends ArtObjectConfig<?>>... contexts) {
+        return new DefaultArtResult(config, Arrays.asList(contexts), new HashMap<>());
+    }
+
+    private DefaultArtResult withGlobalFiltersAndResultOf(List<ArtResultFilter<?>> filters, ArtContext<?, ?, ? extends ArtObjectConfig<?>>... contexts) {
+        return new DefaultArtResult(config, Arrays.asList(contexts), Map.of(String.class, filters));
+    }
+
+    private <TTarget> RequirementContext<TTarget, ?> requirement(boolean result) {
+        RequirementContext<TTarget, ?> mock = mock(RequirementContext.class);
+        when(mock.isTargetType(any())).thenReturn(true);
+        when(mock.test(any())).thenReturn(result);
+        return mock;
+    }
+
+    private <TTarget> RequirementContext<TTarget, ?> requirement(Class<TTarget> targetClass, boolean result) {
+        RequirementContext<TTarget, ?> mock = mock(RequirementContext.class);
+        when(mock.isTargetType(any(targetClass))).thenReturn(true);
+        when(mock.test(any(targetClass))).thenReturn(result);
+        return mock;
     }
 
     @Nested
@@ -50,6 +71,13 @@ class DefaultArtResultTest {
             ));
 
             result = new DefaultArtResult(config, contexts, new HashMap<>());
+        }
+
+        @Test
+        @DisplayName("should succeed if no requirements are attached")
+        void shouldSuceedIfNoRequirementsAreAttached() {
+
+            assertThat(result.test("foobar")).isTrue();
         }
 
         @Test
@@ -100,6 +128,13 @@ class DefaultArtResultTest {
 
             assertThat(result.test("foobar")).isTrue();
             verify(requirement, times(0)).test(any(), any());
+        }
+
+        @Test
+        @DisplayName("should include local filters in test result")
+        void shouldIncludeLocalFilters() {
+
+
         }
     }
 

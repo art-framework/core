@@ -46,6 +46,20 @@ class ArtTypeParserTest {
         this.parser = new ActionParser(manager);
     }
 
+    @Test
+    @DisplayName("should return false if accept(String) is null")
+    void shouldNotAcceptNullStrings() {
+
+        assertThat(parser.accept(null)).isFalse();
+    }
+
+    @Test
+    @DisplayName("should return false if accept(String) is empty")
+    void shouldNotAcceptEmptyStrings() {
+
+        assertThat(parser.accept("  ")).isFalse();
+    }
+
     @Nested
     @DisplayName("parse()")
     class parse {
