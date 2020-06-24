@@ -16,11 +16,8 @@
 
 package net.silthus.art.parser.flow;
 
-import net.silthus.art.api.actions.Action;
-import net.silthus.art.api.requirements.Requirement;
-
 public final class Constants {
 
-    public static final ArtType ACTION = new ArtType("action", Action.class, "!");
-    public static final ArtType REQUIREMENT = new ArtType("requirement", Requirement.class, "\\?");
+    public static final ArtType ACTION = new ArtType("action", "!");
+    public static final ArtType REQUIREMENT = new ArtType("requirement", "\\?");
 }

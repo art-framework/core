@@ -25,18 +25,20 @@ import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
+import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.stubbing.Answer;
 
 import java.util.*;
+import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @DisplayName("FlowParser")
 class FlowParserTest {
@@ -47,21 +49,41 @@ class FlowParserTest {
     private final Set<Provider<ArtTypeParser<?, ?>>> parsers = new HashSet<>();
 
     @BeforeEach
+    @SneakyThrows
     void beforeEach() {
         artManager = mock(ArtManager.class);
         when(artManager.getGlobalFilters()).thenReturn(new HashMap<>());
 
-        Provider<ArtTypeParser<?, ?>> actionParserProvider = mock(Provider.class);
         artTypeParser = mock(ArtTypeParser.class);
-        when(actionParserProvider.get()).thenReturn(artTypeParser);
+        when(artTypeParser.getPattern()).thenReturn(Pattern.compile(".*"));
+        when(artTypeParser.getMatcher()).thenCallRealMethod();
+        when(artTypeParser.getInput()).thenCallRealMethod();
+        when(artTypeParser.accept(anyString())).thenCallRealMethod();
+        when(artTypeParser.parse()).thenReturn(mock(ArtContext.class));
+
+        Provider<ArtTypeParser<?, ?>> actionParserProvider = mock(Provider.class);
+        when(actionParserProvider.get()).thenReturn(this.artTypeParser);
+
         parsers.add(actionParserProvider);
 
-        parser = new FlowParser(artManager, DefaultArtResult::new, parsers);
+        parser = spy(new FlowParser(artManager, DefaultArtResult::new, parsers));
     }
 
     @Nested
     @DisplayName("parse(ArtConfig)")
     class parse {
+
+        private ArtConfig config;
+
+        @BeforeEach
+        @SneakyThrows
+        void beforeEach() {
+            config = new ArtConfig();
+        }
+
+        private void addLines(String... lines) {
+            config.getArt().addAll(Arrays.asList(lines));
+        }
 
         @Test
         @DisplayName("should throw if config object is null")
@@ -70,23 +92,88 @@ class FlowParserTest {
                     .isThrownBy(() -> parser.parse(null));
         }
 
-        @Nested
-        @DisplayName("with a list of actions")
-        class PureActionConfig {
+        @Test
+        @SneakyThrows
+        @DisplayName("should call parser.parse() for every line")
+        void shouldCallParseForEveryLine() {
 
-            private ArtConfig config;
+            addLines(
+                    "!foobar",
+                    "!foo",
+                    "?requirement",
+                    "and more",
+                    "foo",
+                    "---"
+            );
 
-            @BeforeEach
-            @SneakyThrows
-            void beforeEach() {
-                config = new ArtConfig();
-                config.getArt().addAll(List.of(
-                        "!foobar",
-                        "!action",
-                        "!gogo"
-                ));
-                when(artTypeParser.parse()).thenReturn(mock(ActionContext.class));
-            }
+            parser.parse(config);
+            verify(artTypeParser, times(6)).parse();
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should return all parsed contexts in the result")
+        void shouldAddAllParsedContextsToTheResult() {
+
+            when(parser.sortAndCombineArtContexts(anyList())).then(invocation -> invocation.getArgument(0));
+
+            addLines(
+                    "!foobar",
+                    "!foo",
+                    "?requirement",
+                    "and more",
+                    "foo",
+                    "---"
+            );
+
+            assertThat(parser.parse(config))
+                    .extracting("art.size")
+                    .isEqualTo(6);
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should throw and display line number if parsing fails")
+        void shouldThrowIfParsingALineFails() {
+
+            ArtParseException exception = new ArtParseException("TEST ERROR");
+            doAnswer((Answer<ArtContext<?, ?, ?>>) invocation -> {
+                ArtTypeParser<?, ?> parser = (ArtTypeParser<?, ?>) invocation.getMock();
+                if ("ERROR".equals(parser.getInput())) {
+                    throw exception;
+                }
+                return mock(ArtContext.class);
+            }).when(artTypeParser).parse();
+
+            addLines(
+                    "!foobar",
+                    "?req",
+                    "ERROR",
+                    "!foo",
+                    "bar"
+            );
+
+            assertThatExceptionOfType(ArtParseException.class)
+                    .isThrownBy(() -> parser.parse(config))
+                    .withMessage("TEST ERROR on ART line 3")
+                    .withCause(exception);
+        }
+
+        @Test
+        @DisplayName("should throw if line matches no parser")
+        void shouldThrowIfLineHasNoMatchingParser() {
+
+            doReturn(false).when(artTypeParser).accept("no-match");
+
+            addLines(
+                    "!foobar",
+                    "foo",
+                    "no-match"
+            );
+
+            assertThatExceptionOfType(ArtParseException.class)
+                    .isThrownBy(() -> parser.parse(config))
+                    .withMessage("Unable to find matching parser for \"no-match\" on line 3");
         }
     }
 
@@ -109,23 +196,155 @@ class FlowParserTest {
             return new RequirementContext<>(null, null, null);
         }
 
-        @Test
-        @DisplayName("should nest actions if requirements for action exist")
-        void shouldNestActionsIfRequirementsExist() {
+        @Nested
+        @DisplayName("with actions as result")
+        class actions {
 
-            ActionContext<?, ?> action = action();
-            contexts.addAll(List.of(
-                    requirement(),
-                    requirement(),
-                    action,
-                    action(),
-                    action()
-            ));
+            @Test
+            @DisplayName("should nest actions if requirements exist")
+            void shouldNestActionsIfRequirementsExist() {
 
-            assertThat(parser.sortAndCombineArtContexts(contexts))
-                    .containsExactly(action)
-                    .flatExtracting("nestedActions")
-                    .hasSize(2);
+                ActionContext<?, ?> action = action();
+                contexts.addAll(List.of(
+                        requirement(),
+                        requirement(),
+                        action,
+                        action(),
+                        action()
+                ));
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .containsExactly(action)
+                        .extracting("nestedActions.size")
+                        .contains(2);
+            }
+
+            @Test
+            @DisplayName("should create new action if new requirements exist")
+            void shouldCreateNewActionsIfNewRequirementsExist() {
+
+                ActionContext<?, ?> firstAction = action();
+                ActionContext<?, ?> secondAction = action();
+                contexts.addAll(List.of(
+                        requirement(),
+                        firstAction,
+                        requirement(),
+                        secondAction
+                ));
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .containsExactly(firstAction, secondAction)
+                        .extracting("requirements.size")
+                        .contains(1, 1);
+            }
+
+            @Test
+            @DisplayName("should discard requirements that come after the last action")
+            void shouldDiscardRequirementsAfterLastAction() {
+
+                ActionContext<?, ?> firstAction = action();
+                ActionContext<?, ?> secondAction = action();
+                contexts.addAll(List.of(
+                        requirement(),
+                        requirement(),
+                        firstAction,
+                        requirement(),
+                        secondAction,
+                        requirement(),
+                        requirement()
+                ));
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .hasSize(2)
+                        .containsExactly(firstAction, secondAction);
+            }
+
+            @Test
+            @DisplayName("should only add direct preceding requirements to action")
+            void shouldOnlyAddRelevantRequirementsToAction() {
+                ActionContext<?, ?> firstAction = action();
+                ActionContext<?, ?> secondAction = action();
+                contexts.addAll(List.of(
+                        requirement(),
+                        requirement(),
+                        requirement(),
+                        firstAction,
+                        requirement(),
+                        secondAction
+                ));
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .hasSize(2)
+                        .extracting("requirements.size")
+                        .contains(3, 1);
+            }
+
+            @Test
+            @DisplayName("should only add nested actions to preceding action")
+            void shouldAddActionsToCorrespondingAction() {
+                ActionContext<?, ?> firstAction = action();
+                ActionContext<?, ?> secondAction = action();
+                contexts.addAll(List.of(
+                        requirement(),
+                        firstAction,
+                        action(),
+                        action(),
+                        requirement(),
+                        secondAction,
+                        action()
+                ));
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .hasSize(2)
+                        .extracting("nestedActions.size")
+                        .contains(2, 1);
+            }
+
+            @Test
+            @DisplayName("should add single action to result")
+            void shouldAddSingleAction() {
+
+                ActionContext<?, ?> action = action();
+                contexts.add(action);
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .hasSize(1)
+                        .containsExactly(action);
+            }
+        }
+
+        @Nested
+        @DisplayName("with only requirements")
+        class requirements {
+
+            @Test
+            @DisplayName("should add all requirements as flat list")
+            void shouldAddAllRequirements() {
+
+                List<RequirementContext<?, ?>> requirements = List.of(
+                        requirement(),
+                        requirement(),
+                        requirement(),
+                        requirement()
+                );
+                contexts.addAll(requirements);
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .hasSize(4)
+                        .isEqualTo(requirements);
+            }
+
+            @Test
+            @DisplayName("should add single requirement to result")
+            void shouldAddASingleRequirement() {
+
+                RequirementContext<?, ?> requirement = requirement();
+                contexts.add(requirement);
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .hasSize(1)
+                        .containsExactly(requirement);
+            }
         }
     }
 }

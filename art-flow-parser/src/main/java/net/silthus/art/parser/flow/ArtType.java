@@ -16,19 +16,16 @@
 
 package net.silthus.art.parser.flow;
 
-import lombok.Data;
-import net.silthus.art.api.ArtObject;
+import lombok.Getter;
 
-@Data
+@Getter
 public final class ArtType {
 
     private final String name;
-    private final Class<? extends ArtObject> type;
     private final String typeIdentifier;
 
-    ArtType(String name, Class<? extends ArtObject> type, String typeIdentifier) {
+    ArtType(String name, String typeIdentifier) {
         this.name = name;
-        this.type = type;
         this.typeIdentifier = typeIdentifier;
     }
 }
