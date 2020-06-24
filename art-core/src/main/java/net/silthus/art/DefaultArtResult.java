@@ -17,6 +17,7 @@
 package net.silthus.art;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import lombok.AccessLevel;
@@ -27,54 +28,59 @@ import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.BiPredicate;
+import java.util.*;
 
-public class DefaultArtResult implements ArtResult {
+public final class DefaultArtResult implements ArtResult {
+
+    static ArtResult empty() {
+        return new DefaultArtResult(new ArtConfig(), new ArrayList<>(), new HashMap<>());
+    }
 
     private final ArtConfig config;
     @Getter(AccessLevel.PACKAGE)
     private final List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art;
     @Getter(AccessLevel.PACKAGE)
-    private final Map<Class<?>, List<ArtResultFilter<?>>> globalFilters;
-    @Getter(AccessLevel.PACKAGE)
-    private final List<Map.Entry<Class<?>, BiPredicate<?, ArtConfig>>> additionalFilters = new ArrayList<>();
+    private final Map<Class<?>, List<ArtResultFilter<?>>> filters;
 
     @Inject
-    public DefaultArtResult(@Assisted ArtConfig config, @Assisted List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art, @Assisted Map<Class<?>, List<ArtResultFilter<?>>> globalFilters) {
+    public DefaultArtResult(@Assisted ArtConfig config, @Assisted List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art, @Assisted Map<Class<?>, List<ArtResultFilter<?>>> filters) {
         this.config = config;
         this.art = ImmutableList.copyOf(art);
-        this.globalFilters = globalFilters;
+        this.filters = ImmutableMap.copyOf(filters);
     }
 
     @Override
-    public <TTarget> void addFilter(Class<TTarget> targetClass, ArtResultFilter<TTarget> predicate) {
-        this.additionalFilters.add(Map.entry(targetClass, predicate));
+    public final <TTarget> boolean test(TTarget target) {
+
+        return test(target, new ArrayList<>());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <TTarget> boolean test(TTarget target) {
+    public final <TTarget> boolean test(TTarget target, Collection<ArtResultFilter<TTarget>> filters) {
 
-        boolean allRequirementsMatch = getArt().stream()
+        if (Objects.isNull(target)) return false;
+
+        return testFilter(target, filters) && testGlobalFilter(target) && getArt().stream()
                 .filter(artContext -> artContext.isTargetType(target))
                 .filter(artContext -> artContext instanceof RequirementContext)
                 .map(artContext -> (RequirementContext<TTarget, ?>) artContext)
                 .allMatch(requirement -> requirement.test(target));
+    }
 
-        return allRequirementsMatch
-                && isMatchingGlobalFilters(target)
-                && isMatchingAdditionalFilters(target);
+    @Override
+    public final <TTarget> void execute(TTarget target) {
+
+        execute(target, new ArrayList<>());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <TTarget> void execute(TTarget target) {
+    public <TTarget> void execute(TTarget target, Collection<ArtResultFilter<TTarget>> filters) {
 
-        if (!isMatchingAdditionalFilters(target)) return;
-        if (!isMatchingGlobalFilters(target)) return;
+        if (Objects.isNull(target)) return;
+        if (!testFilter(target, filters)) return;
+        if (!testGlobalFilter(target)) return;
 
         getArt().stream()
                 .filter(artContext -> artContext.isTargetType(target))
@@ -83,20 +89,19 @@ public class DefaultArtResult implements ArtResult {
                 .forEach(action -> action.execute(target));
     }
 
+    private <TTarget> boolean testFilter(TTarget target, Collection<ArtResultFilter<TTarget>> filters) {
+        return filters.stream().allMatch(filter -> filter.test(target, config));
+    }
+
     @SuppressWarnings("unchecked")
-    private <TTarget> boolean isMatchingGlobalFilters(TTarget target) {
-        return getGlobalFilters().entrySet().stream()
+    private <TTarget> boolean testGlobalFilter(TTarget target) {
+
+        if (Objects.isNull(target)) return false;
+
+        return getFilters().entrySet().stream()
                 .filter(entry -> entry.getKey().isInstance(target))
                 .flatMap(entry -> entry.getValue().stream())
                 .map(filter -> (ArtResultFilter<TTarget>) filter)
                 .allMatch(filter -> filter.test(target, config));
-    }
-
-    @SuppressWarnings("unchecked")
-    private <TTarget> boolean isMatchingAdditionalFilters(TTarget target) {
-        return getAdditionalFilters().stream()
-                .filter(entry -> entry.getKey().isInstance(target))
-                .map(entry -> (ArtResultFilter<TTarget>) entry.getValue())
-                .allMatch(predicate -> predicate.test(target, config));
     }
 }

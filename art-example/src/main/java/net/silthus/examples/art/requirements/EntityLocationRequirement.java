@@ -100,10 +100,10 @@ public class EntityLocationRequirement implements Requirement<Entity, EntityLoca
     /**
      * Gets the distance between two points.
      *
-     * @param l1
-     * @param l2
+     * @param l1 location one
+     * @param l2 location two
      *
-     * @return
+     * @return distance in blocks between the two points
      */
     public static double getDistance(Location l1, Location l2) {
 
@@ -140,9 +140,6 @@ public class EntityLocationRequirement implements Requirement<Entity, EntityLoca
         }
     }
 
-    /**
-     * @return the correct distance between blocks without y layer
-     */
     public static double getRealDistance(double x1, double z1, double x2, double z2) {
 
         double dx = Math.abs(x2 - x1);

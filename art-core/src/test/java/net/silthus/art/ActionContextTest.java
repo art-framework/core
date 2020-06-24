@@ -44,7 +44,7 @@ public class ActionContextTest {
     public class Execute {
 
         @Test
-        @DisplayName("should call Action#execute(TTarget, TConfig)")
+        @DisplayName("should call Action#execute(TTarget, TConfig) with current context")
         public void shouldCallActionExecute() {
 
             assertThatCode(() -> actionContext.execute("foobar"))
@@ -52,6 +52,23 @@ public class ActionContextTest {
 
             verify(action, times(1)).execute("foobar", actionContext);
         }
+
+        @Test
+        @DisplayName("should return if target is null")
+        void shouldCheckIfTargetIsNull() {
+
+            assertThatCode(() -> actionContext.execute(null)).doesNotThrowAnyException();
+            verify(action, times(0)).execute(any(), any());
+        }
+
+        @Test
+        @DisplayName("should not execute if action is null")
+        void shouldNotExecuteIfActionIsNull() {
+
+            actionContext = new ActionContext<>(String.class, null, new ActionConfig<>());
+            assertThatCode(() -> actionContext.execute("foo")).doesNotThrowAnyException();
+        }
     }
 
+    // TODO: execute(..., ...) tests
 }

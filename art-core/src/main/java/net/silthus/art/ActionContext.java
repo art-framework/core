@@ -34,7 +34,7 @@ import java.util.Objects;
  * @param <TTarget> target type of the action
  * @param <TConfig> config type of the action
  */
-public class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig, ActionConfig<TConfig>> implements Action<TTarget, TConfig> {
+public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig, ActionConfig<TConfig>> implements Action<TTarget, TConfig> {
 
     @Getter(AccessLevel.PROTECTED)
     private final Action<TTarget, TConfig> action;
@@ -48,22 +48,26 @@ public class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig
         this.action = action;
     }
 
-    public void addNestedAction(ActionContext<?, ?> action) {
+    public final void addNestedAction(ActionContext<?, ?> action) {
         this.nestedActions.add(action);
     }
 
-    public void addRequirements(Collection<RequirementContext<?, ?>> requirements) {
+    public final void addRequirements(Collection<RequirementContext<?, ?>> requirements) {
         this.requirements.addAll(requirements);
     }
 
     final void execute(TTarget target) {
 
+        if (Objects.isNull(target) || Objects.isNull(getAction())) return;
+        if (!isTargetType(target)) return;
+
         getAction().execute(target, this);
     }
 
     @Override
-    public void execute(TTarget target, ActionContext<TTarget, TConfig> context) {
+    public final void execute(TTarget target, ActionContext<TTarget, TConfig> context) {
 
+        if (Objects.isNull(target) || Objects.isNull(getAction())) return;
         if (!isTargetType(target)) return;
 
         getAction().execute(target, Objects.isNull(context) ? this : context);
