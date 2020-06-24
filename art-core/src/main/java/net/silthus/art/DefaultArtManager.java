@@ -156,7 +156,7 @@ public class DefaultArtManager implements ArtManager {
         } catch (ArtParseException e) {
             logger.severe("ERROR in " + ConfigUtil.getFileName(config.getId()).orElse("unknown config") + ":");
             logger.severe("  --> " + e.getMessage());
-            return new EmptyArtResult();
+            return DefaultArtResult.empty();
         }
     }
 

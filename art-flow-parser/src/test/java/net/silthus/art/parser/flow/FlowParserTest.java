@@ -41,6 +41,7 @@ import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @DisplayName("FlowParser")
+@SuppressWarnings("unchecked")
 class FlowParserTest {
 
     private ArtManager artManager;
