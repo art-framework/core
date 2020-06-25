@@ -16,6 +16,7 @@
 
 package net.silthus.art;
 
+import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.silthus.art.api.ArtObject;
@@ -27,6 +28,7 @@ import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.requirements.RequirementFactory;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
@@ -162,8 +164,16 @@ public class ArtBuilder {
                 return TargetBuilder.this.action(action);
             }
 
+            public <TNextTarget, TNextConfig> TargetBuilder<TNextTarget>.FactoryBuilder action(Class<TNextTarget> targetClass, Action<TNextTarget, TNextConfig> requirement) {
+                return ArtBuilder.this.action(targetClass, requirement);
+            }
+
             public <TNextConfig> FactoryBuilder requirement(Requirement<TTarget, TNextConfig> requirement) {
                 return TargetBuilder.this.requirement(requirement);
+            }
+
+            public <TNextTarget, TNextConfig> TargetBuilder<TNextTarget>.FactoryBuilder requirement(Class<TNextTarget> targetClass, Requirement<TNextTarget, TNextConfig> requirement) {
+                return ArtBuilder.this.requirement(targetClass, requirement);
             }
 
             public FactoryBuilder withName(String name) {
@@ -174,14 +184,15 @@ public class ArtBuilder {
     }
 
     @Getter
+    @Immutable
     static class Result {
 
         private final Map<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> factories;
         private final Map<Class<?>, List<ArtResultFilter<?>>> filters;
 
         public Result(Map<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> factories, Map<Class<?>, List<ArtResultFilter<?>>> filters) {
-            this.factories = factories;
-            this.filters = filters;
+            this.factories = ImmutableMap.copyOf(factories);
+            this.filters = ImmutableMap.copyOf(filters);
         }
     }
 }

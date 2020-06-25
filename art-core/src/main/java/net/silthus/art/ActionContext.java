@@ -39,37 +39,54 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
     @Getter(AccessLevel.PROTECTED)
     private final Action<TTarget, TConfig> action;
     @Getter(AccessLevel.PROTECTED)
-    private final List<ActionContext<?, ?>> nestedActions = new ArrayList<>();
+    private final List<ActionContext<?, ?>> childActions = new ArrayList<>();
     @Getter(AccessLevel.PROTECTED)
     private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
 
     public ActionContext(Class<TTarget> tTargetClass, Action<TTarget, TConfig> action, ActionConfig<TConfig> config) {
         super(tTargetClass, config);
+        Objects.requireNonNull(action);
         this.action = action;
     }
 
-    public final void addNestedAction(ActionContext<?, ?> action) {
-        this.nestedActions.add(action);
+    final void addChildAction(ActionContext<?, ?> action) {
+        this.childActions.add(action);
     }
 
-    public final void addRequirements(Collection<RequirementContext<?, ?>> requirements) {
+    final void addRequirements(Collection<RequirementContext<?, ?>> requirements) {
         this.requirements.addAll(requirements);
     }
 
     final void execute(TTarget target) {
 
-        if (Objects.isNull(target) || Objects.isNull(getAction())) return;
-        if (!isTargetType(target)) return;
-
-        getAction().execute(target, this);
+        execute(target, this);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public final void execute(TTarget target, ActionContext<TTarget, TConfig> context) {
 
-        if (Objects.isNull(target) || Objects.isNull(getAction())) return;
+        if (context != null && context != this)
+            throw new UnsupportedOperationException("ActionContext#execute(target, context) must not be called directly. Use ActionResult#execute(target) instead.");
+
+        Objects.requireNonNull(target, "target must not be null");
+
         if (!isTargetType(target)) return;
+        if (!testRequirements(target)) return;
 
         getAction().execute(target, Objects.isNull(context) ? this : context);
+
+        getChildActions().stream()
+                .filter(actionContext -> actionContext.isTargetType(target))
+                .map(actionContext -> (ActionContext<TTarget, ?>) actionContext)
+                .forEach(actionContext -> actionContext.execute(target));
+    }
+
+    @SuppressWarnings("unchecked")
+    private boolean testRequirements(TTarget target) {
+        return getRequirements().stream()
+                .filter(requirement -> requirement.isTargetType(target))
+                .map(requirement -> (RequirementContext<TTarget, ?>) requirement)
+                .allMatch(requirement -> requirement.test(target));
     }
 }

@@ -19,6 +19,7 @@ package net.silthus.art;
 import lombok.AccessLevel;
 import lombok.Getter;
 import net.silthus.art.api.ArtManager;
+import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
@@ -39,12 +40,9 @@ public final class ART {
 
     static void setInstance(ArtManager artManager) {
 
-        if (getInstance().isPresent() && getInstance().get().isLoaded()) {
-            throw new UnsupportedOperationException("Cannot change the ARTManager after loading ART. Make sure to change it before calling ART.load()");
-        }
-
         if (getInstance().isPresent()) {
-            getLogger().warning("Overriding already registered ARTManager " + instance.getClass().getCanonicalName() + " with " + artManager.getClass().getCanonicalName());
+            getLogger().warning("Tried to override already registered ARTManager " + instance.getClass().getCanonicalName() + " with " + artManager.getClass().getCanonicalName());
+            throw new UnsupportedOperationException("Overriding an existing ArtManager instance is not possible. There can be only one ART implementation at a time. Remove the other one from your plugins first.");
         }
 
         instance = artManager;
@@ -87,9 +85,9 @@ public final class ART {
     }
 
     /**
-     * Use this method to create and load ART from your config.
+     * Use this method to create and load an {@link ArtResult} from your {@link ArtConfig}.
      * <br>
-     * You can then use the {@link ArtResult} to invoke {@link net.silthus.art.api.actions.Action}s by calling
+     * You can then use the {@link ArtResult} to invoke {@link Action}s by calling
      * {@link ArtResult#execute(Object)} or to check for requirements by calling {@link ArtResult#test(Object)}.
      * <br>
      *

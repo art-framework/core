@@ -24,11 +24,6 @@ public class ArtConfig {
     public ArtConfig() {
     }
 
-    @Override
-    public String toString() {
-        return getId();
-    }
-
     @Data
     @ConfigurationElement
     public static class Options {

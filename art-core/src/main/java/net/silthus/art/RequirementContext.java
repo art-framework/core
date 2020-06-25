@@ -16,7 +16,6 @@
 
 package net.silthus.art;
 
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.requirements.Requirement;
@@ -31,7 +30,6 @@ import java.util.Objects;
  * @param <TTarget> target type of the requirement
  * @param <TConfig> config type of the requirement
  */
-@EqualsAndHashCode(callSuper = true)
 public class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig, RequirementConfig<TConfig>> implements Requirement<TTarget, TConfig> {
 
     @Getter
@@ -39,6 +37,7 @@ public class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TC
 
     public RequirementContext(Class<TTarget> targetClass, Requirement<TTarget, TConfig> requirement, RequirementConfig<TConfig> config) {
         super(targetClass, config);
+        Objects.requireNonNull(requirement, "requirement must not be null");
         this.requirement = requirement;
     }
 
@@ -50,7 +49,12 @@ public class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TC
     @Override
     public boolean test(TTarget target, RequirementContext<TTarget, TConfig> context) {
 
-        if (!isTargetType(target)) return false;
+        if (context != null && context != this)
+            throw new UnsupportedOperationException("RequirementContext#test(target, context) must not be called directly. Use ActionResult#test(target) instead.");
+
+        Objects.requireNonNull(target, "target must not be null");
+
+        if (!isTargetType(target)) return true;
 
         return getRequirement().test(target, Objects.isNull(context) ? this : context);
     }

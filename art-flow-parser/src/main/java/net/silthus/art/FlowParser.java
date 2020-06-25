@@ -14,12 +14,10 @@
  * limitations under the License.
  */
 
-package net.silthus.art.parser.flow;
+package net.silthus.art;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import net.silthus.art.ActionContext;
-import net.silthus.art.RequirementContext;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
@@ -106,7 +104,7 @@ public class FlowParser implements ArtParser {
                     activeAction.addRequirements(requirements);
                     requirements.clear();
                 } else {
-                    activeAction.addNestedAction((ActionContext<?, ?>) context);
+                    activeAction.addChildAction((ActionContext<?, ?>) context);
                 }
             }
         }

@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import net.silthus.art.api.config.ArtObjectConfig;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public abstract class ArtContext<TTarget, TConfig, TContextOptions extends ArtObjectConfig<TConfig>> {
@@ -13,6 +14,8 @@ public abstract class ArtContext<TTarget, TConfig, TContextOptions extends ArtOb
     private final TContextOptions config;
 
     public ArtContext(Class<TTarget> targetClass, TContextOptions config) {
+        Objects.requireNonNull(targetClass, "targetClass must not be null");
+        Objects.requireNonNull(config, "config must not be null");
         this.targetClass = targetClass;
         this.config = config;
     }
