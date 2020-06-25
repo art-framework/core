@@ -116,7 +116,9 @@ public class DefaultArtManager implements ArtManager {
                 throw new ArtParseException("Config " + config + " requires an unknown parser of type " + config.getParser());
             }
 
-            return getParser().get(config.getParser()).get().parse(config);
+            ArtResult result = getParser().get(config.getParser()).get().parse(config);
+            getLogger().info("Loaded ART config: " + ConfigUtil.getFileName(config.getId()));
+            return result;
         } catch (ArtParseException e) {
             logger.severe("ERROR in " + ConfigUtil.getFileName(config.getId()).orElse("unknown config") + ":");
             logger.severe("  --> " + e.getMessage());
@@ -140,7 +142,7 @@ public class DefaultArtManager implements ArtManager {
 
         actions().register(actions);
         getLogger().info("   " + actions.size() + "x Action(s):");
-        actions.keySet().forEach(actionIdentifier -> getLogger().info("    - " + actionIdentifier));
+        actions.entrySet().forEach(entry -> getLogger().info("    - !" + entry.getKey() + " " + entry.getValue().getConfigString()));
         getLogger().info("");
     }
 
@@ -148,7 +150,7 @@ public class DefaultArtManager implements ArtManager {
 
         requirements().register(requirements);
         getLogger().info("   " + requirements.size() + "x Requirement(s):");
-        requirements.keySet().forEach(actionIdentifier -> getLogger().info("    - " + actionIdentifier));
+        requirements.entrySet().forEach(entry -> getLogger().info("    - ?" + entry.getKey() + " " + entry.getValue().getConfigString()));
         getLogger().info("");
     }
 
