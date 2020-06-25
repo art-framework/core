@@ -11,6 +11,7 @@ import java.util.Optional;
 public class ArtObjectConfig<TConfig> {
 
     private String name;
+
     @Ignore
     private final TConfig with;
 

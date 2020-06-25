@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package net.silthus.art.parser.flow;
+package net.silthus.art;
 
 import com.google.inject.Provider;
 import lombok.SneakyThrows;
-import net.silthus.art.ActionContext;
-import net.silthus.art.DefaultArtResult;
-import net.silthus.art.RequirementContext;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtManager;
+import net.silthus.art.api.actions.ActionConfig;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtParseException;
+import net.silthus.art.api.requirements.RequirementConfig;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -190,11 +189,12 @@ class FlowParserTest {
         }
 
         private ActionContext<?, ?> action() {
-            return new ActionContext<>(null, null, null);
+            return new ActionContext<>(Object.class, (o, context) -> {
+            }, new ActionConfig<>());
         }
 
         private RequirementContext<?, ?> requirement() {
-            return new RequirementContext<>(null, null, null);
+            return new RequirementContext<>(Object.class, (o, context) -> true, new RequirementConfig<>());
         }
 
         @Nested
@@ -216,7 +216,7 @@ class FlowParserTest {
 
                 assertThat(parser.sortAndCombineArtContexts(contexts))
                         .containsExactly(action)
-                        .extracting("nestedActions.size")
+                        .extracting("childActions.size")
                         .contains(2);
             }
 
@@ -297,7 +297,7 @@ class FlowParserTest {
 
                 assertThat(parser.sortAndCombineArtContexts(contexts))
                         .hasSize(2)
-                        .extracting("nestedActions.size")
+                        .extracting("childActions.size")
                         .contains(2, 1);
             }
 

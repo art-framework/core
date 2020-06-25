@@ -39,7 +39,8 @@ class ArtTypeParserTest {
 
         when(manager.getFactory(anyString())).thenReturn(Optional.of(factory));
 
-        when(factory.create(any())).thenAnswer(invocation -> new ActionContext<>(null, null, invocation.getArgument(0)));
+        when(factory.create(any())).thenAnswer(invocation -> new ActionContext<>(Object.class, (o, context) -> {
+        }, invocation.getArgument(0)));
         when(factory.getConfigClass()).thenReturn(Optional.of(TestConfig.class));
         when(factory.getConfigInformation()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
 

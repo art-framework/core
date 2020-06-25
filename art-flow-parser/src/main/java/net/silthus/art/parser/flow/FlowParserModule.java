@@ -20,6 +20,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.MapBinder;
 import com.google.inject.multibindings.Multibinder;
+import net.silthus.art.FlowParser;
 import net.silthus.art.api.parser.ArtParser;
 import net.silthus.art.parser.flow.parser.ActionParser;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;

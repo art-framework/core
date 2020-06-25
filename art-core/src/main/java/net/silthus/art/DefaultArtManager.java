@@ -16,9 +16,7 @@
 
 package net.silthus.art;
 
-import lombok.AccessLevel;
 import lombok.Data;
-import lombok.Setter;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
@@ -63,20 +61,23 @@ public class DefaultArtManager implements ArtManager {
         this.parser = parser;
     }
 
-    @Setter(AccessLevel.PACKAGE)
-    private boolean loaded = false;
+    ActionManager actions() {
+        return actionManager;
+    }
+
+    RequirementManager requirements() {
+        return requirementManager;
+    }
 
     @Override
     public void load() {
 
-        setLoaded(true);
         getLogger().info("-------- ART MANAGER LOADED --------");
     }
 
     @Override
     public void unload() {
 
-        setLoaded(false);
         getLogger().info("-------- ART MANAGER UNLOADED --------");
     }
 
@@ -97,28 +98,34 @@ public class DefaultArtManager implements ArtManager {
                     getLogger().info("");
 
                     ArtBuilder.Result createdART = art.build();
-                    for (Map.Entry<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> entry : createdART.getFactories().entrySet()) {
-                        if (entry.getKey() == ActionFactory.class) {
-                            registerActions(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (ActionFactory<?, ?>) artFactory.getValue())));
-                        } else if (entry.getKey() == RequirementFactory.class) {
-                            registerRequirements(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (RequirementFactory<?, ?>) artFactory.getValue())));
-                        }
-                    }
+                    registerArtObjects(createdART);
+                    registerGlobalFilters(createdART);
 
-                    for (Map.Entry<Class<?>, List<ArtResultFilter<?>>> entry : createdART.getFilters().entrySet()) {
-                        if (!globalFilters.containsKey(entry.getKey())) {
-                            globalFilters.put(entry.getKey(), new ArrayList<>());
-                        }
-                        globalFilters.get(entry.getKey()).addAll(entry.getValue());
-
-                        getLogger().info("   " + entry.getValue().size() + "x " + entry.getKey().getName() + " Filter(s)");
-                    }
                     getLogger().info("");
 
                     getLogger().info("--------------------------------------------------");
                     getLogger().info("");
                 })
                 .accept(artBuilder);
+    }
+
+    @Override
+    public ArtResult load(ArtConfig config) {
+        try {
+            if (!getParser().containsKey(config.getParser())) {
+                throw new ArtParseException("Config " + config + " requires an unknown parser of type " + config.getParser());
+            }
+
+            return getParser().get(config.getParser()).get().parse(config);
+        } catch (ArtParseException e) {
+            logger.severe("ERROR in " + ConfigUtil.getFileName(config.getId()).orElse("unknown config") + ":");
+            logger.severe("  --> " + e.getMessage());
+            return DefaultArtResult.empty();
+        }
+    }
+
+    @Override
+    public <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context) {
     }
 
     @Override
@@ -145,30 +152,24 @@ public class DefaultArtManager implements ArtManager {
         getLogger().info("");
     }
 
-    @Override
-    public ArtResult load(ArtConfig config) {
-        try {
-            if (!getParser().containsKey(config.getParser())) {
-                throw new ArtParseException("Config " + config + " requires an unknown parser of type " + config.getParser());
+    private void registerArtObjects(ArtBuilder.Result createdART) {
+        for (Map.Entry<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> entry : createdART.getFactories().entrySet()) {
+            if (entry.getKey() == ActionFactory.class) {
+                registerActions(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (ActionFactory<?, ?>) artFactory.getValue())));
+            } else if (entry.getKey() == RequirementFactory.class) {
+                registerRequirements(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (RequirementFactory<?, ?>) artFactory.getValue())));
             }
-
-            return getParser().get(config.getParser()).get().parse(config);
-        } catch (ArtParseException e) {
-            logger.severe("ERROR in " + ConfigUtil.getFileName(config.getId()).orElse("unknown config") + ":");
-            logger.severe("  --> " + e.getMessage());
-            return DefaultArtResult.empty();
         }
     }
 
-    public ActionManager actions() {
-        return actionManager;
-    }
+    private void registerGlobalFilters(ArtBuilder.Result createdART) {
+        for (Map.Entry<Class<?>, List<ArtResultFilter<?>>> entry : createdART.getFilters().entrySet()) {
+            if (!globalFilters.containsKey(entry.getKey())) {
+                globalFilters.put(entry.getKey(), new ArrayList<>());
+            }
+            globalFilters.get(entry.getKey()).addAll(entry.getValue());
 
-    public RequirementManager requirements() {
-        return requirementManager;
-    }
-
-    @Override
-    public <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context) {
+            getLogger().info("   " + entry.getValue().size() + "x " + entry.getKey().getName() + " Filter(s)");
+        }
     }
 }

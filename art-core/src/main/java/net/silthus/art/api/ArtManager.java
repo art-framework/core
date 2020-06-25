@@ -31,8 +31,6 @@ import java.util.function.Predicate;
 @ImplementedBy(DefaultArtManager.class)
 public interface ArtManager {
 
-    boolean isLoaded();
-
     void load();
 
     void unload();

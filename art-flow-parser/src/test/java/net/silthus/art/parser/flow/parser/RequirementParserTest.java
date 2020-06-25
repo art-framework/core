@@ -31,7 +31,7 @@ class RequirementParserTest {
         this.factory = mock(RequirementFactory.class);
         this.requirementManager = mock(RequirementManager.class);
         when(requirementManager.getFactory(anyString())).thenReturn(Optional.of(factory));
-        when(factory.create(any())).thenAnswer(invocation -> new RequirementContext<>(null, null, invocation.getArgument(0)));
+        when(factory.create(any())).thenAnswer(invocation -> new RequirementContext<>(Object.class, (o, context) -> true, invocation.getArgument(0)));
 
         this.parser = new RequirementParser(requirementManager);
     }

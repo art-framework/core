@@ -83,6 +83,7 @@ class DefaultArtResultTest {
     private <TTarget> RequirementContext<TTarget, ?> requirement(boolean result) {
         RequirementContext<TTarget, ?> mock = mock(RequirementContext.class);
         when(mock.isTargetType(any())).thenReturn(true);
+        when(mock.test(any())).thenReturn(result);
         when(mock.test(any(), any())).thenReturn(result);
         return mock;
     }
@@ -90,6 +91,7 @@ class DefaultArtResultTest {
     private <TTarget> RequirementContext<TTarget, ?> requirement(Class<TTarget> targetClass, boolean result) {
         RequirementContext<TTarget, ?> mock = mock(RequirementContext.class);
         when(mock.isTargetType(targetClass)).thenReturn(true);
+        when(mock.test(any(targetClass))).thenReturn(result);
         when(mock.test(any(targetClass), any())).thenReturn(result);
         return mock;
     }

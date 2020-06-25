@@ -31,7 +31,8 @@ class ActionParserTest {
         this.factory = mock(ActionFactory.class);
         this.actionManager = mock(ActionManager.class);
         when(actionManager.getFactory(anyString())).thenReturn(Optional.of(factory));
-        when(factory.create(any())).thenAnswer(invocation -> new ActionContext<>(null, null, invocation.getArgument(0)));
+        when(factory.create(any())).thenAnswer(invocation -> new ActionContext<>(Object.class, (o, context) -> {
+        }, invocation.getArgument(0)));
 
         this.parser = new ActionParser(actionManager);
     }
