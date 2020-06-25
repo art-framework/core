@@ -26,7 +26,7 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'net.silthus.art', name: 'art-core', version: '1.0.0-alpha.2'
+    implementation group: 'net.silthus.art', name: 'art-core', version: '1.0.0-alpha.3'
 }
 ```
 
@@ -39,7 +39,7 @@ dependencies {
     <dependency>
       <groupId>net.silthus.art</groupId>
       <artifactId>art-core</artifactId>
-      <version>1.0.0-alpha.2</version>
+      <version>1.0.0-alpha.3</version>
     </dependency>
   </dependencies>
   ...
