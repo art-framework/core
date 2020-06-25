@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 buildscript {
     repositories {
         jcenter()
@@ -106,70 +122,6 @@ configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-examp
         from(new File(spigotPluginYaml.temporaryDir, "plugin.yml"))
         into(sourceSets.test.resources.srcDirs[0])
     }
-
-    task deploy(type: Copy, dependsOn: [
-            'cleanPlugin',
-            'jar'
-    ]) {
-        group 'deploy'
-        description 'Exports you plugin to the plugin directory in your test server'
-
-        def pluginFolder = project.property('pluginFolder').toString()
-
-        from shadowJar
-        into pluginFolder.isEmpty() ? "${project.rootDir}/working/plugins" : pluginFolder
-    }
-
-    task cleanPlugin() {
-        group 'deploy'
-        description 'Cleans the plugin in the working directory up'
-        delete "${project.rootDir}/working/plugins/" + project.property("pluginName") + '*.jar'
-    }
-
-    task setupServer {
-        group 'server'
-        description 'Downloads the server jar'
-
-        def server = new File("${project.rootDir}/working/server.jar")
-
-        if (server.exists()) {
-            server.delete()
-        }
-
-        def url = ''
-        switch (mcVersion) {
-            case '1.8.8':
-                url = 'https://cdn.getbukkit.org/spigot/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar'
-                break
-
-            case '1.12.2':
-                url = 'https://cdn.getbukkit.org/spigot/spigot-1.12.2.jar'
-                break
-
-            case '1.13.2':
-                url = 'https://cdn.getbukkit.org/spigot/spigot-1.13.2.jar'
-                break
-
-            case '1.14.4':
-                url = 'https://cdn.getbukkit.org/spigot/spigot-1.14.4.jar'
-                break
-            case '1.15.2':
-                url = 'https://cdn.getbukkit.org/spigot/spigot-1.15.2.jar'
-                break
-        }
-
-        if (url.isEmpty()) {
-            throw new Exception('NOT A SUPPORTED VERSION, PLEASE USE [1.8.8, 1.12.2, 1.13.2, 1.14.4, 1.15.2]!')
-        }
-
-        try {
-            new URL(url).withInputStream { i -> server.withOutputStream { it << i } }
-        } catch(Exception e) {
-            println(e.getMessage())
-        }
-    }
-
-    defaultTasks 'build', 'deploy'
 }
 
 defaultTasks 'build'
