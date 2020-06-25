@@ -169,7 +169,9 @@ public class DefaultArtManager implements ArtManager {
             }
             globalFilters.get(entry.getKey()).addAll(entry.getValue());
 
-            getLogger().info("   " + entry.getValue().size() + "x " + entry.getKey().getName() + " Filter(s)");
+            if (!entry.getValue().isEmpty()) {
+                getLogger().info("   " + entry.getValue().size() + "x " + entry.getKey().getName() + " Filter(s)");
+            }
         }
     }
 }
