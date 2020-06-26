@@ -4,7 +4,9 @@ import com.google.inject.Binder;
 import kr.entree.spigradle.Plugin;
 import lombok.Getter;
 import net.silthus.art.api.ArtManager;
+import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.parser.flow.FlowParserModule;
+import net.silthus.art.scheduler.BukkitScheduler;
 import net.silthus.slib.bukkit.BasePlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -44,5 +46,6 @@ public class ArtPlugin extends BasePlugin {
 
         binder.install(new ArtGuiceModule());
         binder.install(new FlowParserModule());
+        binder.bind(Scheduler.class).to(BukkitScheduler.class);
     }
 }
