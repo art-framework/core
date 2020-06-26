@@ -10,8 +10,6 @@ import java.util.Optional;
 @ConfigurationElement
 public class ArtObjectConfig<TConfig> {
 
-    private String name;
-
     @Ignore
     private final TConfig with;
 

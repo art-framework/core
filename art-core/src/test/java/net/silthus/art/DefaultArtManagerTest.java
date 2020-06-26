@@ -48,12 +48,8 @@ class DefaultArtManagerTest {
         @DisplayName("should reuse the same builder for the same plugin")
         void shouldReuseBuilderForSamePlugin() {
 
-            artManager.register(description, artBuilder -> {
-                builder = artBuilder;
-            });
-            artManager.register(description, artBuilder -> {
-                assertThat(artBuilder).isSameAs(builder);
-            });
+            artManager.register(description, artBuilder -> builder = artBuilder);
+            artManager.register(description, artBuilder -> assertThat(artBuilder).isSameAs(builder));
         }
 
         @Test
@@ -66,6 +62,40 @@ class DefaultArtManagerTest {
             );
 
             verify(requirementManager, times(1)).register(anyMap());
+        }
+
+        @Test
+        @DisplayName("should register all actions")
+        void shouldRegisterActions() {
+
+            artManager.register(description, artBuilder -> artBuilder
+                    .action(String.class, (s, context) -> {
+                    }).withName("foobar")
+                    .target(Double.class)
+                    .action((aDouble, context) -> {
+                    }).withName("double")
+            );
+
+            verify(actionManager, times(1)).register(anyMap());
+        }
+
+        @Test
+        @DisplayName("should not register action without name")
+        void shouldNotRegisterActionWithoutName() {
+
+            artManager.register(description, artBuilder -> artBuilder.action(String.class, (s, context) -> {
+            }));
+
+            verify(actionManager, times(0)).register(anyMap());
+        }
+
+        @Test
+        @DisplayName("should not register requirement without name")
+        void shouldNotRegisterRequirementWithoutName() {
+
+            artManager.register(description, artBuilder -> artBuilder.requirement(String.class, (s, context) -> false));
+
+            verify(requirementManager, times(0)).register(anyMap());
         }
     }
 

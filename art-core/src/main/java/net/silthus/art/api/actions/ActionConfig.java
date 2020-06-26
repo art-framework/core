@@ -3,7 +3,6 @@ package net.silthus.art.api.actions;
 import de.exlll.configlib.annotation.ConfigurationElement;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ArtObjectConfig;
@@ -20,7 +19,6 @@ import java.util.Map;
  *
  * @param <TConfig> custom config type of the action
  */
-@Getter
 @Setter(AccessLevel.PACKAGE)
 @ConfigurationElement
 @EqualsAndHashCode(callSuper = true)
@@ -46,7 +44,7 @@ public final class ActionConfig<TConfig> extends ArtObjectConfig<TConfig> {
 
     private String delay = "0s";
     private String cooldown = "0s";
-    private boolean executeOnce = false;
+    private boolean execute_once = false;
 
     /**
      * The delay in milliseconds for this action.
@@ -64,5 +62,9 @@ public final class ActionConfig<TConfig> extends ArtObjectConfig<TConfig> {
      */
     public long getCooldown() {
         return TimeUtil.parseTimeAsMillis(cooldown);
+    }
+
+    public boolean isExecuteOnce() {
+        return execute_once;
     }
 }

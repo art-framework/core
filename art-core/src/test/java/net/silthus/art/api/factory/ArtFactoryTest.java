@@ -89,6 +89,16 @@ public class ArtFactoryTest {
         }
 
         @Test
+        @DisplayName("should use description annotation on class")
+        public void shouldUseDescriptionAnnotation() {
+
+            assertThatCode(() -> factory.initialize())
+                    .doesNotThrowAnyException();
+
+            assertThat(factory.getDescription()).isEqualTo(new String[]{"Description"});
+        }
+
+        @Test
         @DisplayName("should not override manually set name and config information")
         public void shouldNotOverrideManualSetters() {
 
@@ -307,6 +317,7 @@ public class ArtFactoryTest {
     }
 
     @Name("Test")
+    @Description("Description")
     @Config(TestConfig.class)
     public static class TestAction implements Action<String, TestConfig> {
         @Override

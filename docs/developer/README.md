@@ -8,10 +8,9 @@ All of these code examples can also be found inside the [art-example](../../art-
   * [Gradle](#gradle)
   * [Maven](#maven)
 * [Creating Actions](#creating-actions)
+* [Creating Requirements](#creating-requirements)
 * [Register your **A**ctions **R**equirements **T**rigger](#register-your-actions-requirements-trigger)
-  * [Using the ART static class](#using-the-art-static-class)
-  * [Using the Bukkit ServiceManager](#using-the-bukkit-servicemanager)
-* [Using Actions](#using-actions)
+* [Using **A**ctions **R**equirements **T**rigger in your plugin](#using-actions-requirements-trigger-in-your-plugin)
   * [Using ConfigLib to load the config](#using-configlib-to-load-the-config)
 
 ## Dependencies
@@ -40,6 +39,7 @@ dependencies {
       <groupId>net.silthus.art</groupId>
       <artifactId>art-core</artifactId>
       <version>1.0.0-alpha.3</version>
+      <scope>provided</scrope>
     </dependency>
   </dependencies>
   ...
@@ -50,7 +50,7 @@ dependencies {
 
 You can provide `actions`, `requirements` and `trigger` from any of your plugins. These will be useable by [Server Admins](../admin/README.md) inside configs used by other plugins.
 
-Providing an `Action` is as simple as implementing the `Action<TTarget, TConfig>` interface and registering it `onLoad()` with `ART.register(...)`.
+Providing an `Action` is as simple as implementing the `Action<TTarget, TConfig>` interface and registering it with `ART.register(...)`.
 
 First create your action and define a config (optional). In this example a `PlayerDamageAction` with its own config class.
 
@@ -61,9 +61,11 @@ First create your action and define a config (optional). In this example a `Play
  *
  * The @Name annotation is required on all actions or else the registration will fail.
  *
- * You can optionally provide a @Config that will be used to describe the parameter your action takes.
+ * You can optionally provide a @Config and a @Description
+ * that will be used to describe the parameter your action takes.
  */
 @Name("art-example:player.damage")
+@Description("Optional description of what your action does.")
 @Config(PlayerDamageAction.ActionConfig.class)
 public class PlayerDamageAction implements Action<Player, PlayerDamageAction.ActionConfig> {
 
@@ -110,6 +112,9 @@ public class PlayerDamageAction implements Action<Player, PlayerDamageAction.Act
      */
     public static class ActionConfig {
 
+        // the config class needs to have a parameterless public contructor
+        // and needs to be static if it is an inner class
+
         @Required
         @Position(0)
         @Description("Damage amount in percent or health points. Use a value between 0 and 1 if percentage=true.")
@@ -120,6 +125,84 @@ public class PlayerDamageAction implements Action<Player, PlayerDamageAction.Act
 
         @Description("Set to true if you want to damage the player based on his current health. Only makes sense in combination with percentage=true.")
         private final boolean fromCurrent = false;
+    }
+}
+```
+
+## Creating Requirements
+
+Requirements work just the same as [Actions](#creating-actions), except that they are there to test conditions. They can then be used by [admins](../admin/README.md) to test conditions before executing actions or reacting to triggers.
+
+Simply implement the `Requirement<TTarget, TConfig>` interface and register in with `ART.register(...)`.
+
+> Return `true` if the check was successfull, meaning actions can be executed.  
+> And return `false` if any check failed and nothing should be executed.
+
+See the comments on the [action-example](#creating-actions) for details on the annotations.
+
+```java
+@Name("art-example:location")
+@Config(EntityLocationRequirement.Config.class)
+@Description({
+        "Checks the position of the entity.",
+        "x, y, z, pitch and yaw are ignored if set to 0 unless zeros=true.",
+        "Check will always pass if no config is set.",
+        "For example: '?art-example:location y:256' will be true if the player reached the maximum map height."
+})
+public class EntityLocationRequirement implements Requirement<Entity, EntityLocationRequirement.Config> {
+
+    @Override
+    public boolean test(Entity entity, RequirementContext<Entity, Config> context) {
+
+        if (context.getConfig().isEmpty()) return true;
+
+        Config config = context.getConfig().get();
+
+        Location entityLocation = entity.getLocation();
+        Location configLocation = toLocation(config, entityLocation);
+
+        return isWithinRadius(configLocation, entityLocation, config.radius);
+    }
+
+    private boolean isApplied(Config config, Number value) {
+        return (value.floatValue() != 0 || value.intValue() != 0) || config.zeros;
+    }
+
+    private Location toLocation(Config config, Location entityLocation) {
+        Location location = new Location(entityLocation.getWorld(), entityLocation.getBlockX(), entityLocation.getBlockY(), entityLocation.getBlockZ(), entityLocation.getYaw(), entityLocation.getPitch());
+        if (!Strings.isNullOrEmpty(config.world)) {
+            World world = Bukkit.getWorld(config.world);
+            if (world != null) location.setWorld(world);
+        }
+        if (isApplied(config, config.x)) location.setX(config.x);
+        if (isApplied(config, config.y)) location.setY(config.y);
+        if (isApplied(config, config.z)) location.setZ(config.z);
+        if (isApplied(config, config.pitch)) location.setPitch(config.pitch);
+        if (isApplied(config, config.yaw)) location.setYaw(config.yaw);
+
+        return location;
+    }
+
+    // you should always try to minimize the required parameters
+    // this makes it easier for your users to use your requirement
+    // e.g. this requirement can just be checked by calling "?art-example:location y:128"
+    // and it will check if the player is at the given height.
+    public static class Config {
+
+        @Position(0)
+        int x;
+        @Position(1)
+        int y;
+        @Position(2)
+        int z;
+        @Position(3)
+        String world;
+        @Position(4)
+        int radius;
+        float yaw;
+        float pitch;
+        @Description("Set to true to check x, y, z, pitch and yaw coordinates that have a value of 0.")
+        boolean zeros = false;
     }
 }
 ```
@@ -148,8 +231,10 @@ public class ExampleARTPlugin extends JavaPlugin {
         }
 
         ART.register(ArtBukkitDescription.ofPlugin(this), artBuilder -> {
-            artBuilder.target(Player.class)
-                    .action(new PlayerDamageAction());
+            artBuilder
+                .target(Player.class)
+                    .action(new PlayerDamageAction())
+                .requirement(Entity.class, new EntityLocationRequirement())
         });
     }
 
@@ -159,11 +244,11 @@ public class ExampleARTPlugin extends JavaPlugin {
 }
 ```
 
-## Using Actions
+## Using **A**ctions **R**equirements **T**rigger in your plugin
 
 One powerfull feature ob the [ART-Framework](https://github.com/silthus/art-framework) is the reuseability of actions, requirements and trigger accross multiple plugins without knowing the implementation and config of those.
 
-All you need to do to use actions inside your plugin is to provide a reference to the loaded `ARTConfig`. How you load this config is up to you. However to make your life simple ART provides some helper methods for Bukkits `ConfigurationSection` (*coming soon*) and implements [ConfigLib](https://github.com/Silthus/ConfigLib) for some easy config loading.
+All you need to do to use ART inside your plugin is to provide a reference to the loaded `ARTConfig`. How you load this config is up to you. However to make your life simple ART provides some helper methods for Bukkits `ConfigurationSection` (*coming soon*) and implements [ConfigLib](https://github.com/Silthus/ConfigLib) for some easy config loading.
 
 > Make sure you load your ARTConfig after all plugins are loaded and enabled.  
 > To do this you can use this handy method: `Bukkit.getScheduler().runTaskLater(this, () -> {...}, 1L);`  
@@ -174,7 +259,10 @@ The following example references an `example.yml` config which could have this c
 ```yaml
 actions:
   art:
-    - '!art-example:player.damage 10'
+    - '?art-example:location y:256 radius:5'
+    # kill the player if he is 5 blocks away from the top of the map
+    - '!art-example:player.damage 1.0 percentage:true'
+    - '!text "You reached the heavens of the gods and will be punished!"'
 ```
 
 ### Using [ConfigLib](https://github.com/Silthus/ConfigLib) to load the config
@@ -197,10 +285,15 @@ public class ExampleARTPlugin extends JavaPlugin implements Listener {
     }
 
     // this will execute all configured actions on every player move
-    // dont try this at home ;)
+    // dont try this at home :)
+    // you should instead use this for some non frequent events inside your plugin
+    // or when a command is triggered
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
 
+        // lets be nice to the server and check if the player actually moved a block
+        // otherwise we would execute everytime the player twiches with his eyes
+        if (!LocationUtil.hasMoved(event.getPlayer())) return;
         if (getArtResult() == null) return;
 
         getArtResult().execute(event.getPlayer());
@@ -225,6 +318,8 @@ public class ExampleARTPlugin extends JavaPlugin implements Listener {
         return Bukkit.getPluginManager().getPlugin("ART") != null;
     }
 
+    // ConfigLib allows you to use statically typed configs
+    // without the hassle of guessing property names
     @Getter
     @Setter
     public static class Config extends YamlConfiguration {

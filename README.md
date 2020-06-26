@@ -83,7 +83,7 @@ if (result.test(player)) {
 * Actions
   * Use delays and other config options for more control
 * Requirements
-  * Check anything anywhere
+  * ~~Check anything anywhere~~
   * Expression syntax for advanced scenarios  
     `(?player.health >10) || ((?mythicmobs:mob.kill[count:>5,persistent:true] super_omega_boss) && (?player.health <5))`
   * Persistant checks and meta data storage, e.g. for counting mob kills

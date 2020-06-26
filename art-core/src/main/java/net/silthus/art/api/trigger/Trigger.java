@@ -23,6 +23,8 @@ import java.util.function.Predicate;
 
 public abstract class Trigger<TTarget, TConfig> implements ArtObject {
 
+    // TODO: allow a list of targets that triggered the trigger
+    // e.g. a player opening a chest would have the chest and the player as target
     protected final void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context) {
 //        ART.trigger(identifier, target, context);
         throw new NotImplementedException();

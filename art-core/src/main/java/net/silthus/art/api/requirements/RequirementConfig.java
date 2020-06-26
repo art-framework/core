@@ -53,8 +53,7 @@ public class RequirementConfig<TConfig> extends ArtObjectConfig<TConfig> {
     }
 
     private boolean persistent = false;
-    private int order = 0;
-    private int requiredCount = 0;
+    private int count = 0;
 
     public RequirementConfig() {
     }
