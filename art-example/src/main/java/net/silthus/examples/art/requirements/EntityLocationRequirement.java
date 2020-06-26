@@ -51,7 +51,7 @@ public class EntityLocationRequirement implements Requirement<Entity, EntityLoca
     }
 
     private boolean isApplied(Config config, Number value) {
-        return ((value.floatValue() != 0 || value.intValue() != 0) || config.zeros) && config.radius < 1;
+        return (value.floatValue() != 0 || value.intValue() != 0) || config.zeros;
     }
 
     private Location toLocation(Config config, Location entityLocation) {
@@ -72,19 +72,19 @@ public class EntityLocationRequirement implements Requirement<Entity, EntityLoca
     public static class Config {
 
         @Position(0)
-        private int x;
+        int x;
         @Position(1)
-        private int y;
+        int y;
         @Position(2)
-        private int z;
+        int z;
         @Position(3)
-        private String world;
+        String world;
         @Position(4)
-        private int radius;
-        private float yaw;
-        private float pitch;
+        int radius;
+        float yaw;
+        float pitch;
         @Description("Set to true to check x, y, z, pitch and yaw coordinates that have a value of 0.")
-        private final boolean zeros = false;
+        boolean zeros = false;
     }
 
     // TODO: move all static to util class
