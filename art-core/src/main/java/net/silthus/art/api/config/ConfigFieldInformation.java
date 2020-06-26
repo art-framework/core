@@ -19,7 +19,7 @@ package net.silthus.art.api.config;
 import lombok.Data;
 
 @Data
-public class ConfigFieldInformation {
+public class ConfigFieldInformation implements Comparable<ConfigFieldInformation> {
 
     /**
      * The identifier of the config object.
@@ -44,5 +44,15 @@ public class ConfigFieldInformation {
         newInformation.setRequired(isRequired());
 
         return newInformation;
+    }
+
+    @Override
+    public int compareTo(ConfigFieldInformation o) {
+
+        if (getPosition() < 0 && o.getPosition() < 0) return getName().compareTo(o.getName());
+        if (getPosition() < 0) return 1;
+        if (o.getPosition() < 0) return -1;
+
+        return Integer.compare(getPosition(), o.getPosition());
     }
 }

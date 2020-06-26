@@ -32,7 +32,10 @@ import net.silthus.art.api.config.ConfigFieldInformation;
 import net.silthus.art.util.ConfigUtil;
 
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -48,14 +51,19 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
     private String identifier;
     private String[] description = new String[0];
 
-    private final Map<String, ConfigFieldInformation> configInformation = new HashMap<>();
+    final Map<String, ConfigFieldInformation> configInformation = new HashMap<>();
 
     public Optional<Class<TConfig>> getConfigClass() {
         return Optional.ofNullable(configClass);
     }
 
     public String getConfigString() {
-        return getConfigInformation().values().stream().sorted(Comparator.comparingInt(ConfigFieldInformation::getPosition)).map(info -> info.getName() + "[" + info.getType().getTypeName() + "]=" + info.getDefaultValue()).collect(Collectors.joining(", "));
+        return getConfigInformation().values().stream().sorted()
+                .map(info -> info.getIdentifier()
+                        + (info.isRequired() ? "*" : "")
+                        + "="
+                        + info.getDefaultValue())
+                .collect(Collectors.joining(", "));
     }
 
     /**
