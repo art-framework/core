@@ -19,41 +19,60 @@ package net.silthus.art.api.factory;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import net.silthus.art.api.parser.ArtParser;
+import net.silthus.art.api.ArtRegistrationException;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
 import java.util.logging.Logger;
 
-public class AbstractFactoryManager<TFactory extends ArtFactory<?, ?, ?, ?>> {
+public abstract class AbstractFactoryManager<TFactory extends ArtFactory<?, ?, ?, ?>> implements ArtFactoryManager<TFactory> {
 
-    protected final Map<String, Provider<ArtParser>> parser;
     @Getter(AccessLevel.PACKAGE)
-    private final Map<String, TFactory> factories = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
+    private final Map<String, TFactory> factories = new HashMap<>();
     @Inject
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.PACKAGE)
     private Logger logger;
 
-    public AbstractFactoryManager(Map<String, Provider<ArtParser>> parser) {
-        this.parser = parser;
-    }
-
     public boolean exists(String identifier) {
         return factories.containsKey(identifier);
     }
 
-    public void register(Map<String, TFactory> factories) {
-        for (Map.Entry<String, TFactory> entry : factories.entrySet()) {
-            if (exists(entry.getKey())) {
-                getLogger().warning("duplicate art factory detected for identifier " + entry.getKey() + ": " + entry.getValue().getArtObject().getClass().getCanonicalName() + " <--> " + factories.get(entry.getKey()).getArtObject().getClass().getCanonicalName());
-                getLogger().warning("not registering: " + entry.getValue().getArtObject().getClass().getCanonicalName());
-            } else {
-                this.factories.put(entry.getKey(), entry.getValue());
+    @Override
+    public void register(List<TFactory> factories) throws ArtRegistrationException {
+
+        int failedRegistrations = 0;
+
+        for (TFactory factory : factories) {
+            try {
+                register(factory);
+            } catch (ArtRegistrationException e) {
+                getLogger().warning(e.getMessage());
+                failedRegistrations++;
             }
+        }
+
+        if (failedRegistrations > 0) {
+            throw new ArtRegistrationException("Failed to register " + failedRegistrations + " ArtFactories.");
+        }
+    }
+
+    @Override
+    public void register(TFactory factory) throws ArtRegistrationException {
+
+        factory.initialize();
+
+        String identifier = factory.getIdentifier();
+
+        if (exists(identifier)) {
+            throw new ArtRegistrationException("Duplicate ArtFactory for identifier \"" + identifier + "\" found. " +
+                    "Tried to register " + factory.getArtObject().getClass().getCanonicalName()
+                    + " but already found " + factories.get(identifier).getArtObject().getClass().getCanonicalName());
+        } else {
+            factories.put(identifier, factory);
         }
     }
 

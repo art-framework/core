@@ -1,12 +1,28 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.silthus.art.api.trigger;
 
 import lombok.EqualsAndHashCode;
 import net.silthus.art.api.ArtContext;
 
 @EqualsAndHashCode(callSuper = true)
-public class TriggerContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig, TriggerConfig<TConfig>> {
+public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, TriggerConfig<TConfig>> {
 
-    public TriggerContext(Class<TTarget> targetClass, TriggerConfig<TConfig> config) {
-        super(targetClass, config);
+    public TriggerContext(TriggerConfig<TConfig> config) {
+        super(Object.class, config);
     }
 }

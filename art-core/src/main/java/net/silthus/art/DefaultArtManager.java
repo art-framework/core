@@ -17,20 +17,28 @@
 package net.silthus.art;
 
 import lombok.Data;
+import lombok.NonNull;
 import net.silthus.art.api.ArtManager;
+import net.silthus.art.api.ArtRegistrationException;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.factory.ArtFactory;
+import net.silthus.art.api.factory.ArtFactoryRegistration;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.ArtParser;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
+import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
+import net.silthus.art.api.trigger.TriggerFactory;
+import net.silthus.art.api.trigger.TriggerManager;
 import net.silthus.art.util.ConfigUtil;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.util.ArrayList;
@@ -38,35 +46,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.logging.Logger;
-
-import static java.util.stream.Collectors.toMap;
+import java.util.stream.Collectors;
 
 @Data
 public class DefaultArtManager implements ArtManager {
 
     private final ActionManager actionManager;
     private final RequirementManager requirementManager;
+    private final TriggerManager triggerManager;
 
     private Logger logger = Logger.getLogger("ART");
     private final Map<String, Provider<ArtParser>> parser;
     private final Map<Class<?>, List<ArtResultFilter<?>>> globalFilters = new HashMap<>();
+    private final Map<Class<?>, Function> targetWrapper = new HashMap<>();
     private final Map<ArtModuleDescription, ArtBuilder> registeredPlugins = new HashMap<>();
 
     @Inject
-    public DefaultArtManager(ActionManager actionManager, RequirementManager requirementManager, Map<String, Provider<ArtParser>> parser) {
+    public DefaultArtManager(ActionManager actionManager, RequirementManager requirementManager, TriggerManager triggerManager, Map<String, Provider<ArtParser>> parser) {
         this.actionManager = actionManager;
         this.requirementManager = requirementManager;
+        this.triggerManager = triggerManager;
         this.parser = parser;
-    }
-
-    ActionManager actions() {
-        return actionManager;
-    }
-
-    RequirementManager requirements() {
-        return requirementManager;
     }
 
     @Override
@@ -97,9 +100,10 @@ public class DefaultArtManager implements ArtManager {
                     getLogger().info("   " + moduleDescription.getName() + " v" + moduleDescription.getVersion() + " registered their ART.");
                     getLogger().info("");
 
-                    ArtBuilder.Result createdART = art.build();
-                    registerArtObjects(createdART);
-                    registerGlobalFilters(createdART);
+                    ArtBuilder.Result result = art.build();
+                    registerArtObjects(result);
+                    registerGlobalFilters(result);
+                    registerTargetWrappers(result);
 
                     getLogger().info("");
 
@@ -127,7 +131,7 @@ public class DefaultArtManager implements ArtManager {
     }
 
     @Override
-    public <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context) {
+    public <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> context, Target<?>... targets) {
     }
 
     @Override
@@ -138,28 +142,61 @@ public class DefaultArtManager implements ArtManager {
         globalFilters.get(targetClass).add(filter);
     }
 
-    void registerActions(Map<String, ActionFactory<?, ?>> actions) {
+    @Nullable
+    @Override
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public <TTarget> Target<TTarget> getTarget(@NonNull TTarget target) {
 
-        actions().register(actions);
-        getLogger().info("   " + actions.size() + "x Action(s):");
-        actions.entrySet().forEach(entry -> getLogger().info("    - !" + entry.getKey() + " " + entry.getValue().getConfigString()));
-        getLogger().info("");
+        if (targetWrapper.containsKey(target.getClass())) {
+            return (Target<TTarget>) targetWrapper.get(target.getClass()).apply(target);
+        }
+
+        Class<?> currentTargetClass = null;
+        Function<TTarget, Target<TTarget>> function = null;
+        for (Map.Entry<Class<?>, Function> entry : targetWrapper.entrySet()) {
+            if (entry.getKey().isAssignableFrom(target.getClass())) {
+                // pick the nearest possible target wrapper we can find
+                if (currentTargetClass == null || currentTargetClass.isAssignableFrom(entry.getKey())) {
+                    currentTargetClass = entry.getKey();
+                    function = entry.getValue();
+                }
+            }
+        }
+
+        if (function == null) return null;
+
+        return function.apply(target);
     }
 
-    void registerRequirements(Map<String, RequirementFactory<?, ?>> requirements) {
-
-        requirements().register(requirements);
-        getLogger().info("   " + requirements.size() + "x Requirement(s):");
-        requirements.entrySet().forEach(entry -> getLogger().info("    - ?" + entry.getKey() + " " + entry.getValue().getConfigString()));
-        getLogger().info("");
+    <TFactory extends ArtFactory<?, ?, ?, ? extends ArtObjectConfig<?>>> void registerArtFactoryMap(String type, List<TFactory> factories, ArtFactoryRegistration<TFactory> factoryManager) {
+        try {
+            factoryManager.register(factories);
+        } catch (ArtRegistrationException e) {
+            getLogger().info("   " + e.getMessage());
+        } finally {
+            getLogger().info("   " + factories.size() + "x " + type + "(s) successfully registered:");
+            factories.forEach(value -> getLogger().info("    - ?" + value.getIdentifier() + " " + value.getConfigString()));
+            getLogger().info("");
+        }
     }
 
     private void registerArtObjects(ArtBuilder.Result createdART) {
-        for (Map.Entry<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> entry : createdART.getFactories().entrySet()) {
+        for (Map.Entry<Class<?>, List<ArtFactory<?, ?, ?, ?>>> entry : createdART.getFactories().entrySet()) {
             if (entry.getKey() == ActionFactory.class) {
-                registerActions(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (ActionFactory<?, ?>) artFactory.getValue())));
+                registerArtFactoryMap("Action",
+                        entry.getValue().stream().map(artFactory -> (ActionFactory<?, ?>) artFactory).collect(Collectors.toList()),
+                        getActionManager()
+                );
             } else if (entry.getKey() == RequirementFactory.class) {
-                registerRequirements(entry.getValue().entrySet().stream().collect(toMap(Map.Entry::getKey, artFactory -> (RequirementFactory<?, ?>) artFactory.getValue())));
+                registerArtFactoryMap("Requirement",
+                        entry.getValue().stream().map(artFactory -> (RequirementFactory<?, ?>) artFactory).collect(Collectors.toList()),
+                        getRequirementManager()
+                );
+            } else if (entry.getKey() == TriggerFactory.class) {
+                registerArtFactoryMap("Trigger",
+                        entry.getValue().stream().map(artFactory -> (TriggerFactory<?>) artFactory).collect(Collectors.toList()),
+                        getTriggerManager()
+                );
             }
         }
     }
@@ -174,6 +211,18 @@ public class DefaultArtManager implements ArtManager {
             if (!entry.getValue().isEmpty()) {
                 getLogger().info("   " + entry.getValue().size() + "x " + entry.getKey().getName() + " Filter(s)");
             }
+        }
+    }
+
+    private void registerTargetWrappers(ArtBuilder.Result result) {
+        for (Map.Entry<Class<?>, Function<?, Target<?>>> entry : result.getTargetWrappers().entrySet()) {
+            if (targetWrapper.containsKey(entry.getKey())) {
+                getLogger().warning("Found duplicate Target wrapper for target of type " + entry.getKey().getTypeName() + ". Only one will be used.");
+                return;
+            }
+            targetWrapper.put(entry.getKey(), entry.getValue());
+
+            getLogger().info("   Target wrapper for " + entry.getKey().getTypeName());
         }
     }
 }

@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
  * @see Config
  * @see Required
  */
-@Target({ElementType.FIELD, ElementType.TYPE})
+@Target({ElementType.FIELD, ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Description {
 

@@ -1,6 +1,24 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.silthus.art.api;
 
 import com.google.inject.ImplementedBy;
+import lombok.NonNull;
+import net.silthus.art.ART;
 import net.silthus.art.ArtBuilder;
 import net.silthus.art.ArtModuleDescription;
 import net.silthus.art.DefaultArtManager;
@@ -9,8 +27,10 @@ import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.requirements.Requirement;
+import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -24,7 +44,7 @@ import java.util.function.Predicate;
  * <br>
  *     <ul>
  *         <li>Register your {@link ArtObject}s by creating an {@link ArtBuilder} with {@link #register(ArtModuleDescription, Consumer)}.</li>
- *         <li>Trigger {@link Action}s and {@link Requirement}s with {@link #trigger(String, Object, Predicate)}.</li>
+ *         <li>Trigger {@link Action}s and {@link Requirement}s with {@link #trigger(String, Predicate, Target[])} </li>
  *         <li></li>
  *     </ul>
  */
@@ -52,7 +72,18 @@ public interface ArtManager {
      */
     ArtResult load(ArtConfig config);
 
-    <TTarget, TConfig> void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context);
+    <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> context, Target<?>... targets);
 
     <TTarget> void addGlobalFilter(Class<TTarget> targetClass, ArtResultFilter<TTarget> filter);
+
+    /**
+     * Wraps the given target object into a {@link Target}.
+     *
+     * @param target target to wrap
+     * @param <TTarget> target type
+     * @return wrapped target
+     * @see ART#getTarget(Object)
+     */
+    @Nullable
+    <TTarget> Target<TTarget> getTarget(@NonNull TTarget target);
 }

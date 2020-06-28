@@ -18,13 +18,11 @@ package net.silthus.art.api.factory;
 
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtObject;
-import net.silthus.art.api.actions.ActionFactory;
-import net.silthus.art.api.actions.ActionManager;
+import net.silthus.art.api.ArtRegistrationException;
 
-import java.util.Map;
 import java.util.Optional;
 
-public interface ArtFactoryManager<TFactory extends ArtFactory<? ,? ,?, ?>> {
+public interface ArtFactoryManager<TFactory extends ArtFactory<? ,? ,?, ?>> extends ArtFactoryRegistration<TFactory> {
     /**
      * Checks if a {@link ArtFactory} exists for the given identifier.
      *
@@ -34,12 +32,15 @@ public interface ArtFactoryManager<TFactory extends ArtFactory<? ,? ,?, ?>> {
     boolean exists(String identifier);
 
     /**
-     * Registers the given {@link ActionFactory} types with the {@link ActionManager}.
-     * This should happen whenever a plugin registers their ART.
+     * Registers the given factory calling {@link ArtFactory#initialize()} on it
+     * and if successful putting it into the factory store.
+     * Registration will fail if an other factory with the same identifier exists
+     * or if the factory does not provide the necessary annotations.
      *
-     * @param actionFactories factories to register
+     * @param factory factory to register
+     * @throws ArtRegistrationException if a duplicate factory exists, or the initialization of the factory failed
      */
-    void register(Map<String, TFactory> actionFactories);
+    void register(TFactory factory) throws ArtRegistrationException;
 
     /**
      * Tries to find a matching {@link ArtFactory} for the given identifier.

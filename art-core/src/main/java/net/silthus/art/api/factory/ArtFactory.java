@@ -85,8 +85,11 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
      * @throws ArtObjectRegistrationException if the action could not be registered.
      */
     public void initialize() throws ArtObjectRegistrationException {
+        initialize(artObject.getClass().getMethods());
+    }
+
+    protected final void initialize(Method... methods) throws ArtObjectRegistrationException {
         try {
-            Method[] methods = artObject.getClass().getMethods();
             setIdentifier(tryGetIdentifier(methods));
             setConfigClass(tryGetConfigClass(methods));
             setDescription(tryGetDescription(methods));
@@ -100,7 +103,9 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
 
         if (Strings.isNullOrEmpty(getIdentifier())) {
             throw new ArtObjectRegistrationException(artObject,
-                    String.format("%s has no defined name. Use the @Name annotation or registration method to register it with a name.", artObject.getClass().getCanonicalName()));
+                    String.format("%s has no defined name. Use the @Name annotation on the class or a method. " +
+                            "You can also use the withName(...) method of the ArtBuilder to provide a name.",
+                            artObject.getClass().getCanonicalName()));
         }
     }
 

@@ -17,18 +17,10 @@
 package net.silthus.art.api.actions;
 
 import net.silthus.art.api.factory.AbstractFactoryManager;
-import net.silthus.art.api.parser.ArtParser;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.inject.Singleton;
-import java.util.Map;
 
 @Singleton
 public class ActionFactoryManager extends AbstractFactoryManager<ActionFactory<?, ?>> implements ActionManager {
 
-    @Inject
-    public ActionFactoryManager(Map<String, Provider<ArtParser>> parser) {
-        super(parser);
-    }
 }

@@ -16,17 +16,19 @@
 
 package net.silthus.art.api.trigger;
 
+import net.silthus.art.ART;
 import net.silthus.art.api.ArtObject;
-import org.apache.commons.lang3.NotImplementedException;
 
+import java.util.Arrays;
 import java.util.function.Predicate;
 
-public abstract class Trigger<TTarget, TConfig> implements ArtObject {
+public interface Trigger extends ArtObject {
 
-    // TODO: allow a list of targets that triggered the trigger
-    // e.g. a player opening a chest would have the chest and the player as target
-    protected final void trigger(String identifier, TTarget target, Predicate<TriggerContext<TTarget, TConfig>> context) {
-//        ART.trigger(identifier, target, context);
-        throw new NotImplementedException();
+    default <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> context, Target<?>... targets) {
+        ART.trigger(identifier, context, targets);
+    }
+
+    default <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> context, Object... targets) {
+        ART.trigger(identifier, context, Arrays.stream(targets).map(Target::of).toArray(Target[]::new));
     }
 }

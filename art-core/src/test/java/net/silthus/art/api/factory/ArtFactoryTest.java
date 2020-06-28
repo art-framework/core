@@ -40,7 +40,7 @@ public class ArtFactoryTest {
 
     @BeforeEach
     public void beforeEach() {
-        this.factory = new ActionFactory<>(String.class, new TestAction());
+        this.factory = ActionFactory.of(String.class, new TestAction());
     }
 
     @Nested
@@ -116,7 +116,7 @@ public class ArtFactoryTest {
         @DisplayName("should throw ActionRegistrationException if missing annotations")
         public void shouldThrowIfMissingAnnotations() {
 
-            factory = new ActionFactory<>(String.class, (s, context) -> {
+            factory = ActionFactory.of(String.class, (s, context) -> {
             });
 
             assertThatExceptionOfType(ArtObjectRegistrationException.class)
@@ -127,7 +127,7 @@ public class ArtFactoryTest {
         @DisplayName("should not throw if manual set but has missing annotations")
         public void shouldNotThrowIfNoAnnotationButManualInfo() {
 
-            factory = new ActionFactory<>(String.class, (s, context) -> {
+            factory = ActionFactory.of(String.class, (s, context) -> {
             });
             factory.setIdentifier("foo");
             factory.setConfigClass(TestConfig.class);
@@ -141,7 +141,7 @@ public class ArtFactoryTest {
         @DisplayName("should not throw if missing config information")
         public void shouldNotThrowIfMissingConfigInformation() {
 
-            factory = new ActionFactory<>(String.class, (s, context) -> {
+            factory = ActionFactory.of(String.class, (s, context) -> {
             });
             factory.setIdentifier("foobar");
 
@@ -157,7 +157,7 @@ public class ArtFactoryTest {
         @DisplayName("should use annotations on method")
         public void shouldUseMethodAnnotation() {
 
-            factory = new ActionFactory<>(String.class, new Action<>() {
+            factory = ActionFactory.of(String.class, new Action<>() {
 
                 @Name("foo")
                 @Config(TestConfig.class)
@@ -172,6 +172,7 @@ public class ArtFactoryTest {
             assertThat(factory.getConfigClass()).contains(TestConfig.class);
         }
 
+        @SuppressWarnings("unchecked")
         @Nested
         @DisplayName("creates ConfigFieldInformation that")
         class ConfigAnnotations {
@@ -277,7 +278,7 @@ public class ArtFactoryTest {
             @DisplayName("should throw if same field position is found")
             public void shouldThrowExceptionForSamePosition() {
 
-                ActionFactory<String, ErrorConfig> factory = new ActionFactory<>(String.class, new Action<>() {
+                ActionFactory<String, ErrorConfig> factory = ActionFactory.of(String.class, new Action<>() {
                     @Name("test")
                     @Config(ErrorConfig.class)
                     @Override

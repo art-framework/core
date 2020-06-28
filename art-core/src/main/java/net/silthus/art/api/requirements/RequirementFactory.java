@@ -24,10 +24,13 @@ import net.silthus.art.api.factory.ArtFactory;
 @EqualsAndHashCode(callSuper = true)
 public class RequirementFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig, Requirement<TTarget, TConfig>, RequirementConfig<TConfig>> {
 
-    public RequirementFactory(Class<TTarget> targetClass, Requirement<TTarget, TConfig> artObject) {
-        super(targetClass, artObject);
+    public static <TTarget, TConfig> RequirementFactory<TTarget, TConfig> of(Class<TTarget> targetClass, Requirement<TTarget, TConfig> requirement) {
+        return new RequirementFactory<>(targetClass, requirement);
     }
 
+    RequirementFactory(Class<TTarget> targetClass, Requirement<TTarget, TConfig> artObject) {
+        super(targetClass, artObject);
+    }
 
     @Override
     public ArtContext<TTarget, TConfig, RequirementConfig<TConfig>> create(RequirementConfig<TConfig> config) {

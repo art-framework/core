@@ -76,7 +76,7 @@ class DefaultArtResultTest {
         return action;
     }
 
-    private <TTarget> TriggerContext<TTarget, ?> trigger() {
+    private TriggerContext<?> trigger() {
         return mock(TriggerContext.class);
     }
 

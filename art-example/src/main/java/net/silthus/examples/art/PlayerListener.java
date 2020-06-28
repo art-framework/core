@@ -14,15 +14,27 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.requirements;
+package net.silthus.examples.art;
 
-import lombok.EqualsAndHashCode;
-import net.silthus.art.api.factory.AbstractFactoryManager;
+import lombok.Getter;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerMoveEvent;
 
-import javax.inject.Singleton;
+public class PlayerListener implements Listener {
 
-@Singleton
-@EqualsAndHashCode(callSuper = true)
-public class RequirementFactoryManager extends AbstractFactoryManager<RequirementFactory<?, ?>> implements RequirementManager {
+    @Getter
+    private final ExampleArtPlugin plugin;
 
+    public PlayerListener(ExampleArtPlugin plugin) {
+        this.plugin = plugin;
+    }
+
+    @EventHandler
+    public void onPlayerMove(PlayerMoveEvent event) {
+
+        if (getPlugin().getArtResult() == null) return;
+
+        getPlugin().getArtResult().execute(event.getPlayer());
+    }
 }
