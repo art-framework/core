@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.requirements;
+package net.silthus.examples.art.targets;
 
-import lombok.EqualsAndHashCode;
-import net.silthus.art.api.factory.AbstractFactoryManager;
+import net.silthus.art.api.trigger.AbstractTarget;
+import org.bukkit.entity.Player;
 
-import javax.inject.Singleton;
+public class PlayerTarget extends AbstractTarget<Player> {
 
-@Singleton
-@EqualsAndHashCode(callSuper = true)
-public class RequirementFactoryManager extends AbstractFactoryManager<RequirementFactory<?, ?>> implements RequirementManager {
+    protected PlayerTarget(Player player) {
+        super(player);
+    }
 
+    public String getUniqueId() {
+        return getTarget().getUniqueId().toString();
+    }
 }

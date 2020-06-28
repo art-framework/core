@@ -31,7 +31,11 @@ import net.silthus.art.api.factory.ArtFactory;
  */
 public class ActionFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>> {
 
-    public ActionFactory(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
+    public static <TTarget, TConfig> ActionFactory<TTarget, TConfig> of(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
+        return new ActionFactory<>(targetClass, action);
+    }
+
+    ActionFactory(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
         super(targetClass, action);
     }
 

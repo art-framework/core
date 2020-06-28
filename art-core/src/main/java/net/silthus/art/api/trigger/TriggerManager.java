@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.requirements;
+package net.silthus.art.api.trigger;
 
-import lombok.EqualsAndHashCode;
-import net.silthus.art.api.factory.AbstractFactoryManager;
+import com.google.inject.ImplementedBy;
+import net.silthus.art.api.factory.ArtFactoryManager;
 
-import javax.inject.Singleton;
+@ImplementedBy(TriggerFactoryManager.class)
+public interface TriggerManager extends ArtFactoryManager<TriggerFactory<?>> {
 
-@Singleton
-@EqualsAndHashCode(callSuper = true)
-public class RequirementFactoryManager extends AbstractFactoryManager<RequirementFactory<?, ?>> implements RequirementManager {
-
+    // TODO: implement trigger listener registration and handling
 }

@@ -18,16 +18,21 @@ package net.silthus.art;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
+import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.trigger.TriggerContext;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.logging.Logger;
 
 public final class ART {
@@ -106,5 +111,16 @@ public final class ART {
 
     public static <TTarget> void addGlobalFilter(Class<TTarget> targetClass, ArtResultFilter<TTarget> filter) {
         getInstance().ifPresent(artManager -> artManager.addGlobalFilter(targetClass, filter));
+    }
+
+    public static <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> predicate, Target<?>... targets) {
+
+        getInstance().ifPresent(artManager -> artManager.trigger(identifier, predicate, targets));
+    }
+
+    @Nullable
+    public static <TTarget> Target<TTarget> getTarget(@NonNull TTarget target) {
+
+        return getInstance().map(artManager -> artManager.getTarget(target)).orElse(null);
     }
 }

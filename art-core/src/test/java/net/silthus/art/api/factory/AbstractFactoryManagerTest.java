@@ -16,6 +16,9 @@
 
 package net.silthus.art.api.factory;
 
+import lombok.SneakyThrows;
+import net.silthus.art.api.ArtObject;
+import net.silthus.art.api.ArtRegistrationException;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionFactoryManager;
@@ -24,11 +27,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.logging.Logger;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,8 +41,16 @@ class AbstractFactoryManagerTest {
 
     @BeforeEach
     void beforeEach() {
-        this.actionManager = new ActionFactoryManager(new HashMap<>());
+        this.actionManager = new ActionFactoryManager();
         actionManager.setLogger(Logger.getGlobal());
+    }
+
+    private <TFactory extends ArtFactory<?, ?, ArtObject, ?>> TFactory factory(String identifier, Class<TFactory> factoryClass) {
+        TFactory factory = mock(factoryClass);
+        when(factory.getIdentifier()).thenReturn(identifier);
+        ArtObject action = mock(Action.class);
+        when(factory.getArtObject()).thenReturn(action);
+        return factory;
     }
 
     @Nested
@@ -70,10 +80,11 @@ class AbstractFactoryManagerTest {
     class register {
 
         @Test
+        @SneakyThrows
         @DisplayName("should store registered actions in memory")
         void shouldAddActionsToMemory() {
 
-            actionManager.register(Map.of("foobar", mock(ActionFactory.class)));
+            actionManager.register(factory("foobar", ActionFactory.class));
 
             assertThat(actionManager.exists("foobar")).isTrue();
         }
@@ -82,42 +93,46 @@ class AbstractFactoryManagerTest {
         @DisplayName("should not register actions with a duplicate identifier")
         void shouldNotAddDuplicateActions() {
 
-            ActionFactory mock = mock(ActionFactory.class);
-            when(mock.getIdentifier()).thenReturn("foobar1");
-            when(mock.getArtObject()).thenReturn(mock(Action.class));
-            actionManager.register(Map.of("foobar", mock));
+            ActionFactory mock = factory("foobar", ActionFactory.class);
+            assertThatCode(() -> actionManager.register(mock))
+                    .doesNotThrowAnyException();
 
             assertThat(actionManager.getFactories().get("foobar"))
                     .isNotNull()
                     .extracting("identifier")
-                    .isEqualTo("foobar1");
+                    .isEqualTo("foobar");
 
-            ActionFactory mock2 = mock(ActionFactory.class);
-            when(mock2.getIdentifier()).thenReturn("foobar2");
-            when(mock2.getArtObject()).thenReturn(mock(Action.class));
-            actionManager.register(Map.of("foobar", mock2));
-
-            assertThat(actionManager.getFactories().get("foobar"))
-                    .isNotNull()
-                    .extracting("identifier")
-                    .isNotEqualTo("foobar2");
+            ActionFactory mock2 = factory("foobar", ActionFactory.class);
+            assertThatExceptionOfType(ArtRegistrationException.class)
+                    .isThrownBy(() -> actionManager.register(mock2))
+                    .withMessageContaining("Duplicate ArtFactory for identifier \"foobar\" found.");
         }
 
         @Test
+        @SneakyThrows
         @DisplayName("should register all actions inside the map")
         void shouldAddAllActionsInTheMap() {
 
-            actionManager.register(Map.of(
-                    "test1", mock(ActionFactory.class),
-                    "test2", mock(ActionFactory.class),
-                    "test3", mock(ActionFactory.class),
-                    "test4", mock(ActionFactory.class),
-                    "test5", mock(ActionFactory.class)
+            actionManager.register(List.of(
+                    factory("test1", ActionFactory.class),
+                    factory("test2", ActionFactory.class),
+                    factory("test3", ActionFactory.class),
+                    factory("test4", ActionFactory.class),
+                    factory("test5", ActionFactory.class)
             ));
 
             assertThat(actionManager.getFactories())
                     .hasSize(5)
-                    .containsKeys("test1", "test2","test3","test4","test5");
+                    .containsKeys("test1", "test2", "test3", "test4", "test5");
+        }
+
+        @Test
+        @DisplayName("should not register art object without name")
+        void shouldNotRegisterWithoutName() {
+
+            assertThatExceptionOfType(ArtRegistrationException.class)
+                    .isThrownBy(() -> actionManager.register(ActionFactory.of(Object.class, mock(Action.class))))
+                    .withMessageContaining("has no defined name.");
         }
     }
 

@@ -26,7 +26,6 @@ import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.examples.art.actions.PlayerDamageAction;
-import net.silthus.examples.art.listener.PlayerListener;
 import net.silthus.examples.art.requirements.EntityLocationRequirement;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -69,7 +68,7 @@ public class ExampleArtPlugin extends JavaPlugin {
         getARTManager().get().register(ArtBukkitDescription.ofPlugin(this), artBuilder -> artBuilder
                 .target(Player.class)
                     .action(new PlayerDamageAction())
-                .target(Entity.class)
+                .and(Entity.class)
                     .requirement(new EntityLocationRequirement()));
     }
 

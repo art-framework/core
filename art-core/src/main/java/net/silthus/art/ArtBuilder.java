@@ -20,16 +20,20 @@ import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.silthus.art.api.ArtObject;
-import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
+import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.requirements.RequirementFactory;
+import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.trigger.Trigger;
+import net.silthus.art.api.trigger.TriggerFactory;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
@@ -57,37 +61,32 @@ public class ArtBuilder {
      */
     Result build() {
 
-        Map<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> factories = builders.values().stream()
+        return new Result(buildFactories(), buildFilters(), buildTargetWrapper());
+    }
+
+    private Map<Class<?>, List<ArtFactory<?, ?, ?, ?>>> buildFactories() {
+        return builders.values().stream()
                 .flatMap(targetBuilder -> targetBuilder.artFactories.stream())
                 .filter(Objects::nonNull)
-                .map(artFactory -> {
-                    try {
-                        artFactory.initialize();
-                        return artFactory;
-                    } catch (ArtObjectRegistrationException e) {
-                        logger.severe(e.getMessage());
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                // TODO: refactor to group by instance of same type
-                .collect(groupingBy(ArtFactory::getClass, toMap(ArtFactory::getIdentifier, artFactory -> artFactory, (artFactory, artFactory2) -> {
-                    // we got a duplicate identifier
-                    logger.warning(String.format("Duplicate identifier \"%1$s\" in %2$s and %3$s detected. Only %2$s will be registered.",
-                            artFactory.getIdentifier(),
-                            artFactory.getArtObject().getClass().getCanonicalName(),
-                            artFactory2.getArtObject().getClass().getCanonicalName()
-                            )
-                    );
-                    return artFactory;
-                })));
+                .collect(groupingBy(ArtFactory::getClass));
+    }
 
-        Map<Class<?>, List<ArtResultFilter<?>>> filters = builders.values().stream()
+    private Map<Class<?>, List<ArtResultFilter<?>>> buildFilters() {
+        return builders.values().stream()
                 .collect(toMap(builder -> builder.targetClass,
-                        builder -> builder.globalFilters.stream().map(artResultFilter -> (ArtResultFilter<?>) artResultFilter).collect(Collectors.toList())));
+                        builder -> builder.globalFilters.stream()
+                                .map(artResultFilter -> (ArtResultFilter<?>) artResultFilter)
+                                .collect(Collectors.toList()))
+                );
+    }
 
-        return new Result(factories, filters);
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    private Map<Class<?>, Function<?, Target<?>>> buildTargetWrapper() {
+        return builders.values().stream()
+                .filter(targetBuilder -> Objects.nonNull(targetBuilder.targetWrapper))
+                .collect(toMap(builder -> builder.targetClass,
+                        builder -> (Function) builder.targetWrapper)
+                );
     }
 
     @SuppressWarnings("unchecked")
@@ -100,20 +99,13 @@ public class ArtBuilder {
         return (TargetBuilder<TTarget>) builders.get(targetClass);
     }
 
-    public <TTarget, TConfig> TargetBuilder<TTarget>.FactoryBuilder action(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
-        return target(targetClass).action(action);
-    }
-
-    public <TTarget, TConfig> TargetBuilder<TTarget>.FactoryBuilder requirement(Class<TTarget> targetClass, Requirement<TTarget, TConfig> requirement) {
-        return target(targetClass).requirement(requirement);
-    }
-
     @RequiredArgsConstructor
     public class TargetBuilder<TTarget> {
 
         private final Class<TTarget> targetClass;
         private final List<ArtFactory<TTarget, ?, ?, ?>> artFactories = new ArrayList<>();
         private final List<ArtResultFilter<TTarget>> globalFilters = new ArrayList<>();
+        private Function<TTarget, Target<TTarget>> targetWrapper;
 
         public <TConfig> FactoryBuilder action(Action<TTarget, TConfig> action) {
             FactoryBuilder factoryBuilder = new FactoryBuilder(action);
@@ -127,58 +119,77 @@ public class ArtBuilder {
             return factoryBuilder;
         }
 
-        public TargetBuilder<TTarget> globalFilter(ArtResultFilter<TTarget> filter) {
+        public FactoryBuilder trigger(Trigger trigger) {
+            FactoryBuilder factoryBuilder = new FactoryBuilder(trigger);
+            factoryBuilder.getArtFactory().ifPresent(artFactories::add);
+            return factoryBuilder;
+        }
+
+        public TargetBuilder<TTarget> wrapper(Function<TTarget, Target<TTarget>> constructor) {
+            targetWrapper = constructor;
+            return this;
+        }
+
+        public TargetBuilder<TTarget> filter(ArtResultFilter<TTarget> filter) {
             globalFilters.add(filter);
             return this;
         }
 
-        public <NewTarget> TargetBuilder<NewTarget> target(Class<NewTarget> newTargetClass) {
-            return ArtBuilder.this.target(newTargetClass);
+        public <TNewTarget> TargetBuilder<TNewTarget> and(Class<TNewTarget> targetClass) {
+            return ArtBuilder.this.target(targetClass);
         }
 
         public class FactoryBuilder {
 
-            private final ArtFactory<TTarget, ?, ?, ?> artFactory;
+            private final List<ArtFactory<TTarget, ?, ?, ? extends ArtObjectConfig<?>>> artFactories = new ArrayList<>();
 
             @SuppressWarnings("unchecked")
             public FactoryBuilder(ArtObject artObject) {
                 if (artObject instanceof Action) {
-                    this.artFactory = new ActionFactory<>(targetClass, (Action<TTarget, ?>) artObject);
+                    this.artFactories.add(ActionFactory.of(targetClass, (Action<TTarget, ?>) artObject));
                 } else if (artObject instanceof Requirement) {
-                    this.artFactory = new RequirementFactory<>(targetClass, (Requirement<TTarget, ?>) artObject);
+                    this.artFactories.add(RequirementFactory.of(targetClass, (Requirement<TTarget, ?>) artObject));
+                } else if (artObject instanceof Trigger) {
+                    this.artFactories.addAll(TriggerFactory.of((Trigger) artObject).stream()
+                            .map(triggerFactory -> (ArtFactory<TTarget, ?, ?, ? extends ArtObjectConfig<?>>) triggerFactory)
+                            .collect(Collectors.toList())
+                    );
                 } else {
-                    this.artFactory = null;
-                    logger.warning(String.format("%s is not a valid Action or Requirement. Make sure you implement the right interface.", artObject.getClass().getCanonicalName()));
+                    logger.warning(String.format("%s is not a valid Action, Requirement or Trigger. Make sure you implement the right interface.", artObject.getClass().getCanonicalName()));
                 }
             }
 
-            public Optional<ArtFactory<TTarget, ?, ?, ?>> getArtFactory() {
-                return Optional.ofNullable(artFactory);
-            }
-
-            public <TNextTarget> TargetBuilder<TNextTarget> target(Class<TNextTarget> targetClass) {
-                return ArtBuilder.this.target(targetClass);
-            }
-
-            public <TNextConfig> FactoryBuilder action(Action<TTarget, TNextConfig> action) {
-                return TargetBuilder.this.action(action);
-            }
-
-            public <TNextTarget, TNextConfig> TargetBuilder<TNextTarget>.FactoryBuilder action(Class<TNextTarget> targetClass, Action<TNextTarget, TNextConfig> requirement) {
-                return ArtBuilder.this.action(targetClass, requirement);
-            }
-
-            public <TNextConfig> FactoryBuilder requirement(Requirement<TTarget, TNextConfig> requirement) {
-                return TargetBuilder.this.requirement(requirement);
-            }
-
-            public <TNextTarget, TNextConfig> TargetBuilder<TNextTarget>.FactoryBuilder requirement(Class<TNextTarget> targetClass, Requirement<TNextTarget, TNextConfig> requirement) {
-                return ArtBuilder.this.requirement(targetClass, requirement);
+            private Optional<ArtFactory<TTarget, ?, ?, ? extends ArtObjectConfig<?>>> getArtFactory() {
+                if (artFactories.size() == 1) {
+                    return Optional.of(artFactories.get(0));
+                }
+                return Optional.empty();
             }
 
             public FactoryBuilder withName(String name) {
                 getArtFactory().ifPresent(artFactory -> artFactory.setIdentifier(name));
                 return this;
+            }
+
+            public FactoryBuilder withDescription(String... description) {
+                getArtFactory().ifPresent(artFactory -> artFactory.setDescription(description));
+                return this;
+            }
+
+            @SuppressWarnings("unchecked")
+            public <TConfig> FactoryBuilder withConfig(Class<TConfig> configClass) {
+                getArtFactory()
+                        .map(factory -> (ArtFactory<TTarget, TConfig, ?, ? extends ArtObjectConfig<TConfig>>) factory)
+                        .ifPresent(artFactory -> artFactory.setConfigClass(configClass));
+                return this;
+            }
+
+            public TargetBuilder<TTarget> and() {
+                return TargetBuilder.this;
+            }
+
+            public <TNewTarget> TargetBuilder<TNewTarget> and(Class<TNewTarget> targetClass) {
+                return ArtBuilder.this.target(targetClass);
             }
         }
     }
@@ -187,12 +198,14 @@ public class ArtBuilder {
     @Immutable
     static class Result {
 
-        private final Map<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> factories;
+        private final Map<Class<?>, List<ArtFactory<?, ?, ?, ?>>> factories;
         private final Map<Class<?>, List<ArtResultFilter<?>>> filters;
+        private final Map<Class<?>, Function<?, Target<?>>> targetWrappers;
 
-        public Result(Map<Class<?>, Map<String, ArtFactory<?, ?, ?, ?>>> factories, Map<Class<?>, List<ArtResultFilter<?>>> filters) {
+        public Result(Map<Class<?>, List<ArtFactory<?, ?, ?, ?>>> factories, Map<Class<?>, List<ArtResultFilter<?>>> filters, Map<Class<?>, Function<?, Target<?>>> targetWrappers) {
             this.factories = ImmutableMap.copyOf(factories);
             this.filters = ImmutableMap.copyOf(filters);
+            this.targetWrappers = ImmutableMap.copyOf(targetWrappers);
         }
     }
 }
