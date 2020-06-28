@@ -24,6 +24,7 @@ import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.parser.flow.FlowParserModule;
 import net.silthus.art.scheduler.BukkitScheduler;
 import net.silthus.slib.bukkit.BasePlugin;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.plugin.ServicePriority;
@@ -33,12 +34,16 @@ import javax.inject.Inject;
 @Plugin
 public class ArtPlugin extends BasePlugin {
 
+    private static final int BSTATS_ID = 7981;
+
     @Inject
     @Getter
     private ArtManager artManager;
 
     @Override
     public void enable() {
+
+        Metrics metrics = new Metrics(this, BSTATS_ID);
 
         ART.setInstance(artManager);
         ART.load();
