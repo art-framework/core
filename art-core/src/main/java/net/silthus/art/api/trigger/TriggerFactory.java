@@ -24,6 +24,7 @@ import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.factory.ArtFactory;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -49,6 +50,9 @@ public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger
         return factories;
     }
 
+    @Getter(AccessLevel.PACKAGE)
+    private final List<TriggerContext<TConfig>> createdTrigger = new ArrayList<>();
+
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.PROTECTED)
     private Method method;
@@ -68,6 +72,8 @@ public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger
 
     @Override
     public TriggerContext<TConfig> create(TriggerConfig<TConfig> config) {
-        return new TriggerContext<>(config);
+        TriggerContext<TConfig> triggerContext = new TriggerContext<>(config);
+        createdTrigger.add(triggerContext);
+        return triggerContext;
     }
 }

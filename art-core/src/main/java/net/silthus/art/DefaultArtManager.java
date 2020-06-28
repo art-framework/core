@@ -132,6 +132,7 @@ public class DefaultArtManager implements ArtManager {
 
     @Override
     public <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> context, Target<?>... targets) {
+        getTriggerManager().trigger(identifier, context, targets);
     }
 
     @Override

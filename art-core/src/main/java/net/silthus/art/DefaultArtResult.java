@@ -22,15 +22,18 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
+import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.trigger.TriggerListener;
 
 import java.util.*;
 
-public final class DefaultArtResult implements ArtResult {
+public final class DefaultArtResult implements ArtResult, TriggerListener {
 
     static ArtResult empty() {
         return new DefaultArtResult(new ArtConfig(), new ArrayList<>(), new HashMap<>());
@@ -41,6 +44,7 @@ public final class DefaultArtResult implements ArtResult {
     private final List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art;
     @Getter(AccessLevel.PACKAGE)
     private final Map<Class<?>, List<ArtResultFilter<?>>> filters;
+    private final Map<Class<?>, List<TriggerListener>> triggerListeners = new HashMap<>();
 
     @Inject
     public DefaultArtResult(@Assisted ArtConfig config, @Assisted List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art, @Assisted Map<Class<?>, List<ArtResultFilter<?>>> filters) {
@@ -87,6 +91,23 @@ public final class DefaultArtResult implements ArtResult {
                 .filter(artContext -> artContext instanceof ActionContext)
                 .map(artContext -> (ActionContext<TTarget, ?>) artContext)
                 .forEach(action -> action.execute(target));
+    }
+
+    @Override
+    public <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener listener) {
+        if (!triggerListeners.containsKey(targetClass)) {
+            triggerListeners.put(targetClass, new ArrayList<>());
+        }
+        triggerListeners.get(targetClass).add(listener);
+    }
+
+    @Override
+    public <TTarget> void onTrigger(@NonNull Target<TTarget> target) {
+        if (test(target)) {
+            execute(target);
+            triggerListeners.getOrDefault(target.getClass(), new ArrayList<>())
+                    .forEach(listener -> listener.onTrigger(target));
+        }
     }
 
     private <TTarget> boolean testFilter(TTarget target, Collection<ArtResultFilter<TTarget>> filters) {
