@@ -23,6 +23,7 @@ import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.trigger.Trigger;
+import net.silthus.art.api.trigger.TriggerListener;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -103,4 +104,20 @@ public interface ArtResult {
      * @see #execute(Object)
      */
     <TTarget> void execute(@Nullable TTarget target, Collection<ArtResultFilter<TTarget>> filters);
+
+    /**
+     * Listens on all {@link Trigger}s in the {@link ArtResult} for the given target type.
+     * You can add multiple {@link TriggerListener}s of the same target type
+     * and all of them will get informed.
+     * <br>
+     * You will only get informed of the trigger execution after all previous
+     * checks have passed and after all {@link Action}s of this {@link ArtResult}
+     * have been executed.
+     *
+     *
+     * @param targetClass class of the target you wish to listen for
+     * @param triggerConsumer function to react to the trigger
+     * @param <TTarget> type of the target
+     */
+    <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener triggerConsumer);
 }

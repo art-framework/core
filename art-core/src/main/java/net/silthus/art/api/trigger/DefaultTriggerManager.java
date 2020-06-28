@@ -19,8 +19,22 @@ package net.silthus.art.api.trigger;
 import net.silthus.art.api.factory.AbstractFactoryManager;
 
 import javax.inject.Singleton;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
 @Singleton
-public class TriggerFactoryManager extends AbstractFactoryManager<TriggerFactory<?>> implements TriggerManager {
+public class DefaultTriggerManager extends AbstractFactoryManager<TriggerFactory<?>> implements TriggerManager {
 
+    @Override
+    public void addListener(String identifier, TriggerListener listener) {
+        // TODO: implement
+    }
+
+    @Override
+    public <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> predicate, Target<?>... targets) {
+        List<? extends TriggerContext<?>> contextList = getFactory(identifier).map(TriggerFactory::getCreatedTrigger).orElse(new ArrayList<>());
+
+        // TODO: implement
+    }
 }

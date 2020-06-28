@@ -16,15 +16,24 @@
 
 package net.silthus.art.api.trigger;
 
-import com.google.inject.ImplementedBy;
-import net.silthus.art.api.factory.ArtFactoryManager;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 
-import java.util.function.Predicate;
+@DisplayName("TriggerContext")
+class TriggerContextTest {
 
-@ImplementedBy(DefaultTriggerManager.class)
-public interface TriggerManager extends ArtFactoryManager<TriggerFactory<?>> {
+    private TriggerContext<?> context;
 
-    void addListener(String identifier, TriggerListener listener);
+    @BeforeEach
+    void beforeEach() {
+        context = new TriggerContext<>(new TriggerConfig<>());
+    }
 
-    <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> context, Target<?>... targets);
+    @Nested
+    @DisplayName("trigger")
+    class trigger {
+
+
+    }
 }
