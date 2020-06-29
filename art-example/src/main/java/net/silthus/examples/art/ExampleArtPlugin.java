@@ -60,7 +60,7 @@ public class ExampleArtPlugin extends JavaPlugin {
 
     private void registerART() {
 
-        if (getARTManager().isEmpty()) {
+        if (!getARTManager().isPresent()) {
             getLogger().warning("ART plugin not found. Not registering ART.");
             return;
         }
@@ -74,7 +74,7 @@ public class ExampleArtPlugin extends JavaPlugin {
 
     private void loadARTConfig() {
 
-        if (!isARTLoaded() || getARTManager().isEmpty()) {
+        if (!isARTLoaded() || !getARTManager().isPresent()) {
             getLogger().warning("ART plugin not found. Not loading ART configs.");
             return;
         }
