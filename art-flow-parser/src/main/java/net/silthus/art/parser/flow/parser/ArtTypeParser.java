@@ -72,7 +72,7 @@ public abstract class ArtTypeParser<TContext extends ArtContext<?, ?, ? extends 
         String identifier = getIdentifier();
         Optional<ArtFactory<?, ?, ?, TConfig>> factoryOptional = getFactory(identifier);
 
-        if (factoryOptional.isEmpty()) {
+        if (!factoryOptional.isPresent()) {
             throw new ArtParseException("No " + getArtType().getName() + " with identifier \"" + identifier + "\" found");
         }
 

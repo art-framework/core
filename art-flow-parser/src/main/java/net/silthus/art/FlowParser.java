@@ -28,6 +28,7 @@ import net.silthus.art.api.parser.ArtParser;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFactory;
 import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 
 import java.util.ArrayList;
@@ -108,6 +109,8 @@ public class FlowParser implements ArtParser {
                 } else {
                     activeAction.addAction((ActionContext<?, ?>) context);
                 }
+            } else if (context instanceof TriggerContext) {
+
             }
         }
 

@@ -208,7 +208,8 @@ class FlowParserTest {
             void shouldNestActionsIfRequirementsExist() {
 
                 ActionContext<?, ?> action = action();
-                contexts.addAll(List.of(
+
+                contexts.addAll(Arrays.asList(
                         requirement(),
                         requirement(),
                         action,
@@ -228,7 +229,7 @@ class FlowParserTest {
 
                 ActionContext<?, ?> firstAction = action();
                 ActionContext<?, ?> secondAction = action();
-                contexts.addAll(List.of(
+                contexts.addAll(Arrays.asList(
                         requirement(),
                         firstAction,
                         requirement(),
@@ -247,7 +248,7 @@ class FlowParserTest {
 
                 ActionContext<?, ?> firstAction = action();
                 ActionContext<?, ?> secondAction = action();
-                contexts.addAll(List.of(
+                contexts.addAll(Arrays.asList(
                         requirement(),
                         requirement(),
                         firstAction,
@@ -267,7 +268,7 @@ class FlowParserTest {
             void shouldOnlyAddRelevantRequirementsToAction() {
                 ActionContext<?, ?> firstAction = action();
                 ActionContext<?, ?> secondAction = action();
-                contexts.addAll(List.of(
+                contexts.addAll(Arrays.asList(
                         requirement(),
                         requirement(),
                         requirement(),
@@ -287,7 +288,7 @@ class FlowParserTest {
             void shouldAddActionsToCorrespondingAction() {
                 ActionContext<?, ?> firstAction = action();
                 ActionContext<?, ?> secondAction = action();
-                contexts.addAll(List.of(
+                contexts.addAll(Arrays.asList(
                         requirement(),
                         firstAction,
                         action(),
@@ -324,7 +325,7 @@ class FlowParserTest {
             @DisplayName("should add all requirements as flat list")
             void shouldAddAllRequirements() {
 
-                List<RequirementContext<?, ?>> requirements = List.of(
+                List<RequirementContext<?, ?>> requirements = Arrays.asList(
                         requirement(),
                         requirement(),
                         requirement(),

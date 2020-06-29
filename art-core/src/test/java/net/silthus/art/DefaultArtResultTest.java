@@ -56,11 +56,15 @@ class DefaultArtResultTest {
     }
 
     private DefaultArtResult resultOfWithFilter(Class<?> filterType, List<ArtResultFilter<?>> filters, ArtContext<?, ?, ? extends ArtObjectConfig<?>>... contexts) {
-        return new DefaultArtResult(config, Arrays.asList(contexts), Map.of(filterType, filters));
+        HashMap<Class<?>, List<ArtResultFilter<?>>> filterMap = new HashMap<>();
+        filterMap.put(filterType, filters);
+        return new DefaultArtResult(config, Arrays.asList(contexts), filterMap);
     }
 
     private DefaultArtResult resultOfWithFilter(Class<?> filterType, ArtResultFilter<?> filter, ArtContext<?, ?, ? extends ArtObjectConfig<?>>... contexts) {
-        return new DefaultArtResult(config, Arrays.asList(contexts), Map.of(filterType, List.of(filter)));
+        HashMap<Class<?>, List<ArtResultFilter<?>>> filterMap = new HashMap<>();
+        filterMap.put(filterType, Collections.singletonList(filter));
+        return new DefaultArtResult(config, Arrays.asList(contexts), filterMap);
     }
 
     private DefaultArtResult resultOfWithFilter(Map<Class<?>, List<ArtResultFilter<?>>> filters, ArtContext<?, ?, ? extends ArtObjectConfig<?>>... contexts) {
@@ -117,11 +121,12 @@ class DefaultArtResultTest {
             requirement = (RequirementContext<String, ?>) mock(RequirementContext.class);
             when(requirement.isTargetType(anyString())).thenReturn(true);
 
-            contexts.addAll(List.<ArtContext<?, ?, ? extends ArtObjectConfig<?>>>of(
+            List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> artContexts = Arrays.asList(
                     mock(ActionContext.class),
                     mock(TriggerContext.class),
                     requirement
-            ));
+            );
+            contexts.addAll(artContexts);
 
             result = new DefaultArtResult(config, contexts, new HashMap<>());
         }
@@ -248,7 +253,7 @@ class DefaultArtResultTest {
                 ArtResultFilter<String> filter1 = filter("foo", true);
                 ArtResultFilter<String> filter2 = filter("foo", true);
 
-                assertThat(result.test("foo", List.of(filter1, filter2))).isTrue();
+                assertThat(result.test("foo", Arrays.asList(filter1, filter2))).isTrue();
                 verify(filter1, times(1)).test(eq("foo"), any());
                 verify(filter2, times(1)).test(eq("foo"), any());
             }
@@ -269,8 +274,10 @@ class DefaultArtResultTest {
             void shouldSkipFilterWithoutMatchingTargetType() {
 
                 ArtResultFilter<Integer> filter = filter(2, false);
-                Map<Class<?>, List<ArtResultFilter<?>>> filters = Map.of(Integer.class, List.of(filter), String.class, List.of(filter("foo", true)));
-                DefaultArtResult result = resultOfWithFilter(filters);
+                HashMap<Class<?>, List<ArtResultFilter<?>>> filterMap = new HashMap<>();
+                filterMap.put(Integer.class, Collections.singletonList(filter));
+                filterMap.put(String.class, Collections.singletonList(filter("foo", true)));
+                DefaultArtResult result = resultOfWithFilter(filterMap);
 
                 assertThat(result.test("foo")).isTrue();
                 verify(filter, times(0)).test(any(), any());
@@ -280,11 +287,14 @@ class DefaultArtResultTest {
             @DisplayName("should test local filter before global")
             void shouldCombineGlobalAndLocalFilter() {
 
+
                 ArtResultFilter<String> globalFilter = filter("foo", true);
-                DefaultArtResult result = new DefaultArtResult(new ArtConfig(), new ArrayList<>(), Map.of(String.class, List.of(globalFilter)));
+                HashMap<Class<?>, List<ArtResultFilter<?>>> filter = new HashMap<>();
+                filter.put(String.class, Collections.singletonList(globalFilter));
+                DefaultArtResult result = new DefaultArtResult(new ArtConfig(), new ArrayList<>(), filter);
                 ArtResultFilter<String> localFilter = filter("foo", false);
 
-                assertThat(result.test("foo", List.of(localFilter))).isFalse();
+                assertThat(result.test("foo", Collections.singletonList(localFilter))).isFalse();
                 verify(localFilter, times(1)).test(eq("foo"), any());
                 verify(globalFilter, times(0)).test(anyString(), any());
             }
@@ -330,7 +340,7 @@ class DefaultArtResultTest {
 
             ActionContext<Object, ?> action = action();
             ArtResultFilter<String> filter = filter("foo", false);
-            resultOf(action).execute("foo", List.of(filter));
+            resultOf(action).execute("foo", Collections.singletonList(filter));
 
             verify(filter, times(1)).test(anyString(), any());
             verify(action, times(0)).execute(any(), any());
@@ -342,7 +352,7 @@ class DefaultArtResultTest {
 
             ActionContext<Object, ?> action = action();
             DefaultArtResult result = resultOfWithFilter(String.class, filter("foo", true), action);
-            result.execute("foo", List.of(filter("foo", true)));
+            result.execute("foo", Collections.singletonList(filter("foo", true)));
 
             verify(action, times(1)).execute("foo");
         }

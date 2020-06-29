@@ -68,13 +68,13 @@ public class ConfigParser extends Parser<ConfigParser.Result> {
                 }
                 int finalI = i;
                 Optional<ConfigFieldInformation> optionalFieldInformation = getConfigMap().values().stream().filter(info -> info.getPosition() == finalI).findFirst();
-                if (optionalFieldInformation.isEmpty()) {
+                if (!optionalFieldInformation.isPresent()) {
                     throw new ArtParseException("Config does not define positioned parameters. Use key value pairs instead.");
                 }
                 configFieldInformation = optionalFieldInformation.get();
             }
 
-            if (keyValue.getValue().isEmpty()) {
+            if (!keyValue.getValue().isPresent()) {
                 throw new ArtParseException("Config " + configFieldInformation.getIdentifier() + " has an empty value.");
             }
 
