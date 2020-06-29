@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.api.requirements;
 
 import lombok.Getter;
 import net.silthus.art.api.ArtContext;
-import net.silthus.art.api.requirements.Requirement;
-import net.silthus.art.api.requirements.RequirementConfig;
+import net.silthus.art.api.Requirement;
 
 import java.util.Objects;
 
@@ -41,7 +40,7 @@ public class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TC
         this.requirement = requirement;
     }
 
-    final boolean test(TTarget target) {
+    public final boolean test(TTarget target) {
 
         return test(target, this);
     }

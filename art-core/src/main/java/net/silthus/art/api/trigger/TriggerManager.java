@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 @ImplementedBy(DefaultTriggerManager.class)
 public interface TriggerManager extends ArtFactoryManager<TriggerFactory<?>> {
 
-    void addListener(String identifier, TriggerListener listener);
+    <TTarget> void addListener(String identifier, Class<TTarget> targetClass, TriggerListener<TTarget> listener);
 
     <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> context, Target<?>... targets);
 }

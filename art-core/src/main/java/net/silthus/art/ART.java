@@ -19,11 +19,10 @@ package net.silthus.art;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtManager;
-import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
-import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
@@ -107,10 +106,6 @@ public final class ART {
         } else {
             return getInstance().get().load(config);
         }
-    }
-
-    public static <TTarget> void addGlobalFilter(Class<TTarget> targetClass, ArtResultFilter<TTarget> filter) {
-        getInstance().ifPresent(artManager -> artManager.addGlobalFilter(targetClass, filter));
     }
 
     public static <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> predicate, Target<?>... targets) {

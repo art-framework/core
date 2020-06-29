@@ -1,8 +1,12 @@
 package net.silthus.art;
 
+import net.silthus.art.api.actions.ActionContext;
+import net.silthus.art.api.requirements.RequirementContext;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@SuppressWarnings({"rawtypes", "unchecked"})
 public final class TestUtil {
 
     public static ActionContext<?, ?> action() {

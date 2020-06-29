@@ -22,19 +22,31 @@ import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 @Singleton
 public class DefaultTriggerManager extends AbstractFactoryManager<TriggerFactory<?>> implements TriggerManager {
 
     @Override
-    public void addListener(String identifier, TriggerListener listener) {
-        // TODO: implement
+    public <TTarget> void addListener(String identifier, Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
+        getFactory(identifier).ifPresent(triggerFactory -> triggerFactory.addListener(targetClass, listener));
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> predicate, Target<?>... targets) {
-        List<? extends TriggerContext<?>> contextList = getFactory(identifier).map(TriggerFactory::getCreatedTrigger).orElse(new ArrayList<>());
+        List<TriggerContext<TConfig>> contextList = getFactory(identifier).map(TriggerFactory::getCreatedTrigger)
+                .map(triggerContexts -> triggerContexts.stream()
+                        .map(triggerContext -> (TriggerContext<TConfig>) triggerContext)
+                        .collect(Collectors.toList()))
+                .orElse(new ArrayList<>());
 
-        // TODO: implement
+        for (Target<?> target : targets) {
+            trigger(target, predicate, contextList);
+        }
+    }
+
+    private <TTarget, TConfig> void trigger(Target<TTarget> target, Predicate<TriggerContext<TConfig>> predicate, List<TriggerContext<TConfig>> contextList) {
+        contextList.forEach(context -> context.trigger(target, predicate));
     }
 }

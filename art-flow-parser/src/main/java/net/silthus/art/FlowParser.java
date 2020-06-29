@@ -20,12 +20,14 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtManager;
+import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.ArtParser;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFactory;
+import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 
 import java.util.ArrayList;
@@ -101,10 +103,10 @@ public class FlowParser implements ArtParser {
             } else if (context instanceof ActionContext) {
                 if (Objects.isNull(activeAction)) {
                     activeAction = (ActionContext<?, ?>) context;
-                    activeAction.addRequirements(requirements);
+                    requirements.forEach(activeAction::addRequirement);
                     requirements.clear();
                 } else {
-                    activeAction.addChildAction((ActionContext<?, ?>) context);
+                    activeAction.addAction((ActionContext<?, ?>) context);
                 }
             }
         }

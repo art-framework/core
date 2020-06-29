@@ -22,11 +22,9 @@ import net.silthus.art.ART;
 import net.silthus.art.ArtBuilder;
 import net.silthus.art.ArtModuleDescription;
 import net.silthus.art.DefaultArtManager;
-import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
-import net.silthus.art.api.requirements.Requirement;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
@@ -42,11 +40,11 @@ import java.util.function.Predicate;
  * <br>
  * Use it to access all relevant methods related to the framework.
  * <br>
- *     <ul>
- *         <li>Register your {@link ArtObject}s by creating an {@link ArtBuilder} with {@link #register(ArtModuleDescription, Consumer)}.</li>
- *         <li>Trigger {@link Action}s and {@link Requirement}s with {@link #trigger(String, Predicate, Target[])} </li>
- *         <li></li>
- *     </ul>
+ * <ul>
+ *     <li>Register your {@link ArtObject}s by creating an {@link ArtBuilder} with {@link #register(ArtModuleDescription, Consumer)}.</li>
+ *     <li>Trigger {@link Action}s and {@link Requirement}s with {@link Trigger#trigger(String, Predicate, Target[])} </li>
+ *     <li></li>
+ * </ul>
  */
 @ImplementedBy(DefaultArtManager.class)
 public interface ArtManager {
@@ -73,8 +71,6 @@ public interface ArtManager {
     ArtResult load(ArtConfig config);
 
     <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> context, Target<?>... targets);
-
-    <TTarget> void addGlobalFilter(Class<TTarget> targetClass, ArtResultFilter<TTarget> filter);
 
     /**
      * Wraps the given target object into a {@link Target}.

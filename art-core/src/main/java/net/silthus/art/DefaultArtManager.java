@@ -51,6 +51,8 @@ import java.util.function.Predicate;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
+
 @Data
 public class DefaultArtManager implements ArtManager {
 
@@ -135,38 +137,14 @@ public class DefaultArtManager implements ArtManager {
         getTriggerManager().trigger(identifier, context, targets);
     }
 
-    @Override
-    public <TTarget> void addGlobalFilter(Class<TTarget> targetClass, ArtResultFilter<TTarget> filter) {
-        if (!globalFilters.containsKey(targetClass)) {
-            globalFilters.put(targetClass, new ArrayList<>());
-        }
-        globalFilters.get(targetClass).add(filter);
-    }
-
     @Nullable
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings("unchecked")
     public <TTarget> Target<TTarget> getTarget(@NonNull TTarget target) {
 
-        if (targetWrapper.containsKey(target.getClass())) {
-            return (Target<TTarget>) targetWrapper.get(target.getClass()).apply(target);
-        }
-
-        Class<?> currentTargetClass = null;
-        Function<TTarget, Target<TTarget>> function = null;
-        for (Map.Entry<Class<?>, Function> entry : targetWrapper.entrySet()) {
-            if (entry.getKey().isAssignableFrom(target.getClass())) {
-                // pick the nearest possible target wrapper we can find
-                if (currentTargetClass == null || currentTargetClass.isAssignableFrom(entry.getKey())) {
-                    currentTargetClass = entry.getKey();
-                    function = entry.getValue();
-                }
-            }
-        }
-
-        if (function == null) return null;
-
-        return function.apply(target);
+        return getEntryForTarget(target, targetWrapper)
+                .map(function -> (Target<TTarget>) function.apply(target))
+                .orElse(null);
     }
 
     <TFactory extends ArtFactory<?, ?, ?, ? extends ArtObjectConfig<?>>> void registerArtFactoryMap(String type, List<TFactory> factories, ArtFactoryRegistration<TFactory> factoryManager) {

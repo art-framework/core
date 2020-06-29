@@ -20,6 +20,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.api.ArtObjectRegistrationException;
+import net.silthus.art.api.Trigger;
 import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.factory.ArtFactory;
 
@@ -75,5 +76,9 @@ public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger
         TriggerContext<TConfig> triggerContext = new TriggerContext<>(config);
         createdTrigger.add(triggerContext);
         return triggerContext;
+    }
+
+    <TTarget> void addListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
+        createdTrigger.forEach(context -> context.addListener(targetClass, listener));
     }
 }

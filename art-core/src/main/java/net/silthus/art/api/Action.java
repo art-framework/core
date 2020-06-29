@@ -14,20 +14,19 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.actions;
+package net.silthus.art.api;
 
-import net.silthus.art.ActionContext;
-import net.silthus.art.api.ArtObject;
+import net.silthus.art.api.actions.ActionContext;
 
 /**
- * Defines an action that can get executed if the right {@link net.silthus.art.api.trigger.Trigger} was called.
- * The {@link net.silthus.art.api.trigger.Trigger} source and action target must match or the action will not be executed.
+ * Defines an action that can get executed if the right {@link Trigger} was called.
+ * The {@link Trigger} source and action target must match or the action will not be executed.
  * Make the {@link TTarget} as broad as possible to allow the action to be executed by as many triggers as possible.
  *
  * @param <TTarget> the target this action applies to.
- *                 This could be a player, entity or anything as long as there is a trigger for it.
+ *                  This could be a player, entity or anything as long as there is a trigger for it.
  * @param <TConfig> the config that should be used by this action.
- *                 You can provide your own type safe configs or use generic implementations like the Bukkit ConfigurationSection.
+ *                  You can provide your own type safe configs or use generic implementations like the Bukkit ConfigurationSection.
  */
 @FunctionalInterface
 public interface Action<TTarget, TConfig> extends ArtObject {
@@ -35,7 +34,7 @@ public interface Action<TTarget, TConfig> extends ArtObject {
     /**
      * Called when the action is executed.
      * The action should handle the pure execution and no filtering.
-     * All filtering is done beforehand and by the means of attached {@link net.silthus.art.api.requirements.Requirement}s.
+     * All filtering is done beforehand and by the means of attached {@link Requirement}s.
      * Use the config to provide configuration options for users of this action.
      * <br>
      * Make sure to annotate this {@link Action} with a @{@link net.silthus.art.api.annotations.Name} and

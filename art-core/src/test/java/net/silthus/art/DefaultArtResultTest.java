@@ -17,11 +17,14 @@
 package net.silthus.art;
 
 import net.silthus.art.api.ArtContext;
+import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
-import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
+import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.trigger.TriggerContext;
+import net.silthus.art.api.trigger.TriggerListener;
+import net.silthus.art.testing.StringTarget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -39,7 +42,7 @@ class DefaultArtResultTest {
 
     private ArtConfig config;
     private List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts;
-    private ArtResult result;
+    private DefaultArtResult result;
 
     @BeforeEach
     void beforeEach() {
@@ -356,4 +359,22 @@ class DefaultArtResultTest {
             verify(integerAction, times(0)).execute(any(), any());
         }
     }
+
+    @Nested
+    @DisplayName("onTrigger(...)")
+    class onTrigger {
+
+        @Test
+        void shouldFilterForCorrectTargetType() {
+
+            TriggerListener<String> listener = (TriggerListener<String>) mock(TriggerListener.class);
+
+            result.onTrigger(String.class, listener);
+            StringTarget target = new StringTarget("foobar");
+            result.onTrigger(target);
+
+            verify(listener, times(1)).onTrigger(target);
+        }
+    }
+
 }

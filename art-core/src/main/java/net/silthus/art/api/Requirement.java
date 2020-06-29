@@ -14,41 +14,41 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.requirements;
+package net.silthus.art.api;
 
+import net.silthus.art.ART;
 import net.silthus.art.ArtModuleDescription;
-import net.silthus.art.RequirementContext;
-import net.silthus.art.api.ArtObject;
+import net.silthus.art.api.requirements.RequirementContext;
 
 import java.util.function.Consumer;
 
 /**
- * A {@link Requirement} can be used to filter {@link net.silthus.art.api.actions.Action}s, {@link net.silthus.art.api.trigger.Trigger}
+ * A {@link Requirement} can be used to filter {@link Action}s, {@link Trigger}
  * or be used inside other plugins for filtering.
  * <br>
- * Register your requirements by calling {@link net.silthus.art.ART#register(ArtModuleDescription, Consumer)}.
+ * Register your requirements by calling {@link ART#register(ArtModuleDescription, Consumer)}.
  * This will wrap the {@link Requirement} into a {@link RequirementContext} and bundle it with the configured options.
  * <br>
  * A requirement will only be used for filtering if the target type matches with the object that is being filtered.
  * <br>
- * For example: an {@link net.silthus.art.api.actions.Action} that is targeting players can only be filtered by requirements
+ * For example: an {@link Action} that is targeting players can only be filtered by requirements
  * that also target players.
  *
  * @param <TTarget> target type this requirement applies too. Defines the filtering scope.
  * @param <TConfig> config type of the requirement
  * @see RequirementContext
- * @see net.silthus.art.api.actions.Action
- * @see net.silthus.art.api.trigger.Trigger
+ * @see Action
+ * @see Trigger
  */
 @FunctionalInterface
 public interface Requirement<TTarget, TConfig> extends ArtObject {
 
     /**
-     * Tests if this requirement should filter {@link net.silthus.art.api.actions.Action}s or {@link net.silthus.art.api.trigger.Trigger}s for the given target.
+     * Tests if this requirement should filter {@link Action}s or {@link Trigger}s for the given target.
      * Return true for the check to pass and not to filter out the action.
      * Return false if the check fails and the actions should be filtered.
      *
-     * @param target target to check against
+     * @param target  target to check against
      * @param context {@link RequirementContext} that holds the config and context of the check
      * @return false if the check fails and the filter should be applied or true if all checks pass and no filtering should be applied.
      */

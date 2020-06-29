@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.api.actions;
 
-import net.silthus.art.api.actions.Action;
-import net.silthus.art.api.actions.ActionConfig;
+import net.silthus.art.api.Action;
+import net.silthus.art.api.requirements.RequirementContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
-
-import java.util.List;
 
 import static net.silthus.art.TestUtil.action;
 import static net.silthus.art.TestUtil.requirement;
@@ -125,8 +123,8 @@ public class ActionContextTest {
 
                 ActionContext nestedAction1 = action();
                 ActionContext nestedAction2 = action();
-                context.addChildAction(nestedAction1);
-                context.addChildAction(nestedAction2);
+                context.addAction(nestedAction1);
+                context.addAction(nestedAction2);
 
                 context.execute("foobar");
 
@@ -143,8 +141,8 @@ public class ActionContextTest {
                 ActionContext<Integer, ?> child1 = action(Integer.class);
                 ActionContext<String, ?> child2 = action(String.class);
 
-                context.addChildAction(child1);
-                context.addChildAction(child2);
+                context.addAction(child1);
+                context.addAction(child2);
 
                 context.execute("foobar");
 
@@ -162,7 +160,7 @@ public class ActionContextTest {
             void shouldCheckRequirementsBeforeActionExecution() {
 
                 RequirementContext requirement = requirement(true);
-                context.addRequirements(List.of(requirement));
+                context.addRequirement(requirement);
 
                 context.execute("foobar");
 
@@ -176,9 +174,9 @@ public class ActionContextTest {
             void shouldNotExecuteActionIfRequirementsFail() {
 
                 RequirementContext requirement = requirement(false);
-                context.addRequirements(List.of(requirement));
+                context.addRequirement(requirement);
                 ActionContext<?, ?> childAction = action();
-                context.addChildAction(childAction);
+                context.addAction(childAction);
 
                 context.execute("foobar");
 
@@ -191,7 +189,7 @@ public class ActionContextTest {
             void shouldNotCheckRequirementIfTargetTypeDoesNotMatch() {
 
                 RequirementContext requirement = requirement(Integer.class, false);
-                context.addRequirements(List.of(requirement));
+                context.addRequirement(requirement);
 
                 context.execute("foobar");
 
