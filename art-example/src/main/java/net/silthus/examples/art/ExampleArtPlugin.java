@@ -17,7 +17,7 @@
 package net.silthus.examples.art;
 
 import de.exlll.configlib.configs.yaml.YamlConfiguration;
-import kr.entree.spigradle.Plugin;
+import kr.entree.spigradle.PluginMain;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.ART;
@@ -36,7 +36,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.File;
 import java.util.Optional;
 
-@Plugin
+@PluginMain
 public class ExampleArtPlugin extends JavaPlugin {
 
     @Getter
