@@ -27,6 +27,8 @@ import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.requirements.RequirementConfig;
 import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.trigger.TriggerConfig;
+import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -191,12 +193,16 @@ class FlowParserTest {
         }
 
         private ActionContext<?, ?> action() {
-            return new ActionContext<>(Object.class, (o, context) -> {
-            }, new ActionConfig<>());
+            return spy(new ActionContext<>(Object.class, (o, context) -> {
+            }, new ActionConfig<>()));
         }
 
         private RequirementContext<?, ?> requirement() {
-            return new RequirementContext<>(Object.class, (o, context) -> true, new RequirementConfig<>());
+            return spy(new RequirementContext<>(Object.class, (o, context) -> true, new RequirementConfig<>()));
+        }
+
+        private TriggerContext<?> trigger() {
+            return spy(new TriggerContext<>(new TriggerConfig<>()));
         }
 
         @Nested
@@ -348,6 +354,17 @@ class FlowParserTest {
                 assertThat(parser.sortAndCombineArtContexts(contexts))
                         .hasSize(1)
                         .containsExactly(requirement);
+            }
+        }
+
+        @Nested
+        @DisplayName("with triggers")
+        class triggers {
+
+            @Test
+            @DisplayName("should add all triggers as list")
+            void shouldAddAllTriggerAsList() {
+
             }
         }
     }
