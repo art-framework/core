@@ -24,18 +24,22 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.api.ArtContext;
+import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
+import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerListener;
 
 import java.util.*;
 
-public final class DefaultArtResult implements ArtResult, TriggerListener {
+import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
 
-    static ArtResult empty() {
+public final class DefaultArtResult implements ArtResult, TriggerListener<Object> {
+
+    static DefaultArtResult empty() {
         return new DefaultArtResult(new ArtConfig(), new ArrayList<>(), new HashMap<>());
     }
 
@@ -44,7 +48,7 @@ public final class DefaultArtResult implements ArtResult, TriggerListener {
     private final List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art;
     @Getter(AccessLevel.PACKAGE)
     private final Map<Class<?>, List<ArtResultFilter<?>>> filters;
-    private final Map<Class<?>, List<TriggerListener>> triggerListeners = new HashMap<>();
+    private final Map<Class<?>, List<TriggerListener<?>>> triggerListeners = new HashMap<>();
 
     @Inject
     public DefaultArtResult(@Assisted ArtConfig config, @Assisted List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art, @Assisted Map<Class<?>, List<ArtResultFilter<?>>> filters) {
@@ -94,7 +98,7 @@ public final class DefaultArtResult implements ArtResult, TriggerListener {
     }
 
     @Override
-    public <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener listener) {
+    public <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
         if (!triggerListeners.containsKey(targetClass)) {
             triggerListeners.put(targetClass, new ArrayList<>());
         }
@@ -102,11 +106,13 @@ public final class DefaultArtResult implements ArtResult, TriggerListener {
     }
 
     @Override
-    public <TTarget> void onTrigger(@NonNull Target<TTarget> target) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public void onTrigger(@NonNull Target target) {
         if (test(target)) {
             execute(target);
-            triggerListeners.getOrDefault(target.getClass(), new ArrayList<>())
-                    .forEach(listener -> listener.onTrigger(target));
+            getEntryForTarget(target.getTarget(), triggerListeners)
+                    .orElse(new ArrayList<>())
+                    .forEach(triggerListener -> triggerListener.onTrigger(target));
         }
     }
 
@@ -119,9 +125,7 @@ public final class DefaultArtResult implements ArtResult, TriggerListener {
 
         if (Objects.isNull(target)) return false;
 
-        return getFilters().entrySet().stream()
-                .filter(entry -> entry.getKey().isInstance(target))
-                .flatMap(entry -> entry.getValue().stream())
+        return getEntryForTarget(target, getFilters()).orElse(new ArrayList<>()).stream()
                 .map(filter -> (ArtResultFilter<TTarget>) filter)
                 .allMatch(filter -> filter.test(target, config));
     }

@@ -16,7 +16,7 @@
 
 package net.silthus.art.api.actions;
 
-import net.silthus.art.ActionContext;
+import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.factory.ArtFactory;
 

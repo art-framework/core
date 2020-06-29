@@ -17,16 +17,19 @@
 package net.silthus.art.api.trigger;
 
 import lombok.NonNull;
+import net.silthus.art.api.Trigger;
 import net.silthus.art.api.parser.ArtResult;
 
 /**
  * Used to listen on events fired by {@link Trigger}s.
- *
+ * <p>
  * Make sure to register your listener either with the {@link ArtResult#onTrigger(Class, TriggerListener)}
- * or {@link TriggerManager#addListener(String, TriggerListener)} method.
+ * or {@link TriggerManager#addListener(String, Class, TriggerListener)} method.
+ *
+ * @param <TTarget> target type
  */
 @FunctionalInterface
-public interface TriggerListener {
+public interface TriggerListener<TTarget> {
 
     /**
      * Gets called when a trigger got executed and informs its listeners.
@@ -36,7 +39,6 @@ public interface TriggerListener {
      * to cache or reference the target.
      *
      * @param target wrapped {@link Target} of the trigger
-     * @param <TTarget> target type
      */
-    <TTarget> void onTrigger(@NonNull Target<TTarget> target);
+    void onTrigger(@NonNull Target<TTarget> target);
 }

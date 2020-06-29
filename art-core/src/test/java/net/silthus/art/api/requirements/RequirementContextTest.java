@@ -1,7 +1,6 @@
-package net.silthus.art;
+package net.silthus.art.api.requirements;
 
-import net.silthus.art.api.requirements.Requirement;
-import net.silthus.art.api.requirements.RequirementConfig;
+import net.silthus.art.api.Requirement;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

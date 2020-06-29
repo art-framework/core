@@ -21,6 +21,7 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import net.silthus.art.api.Requirement;
 import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;

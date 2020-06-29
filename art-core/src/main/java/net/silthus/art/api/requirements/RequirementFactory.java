@@ -17,8 +17,8 @@
 package net.silthus.art.api.requirements;
 
 import lombok.EqualsAndHashCode;
-import net.silthus.art.RequirementContext;
 import net.silthus.art.api.ArtContext;
+import net.silthus.art.api.Requirement;
 import net.silthus.art.api.factory.ArtFactory;
 
 @EqualsAndHashCode(callSuper = true)

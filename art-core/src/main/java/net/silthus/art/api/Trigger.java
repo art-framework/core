@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.trigger;
+package net.silthus.art.api;
 
 import net.silthus.art.ART;
-import net.silthus.art.api.ArtObject;
+import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.trigger.TriggerContext;
 
 import java.util.Arrays;
 import java.util.function.Predicate;

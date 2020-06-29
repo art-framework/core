@@ -16,9 +16,9 @@
 
 package net.silthus.examples.art.trigger;
 
+import net.silthus.art.api.Trigger;
 import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Name;
-import net.silthus.art.api.trigger.Trigger;
 import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.examples.art.configs.LocationConfig;
 import org.bukkit.Location;
@@ -31,8 +31,8 @@ import java.util.function.Predicate;
 
 public class PlayerMoveTrigger implements Trigger, Listener {
 
-    private static final String PLAYER_MOVE = "player.move";
-    private static final String CHEST_OPEN = "chest.open";
+    private static final String PLAYER_MOVE = "art-example:player.move";
+    private static final String CHEST_OPEN = "art-example:chest.open";
 
     @Name(PLAYER_MOVE)
     @Description({
@@ -45,9 +45,6 @@ public class PlayerMoveTrigger implements Trigger, Listener {
         if (!hasMoved(event)) return;
 
         trigger(PLAYER_MOVE, test(event.getTo()), event.getPlayer());
-
-        // alternative without extending Trigger
-        // ART.trigger(PLAYER_MOVE, test(event.getTo()), event.getPlayer());
     }
 
     // example for reusing the same config

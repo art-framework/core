@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.api.actions;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtContext;
-import net.silthus.art.api.actions.Action;
-import net.silthus.art.api.actions.ActionConfig;
+import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.requirements.RequirementHolder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,13 +35,13 @@ import java.util.Objects;
  * @param <TTarget> target type of the action
  * @param <TConfig> config type of the action
  */
-public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig, ActionConfig<TConfig>> implements Action<TTarget, TConfig> {
+public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig, ActionConfig<TConfig>> implements Action<TTarget, TConfig>, RequirementHolder, ActionHolder {
 
     @Getter(AccessLevel.PROTECTED)
     private final Action<TTarget, TConfig> action;
     @Getter(AccessLevel.PROTECTED)
     private final List<ActionContext<?, ?>> childActions = new ArrayList<>();
-    @Getter(AccessLevel.PROTECTED)
+    @Getter
     private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
 
     public ActionContext(Class<TTarget> tTargetClass, Action<TTarget, TConfig> action, ActionConfig<TConfig> config) {
@@ -49,15 +50,22 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
         this.action = action;
     }
 
-    final void addChildAction(ActionContext<?, ?> action) {
+    @Override
+    public void addAction(ActionContext<?, ?> action) {
         this.childActions.add(action);
     }
 
-    final void addRequirements(Collection<RequirementContext<?, ?>> requirements) {
-        this.requirements.addAll(requirements);
+    @Override
+    public Collection<ActionContext<?, ?>> getActions() {
+        return this.childActions;
     }
 
-    final void execute(TTarget target) {
+    @Override
+    public final void addRequirement(RequirementContext<?, ?> requirement) {
+        this.requirements.add(requirement);
+    }
+
+    public final void execute(TTarget target) {
 
         execute(target, this);
     }
@@ -80,13 +88,5 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
                 .filter(actionContext -> actionContext.isTargetType(target))
                 .map(actionContext -> (ActionContext<TTarget, ?>) actionContext)
                 .forEach(actionContext -> actionContext.execute(target));
-    }
-
-    @SuppressWarnings("unchecked")
-    private boolean testRequirements(TTarget target) {
-        return getRequirements().stream()
-                .filter(requirement -> requirement.isTargetType(target))
-                .map(requirement -> (RequirementContext<TTarget, ?>) requirement)
-                .allMatch(requirement -> requirement.test(target));
     }
 }

@@ -18,6 +18,7 @@ package net.silthus.art.api.trigger;
 
 import lombok.SneakyThrows;
 import net.silthus.art.api.ArtRegistrationException;
+import net.silthus.art.api.Trigger;
 import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.factory.ArtFactory;
@@ -30,6 +31,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("TriggerFactory")
+@SuppressWarnings({"rawtypes", "unused"})
 class TriggerFactoryTest {
 
     @Nested
@@ -103,6 +105,24 @@ class TriggerFactoryTest {
             assertThatExceptionOfType(ArtRegistrationException.class)
                     .isThrownBy(factory::initialize)
                     .withMessageContaining("has no defined name");
+        }
+    }
+
+    @Nested
+    @DisplayName("create(...)")
+    class create {
+
+        @Test
+        @DisplayName("should store context in factory")
+        void shouldStoreContextInFactory() {
+
+            List<TriggerFactory<?>> factory = TriggerFactory.of(new MyTrigger());
+
+            TriggerContext context1 = factory.get(0).create(new TriggerConfig<>());
+            TriggerContext context2 = factory.get(0).create(new TriggerConfig<>());
+
+            assertThat(factory.get(0).getCreatedTrigger())
+                    .containsExactly(context1, context2);
         }
     }
 

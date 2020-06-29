@@ -1,7 +1,7 @@
 package net.silthus.art.parser.flow.parser;
 
 import lombok.SneakyThrows;
-import net.silthus.art.RequirementContext;
+import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
 import org.junit.jupiter.api.BeforeEach;

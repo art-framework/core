@@ -18,7 +18,9 @@ package net.silthus.art.api.trigger;
 
 import lombok.NonNull;
 import net.silthus.art.ART;
+import net.silthus.art.ArtBuilder;
 import net.silthus.art.ArtModuleDescription;
+import net.silthus.art.api.Trigger;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
@@ -29,8 +31,8 @@ import java.util.function.Function;
  * It is needed to provide a way to uniquely identify the target,
  * which is needed to store meta data information and cache results.
  * <br>
- * Register your wrapper with the {@link net.silthus.art.ArtBuilder} on startup by calling
- * {@link ART#register(ArtModuleDescription, Consumer)} and then {@link net.silthus.art.ArtBuilder.TargetBuilder#wrapper(Function)}.
+ * Register your wrapper with the {@link ArtBuilder} on startup by calling
+ * {@link ART#register(ArtModuleDescription, Consumer)} and then {@link ArtBuilder.TargetBuilder#wrapper(Function)}.
  *
  * @param <TTarget> type of the underlying target
  */

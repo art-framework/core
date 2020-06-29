@@ -18,10 +18,10 @@ package net.silthus.art.api.factory;
 
 import com.google.common.base.Strings;
 import lombok.Data;
+import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.ArtObjectRegistrationException;
-import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.annotations.Config;
 import net.silthus.art.api.annotations.Description;

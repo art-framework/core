@@ -17,9 +17,9 @@
 package net.silthus.art.api.factory;
 
 import lombok.SneakyThrows;
+import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.ArtRegistrationException;
-import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionFactoryManager;
 import org.junit.jupiter.api.BeforeEach;

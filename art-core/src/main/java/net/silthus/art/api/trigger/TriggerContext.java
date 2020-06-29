@@ -16,57 +16,92 @@
 
 package net.silthus.art.api.trigger;
 
-import lombok.EqualsAndHashCode;
+import lombok.AccessLevel;
+import lombok.Getter;
 import net.silthus.art.api.ArtContext;
+import net.silthus.art.api.actions.ActionContext;
+import net.silthus.art.api.requirements.RequirementContext;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 
-@EqualsAndHashCode(callSuper = true)
+import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
+
 public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, TriggerConfig<TConfig>> {
 
-    private final Set<TriggerListener> listeners = new HashSet<>();
+    private final Map<Class<?>, Set<TriggerListener<?>>> listeners = new HashMap<>();
+    @Getter(AccessLevel.PROTECTED)
+    private final List<ActionContext<?, ?>> childActions = new ArrayList<>();
+    @Getter(AccessLevel.PROTECTED)
+    private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
 
     public TriggerContext(TriggerConfig<TConfig> config) {
         super(Object.class, config);
     }
 
+    final void addChildAction(ActionContext<?, ?> action) {
+        this.childActions.add(action);
+    }
+
+    final void addRequirements(Collection<RequirementContext<?, ?>> requirements) {
+        this.requirements.addAll(requirements);
+    }
+
     /**
      * Registers the given {@link TriggerListener} to listen for events
      * fired by this trigger.
-     * Will return false if the listener is already registered.
      *
      * @param listener trigger listener to register
-     * @return false if listener was already registered
      * @see Set#add(Object)
      */
-    boolean registerListener(TriggerListener listener) {
-        return listeners.add(listener);
+    <TTarget> void addListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
+        if (!listeners.containsKey(targetClass)) {
+            listeners.put(targetClass, new HashSet<>());
+        }
+        listeners.get(targetClass).add(listener);
     }
 
     /**
      * Unregisters the given listener from listening to this trigger.
-     * Returns false if the listener was never registered.
      *
      * @param listener trigger listener to unregister
-     * @return false if listener was never registered
      */
-    boolean unregisterListener(TriggerListener listener) {
-        return listeners.remove(listener);
+    <TTarget> void removeListener(TriggerListener<TTarget> listener) {
+        listeners.values().forEach(triggerListeners -> triggerListeners.remove(listener));
     }
 
     /**
      * Fires this trigger and informs all listeners about its executing
      * if the given predicate and target type matches.
      *
-     * @param target target that fired the trigger
+     * @param target    target that fired the trigger
      * @param predicate predicate to check before informing all listeners
      * @param <TTarget> target type
      */
+    @SuppressWarnings("unchecked")
     <TTarget> void trigger(Target<TTarget> target, Predicate<TriggerContext<TConfig>> predicate) {
-        if (predicate.test(this)) {
-            listeners.forEach(listener -> listener.onTrigger(target));
+        if (predicate.test(this) && testRequirements(target)) {
+            executeActions(target);
+
+            getEntryForTarget(target.getTarget(), listeners).orElse(new HashSet<>()).stream()
+                    .map(triggerListener -> (TriggerListener<TTarget>) triggerListener)
+                    .forEach(listener -> listener.onTrigger(target));
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TTarget> void executeActions(TTarget target) {
+        getChildActions().stream()
+                .filter(actionContext -> actionContext.isTargetType(target))
+                .map(actionContext -> (ActionContext<TTarget, ?>) actionContext)
+                .forEach(action -> action.execute(target));
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TTarget> boolean testRequirements(TTarget target) {
+        return getRequirements().stream()
+                .filter(requirementContext -> requirementContext.isTargetType(target))
+                .map(requirementContext -> (RequirementContext<TTarget, ?>) requirementContext)
+                .allMatch(requirementContext -> requirementContext.test(target));
     }
 }

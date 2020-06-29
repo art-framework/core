@@ -17,12 +17,12 @@
 package net.silthus.art.api.factory;
 
 import lombok.SneakyThrows;
-import net.silthus.art.ActionContext;
+import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.ArtObjectRegistrationException;
-import net.silthus.art.api.actions.Action;
 import net.silthus.art.api.actions.ActionConfig;
+import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.config.ConfigFieldInformation;

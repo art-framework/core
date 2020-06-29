@@ -16,11 +16,11 @@
 
 package net.silthus.examples.art.requirements;
 
-import net.silthus.art.RequirementContext;
+import net.silthus.art.api.Requirement;
 import net.silthus.art.api.annotations.Config;
 import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Name;
-import net.silthus.art.api.requirements.Requirement;
+import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.examples.art.configs.LocationConfig;
 import org.bukkit.entity.Entity;
 

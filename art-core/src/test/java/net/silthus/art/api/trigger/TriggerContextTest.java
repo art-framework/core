@@ -16,9 +16,14 @@
 
 package net.silthus.art.api.trigger;
 
+import lombok.NonNull;
+import net.silthus.art.testing.StringTarget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import static org.mockito.Mockito.*;
 
 @DisplayName("TriggerContext")
 class TriggerContextTest {
@@ -30,10 +35,71 @@ class TriggerContextTest {
         context = new TriggerContext<>(new TriggerConfig<>());
     }
 
+    @SuppressWarnings("unchecked")
+    private <TTarget> TriggerListener<TTarget> addListener(Class<TTarget> targetClass) {
+        TriggerListener<TTarget> listener = new TriggerListener<TTarget>() {
+            @Override
+            public void onTrigger(@NonNull Target<TTarget> target) {
+            }
+        };
+        listener = spy(listener);
+        context.addListener(targetClass, listener);
+        return listener;
+    }
+
     @Nested
     @DisplayName("trigger")
     class trigger {
 
+        @Test
+        @DisplayName("should not inform listeners if predicate fails")
+        void shouldNotInformListenersIfPredicateFails() {
 
+            TriggerListener<String> listener = addListener(String.class);
+
+            context.trigger(new StringTarget("foobar"), triggerContext -> false);
+
+            verify(listener, times(0)).onTrigger(any());
+        }
+
+        @Test
+        @DisplayName("should inform all listeners if predicate check succeeds")
+        void shouldInformAllListenersIfPredicateSucceeds() {
+
+            TriggerListener<String> listener1 = addListener(String.class);
+            TriggerListener<String> listener2 = addListener(String.class);
+
+            context.trigger(new StringTarget("foobar"), triggerContext -> true);
+
+            verify(listener1, times(1)).onTrigger(any());
+            verify(listener2, times(1)).onTrigger(any());
+        }
+
+        @Test
+        @DisplayName("should only inform listeners matching the target type")
+        void shouldOnlyInformMatchingListeners() {
+
+            TriggerListener<String> stringListener = addListener(String.class);
+            TriggerListener<Integer> integerListener = addListener(Integer.class);
+
+            context.trigger(new StringTarget("foobar"), triggerContext -> true);
+
+            verify(stringListener, times(1)).onTrigger(any());
+            verify(integerListener, times(0)).onTrigger(any());
+        }
+
+        @Test
+        @DisplayName("should not call removed listeners")
+        void shouldNotCallRemovedListeners() {
+
+            TriggerListener<String> listener1 = addListener(String.class);
+            TriggerListener<String> listener2 = addListener(String.class);
+            context.removeListener(listener2);
+
+            context.trigger(new StringTarget("foobar"), triggerContext -> true);
+
+            verify(listener1, times(1)).onTrigger(any());
+            verify(listener2, times(0)).onTrigger(any());
+        }
     }
 }

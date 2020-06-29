@@ -16,8 +16,8 @@
 
 package net.silthus.examples.art.actions;
 
-import net.silthus.art.ActionContext;
-import net.silthus.art.api.actions.Action;
+import net.silthus.art.api.Action;
+import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.annotations.*;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;

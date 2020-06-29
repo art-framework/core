@@ -1,7 +1,7 @@
 package net.silthus.art.parser.flow.parser;
 
 import lombok.SneakyThrows;
-import net.silthus.art.ActionContext;
+import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import org.junit.jupiter.api.BeforeEach;

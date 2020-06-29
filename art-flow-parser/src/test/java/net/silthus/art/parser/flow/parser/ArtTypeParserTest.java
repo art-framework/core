@@ -2,8 +2,8 @@ package net.silthus.art.parser.flow.parser;
 
 import lombok.Data;
 import lombok.SneakyThrows;
-import net.silthus.art.ActionContext;
 import net.silthus.art.api.actions.ActionConfig;
+import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.annotations.Position;
@@ -24,6 +24,7 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings({"unchecked", "unused"})
 @DisplayName("ArtTypeParser")
 class ArtTypeParserTest {
 

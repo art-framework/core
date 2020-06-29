@@ -18,7 +18,7 @@ package net.silthus.examples.art.requirements;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
-import net.silthus.art.RequirementContext;
+import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.examples.art.configs.LocationConfig;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -31,6 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@SuppressWarnings({"unchecked", "unused"})
 @DisplayName("EntityLocationRequirement")
 class EntityLocationRequirementTest {
 

@@ -19,10 +19,10 @@ package net.silthus.art.api.parser;
 import com.google.inject.ImplementedBy;
 import net.silthus.art.ART;
 import net.silthus.art.DefaultArtResult;
-import net.silthus.art.api.actions.Action;
+import net.silthus.art.api.Action;
+import net.silthus.art.api.Requirement;
+import net.silthus.art.api.Trigger;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.requirements.Requirement;
-import net.silthus.art.api.trigger.Trigger;
 import net.silthus.art.api.trigger.TriggerListener;
 
 import javax.annotation.Nullable;
@@ -119,5 +119,5 @@ public interface ArtResult {
      * @param triggerConsumer function to react to the trigger
      * @param <TTarget> type of the target
      */
-    <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener triggerConsumer);
+    <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> triggerConsumer);
 }
