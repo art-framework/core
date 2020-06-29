@@ -157,14 +157,11 @@ public class ArtFactoryTest {
         @DisplayName("should use annotations on method")
         public void shouldUseMethodAnnotation() {
 
-            factory = ActionFactory.of(String.class, new Action<>() {
-
+            factory = ActionFactory.of(String.class, new Action<String, TestConfig>() {
                 @Name("foo")
                 @Config(TestConfig.class)
                 @Override
-                public void execute(String s, ActionContext<String, TestConfig> context) {
-
-                }
+                public void execute(String s, ActionContext<String, TestConfig> context) {}
             });
 
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
@@ -278,7 +275,7 @@ public class ArtFactoryTest {
             @DisplayName("should throw if same field position is found")
             public void shouldThrowExceptionForSamePosition() {
 
-                ActionFactory<String, ErrorConfig> factory = ActionFactory.of(String.class, new Action<>() {
+                ActionFactory<String, ErrorConfig> factory = ActionFactory.of(String.class, new Action<String, ErrorConfig>() {
                     @Name("test")
                     @Config(ErrorConfig.class)
                     @Override
