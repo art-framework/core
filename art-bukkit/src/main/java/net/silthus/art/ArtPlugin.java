@@ -17,7 +17,7 @@
 package net.silthus.art;
 
 import com.google.inject.Binder;
-import kr.entree.spigradle.Plugin;
+import kr.entree.spigradle.PluginMain;
 import lombok.Getter;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.scheduler.Scheduler;
@@ -30,7 +30,7 @@ import org.bukkit.plugin.ServicePriority;
 
 import javax.inject.Inject;
 
-@Plugin
+@PluginMain
 public class ArtPlugin extends BasePlugin {
 
     @Inject
