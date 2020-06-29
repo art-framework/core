@@ -31,7 +31,7 @@ public class FlowParserModule extends AbstractModule {
     @Override
     protected void configure() {
 
-        var multibinder = Multibinder.newSetBinder(binder(), new TypeLiteral<ArtTypeParser<?, ?>>() {});
+        Multibinder<ArtTypeParser<?, ?>> multibinder = Multibinder.newSetBinder(binder(), new TypeLiteral<ArtTypeParser<?, ?>>() {});
         multibinder.addBinding().to(ActionParser.class);
         multibinder.addBinding().to(RequirementParser.class);
 
