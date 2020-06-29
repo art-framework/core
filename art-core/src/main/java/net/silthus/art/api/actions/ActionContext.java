@@ -24,7 +24,6 @@ import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.requirements.RequirementHolder;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -39,8 +38,8 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
 
     @Getter(AccessLevel.PROTECTED)
     private final Action<TTarget, TConfig> action;
-    @Getter(AccessLevel.PROTECTED)
-    private final List<ActionContext<?, ?>> childActions = new ArrayList<>();
+    @Getter
+    private final List<ActionContext<?, ?>> actions = new ArrayList<>();
     @Getter
     private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
 
@@ -52,12 +51,7 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
 
     @Override
     public void addAction(ActionContext<?, ?> action) {
-        this.childActions.add(action);
-    }
-
-    @Override
-    public Collection<ActionContext<?, ?>> getActions() {
-        return this.childActions;
+        this.actions.add(action);
     }
 
     @Override
@@ -84,7 +78,7 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
 
         getAction().execute(target, Objects.isNull(context) ? this : context);
 
-        getChildActions().stream()
+        getActions().stream()
                 .filter(actionContext -> actionContext.isTargetType(target))
                 .map(actionContext -> (ActionContext<TTarget, ?>) actionContext)
                 .forEach(actionContext -> actionContext.execute(target));

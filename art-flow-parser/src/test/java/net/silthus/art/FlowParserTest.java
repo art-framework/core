@@ -30,6 +30,7 @@ import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.trigger.TriggerConfig;
 import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
+import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -225,7 +226,7 @@ class FlowParserTest {
 
                 assertThat(parser.sortAndCombineArtContexts(contexts))
                         .containsExactly(action)
-                        .extracting("childActions.size")
+                        .extracting("actions.size")
                         .contains(2);
             }
 
@@ -306,7 +307,7 @@ class FlowParserTest {
 
                 assertThat(parser.sortAndCombineArtContexts(contexts))
                         .hasSize(2)
-                        .extracting("childActions.size")
+                        .extracting("actions.size")
                         .contains(2, 1);
             }
 
@@ -362,9 +363,132 @@ class FlowParserTest {
         class triggers {
 
             @Test
-            @DisplayName("should add all triggers as list")
+            @DisplayName("should register second trigger after action without requirements")
             void shouldAddAllTriggerAsList() {
 
+                TriggerContext<?> trigger = trigger();
+                contexts.add(requirement());
+                contexts.add(requirement());
+                contexts.add(trigger);
+                contexts.add(action());
+                contexts.add(action());
+                TriggerContext<?> trigger2 = trigger();
+                contexts.add(trigger2);
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .containsExactly(trigger, trigger2)
+                        .extracting("requirements.size", "actions.size")
+                        .contains(Tuple.tuple(2, 1), Tuple.tuple(0, 0));
+            }
+
+            @Test
+            @DisplayName("should add requirements to the trigger if trigger exists after it")
+            void shouldRequirementsDirectlyToResultIfTriggerComesAfter() {
+
+                TriggerContext<?> trigger = trigger();
+                RequirementContext<?, ?> requirement = requirement();
+                contexts.add(requirement);
+                contexts.add(requirement);
+                contexts.add(trigger);
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .containsExactly(trigger)
+                        .extracting("requirements.size")
+                        .contains(2);
+            }
+
+            @Test
+            @DisplayName("should add actions directly to result if no trigger exists before it")
+            void shouldDirectlyAddActionsIfTriggerExists() {
+
+                ActionContext<?, ?> action = action();
+                TriggerContext<?> trigger = trigger();
+                contexts.add(action);
+                contexts.add(action);
+                contexts.add(trigger);
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .containsExactly(action, trigger)
+                        .extracting("actions.size")
+                        .contains(1, 0);
+
+            }
+
+            @Test
+            @DisplayName("should add actions to all matching triggers")
+            void shouldAddActionsToAllTriggers() {
+
+                TriggerContext<?> trigger1 = trigger();
+                contexts.add(trigger1);
+                contexts.add(action());
+                contexts.add(action());
+                TriggerContext<?> trigger2 = trigger();
+                contexts.add(trigger2);
+                contexts.add(action());
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .containsExactly(trigger1, trigger2)
+                        .extracting("actions.size")
+                        .contains(1, 1);
+            }
+
+            @Test
+            @DisplayName("should add requirements to all triggers that come after it")
+            void shouldAddRequirementsToAllTriggerBelow() {
+
+                contexts.add(requirement());
+                contexts.add(requirement());
+                TriggerContext<?> trigger1 = trigger();
+                contexts.add(trigger1);
+                TriggerContext<?> trigger2 = trigger();
+                contexts.add(trigger2);
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .containsExactly(trigger1, trigger2)
+                        .extracting("requirements.size")
+                        .contains(2, 2);
+            }
+
+            @Test
+            @DisplayName("two triggers in a row should get the same action")
+            void shouldGetSameActions() {
+
+                TriggerContext<?> trigger = trigger();
+                contexts.add(trigger);
+                TriggerContext<?> trigger1 = trigger();
+                contexts.add(trigger1);
+                ActionContext<?, ?> action = action();
+                contexts.add(action);
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .containsExactly(trigger, trigger1)
+                        .extracting("actions.size")
+                        .containsExactly(1, 1);
+            }
+
+            @Test
+            @DisplayName("should add requirements to actions that follow after triggers")
+            void shouldAddRequirementsToActionsFollowingTriggers() {
+
+                TriggerContext<?> trigger = trigger();
+                contexts.add(trigger);
+                contexts.add(requirement());
+                ActionContext<?, ?> action = action();
+                contexts.add(action);
+                TriggerContext<?> trigger1 = trigger();
+                contexts.add(trigger1);
+
+                assertThat(parser.sortAndCombineArtContexts(contexts))
+                        .containsExactly(trigger, trigger1);
+
+                assertThat(trigger.getActions())
+                        .containsExactly(action)
+                        .extracting(ActionContext::getRequirements)
+                        .hasSize(1);
+
+                assertThat(trigger1)
+                        .extracting("actions.size", "requirements.size")
+                        .contains(0, 0);
             }
         }
     }
