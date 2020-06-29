@@ -94,24 +94,58 @@ public class FlowParser implements ArtParser {
         ArrayList<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> result = new ArrayList<>();
 
         ActionContext<?, ?> activeAction = null;
+        TriggerContext<?> currentActiveTrigger = null;
+        List<TriggerContext<?>> activeTriggers = new ArrayList<>();
         List<RequirementContext<?, ?>> requirements = new ArrayList<>();
 
         for (ArtContext<?, ?, ? extends ArtObjectConfig<?>> context : contexts) {
             if (context instanceof RequirementContext) {
-                requirements.add((RequirementContext<?, ?>) context);
                 result.add(activeAction);
                 activeAction = null;
+
+                if (activeTriggers.size() > 0) {
+                    result.addAll(activeTriggers);
+                    currentActiveTrigger = null;
+                    activeTriggers.clear();
+                    requirements.clear();
+                }
+
+                requirements.add((RequirementContext<?, ?>) context);
             } else if (context instanceof ActionContext) {
                 if (Objects.isNull(activeAction)) {
                     activeAction = (ActionContext<?, ?>) context;
+
                     requirements.forEach(activeAction::addRequirement);
                     requirements.clear();
                 } else {
                     activeAction.addAction((ActionContext<?, ?>) context);
                 }
             } else if (context instanceof TriggerContext) {
+                if (activeTriggers.isEmpty()) {
+                    result.add(activeAction);
+                    activeAction = null;
+                } else if (currentActiveTrigger != null && activeAction != null) {
+                    currentActiveTrigger.addAction(activeAction);
+                    activeAction = null;
+                }
 
+                TriggerContext<?> triggerContext = (TriggerContext<?>) context;
+                requirements.forEach(triggerContext::addRequirement);
+
+                currentActiveTrigger = triggerContext;
+                activeTriggers.add(triggerContext);
             }
+        }
+
+        if (activeTriggers.size() > 0) {
+            if (activeAction != null) {
+                for (TriggerContext<?> activeTrigger : activeTriggers) {
+                    activeTrigger.addAction(activeAction);
+                }
+                activeAction = null;
+            }
+            requirements.clear();
+            result.addAll(activeTriggers);
         }
 
         if (Objects.isNull(activeAction) && result.stream().noneMatch(artContext -> artContext instanceof ActionContext)) {
