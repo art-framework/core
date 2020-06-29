@@ -27,7 +27,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.*;
@@ -113,7 +113,7 @@ class AbstractFactoryManagerTest {
         @DisplayName("should register all actions inside the map")
         void shouldAddAllActionsInTheMap() {
 
-            actionManager.register(List.of(
+            actionManager.register(Arrays.asList(
                     factory("test1", ActionFactory.class),
                     factory("test2", ActionFactory.class),
                     factory("test3", ActionFactory.class),

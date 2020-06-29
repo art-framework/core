@@ -16,35 +16,38 @@
 
 package net.silthus.art.api.trigger;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.actions.ActionContext;
+import net.silthus.art.api.actions.ActionHolder;
 import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.requirements.RequirementHolder;
 
 import java.util.*;
 import java.util.function.Predicate;
 
 import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
 
-public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, TriggerConfig<TConfig>> {
+public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, TriggerConfig<TConfig>> implements ActionHolder, RequirementHolder {
 
     private final Map<Class<?>, Set<TriggerListener<?>>> listeners = new HashMap<>();
-    @Getter(AccessLevel.PROTECTED)
-    private final List<ActionContext<?, ?>> childActions = new ArrayList<>();
-    @Getter(AccessLevel.PROTECTED)
+    @Getter
+    private final List<ActionContext<?, ?>> actions = new ArrayList<>();
+    @Getter
     private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
 
     public TriggerContext(TriggerConfig<TConfig> config) {
         super(Object.class, config);
     }
 
-    final void addChildAction(ActionContext<?, ?> action) {
-        this.childActions.add(action);
+    @Override
+    public void addAction(ActionContext<?, ?> action) {
+        this.actions.add(action);
     }
 
-    final void addRequirements(Collection<RequirementContext<?, ?>> requirements) {
-        this.requirements.addAll(requirements);
+    @Override
+    public void addRequirement(RequirementContext<?, ?> requirement) {
+        this.requirements.add(requirement);
     }
 
     /**
@@ -87,21 +90,5 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
                     .map(triggerListener -> (TriggerListener<TTarget>) triggerListener)
                     .forEach(listener -> listener.onTrigger(target));
         }
-    }
-
-    @SuppressWarnings("unchecked")
-    private <TTarget> void executeActions(TTarget target) {
-        getChildActions().stream()
-                .filter(actionContext -> actionContext.isTargetType(target))
-                .map(actionContext -> (ActionContext<TTarget, ?>) actionContext)
-                .forEach(action -> action.execute(target));
-    }
-
-    @SuppressWarnings("unchecked")
-    private <TTarget> boolean testRequirements(TTarget target) {
-        return getRequirements().stream()
-                .filter(requirementContext -> requirementContext.isTargetType(target))
-                .map(requirementContext -> (RequirementContext<TTarget, ?>) requirementContext)
-                .allMatch(requirementContext -> requirementContext.test(target));
     }
 }

@@ -36,7 +36,7 @@ public class EntityLocationRequirement implements Requirement<Entity, LocationCo
     @Override
     public boolean test(Entity entity, RequirementContext<Entity, LocationConfig> context) {
 
-        if (context.getConfig().isEmpty()) return true;
+        if (!context.getConfig().isPresent()) return true;
 
         return context.getConfig()
                 .map(locationConfig -> locationConfig.isWithinRadius(entity.getLocation()))

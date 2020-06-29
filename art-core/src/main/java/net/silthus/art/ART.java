@@ -57,7 +57,7 @@ public final class ART {
     }
 
     static void load() {
-        if (getInstance().isEmpty()) {
+        if (!getInstance().isPresent()) {
             throw new UnsupportedOperationException("No ARTManger found. Cannot load() ART. Make sure to provide an ARTManager with ART.setARTManager(...) before calling ART.load()");
         }
         ArtManager artManager = getInstance().get();
@@ -81,7 +81,7 @@ public final class ART {
      */
     public static void register(ArtModuleDescription moduleDescription, Consumer<ArtBuilder> builder) {
 
-        if (getInstance().isEmpty()) {
+        if (!getInstance().isPresent()) {
             queuedRegistrations.put(moduleDescription, builder);
         } else {
             getInstance().get().register(moduleDescription, builder);
@@ -101,7 +101,7 @@ public final class ART {
      */
     public static ArtResult load(ArtConfig config) {
 
-        if (getInstance().isEmpty()) {
+        if (!getInstance().isPresent()) {
             return DefaultArtResult.empty();
         } else {
             return getInstance().get().load(config);
