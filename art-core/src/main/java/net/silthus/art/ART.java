@@ -23,6 +23,7 @@ import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
+import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
@@ -67,6 +68,10 @@ public final class ART {
 
         queuedRegistrations.clear();
         artManager.load();
+    }
+
+    public static Optional<Scheduler> getScheduler() {
+        return getInstance().map(ArtManager::getScheduler);
     }
 
     /**

@@ -25,6 +25,7 @@ import net.silthus.art.DefaultArtManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
+import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
@@ -52,6 +53,8 @@ public interface ArtManager {
     void load();
 
     void unload();
+
+    Scheduler getScheduler();
 
     Map<Class<?>, List<ArtResultFilter<?>>> getGlobalFilters();
 
