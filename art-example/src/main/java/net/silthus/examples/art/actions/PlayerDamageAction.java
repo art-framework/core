@@ -16,9 +16,11 @@
 
 package net.silthus.examples.art.actions;
 
+import lombok.NonNull;
 import net.silthus.art.api.Action;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.annotations.*;
+import net.silthus.art.api.trigger.Target;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -38,13 +40,14 @@ public class PlayerDamageAction implements Action<Player, PlayerDamageAction.Act
     /**
      * This method will be called everytime your action is executed.
      *
-     * @param player the player or other target object your action is executed against
+     * @param target  the player or other target object your action is executed against
      * @param context context of this action.
      *                Use the {@link ActionContext} to retrieve the config
      */
     @Override
-    public void execute(Player player, ActionContext<Player, ActionConfig> context) {
+    public void execute(Target<Player> target, ActionContext<Player, ActionConfig> context) {
         context.getConfig().ifPresent(config -> {
+            @NonNull Player player = target.getSource();
             double damage;
             double health = player.getHealth();
             AttributeInstance attribute = player.getAttribute(Attribute.GENERIC_MAX_HEALTH);

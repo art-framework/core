@@ -107,10 +107,10 @@ class DefaultArtManagerTest {
     class getTarget {
 
         @Test
-        @DisplayName("should return null if not found")
+        @DisplayName("should return empty optional if not found")
         void shouldReturnNullIfNotFound() {
 
-            assertThat(artManager.getTarget("foobar")).isNull();
+            assertThat(artManager.getTarget("foobar")).isEmpty();
         }
 
         @Test
@@ -121,7 +121,8 @@ class DefaultArtManagerTest {
             artManager.getTargetWrapper().put(MyTarget.class, o -> new MyTargetWrapper((MyTarget) o));
 
             assertThat(artManager.getTarget(new MyTarget()))
-                    .isNotNull()
+                    .isNotEmpty()
+                    .get()
                     .isInstanceOf(MyTargetWrapper.class);
         }
 
@@ -132,7 +133,8 @@ class DefaultArtManagerTest {
             artManager.getTargetWrapper().put(MySuperTarget.class, o -> new MySuperTargetWrapper<>((MySuperTarget) o));
 
             assertThat(artManager.getTarget(new MyTarget()))
-                    .isNotNull()
+                    .isNotEmpty()
+                    .get()
                     .isInstanceOf(MySuperTargetWrapper.class);
         }
 
@@ -143,7 +145,8 @@ class DefaultArtManagerTest {
             artManager.getTargetWrapper().put(MyTarget.class, o -> new MyTargetWrapper((MyTarget) o));
 
             assertThat(artManager.getTarget(new MyLowTarget()))
-                    .isNotNull()
+                    .isNotEmpty()
+                    .get()
                     .isInstanceOf(MyTargetWrapper.class);
         }
 
@@ -167,7 +170,7 @@ class DefaultArtManagerTest {
             }
 
             @Override
-            public TTarget getTarget() {
+            public TTarget getSource() {
                 return target;
             }
         }

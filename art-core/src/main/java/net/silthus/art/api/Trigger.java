@@ -21,6 +21,7 @@ import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public interface Trigger extends ArtObject {
@@ -30,6 +31,10 @@ public interface Trigger extends ArtObject {
     }
 
     default <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> context, Object... targets) {
-        ART.trigger(identifier, context, Arrays.stream(targets).map(Target::of).toArray(Target[]::new));
+        ART.trigger(identifier, context, Arrays.stream(targets)
+                .map(Target::of)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toArray(Target[]::new));
     }
 }

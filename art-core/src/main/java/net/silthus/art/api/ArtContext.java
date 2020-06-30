@@ -1,15 +1,15 @@
 package net.silthus.art.api;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import net.silthus.art.api.config.ArtObjectConfig;
+import net.silthus.art.api.trigger.Target;
 
 import java.util.Objects;
 import java.util.Optional;
 
 public abstract class ArtContext<TTarget, TConfig, TContextOptions extends ArtObjectConfig<TConfig>> {
 
-    @Getter(AccessLevel.PACKAGE)
+    @Getter
     private final Class<TTarget> targetClass;
     private final TContextOptions config;
 
@@ -40,7 +40,11 @@ public abstract class ArtContext<TTarget, TConfig, TContextOptions extends ArtOb
      * @param target target object to test
      * @return true if types match
      */
+    @SuppressWarnings("rawtypes")
     public boolean isTargetType(Object target) {
+        if (target instanceof Target) {
+            return getTargetClass().isInstance(((Target) target).getSource());
+        }
         return getTargetClass().isInstance(target);
     }
 }

@@ -1,12 +1,14 @@
 package net.silthus.art.api.requirements;
 
 import net.silthus.art.api.Requirement;
+import net.silthus.art.testing.IntegerTarget;
+import net.silthus.art.testing.StringTarget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static net.silthus.art.TestUtil.requirement;
+import static net.silthus.art.api.TestUtil.requirement;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
@@ -69,8 +71,8 @@ class RequirementContextTest {
         void shouldInvokeTestWithContext() {
 
             RequirementContext context = spy(RequirementContextTest.this.context);
-            assertThat(context.test("foo")).isTrue();
-            verify(context, times(1)).test("foo", context);
+            assertThat(context.test(new StringTarget("foo"))).isTrue();
+            verify(context, times(1)).test(new StringTarget("foo"), context);
         }
 
         @Test
@@ -79,7 +81,7 @@ class RequirementContextTest {
 
             assertThatExceptionOfType(NullPointerException.class)
                     .isThrownBy(() -> context.test(null))
-                    .withMessage("target must not be null");
+                    .withMessage("target is marked non-null but is null");
         }
 
         @Test
@@ -88,7 +90,7 @@ class RequirementContextTest {
 
             RequirementContext context = spy(withRequirement(requirement(String.class, false)));
 
-            assertThat(context.test(2)).isTrue();
+            assertThat(context.test(new IntegerTarget(2))).isTrue();
             verify(context, times(1)).isTargetType(2);
         }
 
@@ -99,8 +101,8 @@ class RequirementContextTest {
             RequirementContext<String, ?> requirement = requirement(String.class, true);
             RequirementContext<String, ?> context = withRequirement(String.class, requirement);
 
-            assertThat(context.test("foo")).isTrue();
-            verify(requirement, times(1)).test("foo", (RequirementContext) context);
+            assertThat(context.test(new StringTarget("foo"))).isTrue();
+            verify(requirement, times(1)).test(new StringTarget("foo"), (RequirementContext) context);
         }
     }
 
@@ -113,7 +115,7 @@ class RequirementContextTest {
         void shouldThrowIfCalledDirectly() {
 
             assertThatExceptionOfType(UnsupportedOperationException.class)
-                    .isThrownBy(() -> context.test("foobar", new RequirementContext(String.class, requirement, new RequirementConfig<>())))
+                    .isThrownBy(() -> context.test(new StringTarget("foobar"), new RequirementContext(String.class, requirement, new RequirementConfig<>())))
                     .withMessageContaining("RequirementContext#test(target, context) must not be called directly");
 
         }

@@ -26,6 +26,6 @@ public class PlayerTarget extends AbstractTarget<Player> {
     }
 
     public String getUniqueId() {
-        return getTarget().getUniqueId().toString();
+        return getSource().getUniqueId().toString();
     }
 }

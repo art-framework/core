@@ -117,7 +117,7 @@ class ReflectionUtilTest {
             }
 
             @Override
-            public TTarget getTarget() {
+            public TTarget getSource() {
                 return target;
             }
         }

@@ -22,7 +22,7 @@ import net.silthus.art.ArtBuilder;
 import net.silthus.art.ArtModuleDescription;
 import net.silthus.art.api.Trigger;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -43,12 +43,11 @@ public interface Target<TTarget> {
      * It will try to find the best possible (nearest) wrapper
      * and will return null if no wrapper was found.
      *
-     * @param target target to wrap
+     * @param target    target to wrap
      * @param <TTarget> type of the target
      * @return wrapped target object or null if no wrapper was found
      */
-    @Nullable
-    static <TTarget> Target<TTarget> of(@NonNull TTarget target) {
+    static <TTarget> Optional<Target<TTarget>> of(@NonNull TTarget target) {
         return ART.getTarget(target);
     }
 
@@ -71,5 +70,5 @@ public interface Target<TTarget> {
      * @return wrapped target object
      */
     @NonNull
-    TTarget getTarget();
+    TTarget getSource();
 }

@@ -21,6 +21,7 @@ import net.silthus.art.api.annotations.Config;
 import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.trigger.Target;
 import net.silthus.examples.art.configs.LocationConfig;
 import org.bukkit.entity.Entity;
 
@@ -34,12 +35,12 @@ import org.bukkit.entity.Entity;
 public class EntityLocationRequirement implements Requirement<Entity, LocationConfig> {
 
     @Override
-    public boolean test(Entity entity, RequirementContext<Entity, LocationConfig> context) {
+    public boolean test(Target<Entity> entity, RequirementContext<Entity, LocationConfig> context) {
 
         if (!context.getConfig().isPresent()) return true;
 
         return context.getConfig()
-                .map(locationConfig -> locationConfig.isWithinRadius(entity.getLocation()))
+                .map(locationConfig -> locationConfig.isWithinRadius(entity.getSource().getLocation()))
                 .orElse(true);
     }
 }

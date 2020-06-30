@@ -17,6 +17,7 @@
 package net.silthus.art.api;
 
 import net.silthus.art.api.actions.ActionContext;
+import net.silthus.art.api.trigger.Target;
 
 /**
  * Defines an action that can get executed if the right {@link Trigger} was called.
@@ -45,5 +46,5 @@ public interface Action<TTarget, TConfig> extends ArtObject {
      *                Use the {@link ActionContext} to retrieve the config
      *                and additional information about the execution context of this action.
      */
-    void execute(TTarget target, ActionContext<TTarget, TConfig> context);
+    void execute(Target<TTarget> target, ActionContext<TTarget, TConfig> context);
 }

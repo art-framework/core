@@ -73,13 +73,17 @@ public class PlayerDamageAction implements Action<Player, PlayerDamageAction.Act
     /**
      * This method will be called everytime your action is executed.
      *
-     * @param player the player or other target object your action is executed against
+     * @param target the player or other target object your action is executed against
      * @param context context of this action.
      *                Use the {@link ActionContext} to retrieve the config
      */
     @Override
-    public void execute(Player player, ActionContext<Player, ActionConfig> context) {
+    public void execute(Target<Player> target, ActionContext<Player, ActionConfig> context) {
         context.getConfig().ifPresent(config -> {
+            // the target object is always wrapped in a Target<?> class
+            // this makes it easy to provide a consistent unique id across different targets
+            // use the target.getUniqueId() method if you want to cache something related to the given target instance
+            Player player = target.getSource();
             double damage;
             double health = player.getHealth();
             double maxHealth = player.getAttribute(Attribute.GENERIC_MAX_HEALTH).getValue();
@@ -153,12 +157,12 @@ See the comments on the [action-example](#creating-actions) for details on the a
 public class EntityLocationRequirement implements Requirement<Entity, LocationConfig> {
 
     @Override
-    public boolean test(Entity entity, RequirementContext<Entity, LocationConfig> context) {
+    public boolean test(Target<Entity> entity, RequirementContext<Entity, LocationConfig> context) {
 
         if (!context.getConfig().isPresent()) return true;
 
         return context.getConfig()
-                .map(locationConfig -> locationConfig.isWithinRadius(entity.getLocation()))
+                .map(locationConfig -> locationConfig.isWithinRadius(entity.getSource().getLocation()))
                 .orElse(true);
     }
 }

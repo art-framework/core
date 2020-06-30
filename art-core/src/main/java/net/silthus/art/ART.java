@@ -26,7 +26,6 @@ import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
-import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -92,7 +91,7 @@ public final class ART {
      * Use this method to create and load an {@link ArtResult} from your {@link ArtConfig}.
      * <br>
      * You can then use the {@link ArtResult} to invoke {@link Action}s by calling
-     * {@link ArtResult#execute(Object)} or to check for requirements by calling {@link ArtResult#test(Object)}.
+     * {@link ArtResult#execute(Target)} or to check for requirements by calling {@link ArtResult#test(Target)}.
      * <br>
      *
      * @param config config to parse and create ART from
@@ -113,9 +112,8 @@ public final class ART {
         getInstance().ifPresent(artManager -> artManager.trigger(identifier, predicate, targets));
     }
 
-    @Nullable
-    public static <TTarget> Target<TTarget> getTarget(@NonNull TTarget target) {
+    public static <TTarget> Optional<Target<TTarget>> getTarget(@NonNull TTarget target) {
 
-        return getInstance().map(artManager -> artManager.getTarget(target)).orElse(null);
+        return getInstance().flatMap(artManager -> artManager.getTarget(target));
     }
 }

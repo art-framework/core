@@ -18,14 +18,17 @@ package net.silthus.art.api.actions;
 
 import net.silthus.art.api.Action;
 import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.trigger.Target;
+import net.silthus.art.testing.IntegerTarget;
+import net.silthus.art.testing.StringTarget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
-import static net.silthus.art.TestUtil.action;
-import static net.silthus.art.TestUtil.requirement;
+import static net.silthus.art.api.TestUtil.action;
+import static net.silthus.art.api.TestUtil.requirement;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
@@ -81,18 +84,18 @@ public class ActionContextTest {
 
             ActionContext<String, String> spyContext = spy(context);
 
-            assertThatCode(() -> spyContext.execute("foobar")).doesNotThrowAnyException();
-            verify(spyContext, times(1)).execute("foobar", spyContext);
+            assertThatCode(() -> spyContext.execute(new StringTarget("foobar"))).doesNotThrowAnyException();
+            verify(spyContext, times(1)).execute(new StringTarget("foobar"), spyContext);
         }
 
         @Test
         @DisplayName("should call Action#execute(TTarget, TConfig) with current context")
         public void shouldCallActionExecute() {
 
-            assertThatCode(() -> context.execute("foobar"))
+            assertThatCode(() -> context.execute(new StringTarget("foobar")))
                     .doesNotThrowAnyException();
 
-            verify(action, times(1)).execute("foobar", context);
+            verify(action, times(1)).execute(new StringTarget("foobar"), context);
         }
 
         @Test
@@ -101,7 +104,7 @@ public class ActionContextTest {
 
             assertThatExceptionOfType(NullPointerException.class)
                     .isThrownBy(() -> context.execute(null))
-                    .withMessage("target must not be null");
+                    .withMessage("target is marked non-null but is null");
         }
 
         @Test
@@ -109,7 +112,7 @@ public class ActionContextTest {
         void shouldVerfiyIfTargetTypeMatches() {
 
             ActionContext context = ActionContextTest.this.context;
-            assertThatCode(() -> context.execute(2)).doesNotThrowAnyException();
+            assertThatCode(() -> context.execute(new IntegerTarget(2))).doesNotThrowAnyException();
             verify(action, times(0)).execute(any(), any());
         }
 
@@ -126,12 +129,12 @@ public class ActionContextTest {
                 context.addAction(nestedAction1);
                 context.addAction(nestedAction2);
 
-                context.execute("foobar");
+                context.execute(new StringTarget("foobar"));
 
                 InOrder inOrder = inOrder(action, nestedAction1, nestedAction2);
-                inOrder.verify(action).execute("foobar", context);
-                inOrder.verify(nestedAction1).execute("foobar");
-                inOrder.verify(nestedAction2).execute("foobar");
+                inOrder.verify(action).execute(new StringTarget("foobar"), context);
+                inOrder.verify(nestedAction1).execute(new StringTarget("foobar"));
+                inOrder.verify(nestedAction2).execute(new StringTarget("foobar"));
             }
 
             @Test
@@ -144,10 +147,10 @@ public class ActionContextTest {
                 context.addAction(child1);
                 context.addAction(child2);
 
-                context.execute("foobar");
+                context.execute(new StringTarget("foobar"));
 
-                verify(child1, times(0)).execute(any());
-                verify(child2, times(1)).execute("foobar");
+                verify(child1, times(0)).execute(any(Target.class));
+                verify(child2, times(1)).execute(new StringTarget("foobar"));
             }
         }
 
@@ -162,11 +165,11 @@ public class ActionContextTest {
                 RequirementContext requirement = requirement(true);
                 context.addRequirement(requirement);
 
-                context.execute("foobar");
+                context.execute(new StringTarget("foobar"));
 
                 InOrder inOrder = inOrder(requirement, action);
-                inOrder.verify(requirement, times(1)).test("foobar");
-                inOrder.verify(action, times(1)).execute("foobar", context);
+                inOrder.verify(requirement, times(1)).test(new StringTarget("foobar"));
+                inOrder.verify(action, times(1)).execute(new StringTarget("foobar"), context);
             }
 
             @Test
@@ -178,7 +181,7 @@ public class ActionContextTest {
                 ActionContext<?, ?> childAction = action();
                 context.addAction(childAction);
 
-                context.execute("foobar");
+                context.execute(new StringTarget("foobar"));
 
                 verify(action, times(0)).execute(any(), any());
                 verify(childAction, times(0)).execute(any(), any());
@@ -191,7 +194,7 @@ public class ActionContextTest {
                 RequirementContext requirement = requirement(Integer.class, false);
                 context.addRequirement(requirement);
 
-                context.execute("foobar");
+                context.execute(new StringTarget("foobar"));
 
                 verify(requirement, times(0)).test(any());
                 verify(action, times(1)).execute(any(), any());
@@ -208,7 +211,7 @@ public class ActionContextTest {
         void shouldThrowIfExecuteWithContextIsCalledDirectly() {
 
             assertThatExceptionOfType(UnsupportedOperationException.class)
-                    .isThrownBy(() -> context.execute("foobar", new ActionContext<>(String.class, (s, s2) -> {
+                    .isThrownBy(() -> context.execute(new StringTarget("foobar"), new ActionContext<>(String.class, (s, s2) -> {
                     }, new ActionConfig<>())))
                     .withMessageContaining("ActionContext#execute(target, context) must not be called directly");
         }

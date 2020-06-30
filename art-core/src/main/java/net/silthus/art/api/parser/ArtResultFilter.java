@@ -17,6 +17,7 @@
 package net.silthus.art.api.parser;
 
 import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.trigger.Target;
 
 import java.util.function.BiPredicate;
 
@@ -26,5 +27,5 @@ import java.util.function.BiPredicate;
  * @param <TTarget> target type to apply filter to
  */
 @FunctionalInterface
-public interface ArtResultFilter<TTarget> extends BiPredicate<TTarget, ArtConfig> {
+public interface ArtResultFilter<TTarget> extends BiPredicate<Target<TTarget>, ArtConfig> {
 }

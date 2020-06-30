@@ -86,7 +86,7 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
         if (predicate.test(this) && testRequirements(target)) {
             executeActions(target);
 
-            getEntryForTarget(target.getTarget(), listeners).orElse(new HashSet<>()).stream()
+            getEntryForTarget(target.getSource(), listeners).orElse(new HashSet<>()).stream()
                     .map(triggerListener -> (TriggerListener<TTarget>) triggerListener)
                     .forEach(listener -> listener.onTrigger(target));
         }

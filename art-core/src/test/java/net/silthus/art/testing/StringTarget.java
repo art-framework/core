@@ -1,15 +1,15 @@
 package net.silthus.art.testing;
 
-import lombok.Data;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.trigger.AbstractTarget;
 
-@Data
-public class StringTarget implements Target<String> {
+public class StringTarget extends AbstractTarget<String> {
 
-    private final String target;
+    public StringTarget(String source) {
+        super(source);
+    }
 
     @Override
     public String getUniqueId() {
-        return target.hashCode() + "";
+        return getSource();
     }
 }
