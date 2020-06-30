@@ -17,7 +17,7 @@
 package net.silthus.examples.art;
 
 import de.exlll.configlib.configs.yaml.YamlConfiguration;
-import kr.entree.spigradle.PluginMain;
+import kr.entree.spigradle.Plugin;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.ART;
@@ -27,6 +27,7 @@ import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.examples.art.actions.PlayerDamageAction;
 import net.silthus.examples.art.requirements.EntityLocationRequirement;
+import net.silthus.examples.art.trigger.PlayerMoveTrigger;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -34,9 +35,8 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.Optional;
 
-@PluginMain
+@Plugin
 public class ExampleArtPlugin extends JavaPlugin {
 
     @Getter
@@ -60,21 +60,23 @@ public class ExampleArtPlugin extends JavaPlugin {
 
     private void registerART() {
 
-        if (!getARTManager().isPresent()) {
+        if (!isARTLoaded()) {
             getLogger().warning("ART plugin not found. Not registering ART.");
             return;
         }
 
-        getARTManager().get().register(ArtBukkitDescription.ofPlugin(this), artBuilder -> artBuilder
+        ART.register(ArtBukkitDescription.ofPlugin(this), artBuilder -> artBuilder
                 .target(Player.class)
                     .action(new PlayerDamageAction())
+                    .and()
+                    .trigger(new PlayerMoveTrigger())
                 .and(Entity.class)
                     .requirement(new EntityLocationRequirement()));
     }
 
     private void loadARTConfig() {
 
-        if (!isARTLoaded() || !getARTManager().isPresent()) {
+        if (!isARTLoaded()) {
             getLogger().warning("ART plugin not found. Not loading ART configs.");
             return;
         }
@@ -93,21 +95,6 @@ public class ExampleArtPlugin extends JavaPlugin {
 
         RegisteredServiceProvider<ArtManager> registration = Bukkit.getServicesManager().getRegistration(ArtManager.class);
         return registration != null;
-    }
-
-    private Optional<ArtManager> getARTManager() {
-
-        org.bukkit.plugin.Plugin plugin = Bukkit.getPluginManager().getPlugin("ART");
-        if (plugin == null) {
-            return Optional.empty();
-        }
-
-        RegisteredServiceProvider<ArtManager> registration = Bukkit.getServicesManager().getRegistration(ArtManager.class);
-        if (registration == null) {
-            return Optional.empty();
-        }
-
-        return Optional.of(registration.getProvider());
     }
 
     @Getter

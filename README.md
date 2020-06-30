@@ -52,12 +52,12 @@ rewards:
     - '!my-custom-item-plugin:player.item.add mighty-sword_1337, amount=5'
     # every reward has a cost!
     # damage the player for 10 hitpoints
-    # but only if his health is above 15 hitpoints (requirements are coming soon!)
+    # but only if his health is above 15 hitpoint
     - '?player.health >=15'
     - '!player.damage damage=10'
 ```
 
-And this is just using actions for rewards. We dind't even get to the requirements and trigger (*coming soon*) yet :)
+And this is just using actions for rewards. We dind't even get to the requirements and trigger yet :)
 
 *And how does it look on the developer side?*
 
@@ -88,8 +88,8 @@ if (result.test(player)) {
     `(?player.health >10) || ((?mythicmobs:mob.kill[count:>5,persistent:true] super_omega_boss) && (?player.health <5))`
   * Persistant checks and meta data storage, e.g. for counting mob kills
 * Trigger
-  * React to stuff happening in your world
-  * Can have requirements and actions attached to them  
+  * ~~React to stuff happening in your world~~
+  * ~~Can have requirements and actions attached to them~~  
     `?worldguard:region spawn`  
     `@player.move[cooldown=24h]`  
     `!text &7Remember to vote for our server!`

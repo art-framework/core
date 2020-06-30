@@ -17,6 +17,7 @@
 package net.silthus.examples.art.trigger;
 
 import net.silthus.art.api.Trigger;
+import net.silthus.art.api.annotations.Config;
 import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.trigger.TriggerContext;
@@ -39,6 +40,7 @@ public class PlayerMoveTrigger implements Trigger, Listener {
             "Triggers if the player moved to the given location.",
             "Will only check full block moves and not every rotation of the player."
     })
+    @Config(LocationConfig.class)
     @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
 
@@ -50,6 +52,7 @@ public class PlayerMoveTrigger implements Trigger, Listener {
     // example for reusing the same config
     // here we are triggering the event for two targets: the chest and the player
     @Name(CHEST_OPEN)
+    @Config(LocationConfig.class)
     @EventHandler
     public void onChestOpen(InventoryOpenEvent event) {
 

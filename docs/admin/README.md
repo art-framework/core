@@ -8,6 +8,7 @@
   * [ART Object Config](#art-object-config)
     * [Actions](#actions)
     * [Requirements](#requirements)
+    * [Trigger](#trigger)
 
 ## Getting started
 
@@ -104,6 +105,12 @@ This advanced example shows how powerfull ART can be and also introduced a new c
 
 Each [ART Type](#art-types) has its own `ART Object Config` that can be used to control the executing or check of the ART.
 
+> The `ART Object Config` must be placed directly after the identifier into square brackets <kbd>[ ]</kbd>.  
+> For example: `!teleport[delay=5s] 1,2,3` teleports the player after five seconds.
+
+<details>
+<summary>These config options are coming soon...</summary>
+
 #### Actions
 
 All actions have the following config options.
@@ -122,3 +129,17 @@ All requirements have the following config options.
 | :----- | ------- | ----------- |
 | persistent | `false` | Set to true if you want to persist the result of the requirement check accross server restarts. |
 | count | `0` | How many times must this requirement check be successfull for it to become true. |
+
+#### Trigger
+
+All trigger have the following config options.
+
+| Option | Default | Description |
+| :----- | ------- | ----------- |
+| persistent | `false` | Set to true if you want to persist the result of the trigger checks accross server restarts. |
+| count | `0` | How many times must this trigger be triggered before its actions are executed. |
+| execute_once | `false` | Set this to `true` to execute the trigger only once per target. |
+| cooldown | `0s` | Time to wait between each execution of the trigger, *e.g.: `1y2m3d10h5m1s10` waits 1 year 2 months 3 days 10 hours 5 minutes 1 second and 10 ticks.* |
+| delay | `0s` | Time to wait before executing the trigger. |
+
+</details>

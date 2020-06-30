@@ -9,6 +9,7 @@ All of these code examples can also be found inside the [art-example](../../art-
   * [Maven](#maven)
 * [Creating Actions](#creating-actions)
 * [Creating Requirements](#creating-requirements)
+* [Creating Trigger](#creating-trigger)
 * [Register your **A**ctions **R**equirements **T**rigger](#register-your-actions-requirements-trigger)
 * [Using **A**ctions **R**equirements **T**rigger in your plugin](#using-actions-requirements-trigger-in-your-plugin)
   * [Using ConfigLib to load the config](#using-configlib-to-load-the-config)
@@ -142,70 +143,143 @@ See the comments on the [action-example](#creating-actions) for details on the a
 
 ```java
 @Name("art-example:location")
-@Config(EntityLocationRequirement.Config.class)
+@Config(LocationConfig.class)
 @Description({
         "Checks the position of the entity.",
         "x, y, z, pitch and yaw are ignored if set to 0 unless zeros=true.",
         "Check will always pass if no config is set.",
         "For example: '?art-example:location y:256' will be true if the player reached the maximum map height."
 })
-public class EntityLocationRequirement implements Requirement<Entity, EntityLocationRequirement.Config> {
+public class EntityLocationRequirement implements Requirement<Entity, LocationConfig> {
 
     @Override
-    public boolean test(Entity entity, RequirementContext<Entity, Config> context) {
+    public boolean test(Entity entity, RequirementContext<Entity, LocationConfig> context) {
 
-        if (context.getConfig().isEmpty()) return true;
+        if (!context.getConfig().isPresent()) return true;
 
-        Config config = context.getConfig().get();
-
-        Location entityLocation = entity.getLocation();
-        Location configLocation = toLocation(config, entityLocation);
-
-        return isWithinRadius(configLocation, entityLocation, config.radius);
+        return context.getConfig()
+                .map(locationConfig -> locationConfig.isWithinRadius(entity.getLocation()))
+                .orElse(true);
     }
+}
 
-    private boolean isApplied(Config config, Number value) {
-        return (value.floatValue() != 0 || value.intValue() != 0) || config.zeros;
-    }
+// you can create reusable config classes
+// this config is used in the requirement and trigger (see below)
+@Data
+public class LocationConfig {
 
-    private Location toLocation(Config config, Location entityLocation) {
-        Location location = new Location(entityLocation.getWorld(), entityLocation.getBlockX(), entityLocation.getBlockY(), entityLocation.getBlockZ(), entityLocation.getYaw(), entityLocation.getPitch());
-        if (!Strings.isNullOrEmpty(config.world)) {
-            World world = Bukkit.getWorld(config.world);
-            if (world != null) location.setWorld(world);
+    @Position(0)
+    int x;
+    @Position(1)
+    int y;
+    @Position(2)
+    int z;
+    @Position(3)
+    String world;
+    @Position(4)
+    int radius;
+    float yaw;
+    float pitch;
+    @Description("Set to true to check x, y, z, pitch and yaw coordinates that have a value of 0.")
+    boolean zeros = false;
+
+    /**
+     * Maps this config to the given location.
+     * Replacing all default values with the location values.
+     *
+     * @param location location to replace default values with
+     * @return new location with combined values from the config and the given location
+     */
+    public Location toLocation(Location location) {
+        Location newLocation = new Location(location.getWorld(), location.getBlockX(), location.getBlockY(), location.getBlockZ(), location.getYaw(), location.getPitch());
+        if (!Strings.isNullOrEmpty(world)) {
+            World world = Bukkit.getWorld(this.world);
+            if (world != null) newLocation.setWorld(world);
         }
-        if (isApplied(config, config.x)) location.setX(config.x);
-        if (isApplied(config, config.y)) location.setY(config.y);
-        if (isApplied(config, config.z)) location.setZ(config.z);
-        if (isApplied(config, config.pitch)) location.setPitch(config.pitch);
-        if (isApplied(config, config.yaw)) location.setYaw(config.yaw);
+        if (isApplied(x)) newLocation.setX(x);
+        if (isApplied(y)) newLocation.setY(y);
+        if (isApplied(z)) newLocation.setZ(z);
+        if (isApplied(pitch)) newLocation.setPitch(pitch);
+        if (isApplied(yaw)) newLocation.setYaw(yaw);
 
-        return location;
+        return newLocation;
     }
 
-    // you should always try to minimize the required parameters
-    // this makes it easier for your users to use your requirement
-    // e.g. this requirement can just be checked by calling "?art-example:location y:128"
-    // and it will check if the player is at the given height.
-    public static class Config {
+    /**
+     * Checks if the given location is within the radius of the location configured by this config.
+     *
+     * @param location location to check config against
+     * @return true if the location is within this configs radius
+     */
+    public boolean isWithinRadius(Location location) {
+        return LocationUtil.isWithinRadius(toLocation(location), location, radius);
+    }
 
-        @Position(0)
-        int x;
-        @Position(1)
-        int y;
-        @Position(2)
-        int z;
-        @Position(3)
-        String world;
-        @Position(4)
-        int radius;
-        float yaw;
-        float pitch;
-        @Description("Set to true to check x, y, z, pitch and yaw coordinates that have a value of 0.")
-        boolean zeros = false;
+    private boolean isApplied(Number value) {
+        return (value.floatValue() != 0 || value.intValue() != 0) || zeros;
     }
 }
 ```
+
+## Creating Trigger
+
+Trigger are a little different than [actions](#creating-actions) and [requirements](#creating-requirements). You can define multiple Trigger in one and the same class and can even fire trigger from anywhere in your plugin. The only requirement is that all triggers that are fired must be [registered](#register-your-actions-requirements-trigger) before they are executed.
+
+Implement the `Trigger` interface to mark the presence of triggers in your class. Then annotate every method that fires a trigger with `@Name`, `@Description` and optionally a `@Config` parameter.
+
+```java
+public class PlayerMoveTrigger implements Trigger, Listener {
+
+    private static final String PLAYER_MOVE = "art-example:player.move";
+
+    // the name of the trigger must be unique
+    // and the match the identifier used in the trigger(...) method
+    @Name(PLAYER_MOVE)
+    // it is considered best practice to provide a good description for your trigger
+    @Description({
+            "Triggers if the player moved to the given location.",
+            "Will only check full block moves and not every rotation of the player."
+    })
+    // annotate your trigger the config it uses
+    // here we reuse the same config we used in the requirement
+    @Config(LocationConfig.class)
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerMove(PlayerMoveEvent event) {
+
+        // we want to make sure the player actually moved a block
+        // otherwise the trigger would fire on every camera movement of the player
+        if (!hasMoved(event)) return;
+
+        // this is the actual method to fire the trigger
+        trigger(PLAYER_MOVE, test(event.getTo()), event.getPlayer());
+    }
+
+    // here you can see an example on how to make your code more structured
+    // you could also reuse this check for requirements and other triggers
+    // by placing it inside a static utility class
+    private Predicate<TriggerContext<LocationConfig>> test(Location location) {
+        return context -> {
+            if (location == null) {
+                return true;
+            }
+            return context.getConfig()
+                    .map(locationConfig -> locationConfig.isWithinRadius(location))
+                    .orElse(true);
+        };
+    }
+
+    private boolean hasMoved(PlayerMoveEvent event) {
+        if (event.getTo() == null) return false;
+
+        return event.getFrom().getBlockX() != event.getTo().getBlockX()
+                || event.getFrom().getBlockY() != event.getTo().getBlockY()
+                || event.getFrom().getBlockZ() != event.getTo().getBlockZ();
+    }
+}
+```
+
+> You can create triggers for multiple events in the same class.  
+> Just make sure that every method that fires a trigger has the required annotations.
 
 ## Register your **A**ctions **R**equirements **T**rigger
 
@@ -230,12 +304,13 @@ public class ExampleARTPlugin extends JavaPlugin {
             return;
         }
 
-        ART.register(ArtBukkitDescription.ofPlugin(this), artBuilder -> {
-            artBuilder
+        ART.register(ArtBukkitDescription.ofPlugin(this), artBuilder -> artBuilder
                 .target(Player.class)
                     .action(new PlayerDamageAction())
-                .requirement(Entity.class, new EntityLocationRequirement())
-        });
+                    .and()
+                    .trigger(new PlayerMoveTrigger())
+                .and(Entity.class)
+                    .requirement(new EntityLocationRequirement()));
     }
 
     private boolean isARTLoaded() {
