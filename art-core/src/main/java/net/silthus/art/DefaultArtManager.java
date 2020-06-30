@@ -32,6 +32,7 @@ import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
+import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.api.trigger.TriggerFactory;
@@ -56,6 +57,7 @@ public class DefaultArtManager implements ArtManager {
     private final ActionManager actionManager;
     private final RequirementManager requirementManager;
     private final TriggerManager triggerManager;
+    private final Scheduler scheduler;
 
     private Logger logger = Logger.getLogger("ART");
     private final Map<String, Provider<ArtParser>> parser;
@@ -64,10 +66,11 @@ public class DefaultArtManager implements ArtManager {
     private final Map<ArtModuleDescription, ArtBuilder> registeredPlugins = new HashMap<>();
 
     @Inject
-    public DefaultArtManager(ActionManager actionManager, RequirementManager requirementManager, TriggerManager triggerManager, Map<String, Provider<ArtParser>> parser) {
+    public DefaultArtManager(ActionManager actionManager, RequirementManager requirementManager, TriggerManager triggerManager, Scheduler scheduler, Map<String, Provider<ArtParser>> parser) {
         this.actionManager = actionManager;
         this.requirementManager = requirementManager;
         this.triggerManager = triggerManager;
+        this.scheduler = scheduler;
         this.parser = parser;
     }
 

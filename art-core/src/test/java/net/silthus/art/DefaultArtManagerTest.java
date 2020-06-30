@@ -19,6 +19,7 @@ package net.silthus.art;
 import lombok.SneakyThrows;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.requirements.RequirementManager;
+import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,7 +46,8 @@ class DefaultArtManagerTest {
         actionManager = mock(ActionManager.class);
         requirementManager = mock(RequirementManager.class);
         triggerManager = mock(TriggerManager.class);
-        artManager = new DefaultArtManager(actionManager, requirementManager, triggerManager, new HashMap<>());
+        Scheduler scheduler = mock(Scheduler.class);
+        artManager = new DefaultArtManager(actionManager, requirementManager, triggerManager, scheduler, new HashMap<>());
     }
 
     @Nested
