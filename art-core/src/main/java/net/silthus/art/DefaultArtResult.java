@@ -51,7 +51,7 @@ public final class DefaultArtResult implements ArtResult, TriggerListener<Object
     private final Map<Class<?>, List<TriggerListener<?>>> triggerListeners = new HashMap<>();
 
     @Inject
-    public DefaultArtResult(@Assisted ArtConfig config, @Assisted List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art, @Assisted Map<Class<?>, List<ArtResultFilter<?>>> filters) {
+    public DefaultArtResult(@Assisted ArtConfig config, @Assisted Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art, @Assisted Map<Class<?>, List<ArtResultFilter<?>>> filters) {
         this.config = config;
         this.art = ImmutableList.copyOf(art);
         this.filters = ImmutableMap.copyOf(filters);

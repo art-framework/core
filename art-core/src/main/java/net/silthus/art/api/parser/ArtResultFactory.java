@@ -20,6 +20,7 @@ import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -28,10 +29,10 @@ public interface ArtResultFactory {
     /**
      * Creates a new {@link ArtResult} from the given list of {@link ArtContext}.
      *
-     * @param config      {@link ArtConfig} the result was created from
-     * @param artContexts context to create result with
+     * @param config       {@link ArtConfig} the result was created from
+     * @param artContexts  context to create result with
      * @param globalFilter list of filters that are applied to all actions, requirements and trigger
      * @return new {@link ArtResult}
      */
-    ArtResult create(ArtConfig config, List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> artContexts, Map<Class<?>, List<ArtResultFilter<?>>> globalFilter);
+    ArtResult create(ArtConfig config, Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> artContexts, Map<Class<?>, List<ArtResultFilter<?>>> globalFilter);
 }
