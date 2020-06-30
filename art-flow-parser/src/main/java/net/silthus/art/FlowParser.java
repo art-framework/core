@@ -20,15 +20,12 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtManager;
-import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.ArtParser;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFactory;
-import net.silthus.art.api.requirements.RequirementContext;
-import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 
 import java.util.ArrayList;
@@ -55,7 +52,7 @@ public class FlowParser implements ArtParser {
 
         Objects.requireNonNull(config);
 
-        List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts = new ArrayList<>();
+        Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts = new ArrayList<>();
 
         List<String> art = config.getArt();
         List<? extends ArtTypeParser<?, ?>> parsers = this.parsers.stream().map(Provider::get).collect(Collectors.toList());
@@ -89,71 +86,8 @@ public class FlowParser implements ArtParser {
     // - requirements can neither have actions nor trigger
     // - actions can have requirements that are checked before execution and nested actions that are executed in sequence after the first action
     // - trigger can have requirements and execute actions
-    List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> sortAndCombineArtContexts(List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts) {
+    Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> sortAndCombineArtContexts(Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts) {
 
-        ArrayList<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> result = new ArrayList<>();
-
-        ActionContext<?, ?> activeAction = null;
-        TriggerContext<?> currentActiveTrigger = null;
-        List<TriggerContext<?>> activeTriggers = new ArrayList<>();
-        List<RequirementContext<?, ?>> requirements = new ArrayList<>();
-
-        for (ArtContext<?, ?, ? extends ArtObjectConfig<?>> context : contexts) {
-            if (context instanceof RequirementContext) {
-                result.add(activeAction);
-                activeAction = null;
-
-                if (activeTriggers.size() > 0) {
-                    result.addAll(activeTriggers);
-                    currentActiveTrigger = null;
-                    activeTriggers.clear();
-                    requirements.clear();
-                }
-
-                requirements.add((RequirementContext<?, ?>) context);
-            } else if (context instanceof ActionContext) {
-                if (Objects.isNull(activeAction)) {
-                    activeAction = (ActionContext<?, ?>) context;
-
-                    requirements.forEach(activeAction::addRequirement);
-                    requirements.clear();
-                } else {
-                    activeAction.addAction((ActionContext<?, ?>) context);
-                }
-            } else if (context instanceof TriggerContext) {
-                if (activeTriggers.isEmpty()) {
-                    result.add(activeAction);
-                    activeAction = null;
-                } else if (currentActiveTrigger != null && activeAction != null) {
-                    currentActiveTrigger.addAction(activeAction);
-                    activeAction = null;
-                }
-
-                TriggerContext<?> triggerContext = (TriggerContext<?>) context;
-                requirements.forEach(triggerContext::addRequirement);
-
-                currentActiveTrigger = triggerContext;
-                activeTriggers.add(triggerContext);
-            }
-        }
-
-        if (activeTriggers.size() > 0) {
-            if (activeAction != null) {
-                for (TriggerContext<?> activeTrigger : activeTriggers) {
-                    activeTrigger.addAction(activeAction);
-                }
-                activeAction = null;
-            }
-            requirements.clear();
-            result.addAll(activeTriggers);
-        }
-
-        if (Objects.isNull(activeAction) && result.stream().noneMatch(artContext -> artContext instanceof ActionContext)) {
-            result.addAll(requirements);
-        } else {
-            result.add(activeAction);
-        }
-
-        return result.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        return FlowLogicSorter.of(contexts).getResult();
     }
 }
