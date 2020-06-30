@@ -19,7 +19,9 @@ package net.silthus.examples.art.requirements;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.trigger.Target;
 import net.silthus.examples.art.configs.LocationConfig;
+import net.silthus.examples.art.targets.EntityTarget;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -49,16 +51,16 @@ class EntityLocationRequirementTest {
 
     private final EntityLocationRequirement requirement = new EntityLocationRequirement();
 
-    private Entity withEntityAt(int x, int y, int z, String world) {
+    private Target<Entity> withEntityAt(int x, int y, int z, String world) {
         World worldMock = mock(World.class);
         when(worldMock.getName()).thenReturn(world);
         Location location = new Location(worldMock, x, y, z);
         Entity entity = mock(Entity.class);
         when(entity.getLocation()).thenReturn(location);
-        return entity;
+        return new EntityTarget(entity);
     }
 
-    private Entity withEntityAt(int x, int y, int z) {
+    private Target<Entity> withEntityAt(int x, int y, int z) {
         return withEntityAt(x, y, z, "world");
     }
 

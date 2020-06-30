@@ -18,14 +18,18 @@ package net.silthus.art.api.actions;
 
 import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NonNull;
 import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.requirements.RequirementHolder;
+import net.silthus.art.api.trigger.Target;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  * The action context is created for every unique {@link Action} configuration.
@@ -35,6 +39,10 @@ import java.util.Objects;
  * @param <TConfig> config type of the action
  */
 public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig, ActionConfig<TConfig>> implements Action<TTarget, TConfig>, RequirementHolder, ActionHolder {
+
+    @Inject
+    @Getter(AccessLevel.PRIVATE)
+    private Logger logger;
 
     @Getter(AccessLevel.PROTECTED)
     private final Action<TTarget, TConfig> action;
@@ -59,19 +67,17 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
         this.requirements.add(requirement);
     }
 
-    public final void execute(TTarget target) {
+    public final void execute(@NonNull Target<TTarget> target) {
 
         execute(target, this);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final void execute(TTarget target, ActionContext<TTarget, TConfig> context) {
+    public final void execute(@NonNull Target<TTarget> target, ActionContext<TTarget, TConfig> context) {
 
         if (context != null && context != this)
             throw new UnsupportedOperationException("ActionContext#execute(target, context) must not be called directly. Use ActionResult#execute(target) instead.");
-
-        Objects.requireNonNull(target, "target must not be null");
 
         if (!isTargetType(target)) return;
         if (!testRequirements(target)) return;
@@ -79,7 +85,7 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
         getAction().execute(target, Objects.isNull(context) ? this : context);
 
         getActions().stream()
-                .filter(actionContext -> actionContext.isTargetType(target))
+                .filter(actionContext -> actionContext.isTargetType(target.getSource()))
                 .map(actionContext -> (ActionContext<TTarget, ?>) actionContext)
                 .forEach(actionContext -> actionContext.execute(target));
     }

@@ -38,13 +38,9 @@ import net.silthus.art.api.trigger.TriggerFactory;
 import net.silthus.art.api.trigger.TriggerManager;
 import net.silthus.art.util.ConfigUtil;
 
-import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Provider;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -54,6 +50,7 @@ import java.util.stream.Collectors;
 import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
 
 @Data
+@SuppressWarnings("rawtypes")
 public class DefaultArtManager implements ArtManager {
 
     private final ActionManager actionManager;
@@ -137,14 +134,19 @@ public class DefaultArtManager implements ArtManager {
         getTriggerManager().trigger(identifier, context, targets);
     }
 
-    @Nullable
     @Override
     @SuppressWarnings("unchecked")
-    public <TTarget> Target<TTarget> getTarget(@NonNull TTarget target) {
+    public <TTarget> Optional<Target<TTarget>> getTarget(@NonNull TTarget target) {
 
-        return getEntryForTarget(target, targetWrapper)
-                .map(function -> (Target<TTarget>) function.apply(target))
-                .orElse(null);
+        Optional<Target<TTarget>> optionalTarget = getEntryForTarget(target, targetWrapper)
+                .map(function -> (Target<TTarget>) function.apply(target));
+
+        if (!optionalTarget.isPresent()) {
+            getLogger().warning("Unable to find target wrapper for " + target.getClass().getCanonicalName() + "! " +
+                    "Actions, Requirements and Trigger using this target type may silently fail.");
+        }
+
+        return optionalTarget;
     }
 
     <TFactory extends ArtFactory<?, ?, ?, ? extends ArtObjectConfig<?>>> void registerArtFactoryMap(String type, List<TFactory> factories, ArtFactoryRegistration<TFactory> factoryManager) {

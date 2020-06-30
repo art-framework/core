@@ -22,8 +22,10 @@ import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.api.trigger.TriggerListener;
+import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,6 +34,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
+import static net.silthus.art.api.TestUtil.action;
+import static net.silthus.art.api.TestUtil.requirement;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.*;
@@ -71,39 +75,11 @@ class DefaultArtResultTest {
         return new DefaultArtResult(config, Arrays.asList(contexts), filters);
     }
 
-    private <TTarget> ActionContext<TTarget, ?> action() {
-        ActionContext<TTarget, ?> action = mock(ActionContext.class);
-        when(action.isTargetType(any())).thenReturn(true);
-        return action;
-    }
-
-    private <TTarget> ActionContext<TTarget, ?> action(Class<TTarget> targetClass) {
-        ActionContext<TTarget, ?> action = mock(ActionContext.class);
-        when(action.isTargetType(any(targetClass))).thenReturn(true);
-        return action;
-    }
-
     private TriggerContext<?> trigger() {
         return mock(TriggerContext.class);
     }
 
-    private <TTarget> RequirementContext<TTarget, ?> requirement(boolean result) {
-        RequirementContext<TTarget, ?> mock = mock(RequirementContext.class);
-        when(mock.isTargetType(any())).thenReturn(true);
-        when(mock.test(any())).thenReturn(result);
-        when(mock.test(any(), any())).thenReturn(result);
-        return mock;
-    }
-
-    private <TTarget> RequirementContext<TTarget, ?> requirement(Class<TTarget> targetClass, boolean result) {
-        RequirementContext<TTarget, ?> mock = mock(RequirementContext.class);
-        when(mock.isTargetType(targetClass)).thenReturn(true);
-        when(mock.test(any(targetClass))).thenReturn(result);
-        when(mock.test(any(targetClass), any())).thenReturn(result);
-        return mock;
-    }
-
-    private <TTarget> ArtResultFilter<TTarget> filter(TTarget target, boolean result) {
+    private <TTarget> ArtResultFilter<TTarget> filter(Target<TTarget> target, boolean result) {
         ArtResultFilter<TTarget> filter = mock(ArtResultFilter.class);
         when(filter.test(eq(target), any())).thenReturn(result);
         return filter;
@@ -149,7 +125,7 @@ class DefaultArtResultTest {
         @DisplayName("should not test requirements if target is null")
         void shouldNotTestRequirementsIfTargetIsNull() {
 
-            RequirementContext<Object, ?> requirement = requirement(true);
+            RequirementContext<?, ?> requirement = requirement(true);
             assertThat(resultOf(requirement).test(null)).isFalse();
             verify(requirement, times(0)).test(any(), any());
         }
@@ -160,7 +136,7 @@ class DefaultArtResultTest {
 
             result = DefaultArtResult.empty();
 
-            assertThat(result.test("foobar")).isTrue();
+            assertThat(result.test(new StringTarget("foobar"))).isTrue();
         }
 
         @Test
@@ -181,7 +157,7 @@ class DefaultArtResultTest {
 
             DefaultArtResult result = resultOf(requirement(true));
 
-            assertThat(result.test("foobar")).isTrue();
+            assertThat(result.test(new StringTarget("foobar"))).isTrue();
         }
 
         @Test
@@ -194,7 +170,7 @@ class DefaultArtResultTest {
                     trigger()
             );
 
-            assertThat(result.test("foobar")).isFalse();
+            assertThat(result.test(new StringTarget("foobar"))).isFalse();
         }
 
         @Test
@@ -207,8 +183,8 @@ class DefaultArtResultTest {
                     requirement(String.class, true)
             );
 
-            assertThat(result.test("foobar")).isTrue();
-            verify(requirement, times(0)).test(any(), any());
+            assertThat(result.test(new StringTarget("foobar"))).isTrue();
+            verify(requirement, times(0)).test(any(Target.class), any());
         }
 
         @Test
@@ -221,7 +197,7 @@ class DefaultArtResultTest {
                     requirement(String.class, false)
             );
 
-            assertThat(result.test(2)).isTrue();
+            assertThat(result.test(new IntegerTarget(2))).isTrue();
         }
 
         @Nested
@@ -232,13 +208,13 @@ class DefaultArtResultTest {
             @DisplayName("should include filters in test result")
             void shouldIncludeLocalFilters() {
 
-                ArtResultFilter<String> filter = filter("foo", false);
+                ArtResultFilter<String> filter = filter(new StringTarget("foo"), false);
                 DefaultArtResult result = resultOfWithFilter(String.class, filter,
                         requirement(true)
                 );
 
-                assertThat(result.test("foo")).isFalse();
-                verify(filter, times(1)).test(eq("foo"), any());
+                assertThat(result.test(new StringTarget("foo"))).isFalse();
+                verify(filter, times(1)).test(eq(new StringTarget("foo")), any());
             }
 
             @Test
@@ -250,36 +226,36 @@ class DefaultArtResultTest {
                         requirement(true)
                 );
 
-                ArtResultFilter<String> filter1 = filter("foo", true);
-                ArtResultFilter<String> filter2 = filter("foo", true);
+                ArtResultFilter<String> filter1 = filter(new StringTarget("foo"), true);
+                ArtResultFilter<String> filter2 = filter(new StringTarget("foo"), true);
 
-                assertThat(result.test("foo", Arrays.asList(filter1, filter2))).isTrue();
-                verify(filter1, times(1)).test(eq("foo"), any());
-                verify(filter2, times(1)).test(eq("foo"), any());
+                assertThat(result.test(new StringTarget("foo"), Arrays.asList(filter1, filter2))).isTrue();
+                verify(filter1, times(1)).test(eq(new StringTarget("foo")), any());
+                verify(filter2, times(1)).test(eq(new StringTarget("foo")), any());
             }
 
             @Test
             @DisplayName("should skip requirement checks if filter fails")
             void shouldSkipRequirementsIfFilterFails() {
 
-                RequirementContext<Object, ?> requirement = requirement(true);
-                DefaultArtResult result = resultOfWithFilter(String.class, filter("foo", false), requirement);
+                RequirementContext<String, ?> requirement = (RequirementContext<String, ?>) requirement(true);
+                DefaultArtResult result = resultOfWithFilter(String.class, filter(new StringTarget("foo"), false), requirement);
 
                 assertThat(result.test("foo")).isFalse();
-                verify(requirement, times(0)).test("foo");
+                verify(requirement, times(0)).test(new StringTarget("foo"));
             }
 
             @Test
             @DisplayName("should skip filter without matching target type")
             void shouldSkipFilterWithoutMatchingTargetType() {
 
-                ArtResultFilter<Integer> filter = filter(2, false);
+                ArtResultFilter<Integer> filter = filter(new IntegerTarget(2), false);
                 HashMap<Class<?>, List<ArtResultFilter<?>>> filterMap = new HashMap<>();
                 filterMap.put(Integer.class, Collections.singletonList(filter));
-                filterMap.put(String.class, Collections.singletonList(filter("foo", true)));
+                filterMap.put(String.class, Collections.singletonList(filter(new StringTarget("foo"), true)));
                 DefaultArtResult result = resultOfWithFilter(filterMap);
 
-                assertThat(result.test("foo")).isTrue();
+                assertThat(result.test(new StringTarget("foo"))).isTrue();
                 verify(filter, times(0)).test(any(), any());
             }
 
@@ -288,15 +264,15 @@ class DefaultArtResultTest {
             void shouldCombineGlobalAndLocalFilter() {
 
 
-                ArtResultFilter<String> globalFilter = filter("foo", true);
+                ArtResultFilter<String> globalFilter = filter(new StringTarget("foo"), true);
                 HashMap<Class<?>, List<ArtResultFilter<?>>> filter = new HashMap<>();
                 filter.put(String.class, Collections.singletonList(globalFilter));
                 DefaultArtResult result = new DefaultArtResult(new ArtConfig(), new ArrayList<>(), filter);
-                ArtResultFilter<String> localFilter = filter("foo", false);
+                ArtResultFilter<String> localFilter = filter(new StringTarget("foo"), false);
 
-                assertThat(result.test("foo", Collections.singletonList(localFilter))).isFalse();
-                verify(localFilter, times(1)).test(eq("foo"), any());
-                verify(globalFilter, times(0)).test(anyString(), any());
+                assertThat(result.test(new StringTarget("foo"), Collections.singletonList(localFilter))).isFalse();
+                verify(localFilter, times(1)).test(eq(new StringTarget("foo")), any());
+                verify(globalFilter, times(0)).test(any(Target.class), any());
             }
         }
     }
@@ -316,7 +292,7 @@ class DefaultArtResultTest {
         @DisplayName("should not execute actions if target is null")
         void shouldNotExecuteActionsIfTargetIsNull() {
 
-            ActionContext<Object, ?> action = action();
+            ActionContext<?, ?> action = action();
             resultOf(action).execute(null);
             verify(action, times(0)).execute(any(), any());
         }
@@ -325,12 +301,12 @@ class DefaultArtResultTest {
         @DisplayName("should not execute actions if global filter fails")
         void shouldNotExecuteActionsIfGlobalFilterFails() {
 
-            ActionContext<Object, ?> action = action();
-            ArtResultFilter<String> filter = filter("foo", false);
+            ActionContext<?, ?> action = action();
+            ArtResultFilter<String> filter = filter(new StringTarget("foo"), false);
             DefaultArtResult result = resultOfWithFilter(String.class, filter, action);
 
-            result.execute("foo");
-            verify(filter, times(1)).test(eq("foo"), any());
+            result.execute(new StringTarget("foo"));
+            verify(filter, times(1)).test(eq(new StringTarget("foo")), any());
             verify(action, times(0)).execute(any(), any());
         }
 
@@ -338,11 +314,11 @@ class DefaultArtResultTest {
         @DisplayName("should not execute actions if local filter fails")
         void shouldNotExecuteActionsIfLocalFilterFails() {
 
-            ActionContext<Object, ?> action = action();
-            ArtResultFilter<String> filter = filter("foo", false);
-            resultOf(action).execute("foo", Collections.singletonList(filter));
+            ActionContext<?, ?> action = action();
+            ArtResultFilter<String> filter = filter(new StringTarget("foo"), false);
+            resultOf(action).execute(new StringTarget("foo"), Collections.singletonList(filter));
 
-            verify(filter, times(1)).test(anyString(), any());
+            verify(filter, times(1)).test(any(Target.class), any());
             verify(action, times(0)).execute(any(), any());
         }
 
@@ -350,11 +326,12 @@ class DefaultArtResultTest {
         @DisplayName("should execute actions if all checks pass")
         void shouldExecuteActions() {
 
-            ActionContext<Object, ?> action = action();
-            DefaultArtResult result = resultOfWithFilter(String.class, filter("foo", true), action);
-            result.execute("foo", Collections.singletonList(filter("foo", true)));
+            ActionContext<?, ?> action = action();
+            DefaultArtResult result = resultOfWithFilter(String.class, filter(new StringTarget("foo"), true), action);
+            StringTarget target = new StringTarget("foo");
+            result.execute(target, Collections.singletonList(filter(new StringTarget("foo"), true)));
 
-            verify(action, times(1)).execute("foo");
+            verify(action, times(1)).execute(any(Target.class));
         }
 
         @Test
@@ -363,10 +340,11 @@ class DefaultArtResultTest {
 
             ActionContext<Integer, ?> integerAction = action(Integer.class);
             ActionContext<String, ?> stringAction = action(String.class);
-            resultOf(integerAction, stringAction).execute("foo");
+            StringTarget target = new StringTarget("foo");
+            resultOf(integerAction, stringAction).execute(target);
 
-            verify(stringAction, times(1)).execute("foo");
-            verify(integerAction, times(0)).execute(any(), any());
+            verify(stringAction, times(1)).execute(target);
+            verify(integerAction, times(0)).execute(any(Target.class), any());
         }
     }
 

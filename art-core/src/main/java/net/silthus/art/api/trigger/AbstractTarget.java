@@ -18,15 +18,14 @@ package net.silthus.art.api.trigger;
 
 import lombok.Getter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public abstract class AbstractTarget<TTarget> implements Target<TTarget> {
 
     @Getter
-    private final TTarget target;
+    private final TTarget source;
 
-    protected AbstractTarget(TTarget target) {
-        this.target = target;
+    protected AbstractTarget(TTarget source) {
+        this.source = source;
     }
 
     @Override
@@ -38,15 +37,12 @@ public abstract class AbstractTarget<TTarget> implements Target<TTarget> {
         AbstractTarget<?> that = (AbstractTarget<?>) o;
 
         return new EqualsBuilder()
-                .append(getTarget(), that.getTarget())
+                .append(getUniqueId(), that.getUniqueId())
                 .isEquals();
     }
 
     @Override
     public final int hashCode() {
-        return new HashCodeBuilder(17, 37)
-                .append(getUniqueId())
-                .append(getTarget())
-                .toHashCode();
+        return getUniqueId().hashCode();
     }
 }

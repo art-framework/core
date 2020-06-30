@@ -17,8 +17,10 @@
 package net.silthus.art.api.requirements;
 
 import lombok.Getter;
+import lombok.NonNull;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.Requirement;
+import net.silthus.art.api.trigger.Target;
 
 import java.util.Objects;
 
@@ -40,20 +42,18 @@ public class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TC
         this.requirement = requirement;
     }
 
-    public final boolean test(TTarget target) {
+    public final boolean test(@NonNull Target<TTarget> target) {
 
         return test(target, this);
     }
 
     @Override
-    public boolean test(TTarget target, RequirementContext<TTarget, TConfig> context) {
+    public boolean test(@NonNull Target<TTarget> target, RequirementContext<TTarget, TConfig> context) {
 
         if (context != null && context != this)
             throw new UnsupportedOperationException("RequirementContext#test(target, context) must not be called directly. Use ActionResult#test(target) instead.");
 
-        Objects.requireNonNull(target, "target must not be null");
-
-        if (!isTargetType(target)) return true;
+        if (!isTargetType(target.getSource())) return true;
 
         return getRequirement().test(target, Objects.isNull(context) ? this : context);
     }

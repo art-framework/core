@@ -1,5 +1,7 @@
 package net.silthus.art.util;
 
+import net.silthus.art.api.trigger.Target;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -33,7 +35,12 @@ public final class ReflectionUtil {
      * @param <TResult> result type of the map
      * @return extracted map value if the target type matched and was found
      */
+    @SuppressWarnings("unchecked")
     public static <TTarget, TResult> Optional<TResult> getEntryForTarget(TTarget target, Map<Class<?>, TResult> map) {
+
+        if (target instanceof Target) {
+            target = ((Target<TTarget>) target).getSource();
+        }
 
         Class<?> targetClass = target.getClass();
         if (map.containsKey(targetClass)) {

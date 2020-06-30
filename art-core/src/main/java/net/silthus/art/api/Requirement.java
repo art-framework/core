@@ -19,6 +19,7 @@ package net.silthus.art.api;
 import net.silthus.art.ART;
 import net.silthus.art.ArtModuleDescription;
 import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.trigger.Target;
 
 import java.util.function.Consumer;
 
@@ -52,5 +53,5 @@ public interface Requirement<TTarget, TConfig> extends ArtObject {
      * @param context {@link RequirementContext} that holds the config and context of the check
      * @return false if the check fails and the filter should be applied or true if all checks pass and no filtering should be applied.
      */
-    boolean test(TTarget target, RequirementContext<TTarget, TConfig> context);
+    boolean test(Target<TTarget> target, RequirementContext<TTarget, TConfig> context);
 }

@@ -28,9 +28,9 @@ import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -75,11 +75,10 @@ public interface ArtManager {
     /**
      * Wraps the given target object into a {@link Target}.
      *
-     * @param target target to wrap
+     * @param target    target to wrap
      * @param <TTarget> target type
      * @return wrapped target
      * @see ART#getTarget(Object)
      */
-    @Nullable
-    <TTarget> Target<TTarget> getTarget(@NonNull TTarget target);
+    <TTarget> Optional<Target<TTarget>> getTarget(@NonNull TTarget target);
 }

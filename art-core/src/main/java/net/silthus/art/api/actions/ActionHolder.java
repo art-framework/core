@@ -1,5 +1,7 @@
 package net.silthus.art.api.actions;
 
+import net.silthus.art.api.trigger.Target;
+
 import java.util.Collection;
 
 public interface ActionHolder {
@@ -9,7 +11,7 @@ public interface ActionHolder {
     Collection<ActionContext<?, ?>> getActions();
 
     @SuppressWarnings("unchecked")
-    default <TTarget> void executeActions(TTarget target) {
+    default <TTarget> void executeActions(Target<TTarget> target) {
         getActions().stream()
                 .filter(actionContext -> actionContext.isTargetType(target))
                 .map(actionContext -> (ActionContext<TTarget, ?>) actionContext)

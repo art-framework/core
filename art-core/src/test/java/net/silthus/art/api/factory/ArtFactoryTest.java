@@ -26,6 +26,7 @@ import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.config.ConfigFieldInformation;
+import net.silthus.art.api.trigger.Target;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -161,7 +162,8 @@ public class ArtFactoryTest {
                 @Name("foo")
                 @Config(TestConfig.class)
                 @Override
-                public void execute(String s, ActionContext<String, TestConfig> context) {}
+                public void execute(Target<String> s, ActionContext<String, TestConfig> context) {
+                }
             });
 
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
@@ -279,7 +281,7 @@ public class ArtFactoryTest {
                     @Name("test")
                     @Config(ErrorConfig.class)
                     @Override
-                    public void execute(String s, ActionContext<String, ErrorConfig> context) {
+                    public void execute(Target<String> s, ActionContext<String, ErrorConfig> context) {
 
                     }
                 });
@@ -319,7 +321,7 @@ public class ArtFactoryTest {
     @Config(TestConfig.class)
     public static class TestAction implements Action<String, TestConfig> {
         @Override
-        public void execute(String s, ActionContext<String, TestConfig> context) {
+        public void execute(Target<String> s, ActionContext<String, TestConfig> context) {
 
         }
     }

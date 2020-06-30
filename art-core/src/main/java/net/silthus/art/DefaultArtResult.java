@@ -58,14 +58,14 @@ public final class DefaultArtResult implements ArtResult, TriggerListener<Object
     }
 
     @Override
-    public final <TTarget> boolean test(TTarget target) {
+    public final <TTarget> boolean test(Target<TTarget> target) {
 
-        return test(target, new ArrayList<>());
+        return test(target, new ArrayList<ArtResultFilter<TTarget>>());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <TTarget> boolean test(TTarget target, Collection<ArtResultFilter<TTarget>> filters) {
+    public final <TTarget> boolean test(Target<TTarget> target, Collection<ArtResultFilter<TTarget>> filters) {
 
         if (Objects.isNull(target)) return false;
 
@@ -77,14 +77,14 @@ public final class DefaultArtResult implements ArtResult, TriggerListener<Object
     }
 
     @Override
-    public final <TTarget> void execute(TTarget target) {
+    public final <TTarget> void execute(Target<TTarget> target) {
 
-        execute(target, new ArrayList<>());
+        execute(target, new ArrayList<ArtResultFilter<TTarget>>());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <TTarget> void execute(TTarget target, Collection<ArtResultFilter<TTarget>> filters) {
+    public <TTarget> void execute(Target<TTarget> target, Collection<ArtResultFilter<TTarget>> filters) {
 
         if (Objects.isNull(target)) return;
         if (!testFilter(target, filters)) return;
@@ -110,18 +110,18 @@ public final class DefaultArtResult implements ArtResult, TriggerListener<Object
     public void onTrigger(@NonNull Target target) {
         if (test(target)) {
             execute(target);
-            getEntryForTarget(target.getTarget(), triggerListeners)
+            getEntryForTarget(target.getSource(), triggerListeners)
                     .orElse(new ArrayList<>())
                     .forEach(triggerListener -> triggerListener.onTrigger(target));
         }
     }
 
-    private <TTarget> boolean testFilter(TTarget target, Collection<ArtResultFilter<TTarget>> filters) {
+    private <TTarget> boolean testFilter(Target<TTarget> target, Collection<ArtResultFilter<TTarget>> filters) {
         return filters.stream().allMatch(filter -> filter.test(target, config));
     }
 
     @SuppressWarnings("unchecked")
-    private <TTarget> boolean testGlobalFilter(TTarget target) {
+    private <TTarget> boolean testGlobalFilter(Target<TTarget> target) {
 
         if (Objects.isNull(target)) return false;
 

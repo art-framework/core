@@ -17,15 +17,16 @@
 package net.silthus.art.api.parser;
 
 import com.google.inject.ImplementedBy;
+import lombok.NonNull;
 import net.silthus.art.ART;
 import net.silthus.art.DefaultArtResult;
 import net.silthus.art.api.Action;
 import net.silthus.art.api.Requirement;
 import net.silthus.art.api.Trigger;
 import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerListener;
 
-import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
 import java.util.Collection;
 
@@ -33,10 +34,10 @@ import java.util.Collection;
  * The {@link ArtResult} is a core piece of the ART-Framework.
  * Use it to test for {@link Requirement}s or execute {@link Action}s.
  * <br>
- * Test if all requirements are met by calling {@link #test(Object)}.
- * You can pass additional filters by calling {@link #test(Object, Collection)}.
+ * Test if all requirements are met by calling {@link #test(Target)}.
+ * You can pass additional filters by calling {@link #test(Target, Collection)}.
  * <br>
- * Execute your actions by calling {@link #execute(Object)}.
+ * Execute your actions by calling {@link #execute(Target)}.
  * <br>
  * It is created from an {@link ArtConfig} and holds all loaded {@link Action}s, {@link Requirement}s and {@link Trigger}.
  * Create an {@link ArtResult} by parsing your {@link ArtConfig} with {@link ART#load(ArtConfig)}.
@@ -55,29 +56,56 @@ public interface ArtResult {
      * Global filters are always checked before checking requirements.
      * This means that persistent counted requirements will never be checked and increased.
      * <br>
-     * Use the {@link #test(Object, Collection)} method if you want to apply local filters before checking requirements.
+     * Use the {@link #test(Target, Collection)} method if you want to apply local filters before checking requirements.
      *
-     * @param target target to check. Can be null.
+     * @param target    target to check. Can be null.
      * @param <TTarget> type of the target. Any requirements not matching the target type will not be checked.
      * @return true if all requirement checks and filter pass or if the list of requirements is empty (after filtering the target type).
-     *          false if any filter or requirement check fails.
-     * @see #test(Object, Collection)
+     * false if any filter or requirement check fails.
+     * @see #test(Target, Collection)
      */
-    <TTarget> boolean test(@Nullable TTarget target);
+    <TTarget> boolean test(@NonNull Target<TTarget> target);
+
+    /**
+     * Wraps the given target into a {@link Target} and then calls {@link #test(Target)}.
+     * Returns false if no {@link Target} wrapper was found for the given source.
+     *
+     * @param target    target object to wrap into a {@link Target}
+     * @param <TTarget> type of the target
+     * @return result of {@link #test(Target)} or false if no {@link Target} wrapper exists
+     * @see #test(Target)
+     */
+    default <TTarget> boolean test(@NonNull TTarget target) {
+        return Target.of(target).map(this::test).orElse(false);
+    }
 
     /**
      * Tests if all requirements for the given target pass after testing if all filters pass.
-     * Does the same as {@link #test(Object)}, except it first checks the provided filters.
+     * Does the same as {@link #test(Target)}, except it first checks the provided filters.
      * Will return false as soon as any filter fails.
      *
      * @param target    target to check requirements and filter against. Can be null.
      * @param filters   list of local filters to check before anything else
      * @param <TTarget> type of the target
-     * @return true if all filter checks pass and {@link #test(Object)} returns true.
+     * @return true if all filter checks pass and {@link #test(Target)} returns true.
      * false if any check or filter fails.
-     * @see #test(Object)
+     * @see #test(Target)
      */
-    <TTarget> boolean test(@Nullable TTarget target, Collection<ArtResultFilter<TTarget>> filters);
+    <TTarget> boolean test(@NonNull Target<TTarget> target, Collection<ArtResultFilter<TTarget>> filters);
+
+    /**
+     * Wraps the given target into a {@link Target} and then calls {@link #test(Target, Collection)}.
+     * Returns false if no {@link Target} wrapper was found for the given source.
+     *
+     * @param target    target object to wrap into a {@link Target}
+     * @param filters   list of local filters to check before anything else
+     * @param <TTarget> type of the target
+     * @return result of {@link #test(Target, Collection)} or false if no {@link Target} wrapper exists
+     * @see #test(Target, Collection)
+     */
+    default <TTarget> boolean test(@NonNull TTarget target, Collection<ArtResultFilter<TTarget>> filters) {
+        return Target.of(target).map(tTargetTarget -> test(tTargetTarget, filters)).orElse(false);
+    }
 
     /**
      * Executes all {@link Action}s and child actions of actions against the given target.
@@ -88,22 +116,45 @@ public interface ArtResult {
      *
      * @param target    target to execute actions against. Can be null.
      * @param <TTarget> type of the target
-     * @see #execute(Object, Collection)
+     * @see #execute(Target, Collection)
      */
-    <TTarget> void execute(@Nullable TTarget target);
+    <TTarget> void execute(@NonNull Target<TTarget> target);
+
+    /**
+     * Wraps the given target into a {@link Target} and then calls {@link #execute(Target)}.
+     * Does nothing if no {@link Target} wrapper was found for the given source.
+     *
+     * @param target    target to execute actions for
+     * @param <TTarget> type of the target
+     */
+    default <TTarget> void execute(@NonNull TTarget target) {
+        Target.of(target).ifPresent(this::execute);
+    }
 
     /**
      * Executes all {@link Action}s and child actions of actions against the given target
      * after checking the list of given filters.
      * <br>
-     * Also see {@link #execute(Object)}
+     * Also see {@link #execute(Target)}
      *
-     * @param target    target to check filters and execute actions against. Can be null.
+     * @param target    target to check filters and execute actions against.
      * @param filters   list of local filters to test before executing actions
      * @param <TTarget> type of the target
-     * @see #execute(Object)
+     * @see #execute(Target)
      */
-    <TTarget> void execute(@Nullable TTarget target, Collection<ArtResultFilter<TTarget>> filters);
+    <TTarget> void execute(@NonNull Target<TTarget> target, Collection<ArtResultFilter<TTarget>> filters);
+
+    /**
+     * Wraps the given target into a {@link Target} and then calls {@link #execute(Target, Collection)}.
+     * Does nothing if no {@link Target} wrapper was found for the given source.
+     *
+     * @param target    target to execute actions for
+     * @param filters   list of local filters to test before executing actions
+     * @param <TTarget> type of the target
+     */
+    default <TTarget> void execute(@NonNull TTarget target, Collection<ArtResultFilter<TTarget>> filters) {
+        Target.of(target).ifPresent(tTargetTarget -> execute(tTargetTarget, filters));
+    }
 
     /**
      * Listens on all {@link Trigger}s in the {@link ArtResult} for the given target type.
