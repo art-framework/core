@@ -2,9 +2,11 @@ package net.silthus.art.api.scheduler;
 
 import lombok.NonNull;
 
+import javax.inject.Singleton;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 
+@Singleton
 public interface Scheduler {
 
     /**

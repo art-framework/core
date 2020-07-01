@@ -20,6 +20,6 @@ import com.google.inject.ImplementedBy;
 import net.silthus.art.api.factory.ArtFactoryManager;
 
 @ImplementedBy(ActionFactoryManager.class)
-public interface ActionManager extends ArtFactoryManager<ActionFactory<?, ?>> {
+public interface ActionManager extends ArtFactoryManager<ActionFactory<?, ?>>, ActionFactoryProvider {
 
 }

@@ -47,21 +47,21 @@ public final class ActionConfig<TConfig> extends ArtObjectConfig<TConfig> {
     private boolean execute_once = false;
 
     /**
-     * The delay in milliseconds for this action.
+     * The delay in ticks for this action.
      *
-     * @return delay in milliseconds
+     * @return delay in server ticks
      */
     public long getDelay() {
-        return TimeUtil.parseTimeAsMillis(delay);
+        return TimeUtil.parseTimeAsTicks(delay);
     }
 
     /**
-     * The cooldown in milliseconds for this action.
+     * The cooldown in ticks for this action.
      *
-     * @return cooldown in milliseconds
+     * @return cooldown in ticks
      */
     public long getCooldown() {
-        return TimeUtil.parseTimeAsMillis(cooldown);
+        return TimeUtil.parseTimeAsTicks(cooldown);
     }
 
     public boolean isExecuteOnce() {

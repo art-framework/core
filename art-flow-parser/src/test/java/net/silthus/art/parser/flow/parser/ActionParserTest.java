@@ -32,7 +32,7 @@ class ActionParserTest {
         this.actionManager = mock(ActionManager.class);
         when(actionManager.getFactory(anyString())).thenReturn(Optional.of(factory));
         when(factory.create(any())).thenAnswer(invocation -> new ActionContext<>(Object.class, (o, context) -> {
-        }, invocation.getArgument(0)));
+        }, invocation.getArgument(0), null));
 
         this.parser = new ActionParser(actionManager);
     }

@@ -16,11 +16,24 @@
 
 package net.silthus.art.api.actions;
 
+import net.silthus.art.api.Action;
 import net.silthus.art.api.factory.AbstractFactoryManager;
 
+import javax.inject.Inject;
 import javax.inject.Singleton;
 
 @Singleton
 public class ActionFactoryManager extends AbstractFactoryManager<ActionFactory<?, ?>> implements ActionManager {
 
+    private final ActionFactoryProvider provider;
+
+    @Inject
+    ActionFactoryManager(ActionFactoryProvider provider) {
+        this.provider = provider;
+    }
+
+    @Override
+    public <TTarget, TConfig> ActionFactory<TTarget, TConfig> create(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
+        return provider.create(targetClass, action);
+    }
 }

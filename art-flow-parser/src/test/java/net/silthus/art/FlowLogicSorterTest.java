@@ -32,7 +32,7 @@ class FlowLogicSorterTest {
 
     private ActionContext<?, ?> action() {
         return spy(new ActionContext<>(Object.class, (o, context) -> {
-        }, new ActionConfig<>()));
+        }, new ActionConfig<>(), null));
     }
 
     private RequirementContext<?, ?> requirement() {
