@@ -16,40 +16,26 @@
 
 package net.silthus.art.api.trigger;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.Trigger;
-import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.factory.ArtFactory;
+import net.silthus.art.api.scheduler.Scheduler;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger, TriggerConfig<TConfig>> {
 
-    public static List<TriggerFactory<?>> of(Trigger trigger) {
-
-        Method[] methods = trigger.getClass().getDeclaredMethods();
-        List<TriggerFactory<?>> factories = Arrays.stream(methods)
-                .filter(method -> method.isAnnotationPresent(Name.class))
-                .map(method -> {
-                    TriggerFactory<Object> triggerFactory = new TriggerFactory<>(trigger);
-                    triggerFactory.setMethod(method);
-                    return triggerFactory;
-                }).collect(Collectors.toList());
-
-        if (factories.isEmpty()) {
-            factories.add(new TriggerFactory<>(trigger));
-        }
-
-        return factories;
-    }
+    @Inject(optional = true)
+    @Getter(AccessLevel.PRIVATE)
+    private Scheduler scheduler;
 
     @Getter(AccessLevel.PACKAGE)
     private final List<TriggerContext<TConfig>> createdTrigger = new ArrayList<>();
@@ -58,7 +44,9 @@ public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger
     @Setter(AccessLevel.PROTECTED)
     private Method method;
 
-    TriggerFactory(Trigger trigger) {
+
+    @Inject
+    TriggerFactory(@Assisted Trigger trigger) {
         super(Object.class, trigger);
     }
 
@@ -73,7 +61,7 @@ public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger
 
     @Override
     public TriggerContext<TConfig> create(TriggerConfig<TConfig> config) {
-        TriggerContext<TConfig> triggerContext = new TriggerContext<>(config);
+        TriggerContext<TConfig> triggerContext = new TriggerContext<>(config, getScheduler());
         createdTrigger.add(triggerContext);
         return triggerContext;
     }

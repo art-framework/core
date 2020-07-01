@@ -22,8 +22,6 @@ import net.silthus.art.api.Action;
 import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.scheduler.Scheduler;
 
-import javax.annotation.Nullable;
-
 /**
  * The {@link ActionFactory} creates a fresh {@link ActionContext} for each unique
  * configuration of the registered {@link Action}s.
@@ -35,12 +33,12 @@ import javax.annotation.Nullable;
  */
 public class ActionFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>> {
 
-    private final Scheduler scheduler;
+    @Inject(optional = true)
+    private Scheduler scheduler;
 
     @Inject
-    ActionFactory(@Assisted Class<TTarget> targetClass, @Assisted Action<TTarget, TConfig> action, @Nullable Scheduler scheduler) {
+    ActionFactory(@Assisted Class<TTarget> targetClass, @Assisted Action<TTarget, TConfig> action) {
         super(targetClass, action);
-        this.scheduler = scheduler;
     }
 
     @Override

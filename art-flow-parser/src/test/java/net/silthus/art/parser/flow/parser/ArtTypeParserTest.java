@@ -74,7 +74,7 @@ class ArtTypeParserTest {
             assertThat(parser.accept("!foobar[delay=10s, cooldown:5s]")).isTrue();
             assertThat(parser.parse())
                     .extracting(actionContext -> actionContext.getOptions().getCooldown(), actionContext -> actionContext.getOptions().getDelay())
-                    .contains(5000L, 10000L);
+                    .contains(100L, 200L);
         }
 
         @Test
@@ -85,7 +85,7 @@ class ArtTypeParserTest {
             assertThat(parser.accept("!foobar(delay=10s, cooldown:5s)")).isTrue();
             assertThat(parser.parse())
                     .extracting(actionContext -> actionContext.getOptions().getCooldown(), actionContext -> actionContext.getOptions().getDelay())
-                    .contains(5000L, 10000L);
+                    .contains(100L, 200L);
         }
 
         @Test
@@ -109,7 +109,7 @@ class ArtTypeParserTest {
             ActionContext<?, ?> result = parser.parse();
             assertThat(result.getOptions())
                     .extracting(ActionConfig::getDelay)
-                    .isEqualTo(500L);
+                    .isEqualTo(10L);
             assertThat(result.getConfig())
                     .isNotEmpty().get()
                     .extracting("name", "number")

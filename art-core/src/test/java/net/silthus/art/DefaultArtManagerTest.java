@@ -50,7 +50,7 @@ class DefaultArtManagerTest {
         requirementManager = mock(RequirementManager.class);
         triggerManager = mock(TriggerManager.class);
         Provider<ArtBuilder> artBuilder = (Provider<ArtBuilder>) mock(Provider.class);
-        when(artBuilder.get()).thenReturn(new ArtBuilder(actionManager));
+        when(artBuilder.get()).thenReturn(new ArtBuilder(actionManager, mock(TriggerManager.class)));
         artManager = new DefaultArtManager(actionManager, requirementManager, triggerManager, artBuilder, new HashMap<>());
     }
 

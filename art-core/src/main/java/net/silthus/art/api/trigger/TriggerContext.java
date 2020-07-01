@@ -22,6 +22,7 @@ import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionHolder;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.requirements.RequirementHolder;
+import net.silthus.art.api.scheduler.Scheduler;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -35,9 +36,15 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
     private final List<ActionContext<?, ?>> actions = new ArrayList<>();
     @Getter
     private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
+    private final Scheduler scheduler;
 
-    public TriggerContext(TriggerConfig<TConfig> config) {
+    public TriggerContext(TriggerConfig<TConfig> config, Scheduler scheduler) {
         super(Object.class, config);
+        this.scheduler = scheduler;
+    }
+
+    private Optional<Scheduler> getScheduler() {
+        return Optional.ofNullable(scheduler);
     }
 
     @Override
@@ -83,12 +90,21 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
      */
     @SuppressWarnings("unchecked")
     <TTarget> void trigger(Target<TTarget> target, Predicate<TriggerContext<TConfig>> predicate) {
-        if (predicate.test(this) && testRequirements(target)) {
-            executeActions(target);
+        Runnable runnable = () -> {
+            if (predicate.test(this) && testRequirements(target)) {
+                executeActions(target);
 
-            getEntryForTarget(target.getSource(), listeners).orElse(new HashSet<>()).stream()
-                    .map(triggerListener -> (TriggerListener<TTarget>) triggerListener)
-                    .forEach(listener -> listener.onTrigger(target));
+                getEntryForTarget(target.getSource(), listeners).orElse(new HashSet<>()).stream()
+                        .map(triggerListener -> (TriggerListener<TTarget>) triggerListener)
+                        .forEach(listener -> listener.onTrigger(target));
+            }
+        };
+
+        long delay = getOptions().getDelay();
+        if (getScheduler().isPresent() && delay > 0) {
+            getScheduler().get().runTaskLater(runnable, delay);
+        } else {
+            runnable.run();
         }
     }
 }

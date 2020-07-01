@@ -16,16 +16,46 @@
 
 package net.silthus.art.api.trigger;
 
+import net.silthus.art.api.Trigger;
+import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.factory.AbstractFactoryManager;
 
 import javax.inject.Singleton;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Singleton
 public class DefaultTriggerManager extends AbstractFactoryManager<TriggerFactory<?>> implements TriggerManager {
+
+    private final TriggerFactoryProvider provider;
+
+    public DefaultTriggerManager(TriggerFactoryProvider provider) {
+        this.provider = provider;
+    }
+
+    @Override
+    public Collection<TriggerFactory<?>> create(Trigger trigger) {
+
+        Method[] methods = trigger.getClass().getDeclaredMethods();
+        List<TriggerFactory<?>> factories = Arrays.stream(methods)
+                .filter(method -> method.isAnnotationPresent(Name.class))
+                .map(method -> {
+                    TriggerFactory<?> triggerFactory = provider.create(trigger);
+                    triggerFactory.setMethod(method);
+                    return triggerFactory;
+                }).collect(Collectors.toList());
+
+        if (factories.isEmpty()) {
+            factories.add(provider.create(trigger));
+        }
+
+        return factories;
+    }
 
     @Override
     public <TTarget> void addListener(String identifier, Class<TTarget> targetClass, TriggerListener<TTarget> listener) {

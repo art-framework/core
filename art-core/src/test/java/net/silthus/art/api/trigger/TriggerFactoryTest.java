@@ -22,38 +22,26 @@ import net.silthus.art.api.Trigger;
 import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.factory.ArtFactory;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @DisplayName("TriggerFactory")
 @SuppressWarnings({"rawtypes", "unused"})
 class TriggerFactoryTest {
 
-    @Nested
-    @DisplayName("TriggerFactory.of(Trigger)")
-    class staticOf {
+    private TriggerFactoryProvider provider;
 
-        @Test
-        @DisplayName("should add trigger class if no method is annotated")
-        void shouldAddTriggerClassIfNoMethodIsAnnotated() {
-            assertThat(TriggerFactory.of(new MyTrigger()))
-                    .hasSize(1)
-                    .first()
-                    .extracting(TriggerFactory::getMethod)
-                    .isNull();
-        }
-
-        @Test
-        @DisplayName("should register all annotated trigger methods as separate factories")
-        void shouldRegisterAllAnnotatedMethodsAsSeparateTrigger() {
-            assertThat(TriggerFactory.of(new MyMultiTrigger()))
-                    .hasSize(3);
-        }
+    @BeforeEach
+    void beforeEach() {
+        provider = mock(TriggerFactoryProvider.class);
+        when(provider.create(any())).thenAnswer(invocation -> new TriggerFactory<>(invocation.getArgument(0)));
     }
 
     @Nested
@@ -96,11 +84,7 @@ class TriggerFactoryTest {
         @DisplayName("should fail initialization if no class or method annotation exists")
         void shouldFailToInitializeIfNoClassAnnotationExists() {
 
-            List<TriggerFactory<?>> factories = TriggerFactory.of(new MyFailingTrigger());
-
-            assertThat(factories).hasSize(1);
-
-            TriggerFactory<?> factory = factories.get(0);
+            TriggerFactory<?> factory = provider.create(new MyFailingTrigger());
 
             assertThatExceptionOfType(ArtRegistrationException.class)
                     .isThrownBy(factory::initialize)
@@ -116,12 +100,12 @@ class TriggerFactoryTest {
         @DisplayName("should store context in factory")
         void shouldStoreContextInFactory() {
 
-            List<TriggerFactory<?>> factory = TriggerFactory.of(new MyTrigger());
+            TriggerFactory<?> factory = provider.create(new MyFailingTrigger());
 
-            TriggerContext context1 = factory.get(0).create(new TriggerConfig<>());
-            TriggerContext context2 = factory.get(0).create(new TriggerConfig<>());
+            TriggerContext context1 = factory.create(new TriggerConfig<>());
+            TriggerContext context2 = factory.create(new TriggerConfig<>());
 
-            assertThat(factory.get(0).getCreatedTrigger())
+            assertThat(factory.getCreatedTrigger())
                     .containsExactly(context1, context2);
         }
     }

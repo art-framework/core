@@ -30,9 +30,10 @@ import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.trigger.Target;
-import net.silthus.art.api.trigger.TriggerFactory;
+import net.silthus.art.api.trigger.TriggerManager;
 
 import javax.annotation.concurrent.Immutable;
+import javax.inject.Inject;
 import java.util.*;
 import java.util.function.Function;
 import java.util.logging.Logger;
@@ -48,9 +49,13 @@ public class ArtBuilder {
 
     @Getter(AccessLevel.PRIVATE)
     private final ActionManager actionManager;
+    @Getter(AccessLevel.PRIVATE)
+    private final TriggerManager triggerManager;
 
-    ArtBuilder(ActionManager actionManager) {
+    @Inject
+    ArtBuilder(ActionManager actionManager, TriggerManager triggerManager) {
         this.actionManager = actionManager;
+        this.triggerManager = triggerManager;
     }
 
     /**
@@ -155,7 +160,7 @@ public class ArtBuilder {
                 } else if (artObject instanceof Requirement) {
                     this.artFactories.add(RequirementFactory.of(targetClass, (Requirement<TTarget, ?>) artObject));
                 } else if (artObject instanceof Trigger) {
-                    this.artFactories.addAll(TriggerFactory.of((Trigger) artObject).stream()
+                    this.artFactories.addAll(getTriggerManager().create((Trigger) artObject).stream()
                             .map(triggerFactory -> (ArtFactory<TTarget, ?, ?, ? extends ArtObjectConfig<?>>) triggerFactory)
                             .collect(Collectors.toList())
                     );
