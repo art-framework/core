@@ -17,6 +17,7 @@
 package net.silthus.art.api.trigger;
 
 import lombok.NonNull;
+import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.testing.StringTarget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +33,7 @@ class TriggerContextTest {
 
     @BeforeEach
     void beforeEach() {
-        context = new TriggerContext<>(new TriggerConfig<>());
+        context = new TriggerContext<>(new TriggerConfig<>(), null);
     }
 
     @SuppressWarnings("unchecked")
@@ -100,6 +101,56 @@ class TriggerContextTest {
 
             verify(listener1, times(1)).onTrigger(any());
             verify(listener2, times(0)).onTrigger(any());
+        }
+
+        @Nested
+        @DisplayName("with delay")
+        class withDelay {
+
+            private Scheduler scheduler;
+
+            @BeforeEach
+            void beforeEach() {
+                scheduler = mock(Scheduler.class);
+                context = new TriggerContext<>(new TriggerConfig<>(), scheduler);
+            }
+
+            @Test
+            @DisplayName("should execute trigger after the defined delay")
+            void shouldExecuteTriggerAfterDelay() {
+
+                context.getOptions().setDelay("1s");
+
+                context.trigger(new StringTarget("foobar"), triggerContext -> true);
+
+                verify(scheduler, times(1)).runTaskLater(any(), eq(20L));
+            }
+
+            @Test
+            @DisplayName("should execute directly if scheduler is null")
+            void shouldDirectlyExecuteTriggerIfSchedulerIsNull() {
+
+                context = TriggerContextTest.this.context = new TriggerContext<>(new TriggerConfig<>(), null);
+                context.getOptions().setDelay("1s");
+                TriggerListener<String> listener = addListener(String.class);
+
+                context.trigger(new StringTarget("foo"), triggerContext -> true);
+
+                verify(scheduler, never()).runTaskLater(any(), anyLong());
+                verify(listener, times(1)).onTrigger(new StringTarget("foo"));
+            }
+
+            @Test
+            @DisplayName("should execute directly if delay is zero")
+            void shouldDirectlyExecuteTriggerIfDelayIsZero() {
+
+                TriggerListener<String> listener = addListener(String.class);
+
+                context.trigger(new StringTarget("foo"), triggerContext -> true);
+
+                verify(scheduler, never()).runTaskLater(any(), anyLong());
+                verify(listener, times(1)).onTrigger(new StringTarget("foo"));
+            }
         }
     }
 }

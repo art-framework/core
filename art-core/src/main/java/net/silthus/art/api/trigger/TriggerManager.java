@@ -17,12 +17,16 @@
 package net.silthus.art.api.trigger;
 
 import com.google.inject.ImplementedBy;
+import net.silthus.art.api.Trigger;
 import net.silthus.art.api.factory.ArtFactoryManager;
 
+import java.util.Collection;
 import java.util.function.Predicate;
 
 @ImplementedBy(DefaultTriggerManager.class)
 public interface TriggerManager extends ArtFactoryManager<TriggerFactory<?>> {
+
+    Collection<TriggerFactory<?>> create(Trigger trigger);
 
     <TTarget> void addListener(String identifier, Class<TTarget> targetClass, TriggerListener<TTarget> listener);
 

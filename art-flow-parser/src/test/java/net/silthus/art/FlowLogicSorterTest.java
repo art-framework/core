@@ -40,7 +40,7 @@ class FlowLogicSorterTest {
     }
 
     private TriggerContext<?> trigger() {
-        return spy(new TriggerContext<>(new TriggerConfig<>()));
+        return spy(new TriggerContext<>(new TriggerConfig<>(), null));
     }
 
     @Nested

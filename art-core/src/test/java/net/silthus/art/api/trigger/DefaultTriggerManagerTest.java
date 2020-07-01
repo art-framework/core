@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @DisplayName("TriggerManager")
@@ -18,7 +19,9 @@ class DefaultTriggerManagerTest {
 
     @BeforeEach
     void beforeEach() {
-        manager = spy(new DefaultTriggerManager());
+        TriggerFactoryProvider provider = mock(TriggerFactoryProvider.class);
+        when(provider.create(any())).thenAnswer(invocation -> new TriggerFactory<>(invocation.getArgument(0)));
+        manager = spy(new DefaultTriggerManager(provider));
         test1Factory = mock(TriggerFactory.class);
         when(manager.getFactory(eq("test1"))).thenReturn(Optional.of(test1Factory));
         test2Factory = mock(TriggerFactory.class);
@@ -40,4 +43,25 @@ class DefaultTriggerManagerTest {
         }
     }
 
+    @Nested
+    @DisplayName("create(...)")
+    class create {
+
+        @Test
+        @DisplayName("should add trigger class if no method is annotated")
+        void shouldAddTriggerClassIfNoMethodIsAnnotated() {
+            assertThat(manager.create(new TriggerFactoryTest.MyTrigger()))
+                    .hasSize(1)
+                    .first()
+                    .extracting(TriggerFactory::getMethod)
+                    .isNull();
+        }
+
+        @Test
+        @DisplayName("should register all annotated trigger methods as separate factories")
+        void shouldRegisterAllAnnotatedMethodsAsSeparateTrigger() {
+            assertThat(manager.create(new TriggerFactoryTest.MyMultiTrigger()))
+                    .hasSize(3);
+        }
+    }
 }
