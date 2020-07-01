@@ -17,14 +17,14 @@
 package net.silthus.art;
 
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.parser.ArtResultFilter;
+import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.trigger.Target;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 
 import java.util.List;
 
-public class EntityWorldFilter implements ArtResultFilter<Entity> {
+public class EntityWorldFilter implements Filter<Entity> {
 
     @Override
     public boolean test(Target<Entity> entity, ArtConfig config) {

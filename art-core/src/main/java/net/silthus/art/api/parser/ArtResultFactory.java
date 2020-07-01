@@ -34,5 +34,5 @@ public interface ArtResultFactory {
      * @param globalFilter list of filters that are applied to all actions, requirements and trigger
      * @return new {@link ArtResult}
      */
-    ArtResult create(ArtConfig config, Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> artContexts, Map<Class<?>, List<ArtResultFilter<?>>> globalFilter);
+    ArtResult create(ArtConfig config, Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> artContexts, Map<Class<?>, List<Filter<?>>> globalFilter);
 }

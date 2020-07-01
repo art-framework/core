@@ -20,7 +20,7 @@ import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
-import net.silthus.art.api.parser.ArtResultFilter;
+import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
@@ -59,19 +59,19 @@ class DefaultArtResultTest {
         return new DefaultArtResult(config, Arrays.asList(contexts), new HashMap<>());
     }
 
-    private DefaultArtResult resultOfWithFilter(Class<?> filterType, List<ArtResultFilter<?>> filters, ArtContext<?, ?, ? extends ArtObjectConfig<?>>... contexts) {
-        HashMap<Class<?>, List<ArtResultFilter<?>>> filterMap = new HashMap<>();
+    private DefaultArtResult resultOfWithFilter(Class<?> filterType, List<Filter<?>> filters, ArtContext<?, ?, ? extends ArtObjectConfig<?>>... contexts) {
+        HashMap<Class<?>, List<Filter<?>>> filterMap = new HashMap<>();
         filterMap.put(filterType, filters);
         return new DefaultArtResult(config, Arrays.asList(contexts), filterMap);
     }
 
-    private DefaultArtResult resultOfWithFilter(Class<?> filterType, ArtResultFilter<?> filter, ArtContext<?, ?, ? extends ArtObjectConfig<?>>... contexts) {
-        HashMap<Class<?>, List<ArtResultFilter<?>>> filterMap = new HashMap<>();
+    private DefaultArtResult resultOfWithFilter(Class<?> filterType, Filter<?> filter, ArtContext<?, ?, ? extends ArtObjectConfig<?>>... contexts) {
+        HashMap<Class<?>, List<Filter<?>>> filterMap = new HashMap<>();
         filterMap.put(filterType, Collections.singletonList(filter));
         return new DefaultArtResult(config, Arrays.asList(contexts), filterMap);
     }
 
-    private DefaultArtResult resultOfWithFilter(Map<Class<?>, List<ArtResultFilter<?>>> filters, ArtContext<?, ?, ? extends ArtObjectConfig<?>>... contexts) {
+    private DefaultArtResult resultOfWithFilter(Map<Class<?>, List<Filter<?>>> filters, ArtContext<?, ?, ? extends ArtObjectConfig<?>>... contexts) {
         return new DefaultArtResult(config, Arrays.asList(contexts), filters);
     }
 
@@ -79,8 +79,8 @@ class DefaultArtResultTest {
         return mock(TriggerContext.class);
     }
 
-    private <TTarget> ArtResultFilter<TTarget> filter(Target<TTarget> target, boolean result) {
-        ArtResultFilter<TTarget> filter = mock(ArtResultFilter.class);
+    private <TTarget> Filter<TTarget> filter(Target<TTarget> target, boolean result) {
+        Filter<TTarget> filter = mock(Filter.class);
         when(filter.test(eq(target), any())).thenReturn(result);
         return filter;
     }
@@ -208,7 +208,7 @@ class DefaultArtResultTest {
             @DisplayName("should include filters in test result")
             void shouldIncludeLocalFilters() {
 
-                ArtResultFilter<String> filter = filter(new StringTarget("foo"), false);
+                Filter<String> filter = filter(new StringTarget("foo"), false);
                 DefaultArtResult result = resultOfWithFilter(String.class, filter,
                         requirement(true)
                 );
@@ -226,8 +226,8 @@ class DefaultArtResultTest {
                         requirement(true)
                 );
 
-                ArtResultFilter<String> filter1 = filter(new StringTarget("foo"), true);
-                ArtResultFilter<String> filter2 = filter(new StringTarget("foo"), true);
+                Filter<String> filter1 = filter(new StringTarget("foo"), true);
+                Filter<String> filter2 = filter(new StringTarget("foo"), true);
 
                 assertThat(result.test(new StringTarget("foo"), Arrays.asList(filter1, filter2))).isTrue();
                 verify(filter1, times(1)).test(eq(new StringTarget("foo")), any());
@@ -249,8 +249,8 @@ class DefaultArtResultTest {
             @DisplayName("should skip filter without matching target type")
             void shouldSkipFilterWithoutMatchingTargetType() {
 
-                ArtResultFilter<Integer> filter = filter(new IntegerTarget(2), false);
-                HashMap<Class<?>, List<ArtResultFilter<?>>> filterMap = new HashMap<>();
+                Filter<Integer> filter = filter(new IntegerTarget(2), false);
+                HashMap<Class<?>, List<Filter<?>>> filterMap = new HashMap<>();
                 filterMap.put(Integer.class, Collections.singletonList(filter));
                 filterMap.put(String.class, Collections.singletonList(filter(new StringTarget("foo"), true)));
                 DefaultArtResult result = resultOfWithFilter(filterMap);
@@ -264,11 +264,11 @@ class DefaultArtResultTest {
             void shouldCombineGlobalAndLocalFilter() {
 
 
-                ArtResultFilter<String> globalFilter = filter(new StringTarget("foo"), true);
-                HashMap<Class<?>, List<ArtResultFilter<?>>> filter = new HashMap<>();
+                Filter<String> globalFilter = filter(new StringTarget("foo"), true);
+                HashMap<Class<?>, List<Filter<?>>> filter = new HashMap<>();
                 filter.put(String.class, Collections.singletonList(globalFilter));
                 DefaultArtResult result = new DefaultArtResult(new ArtConfig(), new ArrayList<>(), filter);
-                ArtResultFilter<String> localFilter = filter(new StringTarget("foo"), false);
+                Filter<String> localFilter = filter(new StringTarget("foo"), false);
 
                 assertThat(result.test(new StringTarget("foo"), Collections.singletonList(localFilter))).isFalse();
                 verify(localFilter, times(1)).test(eq(new StringTarget("foo")), any());
@@ -302,7 +302,7 @@ class DefaultArtResultTest {
         void shouldNotExecuteActionsIfGlobalFilterFails() {
 
             ActionContext<?, ?> action = action();
-            ArtResultFilter<String> filter = filter(new StringTarget("foo"), false);
+            Filter<String> filter = filter(new StringTarget("foo"), false);
             DefaultArtResult result = resultOfWithFilter(String.class, filter, action);
 
             result.execute(new StringTarget("foo"));
@@ -315,7 +315,7 @@ class DefaultArtResultTest {
         void shouldNotExecuteActionsIfLocalFilterFails() {
 
             ActionContext<?, ?> action = action();
-            ArtResultFilter<String> filter = filter(new StringTarget("foo"), false);
+            Filter<String> filter = filter(new StringTarget("foo"), false);
             resultOf(action).execute(new StringTarget("foo"), Collections.singletonList(filter));
 
             verify(filter, times(1)).test(any(Target.class), any());

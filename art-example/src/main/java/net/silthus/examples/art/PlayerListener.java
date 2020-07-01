@@ -19,6 +19,7 @@ package net.silthus.examples.art;
 import lombok.Getter;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerCommandSendEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 public class PlayerListener implements Listener {
@@ -36,5 +37,13 @@ public class PlayerListener implements Listener {
         if (getPlugin().getArtResult() == null) return;
 
         getPlugin().getArtResult().execute(event.getPlayer());
+    }
+
+    @EventHandler
+    public void onCommand(PlayerCommandSendEvent event) {
+
+        getPlugin().getArtResult().execute(event.getPlayer(),
+                (player, config) -> !player.getSource().hasMetadata("NPC")
+        );
     }
 }

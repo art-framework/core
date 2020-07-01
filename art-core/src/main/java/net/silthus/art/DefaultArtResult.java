@@ -28,7 +28,7 @@ import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtResult;
-import net.silthus.art.api.parser.ArtResultFilter;
+import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerListener;
@@ -47,11 +47,11 @@ public final class DefaultArtResult implements ArtResult, TriggerListener<Object
     @Getter(AccessLevel.PACKAGE)
     private final List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art;
     @Getter(AccessLevel.PACKAGE)
-    private final Map<Class<?>, List<ArtResultFilter<?>>> filters;
+    private final Map<Class<?>, List<Filter<?>>> filters;
     private final Map<Class<?>, List<TriggerListener<?>>> triggerListeners = new HashMap<>();
 
     @Inject
-    public DefaultArtResult(@Assisted ArtConfig config, @Assisted Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art, @Assisted Map<Class<?>, List<ArtResultFilter<?>>> filters) {
+    public DefaultArtResult(@Assisted ArtConfig config, @Assisted Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art, @Assisted Map<Class<?>, List<Filter<?>>> filters) {
         this.config = config;
         this.art = ImmutableList.copyOf(art);
         this.filters = ImmutableMap.copyOf(filters);
@@ -60,12 +60,12 @@ public final class DefaultArtResult implements ArtResult, TriggerListener<Object
     @Override
     public final <TTarget> boolean test(Target<TTarget> target) {
 
-        return test(target, new ArrayList<ArtResultFilter<TTarget>>());
+        return test(target, new ArrayList<Filter<TTarget>>());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <TTarget> boolean test(Target<TTarget> target, Collection<ArtResultFilter<TTarget>> filters) {
+    public final <TTarget> boolean test(Target<TTarget> target, Collection<Filter<TTarget>> filters) {
 
         if (Objects.isNull(target)) return false;
 
@@ -79,12 +79,12 @@ public final class DefaultArtResult implements ArtResult, TriggerListener<Object
     @Override
     public final <TTarget> void execute(Target<TTarget> target) {
 
-        execute(target, new ArrayList<ArtResultFilter<TTarget>>());
+        execute(target, new ArrayList<Filter<TTarget>>());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <TTarget> void execute(Target<TTarget> target, Collection<ArtResultFilter<TTarget>> filters) {
+    public <TTarget> void execute(Target<TTarget> target, Collection<Filter<TTarget>> filters) {
 
         if (Objects.isNull(target)) return;
         if (!testFilter(target, filters)) return;
@@ -116,7 +116,7 @@ public final class DefaultArtResult implements ArtResult, TriggerListener<Object
         }
     }
 
-    private <TTarget> boolean testFilter(Target<TTarget> target, Collection<ArtResultFilter<TTarget>> filters) {
+    private <TTarget> boolean testFilter(Target<TTarget> target, Collection<Filter<TTarget>> filters) {
         return filters.stream().allMatch(filter -> filter.test(target, config));
     }
 
@@ -126,7 +126,7 @@ public final class DefaultArtResult implements ArtResult, TriggerListener<Object
         if (Objects.isNull(target)) return false;
 
         return getEntryForTarget(target, getFilters()).orElse(new ArrayList<>()).stream()
-                .map(filter -> (ArtResultFilter<TTarget>) filter)
+                .map(filter -> (Filter<TTarget>) filter)
                 .allMatch(filter -> filter.test(target, config));
     }
 }

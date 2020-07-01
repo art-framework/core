@@ -22,10 +22,10 @@ import net.silthus.art.api.trigger.Target;
 import java.util.function.BiPredicate;
 
 /**
- * The {@link ArtResultFilter} adds global filtering to an {@link ArtResult}.
+ * The {@link Filter} adds global filtering to an {@link ArtResult}.
  *
  * @param <TTarget> target type to apply filter to
  */
 @FunctionalInterface
-public interface ArtResultFilter<TTarget> extends BiPredicate<Target<TTarget>, ArtConfig> {
+public interface Filter<TTarget> extends BiPredicate<Target<TTarget>, ArtConfig> {
 }

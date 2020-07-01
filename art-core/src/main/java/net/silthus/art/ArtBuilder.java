@@ -27,7 +27,7 @@ import net.silthus.art.api.Trigger;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.factory.ArtFactory;
-import net.silthus.art.api.parser.ArtResultFilter;
+import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerManager;
@@ -81,11 +81,11 @@ public class ArtBuilder {
                 .collect(groupingBy(ArtFactory::getClass));
     }
 
-    private Map<Class<?>, List<ArtResultFilter<?>>> buildFilters() {
+    private Map<Class<?>, List<Filter<?>>> buildFilters() {
         return builders.values().stream()
                 .collect(toMap(builder -> builder.targetClass,
                         builder -> builder.globalFilters.stream()
-                                .map(artResultFilter -> (ArtResultFilter<?>) artResultFilter)
+                                .map(artResultFilter -> (Filter<?>) artResultFilter)
                                 .collect(Collectors.toList()))
                 );
     }
@@ -114,7 +114,7 @@ public class ArtBuilder {
 
         private final Class<TTarget> targetClass;
         private final List<ArtFactory<TTarget, ?, ?, ?>> artFactories = new ArrayList<>();
-        private final List<ArtResultFilter<TTarget>> globalFilters = new ArrayList<>();
+        private final List<Filter<TTarget>> globalFilters = new ArrayList<>();
         private Function<TTarget, Target<TTarget>> targetWrapper;
 
         public <TConfig> FactoryBuilder action(Action<TTarget, TConfig> action) {
@@ -140,7 +140,7 @@ public class ArtBuilder {
             return this;
         }
 
-        public TargetBuilder<TTarget> filter(ArtResultFilter<TTarget> filter) {
+        public TargetBuilder<TTarget> filter(Filter<TTarget> filter) {
             globalFilters.add(filter);
             return this;
         }
@@ -209,10 +209,10 @@ public class ArtBuilder {
     static class Result {
 
         private final Map<Class<?>, List<ArtFactory<?, ?, ?, ?>>> factories;
-        private final Map<Class<?>, List<ArtResultFilter<?>>> filters;
+        private final Map<Class<?>, List<Filter<?>>> filters;
         private final Map<Class<?>, Function<?, Target<?>>> targetWrappers;
 
-        public Result(Map<Class<?>, List<ArtFactory<?, ?, ?, ?>>> factories, Map<Class<?>, List<ArtResultFilter<?>>> filters, Map<Class<?>, Function<?, Target<?>>> targetWrappers) {
+        public Result(Map<Class<?>, List<ArtFactory<?, ?, ?, ?>>> factories, Map<Class<?>, List<Filter<?>>> filters, Map<Class<?>, Function<?, Target<?>>> targetWrappers) {
             this.factories = ImmutableMap.copyOf(factories);
             this.filters = ImmutableMap.copyOf(filters);
             this.targetWrappers = ImmutableMap.copyOf(targetWrappers);

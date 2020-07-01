@@ -24,7 +24,7 @@ import net.silthus.art.ArtModuleDescription;
 import net.silthus.art.DefaultArtManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
-import net.silthus.art.api.parser.ArtResultFilter;
+import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
@@ -53,7 +53,7 @@ public interface ArtManager {
 
     void unload();
 
-    Map<Class<?>, List<ArtResultFilter<?>>> getGlobalFilters();
+    Map<Class<?>, List<Filter<?>>> getGlobalFilters();
 
     void register(ArtModuleDescription moduleDescription, Consumer<ArtBuilder> builder);
 

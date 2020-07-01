@@ -29,6 +29,7 @@ import net.silthus.art.api.trigger.TriggerListener;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * The {@link ArtResult} is a core piece of the ART-Framework.
@@ -91,7 +92,7 @@ public interface ArtResult {
      * false if any check or filter fails.
      * @see #test(Target)
      */
-    <TTarget> boolean test(@NonNull Target<TTarget> target, Collection<ArtResultFilter<TTarget>> filters);
+    <TTarget> boolean test(@NonNull Target<TTarget> target, Collection<Filter<TTarget>> filters);
 
     /**
      * Wraps the given target into a {@link Target} and then calls {@link #test(Target, Collection)}.
@@ -103,15 +104,28 @@ public interface ArtResult {
      * @return result of {@link #test(Target, Collection)} or false if no {@link Target} wrapper exists
      * @see #test(Target, Collection)
      */
-    default <TTarget> boolean test(@NonNull TTarget target, Collection<ArtResultFilter<TTarget>> filters) {
+    default <TTarget> boolean test(@NonNull TTarget target, Collection<Filter<TTarget>> filters) {
         return Target.of(target).map(tTargetTarget -> test(tTargetTarget, filters)).orElse(false);
+    }
+
+    /**
+     * Tests all requirements in this {@link ArtResult} after checking the given {@link Filter}.
+     *
+     * @param target    target to check
+     * @param filter    filter to apply before checking
+     * @param <TTarget> target type
+     * @return true if all checks are successful
+     * @see #test(Object, Collection)
+     */
+    default <TTarget> boolean test(@NonNull TTarget target, Filter<TTarget> filter) {
+        return test(target, Collections.singletonList(filter));
     }
 
     /**
      * Executes all {@link Action}s and child actions of actions against the given target.
      * Will do nothing if the target type does not match the target type of the action.
      * <br>
-     * Any {@link ArtResultFilter} and {@link Requirement}s will be checked before executing
+     * Any {@link Filter} and {@link Requirement}s will be checked before executing
      * the actions. No action will be executed if any filter or requirement fails.
      *
      * @param target    target to execute actions against. Can be null.
@@ -142,7 +156,7 @@ public interface ArtResult {
      * @param <TTarget> type of the target
      * @see #execute(Target)
      */
-    <TTarget> void execute(@NonNull Target<TTarget> target, Collection<ArtResultFilter<TTarget>> filters);
+    <TTarget> void execute(@NonNull Target<TTarget> target, Collection<Filter<TTarget>> filters);
 
     /**
      * Wraps the given target into a {@link Target} and then calls {@link #execute(Target, Collection)}.
@@ -152,8 +166,20 @@ public interface ArtResult {
      * @param filters   list of local filters to test before executing actions
      * @param <TTarget> type of the target
      */
-    default <TTarget> void execute(@NonNull TTarget target, Collection<ArtResultFilter<TTarget>> filters) {
+    default <TTarget> void execute(@NonNull TTarget target, Collection<Filter<TTarget>> filters) {
         Target.of(target).ifPresent(tTargetTarget -> execute(tTargetTarget, filters));
+    }
+
+    /**
+     * Executes all {@link Action}s against the given target after checking the provided {@link Filter}.
+     *
+     * @param target    target to execute against
+     * @param filter    filter to apply
+     * @param <TTarget> type of the target
+     * @see #execute(Object, Collection)
+     */
+    default <TTarget> void execute(@NonNull TTarget target, Filter<TTarget> filter) {
+        execute(target, Collections.singletonList(filter));
     }
 
     /**

@@ -29,7 +29,7 @@ import net.silthus.art.api.factory.ArtFactoryRegistration;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.ArtParser;
 import net.silthus.art.api.parser.ArtResult;
-import net.silthus.art.api.parser.ArtResultFilter;
+import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
 import net.silthus.art.api.trigger.Target;
@@ -61,7 +61,7 @@ public class DefaultArtManager implements ArtManager {
 
     private Logger logger = Logger.getLogger("ART");
     private final Map<String, Provider<ArtParser>> parser;
-    private final Map<Class<?>, List<ArtResultFilter<?>>> globalFilters = new HashMap<>();
+    private final Map<Class<?>, List<Filter<?>>> globalFilters = new HashMap<>();
     private final Map<Class<?>, Function> targetWrapper = new HashMap<>();
     private final Map<ArtModuleDescription, ArtBuilder> registeredPlugins = new HashMap<>();
 
@@ -186,7 +186,7 @@ public class DefaultArtManager implements ArtManager {
     }
 
     private void registerGlobalFilters(ArtBuilder.Result createdART) {
-        for (Map.Entry<Class<?>, List<ArtResultFilter<?>>> entry : createdART.getFilters().entrySet()) {
+        for (Map.Entry<Class<?>, List<Filter<?>>> entry : createdART.getFilters().entrySet()) {
             if (!globalFilters.containsKey(entry.getKey())) {
                 globalFilters.put(entry.getKey(), new ArrayList<>());
             }
