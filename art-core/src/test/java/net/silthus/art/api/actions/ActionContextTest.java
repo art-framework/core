@@ -18,6 +18,7 @@ package net.silthus.art.api.actions;
 
 import net.silthus.art.api.Action;
 import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
@@ -43,7 +44,7 @@ public class ActionContextTest {
     @BeforeEach
     public void beforeEach() {
         action = (Action<String, String>) action();
-        this.context = new ActionContext<>(String.class, action, new ActionConfig<>());
+        this.context = new ActionContext<>(String.class, action, new ActionConfig<>(), null);
     }
 
     @Nested
@@ -54,7 +55,7 @@ public class ActionContextTest {
         void shouldThrowIfRequirementIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new ActionContext<>(null, action, new ActionConfig<>()));
+                    .isThrownBy(() -> new ActionContext<>(null, action, new ActionConfig<>(), null));
         }
 
         @Test
@@ -62,7 +63,7 @@ public class ActionContextTest {
         void shouldThrowIfTargetClassIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new ActionContext<>(String.class, null, new ActionConfig<>()));
+                    .isThrownBy(() -> new ActionContext<>(String.class, null, new ActionConfig<>(), null));
         }
 
         @Test
@@ -70,7 +71,7 @@ public class ActionContextTest {
         void shouldThrowIfConfigIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new ActionContext<>(String.class, action, null));
+                    .isThrownBy(() -> new ActionContext<>(String.class, action, null, null));
         }
     }
 
@@ -200,6 +201,50 @@ public class ActionContextTest {
                 verify(action, times(1)).execute(any(), any());
             }
         }
+
+        @Nested
+        @DisplayName("with delay")
+        class withDelay {
+
+            private Scheduler scheduler;
+
+            @BeforeEach
+            void beforeEach() {
+                scheduler = mock(Scheduler.class);
+                context = new ActionContext<>(String.class, action, new ActionConfig<>(), scheduler);
+            }
+
+            @Test
+            @DisplayName("should not call scheduler if task has no delay")
+            void shouldNotCallSchedulerIfTaskHasNoDelay() {
+
+                context.execute(new StringTarget("foo"));
+
+                verify(scheduler, never()).runTaskLater(any(), anyLong());
+            }
+
+            @Test
+            @DisplayName("should call scheduler if task has delay")
+            void shouldCallSchedulerIfActionHasDelay() {
+
+                context.getOptions().setDelay("1s");
+
+                context.execute(new StringTarget("foo"));
+
+                verify(scheduler, times(1)).runTaskLater(any(), eq(20L));
+            }
+
+            @Test
+            @DisplayName("should execute action directly if no scheduler exists")
+            void shouldExecuteActionDirectlyIfSchedulerIsNotLoaded() {
+
+                context = new ActionContext<>(String.class, action, new ActionConfig<>(), null);
+
+                context.execute(new StringTarget("foo"));
+
+                verify(action, times(1)).execute(new StringTarget("foo"), context);
+            }
+        }
     }
 
     @Nested
@@ -212,7 +257,7 @@ public class ActionContextTest {
 
             assertThatExceptionOfType(UnsupportedOperationException.class)
                     .isThrownBy(() -> context.execute(new StringTarget("foobar"), new ActionContext<>(String.class, (s, s2) -> {
-                    }, new ActionConfig<>())))
+                    }, new ActionConfig<>(), null)))
                     .withMessageContaining("ActionContext#execute(target, context) must not be called directly");
         }
     }

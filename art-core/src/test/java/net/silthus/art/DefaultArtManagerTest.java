@@ -16,10 +16,11 @@
 
 package net.silthus.art;
 
+import com.google.inject.Provider;
 import lombok.SneakyThrows;
+import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.requirements.RequirementManager;
-import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,6 +33,7 @@ import java.util.HashMap;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
+@SuppressWarnings("unchecked")
 @DisplayName("ArtManager")
 class DefaultArtManagerTest {
 
@@ -44,10 +46,12 @@ class DefaultArtManagerTest {
     @BeforeEach
     void beforeEach() {
         actionManager = mock(ActionManager.class);
+        when(actionManager.create(any(), any())).thenReturn(mock(ActionFactory.class));
         requirementManager = mock(RequirementManager.class);
         triggerManager = mock(TriggerManager.class);
-        Scheduler scheduler = mock(Scheduler.class);
-        artManager = new DefaultArtManager(actionManager, requirementManager, triggerManager, scheduler, new HashMap<>());
+        Provider<ArtBuilder> artBuilder = (Provider<ArtBuilder>) mock(Provider.class);
+        when(artBuilder.get()).thenReturn(new ArtBuilder(actionManager));
+        artManager = new DefaultArtManager(actionManager, requirementManager, triggerManager, artBuilder, new HashMap<>());
     }
 
     @Nested

@@ -32,7 +32,6 @@ import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFilter;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
-import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.api.trigger.TriggerFactory;
@@ -57,7 +56,8 @@ public class DefaultArtManager implements ArtManager {
     private final ActionManager actionManager;
     private final RequirementManager requirementManager;
     private final TriggerManager triggerManager;
-    private final Scheduler scheduler;
+    private final Provider<ArtBuilder> artBuilderProvider;
+
 
     private Logger logger = Logger.getLogger("ART");
     private final Map<String, Provider<ArtParser>> parser;
@@ -66,11 +66,11 @@ public class DefaultArtManager implements ArtManager {
     private final Map<ArtModuleDescription, ArtBuilder> registeredPlugins = new HashMap<>();
 
     @Inject
-    public DefaultArtManager(ActionManager actionManager, RequirementManager requirementManager, TriggerManager triggerManager, Scheduler scheduler, Map<String, Provider<ArtParser>> parser) {
+    public DefaultArtManager(ActionManager actionManager, RequirementManager requirementManager, TriggerManager triggerManager, Provider<ArtBuilder> artBuilderProvider, Map<String, Provider<ArtParser>> parser) {
         this.actionManager = actionManager;
         this.requirementManager = requirementManager;
         this.triggerManager = triggerManager;
-        this.scheduler = scheduler;
+        this.artBuilderProvider = artBuilderProvider;
         this.parser = parser;
     }
 
@@ -93,7 +93,7 @@ public class DefaultArtManager implements ArtManager {
         if (registeredPlugins.containsKey(moduleDescription)) {
             artBuilder = registeredPlugins.get(moduleDescription);
         } else {
-            artBuilder = new ArtBuilder();
+            artBuilder = getArtBuilderProvider().get();
         }
 
         builder.andThen(art -> registeredPlugins.put(moduleDescription, art))

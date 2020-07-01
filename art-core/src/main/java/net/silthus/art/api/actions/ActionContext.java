@@ -19,7 +19,6 @@ package net.silthus.art.api.actions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
-import net.silthus.art.ART;
 import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.requirements.RequirementContext;
@@ -27,6 +26,7 @@ import net.silthus.art.api.requirements.RequirementHolder;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.trigger.Target;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,11 +47,17 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
     private final List<ActionContext<?, ?>> actions = new ArrayList<>();
     @Getter
     private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
+    private final Scheduler scheduler;
 
-    public ActionContext(Class<TTarget> tTargetClass, Action<TTarget, TConfig> action, ActionConfig<TConfig> config) {
+    public ActionContext(Class<TTarget> tTargetClass, Action<TTarget, TConfig> action, ActionConfig<TConfig> config, @Nullable Scheduler scheduler) {
         super(tTargetClass, config);
+        this.scheduler = scheduler;
         Objects.requireNonNull(action);
         this.action = action;
+    }
+
+    private Optional<Scheduler> getScheduler() {
+        return Optional.ofNullable(scheduler);
     }
 
     @Override
@@ -88,11 +94,10 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
                     .forEach(actionContext -> actionContext.execute(target));
         };
 
-        Optional<Scheduler> scheduler = ART.getScheduler();
         long delay = getOptions().getDelay();
 
-        if (scheduler.isPresent() && delay > 0) {
-            scheduler.get().runTaskLater(runnable, delay);
+        if (getScheduler().isPresent() && delay > 0) {
+            getScheduler().get().runTaskLater(runnable, delay);
         } else {
             runnable.run();
         }

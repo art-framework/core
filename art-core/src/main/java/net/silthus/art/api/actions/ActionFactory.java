@@ -16,9 +16,13 @@
 
 package net.silthus.art.api.actions;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import net.silthus.art.api.Action;
-import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.factory.ArtFactory;
+import net.silthus.art.api.scheduler.Scheduler;
+
+import javax.annotation.Nullable;
 
 /**
  * The {@link ActionFactory} creates a fresh {@link ActionContext} for each unique
@@ -31,16 +35,16 @@ import net.silthus.art.api.factory.ArtFactory;
  */
 public class ActionFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>> {
 
-    public static <TTarget, TConfig> ActionFactory<TTarget, TConfig> of(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
-        return new ActionFactory<>(targetClass, action);
-    }
+    private final Scheduler scheduler;
 
-    ActionFactory(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
+    @Inject
+    ActionFactory(@Assisted Class<TTarget> targetClass, @Assisted Action<TTarget, TConfig> action, @Nullable Scheduler scheduler) {
         super(targetClass, action);
+        this.scheduler = scheduler;
     }
 
     @Override
-    public ArtContext<TTarget, TConfig, ActionConfig<TConfig>> create(ActionConfig<TConfig> config) {
-        return new ActionContext<>(getTargetClass(), getArtObject(), config);
+    public ActionContext<TTarget, TConfig> create(ActionConfig<TConfig> config) {
+        return new ActionContext<>(getTargetClass(), getArtObject(), config, scheduler);
     }
 }

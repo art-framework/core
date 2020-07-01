@@ -18,8 +18,13 @@ package net.silthus.art;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.google.inject.multibindings.OptionalBinder;
+import net.silthus.art.api.actions.ActionFactory;
+import net.silthus.art.api.actions.ActionFactoryProvider;
+import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFactory;
+import net.silthus.art.api.scheduler.Scheduler;
 
 public class ArtGuiceModule extends AbstractModule {
 
@@ -30,5 +35,12 @@ public class ArtGuiceModule extends AbstractModule {
                 .implement(ArtResult.class, DefaultArtResult.class)
                 .build(ArtResultFactory.class)
         );
+
+        install(new FactoryModuleBuilder()
+                .implement(ArtFactory.class, ActionFactory.class)
+                .build(ActionFactoryProvider.class)
+        );
+
+        OptionalBinder.newOptionalBinder(binder(), Scheduler.class);
     }
 }

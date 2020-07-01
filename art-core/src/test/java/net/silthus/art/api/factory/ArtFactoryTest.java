@@ -19,11 +19,9 @@ package net.silthus.art.api.factory;
 import lombok.SneakyThrows;
 import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtContext;
-import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.actions.ActionConfig;
 import net.silthus.art.api.actions.ActionContext;
-import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import net.silthus.art.api.trigger.Target;
@@ -37,11 +35,26 @@ import static org.assertj.core.api.Assertions.*;
 @DisplayName("ActionFactory")
 public class ArtFactoryTest {
 
-    private ArtFactory<String, TestConfig, ? extends ArtObject, ActionConfig<TestConfig>> factory;
+    private ArtFactory<String, TestConfig, Action<String, TestConfig>, ActionConfig<TestConfig>> factory;
 
     @BeforeEach
     public void beforeEach() {
-        this.factory = ActionFactory.of(String.class, new TestAction());
+        this.factory = factory(String.class, new TestAction());
+    }
+
+    public static <TTarget, TConfig> ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>> factory(Class<TTarget> targetClass) {
+        return factory(targetClass, (target, context) -> {
+        });
+    }
+
+    public static <TTarget, TConfig> ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>> factory(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
+        return new ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>>(targetClass, action) {
+
+            @Override
+            public ArtContext<TTarget, TConfig, ActionConfig<TConfig>> create(ActionConfig<TConfig> config) {
+                return null;
+            }
+        };
     }
 
     @Nested
@@ -117,8 +130,7 @@ public class ArtFactoryTest {
         @DisplayName("should throw ActionRegistrationException if missing annotations")
         public void shouldThrowIfMissingAnnotations() {
 
-            factory = ActionFactory.of(String.class, (s, context) -> {
-            });
+            factory = factory(String.class);
 
             assertThatExceptionOfType(ArtObjectRegistrationException.class)
                     .isThrownBy(() -> factory.initialize());
@@ -128,8 +140,6 @@ public class ArtFactoryTest {
         @DisplayName("should not throw if manual set but has missing annotations")
         public void shouldNotThrowIfNoAnnotationButManualInfo() {
 
-            factory = ActionFactory.of(String.class, (s, context) -> {
-            });
             factory.setIdentifier("foo");
             factory.setConfigClass(TestConfig.class);
 
@@ -142,8 +152,7 @@ public class ArtFactoryTest {
         @DisplayName("should not throw if missing config information")
         public void shouldNotThrowIfMissingConfigInformation() {
 
-            factory = ActionFactory.of(String.class, (s, context) -> {
-            });
+            factory = factory(String.class);
             factory.setIdentifier("foobar");
 
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
@@ -158,7 +167,7 @@ public class ArtFactoryTest {
         @DisplayName("should use annotations on method")
         public void shouldUseMethodAnnotation() {
 
-            factory = ActionFactory.of(String.class, new Action<String, TestConfig>() {
+            factory = factory(String.class, new Action<String, TestConfig>() {
                 @Name("foo")
                 @Config(TestConfig.class)
                 @Override
@@ -277,7 +286,7 @@ public class ArtFactoryTest {
             @DisplayName("should throw if same field position is found")
             public void shouldThrowExceptionForSamePosition() {
 
-                ActionFactory<String, ErrorConfig> factory = ActionFactory.of(String.class, new Action<String, ErrorConfig>() {
+                ArtFactory<String, ErrorConfig, Action<String, ErrorConfig>, ActionConfig<ErrorConfig>> factory = factory(String.class, new Action<String, ErrorConfig>() {
                     @Name("test")
                     @Config(ErrorConfig.class)
                     @Override
@@ -301,18 +310,6 @@ public class ArtFactoryTest {
         public void beforeEach() {
 
             assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-        }
-
-        @Test
-        @DisplayName("should create an action context")
-        public void shouldCreateActionContext() {
-
-            ArtContext<String, TestConfig, ActionConfig<TestConfig>> context = factory.create(new ActionConfig<>());
-
-            assertThat(context).isNotNull();
-            assertThat(context).extracting("action").isEqualTo(factory.getArtObject());
-            assertThat(context).extracting("targetClass").isEqualTo(factory.getTargetClass());
-            assertThat(context.getConfig()).isEmpty();
         }
     }
 

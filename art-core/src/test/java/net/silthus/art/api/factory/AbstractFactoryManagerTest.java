@@ -21,7 +21,6 @@ import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.ArtRegistrationException;
 import net.silthus.art.api.actions.ActionFactory;
-import net.silthus.art.api.actions.ActionFactoryManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,9 +30,9 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
+@SuppressWarnings("ALL")
 @DisplayName("DefaultActionManager")
 class AbstractFactoryManagerTest {
 
@@ -41,7 +40,8 @@ class AbstractFactoryManagerTest {
 
     @BeforeEach
     void beforeEach() {
-        this.actionManager = new ActionFactoryManager();
+        this.actionManager = new AbstractFactoryManager<ActionFactory<?, ?>>() {
+        };
         actionManager.setLogger(Logger.getGlobal());
     }
 
@@ -127,12 +127,16 @@ class AbstractFactoryManagerTest {
         }
 
         @Test
-        @DisplayName("should not register art object without name")
+        @SneakyThrows
+        @DisplayName("should initialize factory")
         void shouldNotRegisterWithoutName() {
 
-            assertThatExceptionOfType(ArtRegistrationException.class)
-                    .isThrownBy(() -> actionManager.register(ActionFactory.of(Object.class, mock(Action.class))))
-                    .withMessageContaining("has no defined name.");
+            ActionFactory foobar = factory("foobar", ActionFactory.class);
+
+            assertThatCode(() -> actionManager.register(foobar))
+                    .doesNotThrowAnyException();
+
+            verify(foobar, times(1)).initialize();
         }
     }
 

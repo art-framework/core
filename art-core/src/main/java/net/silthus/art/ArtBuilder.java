@@ -17,13 +17,14 @@
 package net.silthus.art;
 
 import com.google.common.collect.ImmutableMap;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.Requirement;
 import net.silthus.art.api.Trigger;
-import net.silthus.art.api.actions.ActionFactory;
+import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.parser.ArtResultFilter;
@@ -45,7 +46,11 @@ public class ArtBuilder {
     private final Logger logger = Logger.getLogger("ARTBuilder");
     private final Map<Class<?>, TargetBuilder<?>> builders = new HashMap<>();
 
-    ArtBuilder() {
+    @Getter(AccessLevel.PRIVATE)
+    private final ActionManager actionManager;
+
+    ArtBuilder(ActionManager actionManager) {
+        this.actionManager = actionManager;
     }
 
     /**
@@ -146,7 +151,7 @@ public class ArtBuilder {
             @SuppressWarnings("unchecked")
             public FactoryBuilder(ArtObject artObject) {
                 if (artObject instanceof Action) {
-                    this.artFactories.add(ActionFactory.of(targetClass, (Action<TTarget, ?>) artObject));
+                    this.artFactories.add(getActionManager().create(targetClass, (Action<TTarget, ?>) artObject));
                 } else if (artObject instanceof Requirement) {
                     this.artFactories.add(RequirementFactory.of(targetClass, (Requirement<TTarget, ?>) artObject));
                 } else if (artObject instanceof Trigger) {
@@ -161,7 +166,7 @@ public class ArtBuilder {
 
             private Optional<ArtFactory<TTarget, ?, ?, ? extends ArtObjectConfig<?>>> getArtFactory() {
                 if (artFactories.size() == 1) {
-                    return Optional.of(artFactories.get(0));
+                    return Optional.ofNullable(artFactories.get(0));
                 }
                 return Optional.empty();
             }
