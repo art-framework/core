@@ -1,7 +1,9 @@
 package net.silthus.art.api;
 
+import lombok.AccessLevel;
 import lombok.Getter;
 import net.silthus.art.api.config.ArtObjectConfig;
+import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.api.trigger.Target;
 
 import java.util.Objects;
@@ -9,11 +11,14 @@ import java.util.Optional;
 
 public abstract class ArtContext<TTarget, TConfig, TContextOptions extends ArtObjectConfig<TConfig>> {
 
+    @Getter(AccessLevel.PROTECTED)
+    private final StorageProvider storageProvider;
     @Getter
     private final Class<TTarget> targetClass;
     private final TContextOptions config;
 
-    public ArtContext(Class<TTarget> targetClass, TContextOptions config) {
+    public ArtContext(StorageProvider storageProvider, Class<TTarget> targetClass, TContextOptions config) {
+        this.storageProvider = storageProvider;
         Objects.requireNonNull(targetClass, "targetClass must not be null");
         Objects.requireNonNull(config, "config must not be null");
         this.targetClass = targetClass;

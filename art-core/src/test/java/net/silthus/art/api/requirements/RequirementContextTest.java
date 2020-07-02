@@ -1,6 +1,7 @@
 package net.silthus.art.api.requirements;
 
 import net.silthus.art.api.Requirement;
+import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,15 +24,15 @@ class RequirementContextTest {
     @BeforeEach
     public void beforeEach() {
         requirement = requirement(String.class, true);
-        this.context = new RequirementContext<>(String.class, requirement, new RequirementConfig<>());
+        this.context = new RequirementContext<>(String.class, requirement, new RequirementConfig<>(), mock(StorageProvider.class));
     }
 
     private <TTarget> RequirementContext<TTarget, ?> withRequirement(Class<TTarget> targetClass, Requirement<TTarget, ?> requirement) {
-        return new RequirementContext<>(targetClass, requirement, new RequirementConfig<>());
+        return new RequirementContext<>(targetClass, requirement, new RequirementConfig<>(), mock(StorageProvider.class));
     }
 
     private RequirementContext<String, ?> withRequirement(Requirement<String, ?> requirement) {
-        return new RequirementContext<>(String.class, requirement, new RequirementConfig<>());
+        return new RequirementContext<>(String.class, requirement, new RequirementConfig<>(), mock(StorageProvider.class));
     }
 
     @Nested
@@ -42,7 +43,7 @@ class RequirementContextTest {
         void shouldThrowIfRequirementIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new RequirementContext<>(null, requirement, new RequirementConfig<>()));
+                    .isThrownBy(() -> new RequirementContext<>(null, requirement, new RequirementConfig<>(), mock(StorageProvider.class)));
         }
 
         @Test
@@ -50,7 +51,7 @@ class RequirementContextTest {
         void shouldThrowIfTargetClassIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new RequirementContext<>(String.class, null, new RequirementConfig<>()));
+                    .isThrownBy(() -> new RequirementContext<>(String.class, null, new RequirementConfig<>(), mock(StorageProvider.class)));
         }
 
         @Test
@@ -58,7 +59,7 @@ class RequirementContextTest {
         void shouldThrowIfConfigIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new RequirementContext<>(String.class, requirement, null));
+                    .isThrownBy(() -> new RequirementContext<>(String.class, requirement, null, mock(StorageProvider.class)));
         }
     }
 
@@ -115,7 +116,7 @@ class RequirementContextTest {
         void shouldThrowIfCalledDirectly() {
 
             assertThatExceptionOfType(UnsupportedOperationException.class)
-                    .isThrownBy(() -> context.test(new StringTarget("foobar"), new RequirementContext(String.class, requirement, new RequirementConfig<>())))
+                    .isThrownBy(() -> context.test(new StringTarget("foobar"), new RequirementContext(String.class, requirement, new RequirementConfig<>(), mock(StorageProvider.class))))
                     .withMessageContaining("RequirementContext#test(target, context) must not be called directly");
 
         }

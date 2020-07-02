@@ -23,6 +23,7 @@ import net.silthus.art.api.actions.ActionHolder;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.requirements.RequirementHolder;
 import net.silthus.art.api.scheduler.Scheduler;
+import net.silthus.art.api.storage.StorageProvider;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -38,8 +39,8 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
     private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
     private final Scheduler scheduler;
 
-    public TriggerContext(TriggerConfig<TConfig> config, Scheduler scheduler) {
-        super(Object.class, config);
+    public TriggerContext(TriggerConfig<TConfig> config, Scheduler scheduler, StorageProvider storageProvider) {
+        super(storageProvider, Object.class, config);
         this.scheduler = scheduler;
     }
 

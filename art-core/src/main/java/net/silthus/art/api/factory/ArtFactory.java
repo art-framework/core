@@ -29,6 +29,7 @@ import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
+import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.util.ConfigUtil;
 
 import java.lang.reflect.Method;
@@ -45,6 +46,7 @@ import java.util.stream.Collectors;
 @Data
 public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject, TArtConfig extends ArtObjectConfig<TConfig>> {
 
+    private final StorageProvider storageProvider;
     private final Class<TTarget> targetClass;
     private final TARTObject artObject;
     private Class<TConfig> configClass = null;

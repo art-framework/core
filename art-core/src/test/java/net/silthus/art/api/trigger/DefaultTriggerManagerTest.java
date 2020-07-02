@@ -1,5 +1,6 @@
 package net.silthus.art.api.trigger;
 
+import net.silthus.art.api.storage.StorageProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -20,7 +21,7 @@ class DefaultTriggerManagerTest {
     @BeforeEach
     void beforeEach() {
         TriggerFactoryProvider provider = mock(TriggerFactoryProvider.class);
-        when(provider.create(any())).thenAnswer(invocation -> new TriggerFactory<>(invocation.getArgument(0)));
+        when(provider.create(any())).thenAnswer(invocation -> new TriggerFactory<>(invocation.getArgument(0), mock(StorageProvider.class)));
         manager = spy(new DefaultTriggerManager(provider));
         test1Factory = mock(TriggerFactory.class);
         when(manager.getFactory(eq("test1"))).thenReturn(Optional.of(test1Factory));

@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
+import net.silthus.art.api.storage.StorageProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -32,7 +33,7 @@ class ActionParserTest {
         this.actionManager = mock(ActionManager.class);
         when(actionManager.getFactory(anyString())).thenReturn(Optional.of(factory));
         when(factory.create(any())).thenAnswer(invocation -> new ActionContext<>(Object.class, (o, context) -> {
-        }, invocation.getArgument(0), null));
+        }, invocation.getArgument(0), null, mock(StorageProvider.class)));
 
         this.parser = new ActionParser(actionManager);
     }

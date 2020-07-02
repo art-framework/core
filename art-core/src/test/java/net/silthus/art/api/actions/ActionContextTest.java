@@ -19,6 +19,7 @@ package net.silthus.art.api.actions;
 import net.silthus.art.api.Action;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.scheduler.Scheduler;
+import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
@@ -44,7 +45,7 @@ public class ActionContextTest {
     @BeforeEach
     public void beforeEach() {
         action = (Action<String, String>) action();
-        this.context = new ActionContext<>(String.class, action, new ActionConfig<>(), null);
+        this.context = new ActionContext<>(String.class, action, new ActionConfig<>(), null, mock(StorageProvider.class));
     }
 
     @Nested
@@ -55,7 +56,7 @@ public class ActionContextTest {
         void shouldThrowIfRequirementIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new ActionContext<>(null, action, new ActionConfig<>(), null));
+                    .isThrownBy(() -> new ActionContext<>(null, action, new ActionConfig<>(), null, mock(StorageProvider.class)));
         }
 
         @Test
@@ -63,7 +64,7 @@ public class ActionContextTest {
         void shouldThrowIfTargetClassIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new ActionContext<>(String.class, null, new ActionConfig<>(), null));
+                    .isThrownBy(() -> new ActionContext<>(String.class, null, new ActionConfig<>(), null, mock(StorageProvider.class)));
         }
 
         @Test
@@ -71,7 +72,7 @@ public class ActionContextTest {
         void shouldThrowIfConfigIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new ActionContext<>(String.class, action, null, null));
+                    .isThrownBy(() -> new ActionContext<>(String.class, action, null, null, mock(StorageProvider.class)));
         }
     }
 
@@ -211,7 +212,7 @@ public class ActionContextTest {
             @BeforeEach
             void beforeEach() {
                 scheduler = mock(Scheduler.class);
-                context = new ActionContext<>(String.class, action, new ActionConfig<>(), scheduler);
+                context = new ActionContext<>(String.class, action, new ActionConfig<>(), scheduler, mock(StorageProvider.class));
             }
 
             @Test
@@ -238,7 +239,7 @@ public class ActionContextTest {
             @DisplayName("should execute action directly if no scheduler exists")
             void shouldExecuteActionDirectlyIfSchedulerIsNotLoaded() {
 
-                context = new ActionContext<>(String.class, action, new ActionConfig<>(), null);
+                context = new ActionContext<>(String.class, action, new ActionConfig<>(), null, mock(StorageProvider.class));
 
                 context.execute(new StringTarget("foo"));
 
@@ -257,7 +258,7 @@ public class ActionContextTest {
 
             assertThatExceptionOfType(UnsupportedOperationException.class)
                     .isThrownBy(() -> context.execute(new StringTarget("foobar"), new ActionContext<>(String.class, (s, s2) -> {
-                    }, new ActionConfig<>(), null)))
+                    }, new ActionConfig<>(), null, mock(StorageProvider.class))))
                     .withMessageContaining("ActionContext#execute(target, context) must not be called directly");
         }
     }

@@ -25,6 +25,7 @@ import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.Trigger;
 import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.scheduler.Scheduler;
+import net.silthus.art.api.storage.StorageProvider;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -46,8 +47,8 @@ public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger
 
 
     @Inject
-    TriggerFactory(@Assisted Trigger trigger) {
-        super(Object.class, trigger);
+    TriggerFactory(@Assisted Trigger trigger, StorageProvider storageProvider) {
+        super(storageProvider, Object.class, trigger);
     }
 
     @Override
@@ -61,7 +62,7 @@ public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger
 
     @Override
     public TriggerContext<TConfig> create(TriggerConfig<TConfig> config) {
-        TriggerContext<TConfig> triggerContext = new TriggerContext<>(config, getScheduler());
+        TriggerContext<TConfig> triggerContext = new TriggerContext<>(config, getScheduler(), getStorageProvider());
         createdTrigger.add(triggerContext);
         return triggerContext;
     }

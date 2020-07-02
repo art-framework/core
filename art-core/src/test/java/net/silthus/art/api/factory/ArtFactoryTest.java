@@ -24,6 +24,7 @@ import net.silthus.art.api.actions.ActionConfig;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.config.ConfigFieldInformation;
+import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.api.trigger.Target;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.mock;
 
 @DisplayName("ActionFactory")
 public class ArtFactoryTest {
@@ -48,7 +50,7 @@ public class ArtFactoryTest {
     }
 
     public static <TTarget, TConfig> ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>> factory(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
-        return new ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>>(targetClass, action) {
+        return new ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>>(mock(StorageProvider.class), targetClass, action) {
 
             @Override
             public ArtContext<TTarget, TConfig, ActionConfig<TConfig>> create(ActionConfig<TConfig> config) {

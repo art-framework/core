@@ -24,7 +24,11 @@ import net.silthus.art.api.actions.ActionFactoryProvider;
 import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFactory;
+import net.silthus.art.api.requirements.RequirementFactory;
+import net.silthus.art.api.requirements.RequirementFactoryProvider;
 import net.silthus.art.api.scheduler.Scheduler;
+import net.silthus.art.api.storage.StorageProvider;
+import net.silthus.art.storage.MemoryStorageProvider;
 
 public class ArtGuiceModule extends AbstractModule {
 
@@ -41,6 +45,13 @@ public class ArtGuiceModule extends AbstractModule {
                 .build(ActionFactoryProvider.class)
         );
 
+        install(new FactoryModuleBuilder()
+                .implement(ArtFactory.class, RequirementFactory.class)
+                .build(RequirementFactoryProvider.class)
+        );
+
         OptionalBinder.newOptionalBinder(binder(), Scheduler.class);
+        OptionalBinder.newOptionalBinder(binder(), StorageProvider.class)
+                .setDefault().to(MemoryStorageProvider.class);
     }
 }

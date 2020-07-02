@@ -8,6 +8,7 @@ import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.annotations.Position;
 import net.silthus.art.api.parser.ArtParseException;
+import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.util.ConfigUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -41,7 +42,7 @@ class ArtTypeParserTest {
         when(manager.getFactory(anyString())).thenReturn(Optional.of(factory));
 
         when(factory.create(any())).thenAnswer(invocation -> new ActionContext<>(Object.class, (o, context) -> {
-        }, invocation.getArgument(0), null));
+        }, invocation.getArgument(0), null, mock(StorageProvider.class)));
         when(factory.getConfigClass()).thenReturn(Optional.of(TestConfig.class));
         when(factory.getConfigInformation()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
 
@@ -137,7 +138,7 @@ class ArtTypeParserTest {
 
             when(manager.getFactory(anyString())).thenReturn(Optional.of(factory));
 
-            when(factory.create(any())).thenAnswer(invocation -> new ActionContext<>(null, null, invocation.getArgument(0), null));
+            when(factory.create(any())).thenAnswer(invocation -> new ActionContext<>(null, null, invocation.getArgument(0), null, mock(StorageProvider.class)));
             when(factory.getConfigClass()).thenReturn(Optional.of(WrongConfigClass.class));
             when(factory.getConfigInformation()).thenReturn(new HashMap<>());
 

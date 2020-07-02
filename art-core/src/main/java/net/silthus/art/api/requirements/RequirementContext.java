@@ -20,6 +20,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.Requirement;
+import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.api.trigger.Target;
 
 import java.util.Objects;
@@ -36,8 +37,8 @@ public class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TC
     @Getter
     private final Requirement<TTarget, TConfig> requirement;
 
-    public RequirementContext(Class<TTarget> targetClass, Requirement<TTarget, TConfig> requirement, RequirementConfig<TConfig> config) {
-        super(targetClass, config);
+    public RequirementContext(Class<TTarget> targetClass, Requirement<TTarget, TConfig> requirement, RequirementConfig<TConfig> config, StorageProvider storageProvider) {
+        super(storageProvider, targetClass, config);
         Objects.requireNonNull(requirement, "requirement must not be null");
         this.requirement = requirement;
     }

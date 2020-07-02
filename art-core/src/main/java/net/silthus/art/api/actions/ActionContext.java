@@ -24,6 +24,7 @@ import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.requirements.RequirementHolder;
 import net.silthus.art.api.scheduler.Scheduler;
+import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.api.trigger.Target;
 
 import javax.annotation.Nullable;
@@ -49,8 +50,8 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
     private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
     private final Scheduler scheduler;
 
-    public ActionContext(Class<TTarget> tTargetClass, Action<TTarget, TConfig> action, ActionConfig<TConfig> config, @Nullable Scheduler scheduler) {
-        super(tTargetClass, config);
+    public ActionContext(Class<TTarget> tTargetClass, Action<TTarget, TConfig> action, ActionConfig<TConfig> config, @Nullable Scheduler scheduler, StorageProvider storageProvider) {
+        super(storageProvider, tTargetClass, config);
         this.scheduler = scheduler;
         Objects.requireNonNull(action);
         this.action = action;
