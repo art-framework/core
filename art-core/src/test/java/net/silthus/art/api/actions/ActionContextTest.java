@@ -25,6 +25,7 @@ import net.silthus.art.api.trigger.Target;
 import net.silthus.art.storage.MemoryStorageProvider;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
+import org.apache.commons.lang3.RandomUtils;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -111,6 +112,20 @@ public class ActionContextTest {
             assertThatExceptionOfType(NullPointerException.class)
                     .isThrownBy(() -> context.execute(null))
                     .withMessage("target is marked non-null but is null");
+        }
+
+        @Test
+        @DisplayName("should execute without limits")
+        void shouldExecuteAsManyTimesAsWeWant() {
+
+            StringTarget target = new StringTarget("foobar");
+            int executionCount = RandomUtils.nextInt(1, 50);
+
+            for (int i = 0; i < executionCount; i++) {
+                context.execute(target);
+            }
+
+            verify(action, times(executionCount)).execute(target, context);
         }
 
         @Test
@@ -334,6 +349,40 @@ public class ActionContextTest {
                 context.execute(target);
 
                 verify(requirement, never()).test(any());
+            }
+        }
+
+        @Nested
+        @DisplayName("with execute_once=true")
+        class withExecuteOnce {
+
+            @BeforeEach
+            void beforeEach() {
+                context.getOptions().setExecute_once(true);
+            }
+
+            @Test
+            @DisplayName("should execute only once")
+            void shouldExecuteTheFirstTime() {
+
+                StringTarget target = new StringTarget("foobar");
+                context.execute(target);
+                context.execute(target);
+
+                verify(action, times(1)).execute(target, context);
+            }
+
+            @Test
+            @DisplayName("should execute for each target")
+            void shouldExecuteEachTarget() {
+
+                StringTarget foo = new StringTarget("foo");
+                StringTarget bar = new StringTarget("bar");
+
+                context.execute(foo);
+                context.execute(bar);
+
+                verify(action, times(2)).execute(any(), any());
             }
         }
     }
