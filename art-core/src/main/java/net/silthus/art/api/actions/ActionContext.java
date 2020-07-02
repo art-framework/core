@@ -42,6 +42,8 @@ import java.util.Optional;
  */
 public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig, ActionConfig<TConfig>> implements Action<TTarget, TConfig>, RequirementHolder, ActionHolder {
 
+    static final String STORAGE_KEY_LAST_EXECUTION = "last_execution";
+
     @Getter(AccessLevel.PROTECTED)
     private final Action<TTarget, TConfig> action;
     @Getter
@@ -84,10 +86,13 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
             throw new UnsupportedOperationException("ActionContext#execute(target, context) must not be called directly. Use ActionResult#execute(target) instead.");
 
         if (!isTargetType(target)) return;
+        if (isOnCooldown(target)) return;
         if (!testRequirements(target)) return;
 
         Runnable runnable = () -> {
             getAction().execute(target, Objects.isNull(context) ? this : context);
+
+            getStorageProvider().store(this, target, STORAGE_KEY_LAST_EXECUTION, System.currentTimeMillis());
 
             getActions().stream()
                     .filter(actionContext -> actionContext.isTargetType(target.getSource()))
@@ -102,5 +107,17 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
         } else {
             runnable.run();
         }
+    }
+
+    public boolean isOnCooldown(Target<TTarget> target) {
+        long cooldown = getOptions().getCooldown();
+        if (cooldown < 1) return false;
+
+        Long storageValue = getStorageProvider().get(this, target, STORAGE_KEY_LAST_EXECUTION, Long.class);
+        long lastExecution = storageValue == null ? 0 : storageValue;
+
+        if (lastExecution < 1) return false;
+
+        return System.currentTimeMillis() < lastExecution + cooldown;
     }
 }
