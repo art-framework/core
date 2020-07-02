@@ -27,6 +27,7 @@ import net.silthus.art.api.parser.ArtParser;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFactory;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,7 +65,14 @@ public class FlowParser implements ArtParser {
                 try {
                     if (parser.accept(line)) {
                         matched = true;
-                        contexts.add(parser.parse());
+                        ArtContext<?, ?, ? extends ArtObjectConfig<?>> context = parser.parse();
+                        if (context.getOptions() != null) {
+                            context.getOptions().setParent(config);
+                            // create a mostly unique hash code from the line string and line number
+                            int hashCode = new HashCodeBuilder(17, 31).append(line).append(lineCount).toHashCode();
+                            context.getOptions().setIdentifier(hashCode + "");
+                        }
+                        contexts.add(context);
                         break;
                     }
                 } catch (ArtParseException e) {

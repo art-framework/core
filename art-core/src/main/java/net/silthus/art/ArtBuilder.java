@@ -28,7 +28,7 @@ import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.parser.Filter;
-import net.silthus.art.api.requirements.RequirementFactory;
+import net.silthus.art.api.requirements.RequirementManager;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerManager;
 
@@ -51,11 +51,14 @@ public class ArtBuilder {
     private final ActionManager actionManager;
     @Getter(AccessLevel.PRIVATE)
     private final TriggerManager triggerManager;
+    @Getter(AccessLevel.PRIVATE)
+    private final RequirementManager requirementManager;
 
     @Inject
-    ArtBuilder(ActionManager actionManager, TriggerManager triggerManager) {
+    ArtBuilder(ActionManager actionManager, TriggerManager triggerManager, RequirementManager requirementManager) {
         this.actionManager = actionManager;
         this.triggerManager = triggerManager;
+        this.requirementManager = requirementManager;
     }
 
     /**
@@ -158,7 +161,7 @@ public class ArtBuilder {
                 if (artObject instanceof Action) {
                     this.artFactories.add(getActionManager().create(targetClass, (Action<TTarget, ?>) artObject));
                 } else if (artObject instanceof Requirement) {
-                    this.artFactories.add(RequirementFactory.of(targetClass, (Requirement<TTarget, ?>) artObject));
+                    this.artFactories.add(getRequirementManager().create(targetClass, (Requirement<TTarget, ?>) artObject));
                 } else if (artObject instanceof Trigger) {
                     this.artFactories.addAll(getTriggerManager().create((Trigger) artObject).stream()
                             .map(triggerFactory -> (ArtFactory<TTarget, ?, ?, ? extends ArtObjectConfig<?>>) triggerFactory)

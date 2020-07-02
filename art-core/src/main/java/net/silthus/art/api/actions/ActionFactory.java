@@ -21,6 +21,7 @@ import com.google.inject.assistedinject.Assisted;
 import net.silthus.art.api.Action;
 import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.scheduler.Scheduler;
+import net.silthus.art.api.storage.StorageProvider;
 
 /**
  * The {@link ActionFactory} creates a fresh {@link ActionContext} for each unique
@@ -37,12 +38,12 @@ public class ActionFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig
     private Scheduler scheduler;
 
     @Inject
-    ActionFactory(@Assisted Class<TTarget> targetClass, @Assisted Action<TTarget, TConfig> action) {
-        super(targetClass, action);
+    ActionFactory(@Assisted Class<TTarget> targetClass, @Assisted Action<TTarget, TConfig> action, StorageProvider storageProvider) {
+        super(storageProvider, targetClass, action);
     }
 
     @Override
     public ActionContext<TTarget, TConfig> create(ActionConfig<TConfig> config) {
-        return new ActionContext<>(getTargetClass(), getArtObject(), config, scheduler);
+        return new ActionContext<>(getTargetClass(), getArtObject(), config, scheduler, getStorageProvider());
     }
 }

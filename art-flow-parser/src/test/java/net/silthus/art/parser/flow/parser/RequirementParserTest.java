@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
+import net.silthus.art.api.storage.StorageProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,7 +32,7 @@ class RequirementParserTest {
         this.factory = mock(RequirementFactory.class);
         this.requirementManager = mock(RequirementManager.class);
         when(requirementManager.getFactory(anyString())).thenReturn(Optional.of(factory));
-        when(factory.create(any())).thenAnswer(invocation -> new RequirementContext<>(Object.class, (o, context) -> true, invocation.getArgument(0)));
+        when(factory.create(any())).thenAnswer(invocation -> new RequirementContext<>(Object.class, (o, context) -> true, invocation.getArgument(0), mock(StorageProvider.class)));
 
         this.parser = new RequirementParser(requirementManager);
     }

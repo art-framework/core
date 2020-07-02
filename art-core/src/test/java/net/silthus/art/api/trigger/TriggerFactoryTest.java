@@ -22,6 +22,7 @@ import net.silthus.art.api.Trigger;
 import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.factory.ArtFactory;
+import net.silthus.art.api.storage.StorageProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -41,7 +42,7 @@ class TriggerFactoryTest {
     @BeforeEach
     void beforeEach() {
         provider = mock(TriggerFactoryProvider.class);
-        when(provider.create(any())).thenAnswer(invocation -> new TriggerFactory<>(invocation.getArgument(0)));
+        when(provider.create(any())).thenAnswer(invocation -> new TriggerFactory<>(invocation.getArgument(0), mock(StorageProvider.class)));
     }
 
     @Nested
@@ -54,7 +55,7 @@ class TriggerFactoryTest {
         void shouldInitializeWithSingleMethod() {
 
             MyMultiTrigger trigger = new MyMultiTrigger();
-            TriggerFactory<Object> factory = new TriggerFactory<>(trigger);
+            TriggerFactory<Object> factory = new TriggerFactory<>(trigger, mock(StorageProvider.class));
             factory.setMethod(trigger.getClass().getDeclaredMethod("methodTwo"));
 
             assertThatCode(factory::initialize)
@@ -70,7 +71,7 @@ class TriggerFactoryTest {
         @DisplayName("should initialize factory with class annotation only")
         void shouldInitializeWithClassAnnotation() {
 
-            TriggerFactory<Object> factory = new TriggerFactory<>(new MySecondTrigger());
+            TriggerFactory<Object> factory = new TriggerFactory<>(new MySecondTrigger(), mock(StorageProvider.class));
 
             assertThatCode(factory::initialize)
                     .doesNotThrowAnyException();

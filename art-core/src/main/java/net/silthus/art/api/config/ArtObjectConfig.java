@@ -13,6 +13,12 @@ public class ArtObjectConfig<TConfig> {
     @Ignore
     private final TConfig with;
 
+    @Ignore
+    private ArtConfig parent;
+
+    @Ignore
+    private String identifier;
+
     public ArtObjectConfig() {
         this.with = null;
     }
@@ -23,5 +29,13 @@ public class ArtObjectConfig<TConfig> {
 
     public Optional<TConfig> getWith() {
         return Optional.ofNullable(with);
+    }
+
+    public Optional<ArtConfig> getParent() {
+        return Optional.ofNullable(parent);
+    }
+
+    public String getIdentifier() {
+        return getParent().map(ArtConfig::getId).orElse("#") + identifier;
     }
 }

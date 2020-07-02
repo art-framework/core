@@ -18,6 +18,7 @@ package net.silthus.art.api.trigger;
 
 import lombok.NonNull;
 import net.silthus.art.api.scheduler.Scheduler;
+import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.testing.StringTarget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -33,7 +34,7 @@ class TriggerContextTest {
 
     @BeforeEach
     void beforeEach() {
-        context = new TriggerContext<>(new TriggerConfig<>(), null);
+        context = new TriggerContext<>(new TriggerConfig<>(), null, mock(StorageProvider.class));
     }
 
     @SuppressWarnings("unchecked")
@@ -112,7 +113,7 @@ class TriggerContextTest {
             @BeforeEach
             void beforeEach() {
                 scheduler = mock(Scheduler.class);
-                context = new TriggerContext<>(new TriggerConfig<>(), scheduler);
+                context = new TriggerContext<>(new TriggerConfig<>(), scheduler, mock(StorageProvider.class));
             }
 
             @Test
@@ -130,7 +131,7 @@ class TriggerContextTest {
             @DisplayName("should execute directly if scheduler is null")
             void shouldDirectlyExecuteTriggerIfSchedulerIsNull() {
 
-                context = TriggerContextTest.this.context = new TriggerContext<>(new TriggerConfig<>(), null);
+                context = TriggerContextTest.this.context = new TriggerContext<>(new TriggerConfig<>(), null, mock(StorageProvider.class));
                 context.getOptions().setDelay("1s");
                 TriggerListener<String> listener = addListener(String.class);
 

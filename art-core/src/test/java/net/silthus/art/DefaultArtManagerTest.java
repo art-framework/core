@@ -20,6 +20,7 @@ import com.google.inject.Provider;
 import lombok.SneakyThrows;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
+import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.api.trigger.TriggerManager;
@@ -48,9 +49,10 @@ class DefaultArtManagerTest {
         actionManager = mock(ActionManager.class);
         when(actionManager.create(any(), any())).thenReturn(mock(ActionFactory.class));
         requirementManager = mock(RequirementManager.class);
+        when(requirementManager.create(any(), any())).thenReturn(mock(RequirementFactory.class));
         triggerManager = mock(TriggerManager.class);
         Provider<ArtBuilder> artBuilder = (Provider<ArtBuilder>) mock(Provider.class);
-        when(artBuilder.get()).thenReturn(new ArtBuilder(actionManager, mock(TriggerManager.class)));
+        when(artBuilder.get()).thenReturn(new ArtBuilder(actionManager, mock(TriggerManager.class), requirementManager));
         artManager = new DefaultArtManager(actionManager, requirementManager, triggerManager, artBuilder, new HashMap<>());
     }
 

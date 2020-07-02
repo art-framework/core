@@ -6,6 +6,7 @@ import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.requirements.RequirementConfig;
 import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.api.trigger.TriggerConfig;
 import net.silthus.art.api.trigger.TriggerContext;
 import org.assertj.core.groups.Tuple;
@@ -19,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
 class FlowLogicSorterTest {
@@ -32,15 +34,15 @@ class FlowLogicSorterTest {
 
     private ActionContext<?, ?> action() {
         return spy(new ActionContext<>(Object.class, (o, context) -> {
-        }, new ActionConfig<>(), null));
+        }, new ActionConfig<>(), null, mock(StorageProvider.class)));
     }
 
     private RequirementContext<?, ?> requirement() {
-        return spy(new RequirementContext<>(Object.class, (o, context) -> true, new RequirementConfig<>()));
+        return spy(new RequirementContext<>(Object.class, (o, context) -> true, new RequirementConfig<>(), mock(StorageProvider.class)));
     }
 
     private TriggerContext<?> trigger() {
-        return spy(new TriggerContext<>(new TriggerConfig<>(), null));
+        return spy(new TriggerContext<>(new TriggerConfig<>(), null, mock(StorageProvider.class)));
     }
 
     @Nested

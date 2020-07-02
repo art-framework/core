@@ -21,6 +21,7 @@ import lombok.SneakyThrows;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
+import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,7 +60,9 @@ class FlowParserTest {
         when(artTypeParser.getMatcher()).thenCallRealMethod();
         when(artTypeParser.getInput()).thenCallRealMethod();
         when(artTypeParser.accept(anyString())).thenCallRealMethod();
-        when(artTypeParser.parse()).thenReturn(mock(ArtContext.class));
+        ArtContext artContext = mock(ArtContext.class);
+        when(artContext.getOptions()).thenReturn(new ArtObjectConfig());
+        when(artTypeParser.parse()).thenReturn(artContext);
 
         Provider<ArtTypeParser<?, ?>> actionParserProvider = mock(Provider.class);
         when(actionParserProvider.get()).thenReturn(this.artTypeParser);
