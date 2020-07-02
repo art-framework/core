@@ -86,7 +86,7 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
             throw new UnsupportedOperationException("ActionContext#execute(target, context) must not be called directly. Use ActionResult#execute(target) instead.");
 
         if (!isTargetType(target)) return;
-        if (isOnCooldown(target)) return;
+        if (cannotExecute(target)) return;
         if (!testRequirements(target)) return;
 
         Runnable runnable = () -> {
@@ -109,15 +109,43 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
         }
     }
 
+    /**
+     * Checks if the {@link ActionContext} has the execute_once option
+     * and already executed once for the {@link Target}.
+     *
+     * @param target target to check
+     * @return true if action was already executed and should only execute once
+     */
+    public boolean wasExecutedOnce(Target<TTarget> target) {
+
+        return getOptions().isExecuteOnce() && getLastExecution(target) > 0;
+    }
+
+    /**
+     * Checks if the action is on cooldown for the given {@link Target}.
+     * Will always return false if no cooldown is defined (set to zero).
+     *
+     * @param target target to check
+     * @return true if action is on cooldown
+     */
     public boolean isOnCooldown(Target<TTarget> target) {
         long cooldown = getOptions().getCooldown();
         if (cooldown < 1) return false;
 
-        Long storageValue = getStorageProvider().get(this, target, STORAGE_KEY_LAST_EXECUTION, Long.class);
-        long lastExecution = storageValue == null ? 0 : storageValue;
+        long lastExecution = getLastExecution(target);
 
         if (lastExecution < 1) return false;
 
         return System.currentTimeMillis() < lastExecution + cooldown;
+    }
+
+    private boolean cannotExecute(Target<TTarget> target) {
+        return wasExecutedOnce(target) || isOnCooldown(target);
+    }
+
+    private long getLastExecution(Target<TTarget> target) {
+        Long storedLong = getStorageProvider().get(this, target, STORAGE_KEY_LAST_EXECUTION, Long.class);
+        if (storedLong == null) return 0;
+        return storedLong;
     }
 }
