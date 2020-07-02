@@ -76,6 +76,7 @@ subprojects {
         testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
         testImplementation "org.mockito:mockito-core:3.+"
         testImplementation 'org.assertj:assertj-core:3.+'
+        testImplementation 'org.awaitility:awaitility:4.0.3'
         testImplementation group: 'com.google.jimfs', name: 'jimfs', version: '1.+'
         testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
         testImplementation 'org.projectlombok:lombok:1.+'

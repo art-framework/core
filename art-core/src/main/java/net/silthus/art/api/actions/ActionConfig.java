@@ -56,12 +56,12 @@ public final class ActionConfig<TConfig> extends ArtObjectConfig<TConfig> {
     }
 
     /**
-     * The cooldown in ticks for this action.
+     * The cooldown in milliseconds for this action.
      *
-     * @return cooldown in ticks
+     * @return cooldown in milliseconds
      */
     public long getCooldown() {
-        return TimeUtil.parseTimeAsTicks(cooldown);
+        return TimeUtil.parseTimeAsMillis(cooldown);
     }
 
     public boolean isExecuteOnce() {

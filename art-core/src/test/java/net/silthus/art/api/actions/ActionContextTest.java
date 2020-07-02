@@ -16,13 +16,16 @@
 
 package net.silthus.art.api.actions;
 
+import lombok.SneakyThrows;
 import net.silthus.art.api.Action;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.api.trigger.Target;
+import net.silthus.art.storage.MemoryStorageProvider;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
+import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -31,8 +34,7 @@ import org.mockito.InOrder;
 
 import static net.silthus.art.api.TestUtil.action;
 import static net.silthus.art.api.TestUtil.requirement;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @DisplayName("ActionContext")
@@ -41,11 +43,13 @@ public class ActionContextTest {
 
     private Action<String, String> action;
     private ActionContext<String, String> context;
+    private StorageProvider storageProvider;
 
     @BeforeEach
     public void beforeEach() {
         action = (Action<String, String>) action();
-        this.context = new ActionContext<>(String.class, action, new ActionConfig<>(), null, mock(StorageProvider.class));
+        storageProvider = new MemoryStorageProvider();
+        this.context = spy(new ActionContext<>(String.class, action, new ActionConfig<>(), null, storageProvider));
     }
 
     @Nested
@@ -244,6 +248,92 @@ public class ActionContextTest {
                 context.execute(new StringTarget("foo"));
 
                 verify(action, times(1)).execute(new StringTarget("foo"), context);
+            }
+        }
+
+        @Nested
+        @DisplayName("with cooldown")
+        class withCooldown {
+
+            @BeforeEach
+            void beforeEach() {
+
+                context.getOptions().setCooldown("1s");
+            }
+
+            @Test
+            @DisplayName("should not execute action twice in a row")
+            void shouldNotExecuteBeforeCooldownEnds() {
+
+                StringTarget target = new StringTarget("foobar");
+
+                context.execute(target);
+                context.execute(target);
+
+                verify(action, times(1)).execute(any(), any());
+            }
+
+            @Test
+            @SneakyThrows
+            @DisplayName("should execute action after cooldown ends")
+            void shouldExecuteActionAfterCooldownEnds() {
+
+                StringTarget target = new StringTarget("foo");
+
+                context.execute(target);
+                Thread.sleep(1500L);
+                context.execute(target);
+
+                verify(action, times(2)).execute(any(), any());
+            }
+
+            @Test
+            @DisplayName("should set different cooldowns for different targets")
+            void shouldSeparateCooldownsForTargets() {
+
+                StringTarget foo = new StringTarget("foo");
+                StringTarget bar = new StringTarget("bar");
+
+                context.execute(foo);
+                context.execute(bar);
+
+                verify(action, times(1)).execute(foo, context);
+                verify(action, times(1)).execute(bar, context);
+            }
+
+            @Test
+            @SneakyThrows
+            @DisplayName("should set last execution time")
+            void shouldSetLastExecution() {
+
+                StringTarget foo = new StringTarget("foo");
+                StringTarget bar = new StringTarget("bar");
+
+                long time = System.currentTimeMillis();
+
+                context.execute(foo);
+                Thread.sleep(5);
+                context.execute(bar);
+
+                Long fooTime = storageProvider.get(context, foo, ActionContext.STORAGE_KEY_LAST_EXECUTION, Long.class);
+                assertThat(fooTime).isCloseTo(time, Offset.offset(5L));
+
+                Long barTime = storageProvider.get(context, bar, ActionContext.STORAGE_KEY_LAST_EXECUTION, Long.class);
+                assertThat(barTime).isCloseTo(time + 5, Offset.offset(5L));
+            }
+
+            @Test
+            @DisplayName("should not test requirements if action is on cooldown")
+            void shouldNotTestRequirementsIfActionIsOnCooldown() {
+
+                StringTarget target = new StringTarget("foo");
+                RequirementContext<?, ?> requirement = requirement(true);
+                context.addRequirement(requirement);
+                storageProvider.store(context, target, ActionContext.STORAGE_KEY_LAST_EXECUTION, System.currentTimeMillis());
+
+                context.execute(target);
+
+                verify(requirement, never()).test(any());
             }
         }
     }
