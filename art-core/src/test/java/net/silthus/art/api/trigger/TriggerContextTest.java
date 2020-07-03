@@ -17,24 +17,39 @@
 package net.silthus.art.api.trigger;
 
 import lombok.NonNull;
+import lombok.SneakyThrows;
+import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
+import net.silthus.art.storage.MemoryStorageProvider;
 import net.silthus.art.testing.StringTarget;
+import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.function.Predicate;
+
+import static net.silthus.art.api.TestUtil.requirement;
+import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 @DisplayName("TriggerContext")
 class TriggerContextTest {
 
     private TriggerContext<?> context;
+    private StorageProvider storageProvider;
 
     @BeforeEach
     void beforeEach() {
-        context = new TriggerContext<>(new TriggerConfig<>(), null, mock(StorageProvider.class));
+        storageProvider = new MemoryStorageProvider();
+        context = new TriggerContext<>(new TriggerConfig<>(), null, storageProvider);
+    }
+
+    private <TTarget> Predicate<TriggerContext<TTarget>> truePredicate() {
+        return triggerContext -> true;
     }
 
     @SuppressWarnings("unchecked")
@@ -71,7 +86,7 @@ class TriggerContextTest {
             TriggerListener<String> listener1 = addListener(String.class);
             TriggerListener<String> listener2 = addListener(String.class);
 
-            context.trigger(new StringTarget("foobar"), triggerContext -> true);
+            context.trigger(new StringTarget("foobar"), truePredicate());
 
             verify(listener1, times(1)).onTrigger(any());
             verify(listener2, times(1)).onTrigger(any());
@@ -151,6 +166,137 @@ class TriggerContextTest {
 
                 verify(scheduler, never()).runTaskLater(any(), anyLong());
                 verify(listener, times(1)).onTrigger(new StringTarget("foo"));
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        @Nested
+        @DisplayName("with cooldown")
+        class withCooldown {
+
+            private TriggerListener<String> listener;
+
+            @BeforeEach
+            void beforeEach() {
+
+                context.getOptions().setCooldown("1s");
+                listener = (TriggerListener<String>) mock(TriggerListener.class);
+                context.addListener(String.class, listener);
+            }
+
+            @Test
+            @DisplayName("should not execute action twice in a row")
+            void shouldNotExecuteBeforeCooldownEnds() {
+
+                StringTarget target = new StringTarget("foobar");
+
+                context.trigger(target, truePredicate());
+                context.trigger(target, truePredicate());
+
+                verify(listener, times(1)).onTrigger(any());
+            }
+
+            @Test
+            @SneakyThrows
+            @DisplayName("should execute action after cooldown ends")
+            void shouldExecuteActionAfterCooldownEnds() {
+
+                StringTarget target = new StringTarget("foo");
+
+                context.trigger(target, truePredicate());
+                Thread.sleep(1500L);
+                context.trigger(target, truePredicate());
+
+                verify(listener, times(2)).onTrigger(any());
+            }
+
+            @Test
+            @DisplayName("should set different cooldowns for different targets")
+            void shouldSeparateCooldownsForTargets() {
+
+                StringTarget foo = new StringTarget("foo");
+                StringTarget bar = new StringTarget("bar");
+
+                context.trigger(foo, truePredicate());
+                context.trigger(bar, truePredicate());
+
+                verify(listener, times(1)).onTrigger(foo);
+                verify(listener, times(1)).onTrigger(bar);
+            }
+
+            @Test
+            @SneakyThrows
+            @DisplayName("should set last execution time")
+            void shouldSetLastExecution() {
+
+                StringTarget foo = new StringTarget("foo");
+                StringTarget bar = new StringTarget("bar");
+
+                long time = System.currentTimeMillis();
+
+                context.trigger(foo, truePredicate());
+                Thread.sleep(5);
+                context.trigger(bar, truePredicate());
+
+                Long fooTime = storageProvider.get(context, foo, LAST_EXECUTION, Long.class);
+                assertThat(fooTime).isCloseTo(time, Offset.offset(5L));
+
+                Long barTime = storageProvider.get(context, bar, LAST_EXECUTION, Long.class);
+                assertThat(barTime).isCloseTo(time + 5, Offset.offset(5L));
+            }
+
+            @Test
+            @DisplayName("should not test requirements if action is on cooldown")
+            void shouldNotTestRequirementsIfActionIsOnCooldown() {
+
+                StringTarget target = new StringTarget("foo");
+                RequirementContext<?, ?> requirement = requirement(true);
+                context.addRequirement(requirement);
+                storageProvider.store(context, target, LAST_EXECUTION, System.currentTimeMillis());
+
+                context.trigger(target, truePredicate());
+
+                verify(requirement, never()).test(any());
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        @Nested
+        @DisplayName("with execute_once=true")
+        class withExecuteOnce {
+
+            private TriggerListener<String> listener;
+
+            @BeforeEach
+            void beforeEach() {
+                context.getOptions().setExecute_once(true);
+                listener = (TriggerListener<String>) mock(TriggerListener.class);
+                context.addListener(String.class, listener);
+            }
+
+            @Test
+            @DisplayName("should execute only once")
+            void shouldExecuteTheFirstTime() {
+
+                StringTarget target = new StringTarget("foobar");
+
+                context.trigger(target, truePredicate());
+                context.trigger(target, truePredicate());
+
+                verify(listener, times(1)).onTrigger(target);
+            }
+
+            @Test
+            @DisplayName("should execute for each target")
+            void shouldExecuteEachTarget() {
+
+                StringTarget foo = new StringTarget("foo");
+                StringTarget bar = new StringTarget("bar");
+
+                context.trigger(foo, truePredicate());
+                context.trigger(bar, truePredicate());
+
+                verify(listener, times(2)).onTrigger(any());
             }
         }
     }

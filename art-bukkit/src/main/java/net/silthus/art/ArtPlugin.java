@@ -17,7 +17,7 @@
 package net.silthus.art;
 
 import com.google.inject.Binder;
-import kr.entree.spigradle.PluginMain;
+import kr.entree.spigradle.annotations.PluginMain;
 import lombok.Getter;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.scheduler.Scheduler;

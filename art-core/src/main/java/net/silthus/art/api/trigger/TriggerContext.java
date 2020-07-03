@@ -121,6 +121,7 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
      * and already executed once for the {@link Target}.
      *
      * @param target target to check
+     * @param <TTarget> target type
      * @return true if action was already executed and should only execute once
      */
     public <TTarget> boolean wasExecutedOnce(Target<TTarget> target) {
@@ -133,6 +134,7 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
      * Will always return false if no cooldown is defined (set to zero).
      *
      * @param target target to check
+     * @param <TTarget> target type
      * @return true if action is on cooldown
      */
     public <TTarget> boolean isOnCooldown(Target<TTarget> target) {

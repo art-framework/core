@@ -50,7 +50,7 @@ public class TriggerConfig<TConfig> extends ArtObjectConfig<TConfig> {
     })
     private String cooldown = "0s";
 
-    private boolean execue_once = false;
+    private boolean execute_once = false;
 
     /**
      * Gets the delay of this trigger measured in ticks.
@@ -72,6 +72,6 @@ public class TriggerConfig<TConfig> extends ArtObjectConfig<TConfig> {
     }
 
     public boolean isExecuteOnce() {
-        return execue_once;
+        return execute_once;
     }
 }
