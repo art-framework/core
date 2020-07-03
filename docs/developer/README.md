@@ -12,7 +12,8 @@ All of these code examples can also be found inside the [art-example](../../art-
 * [Creating Trigger](#creating-trigger)
 * [Register your **A**ctions **R**equirements **T**rigger](#register-your-actions-requirements-trigger)
 * [Using **A**ctions **R**equirements **T**rigger in your plugin](#using-actions-requirements-trigger-in-your-plugin)
-  * [Using ConfigLib to load the config](#using-configlib-to-load-the-config)
+  * [Using Bukkit's ConfigurationSection](#using-bukkits-configurationsection)
+  * [Using ConfigLib](#using-configlib)
 
 ## Dependencies
 
@@ -327,7 +328,8 @@ public class ExampleARTPlugin extends JavaPlugin {
 
 One powerfull feature ob the [ART-Framework](https://github.com/silthus/art-framework) is the reuseability of actions, requirements and trigger accross multiple plugins without knowing the implementation and config of those.
 
-All you need to do to use ART inside your plugin is to provide a reference to the loaded `ARTConfig`. How you load this config is up to you. However to make your life simple ART provides some helper methods for Bukkits `ConfigurationSection` (*coming soon*) and implements [ConfigLib](https://github.com/Silthus/ConfigLib) for some easy config loading.
+All you need to do to use ART inside your plugin is to provide a reference to the loaded `ARTConfig`. How you load this config is up to you.  
+However to make your life simple ART provides some helper methods for Bukkits `ConfigurationSection` and implements [ConfigLib](https://github.com/Silthus/ConfigLib) for easy configuration loading.
 
 > Make sure you load your ARTConfig after all plugins are loaded and enabled.  
 > To do this you can use this handy method: `Bukkit.getScheduler().runTaskLater(this, () -> {...}, 1L);`  
@@ -344,13 +346,34 @@ actions:
     - '!text "You reached the heavens of the gods and will be punished!"'
 ```
 
-### Using [ConfigLib](https://github.com/Silthus/ConfigLib) to load the config
+You need an `ArtResult` to execute actions, test for requirements or listen to triggers. You can find two methods below on how to create such an `ArtResult`.
 
 ```java
-public class ExampleARTPlugin extends JavaPlugin implements Listener {
+// here we asume that you have loaded your ArtResult (see below)
+ArtResult result = ART.load(config);
 
-    @Getter
-    private ARTResult artResult;
+// you can execute all actions that are in the ArtResult
+result.execute(player);
+
+// or test if all requirements are met
+if (result.test(player)) {
+    // do stuff
+}
+
+// or listen if any of the trigger gets executed
+getArtResult().onTrigger(Player.class, target -> {
+    Player player = target.getSource();
+    player.damage(20);
+});
+```
+
+### Using Bukkit's ConfigurationSection
+
+You need to depend on the `net.silthus.art:art-bukkit` module if you want to load your configurations using a Bukkit `ConfigurationSection`.  
+Then you can simply do the following when your plugin gets enabled.
+
+```java
+public class ExampleARTPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
@@ -358,24 +381,54 @@ public class ExampleARTPlugin extends JavaPlugin implements Listener {
         // this will load all art configs after all plugins are loaded and enabled
         // this is a must to avoid loading conflicts
         Bukkit.getScheduler().runTaskLater(this, this::loadARTConfig, 1L);
-
-        // register your standard event stuff
-        Bukkit.getPluginManager().registerEvents(this, this);
     }
 
-    // this will execute all configured actions on every player move
-    // dont try this at home :)
-    // you should instead use this for some non frequent events inside your plugin
-    // or when a command is triggered
-    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
+    private void loadARTConfig() {
 
-        // lets be nice to the server and check if the player actually moved a block
-        // otherwise we would execute everytime the player twiches with his eyes
-        if (!LocationUtil.hasMoved(event.getPlayer())) return;
-        if (getArtResult() == null) return;
+        if (!isARTLoaded()) {
+            getLogger().warning("ART plugin not found. Not loading ART configs.");
+            return;
+        }
 
-        getArtResult().execute(event.getPlayer());
+        File configFile = new File(getDataFolder(), "example.yml");
+        // copy the example.yml config from our jar file (resources folder) to the plugin directory
+        // this is completly optional and you can also load your files some other way
+        if (!configFile.exists()) {
+            configFile.getParentFile().mkdirs();
+            saveResource("example.yml", false);
+        }
+
+        try {
+            // provide the file to the config and your key where the art section should begin
+            ArtConfig config = BukkitArtConfig.of(configFile, "actions");
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+
+        // use the ARtResult to execute, test or listen to the ART
+        ARTResult artResult = ART.load(config);
+    }
+
+    private boolean isARTLoaded() {
+        return Bukkit.getPluginManager().getPlugin("ART") != null;
+    }
+}
+```
+
+### Using [ConfigLib](https://github.com/Silthus/ConfigLib)
+
+[ConfigLib](https://github.com/Silthus/ConfigLib) allows you to load your configurations into predefined classes and gets rid of all the magic strings Bukkit uses.  
+You should give it a try, it is just awesome :)
+
+```java
+public class ExampleARTPlugin extends JavaPlugin implements Listener {
+
+    @Override
+    public void onEnable() {
+
+        // this will load all art configs after all plugins are loaded and enabled
+        // this is a must to avoid loading conflicts
+        Bukkit.getScheduler().runTaskLater(this, this::loadARTConfig, 1L);
     }
 
     private void loadARTConfig() {
@@ -390,7 +443,8 @@ public class ExampleARTPlugin extends JavaPlugin implements Listener {
         Config config = new Config(new File(getDataFolder(), "example.yml"));
         config.loadAndSave();
 
-        artResult = ART.load(config);
+        // use the ARtResult to execute, test or listen to the ART
+        ARTResult artResult = ART.load(config);
     }
 
     private boolean isARTLoaded() {
@@ -409,4 +463,5 @@ public class ExampleARTPlugin extends JavaPlugin implements Listener {
             super(file.toPath());
         }
     }
+}
 ```
