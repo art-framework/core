@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.ART;
 import net.silthus.art.ArtBukkitDescription;
+import net.silthus.art.BukkitArtConfig;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
@@ -29,6 +30,7 @@ import net.silthus.examples.art.actions.PlayerDamageAction;
 import net.silthus.examples.art.requirements.EntityLocationRequirement;
 import net.silthus.examples.art.trigger.PlayerMoveTrigger;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
@@ -81,10 +83,29 @@ public class ExampleArtPlugin extends JavaPlugin {
             return;
         }
 
-        Config config = new Config(new File(getDataFolder(), "example.yml"));
+
+        File configFile = new File(getDataFolder(), "example.yml");
+
+        if (!configFile.exists()) {
+            configFile.getParentFile().mkdirs();
+            saveResource("example.yml", false);
+        }
+
+        try {
+            ArtConfig config = BukkitArtConfig.of(configFile, "actions");
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+
+        Config config = new Config(configFile);
         config.loadAndSave();
 
         setArtResult(ART.load(config.getActions()));
+
+        getArtResult().onTrigger(Player.class, target -> {
+            Player player = target.getSource();
+            player.damage(20);
+        });
     }
 
     private boolean isARTLoaded() {
