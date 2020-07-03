@@ -35,6 +35,7 @@ import org.mockito.InOrder;
 
 import static net.silthus.art.api.TestUtil.action;
 import static net.silthus.art.api.TestUtil.requirement;
+import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -330,10 +331,10 @@ public class ActionContextTest {
                 Thread.sleep(5);
                 context.execute(bar);
 
-                Long fooTime = storageProvider.get(context, foo, ActionContext.STORAGE_KEY_LAST_EXECUTION, Long.class);
+                Long fooTime = storageProvider.get(context, foo, LAST_EXECUTION, Long.class);
                 assertThat(fooTime).isCloseTo(time, Offset.offset(5L));
 
-                Long barTime = storageProvider.get(context, bar, ActionContext.STORAGE_KEY_LAST_EXECUTION, Long.class);
+                Long barTime = storageProvider.get(context, bar, LAST_EXECUTION, Long.class);
                 assertThat(barTime).isCloseTo(time + 5, Offset.offset(5L));
             }
 
@@ -344,7 +345,7 @@ public class ActionContextTest {
                 StringTarget target = new StringTarget("foo");
                 RequirementContext<?, ?> requirement = requirement(true);
                 context.addRequirement(requirement);
-                storageProvider.store(context, target, ActionContext.STORAGE_KEY_LAST_EXECUTION, System.currentTimeMillis());
+                storageProvider.store(context, target, LAST_EXECUTION, System.currentTimeMillis());
 
                 context.execute(target);
 

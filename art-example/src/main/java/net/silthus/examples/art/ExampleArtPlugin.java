@@ -17,7 +17,7 @@
 package net.silthus.examples.art;
 
 import de.exlll.configlib.configs.yaml.YamlConfiguration;
-import kr.entree.spigradle.PluginMain;
+import kr.entree.spigradle.annotations.PluginMain;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.ART;
