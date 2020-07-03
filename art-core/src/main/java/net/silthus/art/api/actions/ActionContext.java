@@ -33,6 +33,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
+
 /**
  * The action context is created for every unique {@link Action} configuration.
  * It holds all relevant information to execute the action and tracks the dependencies.
@@ -41,8 +43,6 @@ import java.util.Optional;
  * @param <TConfig> config type of the action
  */
 public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, TConfig, ActionConfig<TConfig>> implements Action<TTarget, TConfig>, RequirementHolder, ActionHolder {
-
-    static final String STORAGE_KEY_LAST_EXECUTION = "last_execution";
 
     @Getter(AccessLevel.PROTECTED)
     private final Action<TTarget, TConfig> action;
@@ -92,7 +92,7 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
         Runnable runnable = () -> {
             getAction().execute(target, Objects.isNull(context) ? this : context);
 
-            getStorageProvider().store(this, target, STORAGE_KEY_LAST_EXECUTION, System.currentTimeMillis());
+            getStorageProvider().store(this, target, LAST_EXECUTION, System.currentTimeMillis());
 
             getActions().stream()
                     .filter(actionContext -> actionContext.isTargetType(target.getSource()))
@@ -144,7 +144,7 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
     }
 
     private long getLastExecution(Target<TTarget> target) {
-        Long storedLong = getStorageProvider().get(this, target, STORAGE_KEY_LAST_EXECUTION, Long.class);
+        Long storedLong = getStorageProvider().get(this, target, LAST_EXECUTION, Long.class);
         if (storedLong == null) return 0;
         return storedLong;
     }
