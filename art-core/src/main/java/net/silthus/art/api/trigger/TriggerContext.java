@@ -28,6 +28,7 @@ import net.silthus.art.api.storage.StorageProvider;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
 import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
 
 public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, TriggerConfig<TConfig>> implements ActionHolder, RequirementHolder {
@@ -91,8 +92,14 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
      */
     @SuppressWarnings("unchecked")
     <TTarget> void trigger(Target<TTarget> target, Predicate<TriggerContext<TConfig>> predicate) {
+
+        if (cannotExecute(target)) return;
+
         Runnable runnable = () -> {
             if (predicate.test(this) && testRequirements(target)) {
+
+                getStorageProvider().store(this, target, LAST_EXECUTION, System.currentTimeMillis());
+
                 executeActions(target);
 
                 getEntryForTarget(target.getSource(), listeners).orElse(new HashSet<>()).stream()
@@ -107,5 +114,45 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
         } else {
             runnable.run();
         }
+    }
+
+    /**
+     * Checks if the {@link ActionContext} has the execute_once option
+     * and already executed once for the {@link Target}.
+     *
+     * @param target target to check
+     * @return true if action was already executed and should only execute once
+     */
+    public <TTarget> boolean wasExecutedOnce(Target<TTarget> target) {
+
+        return getOptions().isExecuteOnce() && getLastExecution(target) > 0;
+    }
+
+    /**
+     * Checks if the action is on cooldown for the given {@link Target}.
+     * Will always return false if no cooldown is defined (set to zero).
+     *
+     * @param target target to check
+     * @return true if action is on cooldown
+     */
+    public <TTarget> boolean isOnCooldown(Target<TTarget> target) {
+        long cooldown = getOptions().getCooldown();
+        if (cooldown < 1) return false;
+
+        long lastExecution = getLastExecution(target);
+
+        if (lastExecution < 1) return false;
+
+        return System.currentTimeMillis() < lastExecution + cooldown;
+    }
+
+    private <TTarget> boolean cannotExecute(Target<TTarget> target) {
+        return wasExecutedOnce(target) || isOnCooldown(target);
+    }
+
+    private <TTarget> long getLastExecution(Target<TTarget> target) {
+        Long storedLong = getStorageProvider().get(this, target, LAST_EXECUTION, Long.class);
+        if (storedLong == null) return 0;
+        return storedLong;
     }
 }
