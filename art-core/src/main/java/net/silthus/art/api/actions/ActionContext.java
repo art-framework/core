@@ -144,8 +144,6 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
     }
 
     private long getLastExecution(Target<TTarget> target) {
-        Long storedLong = getStorageProvider().get(this, target, LAST_EXECUTION, Long.class);
-        if (storedLong == null) return 0;
-        return storedLong;
+        return getStorageProvider().get(this, target, LAST_EXECUTION, Long.class).orElse(0L);
     }
 }

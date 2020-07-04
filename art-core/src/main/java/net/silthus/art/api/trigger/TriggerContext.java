@@ -153,8 +153,6 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
     }
 
     private <TTarget> long getLastExecution(Target<TTarget> target) {
-        Long storedLong = getStorageProvider().get(this, target, LAST_EXECUTION, Long.class);
-        if (storedLong == null) return 0;
-        return storedLong;
+        return getStorageProvider().get(this, target, LAST_EXECUTION, Long.class).orElse(0L);
     }
 }
