@@ -238,10 +238,10 @@ class TriggerContextTest {
                 Thread.sleep(5);
                 context.trigger(bar, truePredicate());
 
-                Long fooTime = storageProvider.get(context, foo, LAST_EXECUTION, Long.class);
+                Long fooTime = storageProvider.get(context, foo, LAST_EXECUTION, Long.class).get();
                 assertThat(fooTime).isCloseTo(time, Offset.offset(5L));
 
-                Long barTime = storageProvider.get(context, bar, LAST_EXECUTION, Long.class);
+                Long barTime = storageProvider.get(context, bar, LAST_EXECUTION, Long.class).get();
                 assertThat(barTime).isCloseTo(time + 5, Offset.offset(5L));
             }
 

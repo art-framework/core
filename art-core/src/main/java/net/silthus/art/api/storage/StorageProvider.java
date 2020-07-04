@@ -22,7 +22,7 @@ import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.trigger.Target;
 import net.silthus.art.storage.MemoryStorageProvider;
 
-import javax.annotation.Nullable;
+import java.util.Optional;
 
 /**
  * The {@link StorageProvider} provides a way to store metadata for a given {@link Target}
@@ -69,30 +69,28 @@ public interface StorageProvider {
 
     /**
      * Retrieves a globally stored value from the store.
-     * Will return the default value of the type or null if the storage
+     * Will return the default value of the type or an empty {@link Optional} if the storage
      * key is not found or the stored value cannot be cast to the needed type.
      *
+     * @param <TValue>   type of the value
      * @param target     target to retrieve value for
      * @param key        storage key
      * @param valueClass class of the value
-     * @param <TValue>   type of the value
-     * @return stored value or null if the value does not exist or cannot be cast into the value type.
+     * @return stored value or empty result if the value does not exist or cannot be cast into the value type.
      */
-    @Nullable
-    <TValue> TValue get(Target<?> target, String key, Class<TValue> valueClass);
+    <TValue> Optional<TValue> get(Target<?> target, String key, Class<TValue> valueClass);
 
     /**
      * Retrieves a {@link ArtContext} related value from the store.
-     * Will return the default value of the type or null if the storage
+     * Will return the default value of the type or an empty {@link Optional} if the storage
      * key is not found or the stored value cannot be cast to the needed type.
      *
+     * @param <TValue>   type of the value
      * @param context    context to retrieve value for
      * @param target     target to retrieve value for
      * @param key        storage key
      * @param valueClass class of the value
-     * @param <TValue>   type of the value
-     * @return stored value or null if the value does not exist or cannot be cast into the value type.
+     * @return stored value or empty result if the value does not exist or cannot be cast into the value type.
      */
-    @Nullable
-    <TValue> TValue get(ArtContext<?, ?, ?> context, Target<?> target, String key, Class<TValue> valueClass);
+    <TValue> Optional<TValue> get(ArtContext<?, ?, ?> context, Target<?> target, String key, Class<TValue> valueClass);
 }
