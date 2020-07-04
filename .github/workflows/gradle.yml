@@ -72,6 +72,12 @@ jobs:
         with:
           file: "**/build/reports/jacoco/**/*.xml"
 
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@master
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: "**/build/reports/jacoco/**/*.xml"
+
       - name: Upload Test Report
         uses: actions/upload-artifact@v2
         if: always()
