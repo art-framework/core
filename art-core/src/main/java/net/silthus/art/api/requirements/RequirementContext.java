@@ -20,10 +20,12 @@ import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.Requirement;
+import net.silthus.art.api.storage.StorageConstants;
 import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.api.trigger.Target;
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * The requirement context is created for every unique {@link Requirement} configuration.
@@ -56,6 +58,32 @@ public class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TC
 
         if (!isTargetType(target.getSource())) return true;
 
-        return getRequirement().test(target, Objects.isNull(context) ? this : context);
+        if (getOptions().isCheckOnce()) {
+            Optional<Boolean> result = getStorageProvider().get(this, target, StorageConstants.CHECK_ONCE_RESULT, Boolean.class);
+            if (result.isPresent()) {
+                return result.get();
+            }
+        }
+
+        boolean result = getRequirement().test(target, Objects.isNull(context) ? this : context);
+
+        int currentCount = getStorageProvider().get(this, target, StorageConstants.COUNT, Integer.class).orElse(0);
+        if (result) {
+            getStorageProvider().store(this, target, StorageConstants.COUNT, ++currentCount);
+        }
+
+        if (getOptions().isCheckOnce()) {
+            getStorageProvider().store(this, target, StorageConstants.CHECK_ONCE_RESULT, result);
+        }
+
+        if (getOptions().getCount() > 0) {
+            result = currentCount >= getOptions().getCount();
+        }
+
+        if (getOptions().isNegated()) {
+            return !result;
+        } else {
+            return result;
+        }
     }
 }

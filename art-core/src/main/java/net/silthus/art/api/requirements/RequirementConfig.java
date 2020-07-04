@@ -22,6 +22,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.api.Requirement;
+import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
@@ -37,8 +38,6 @@ import java.util.Map;
  *
  * @param <TConfig> custom config type of the requirement
  */
-@Getter
-@Setter(AccessLevel.PACKAGE)
 @ConfigurationElement
 @EqualsAndHashCode(callSuper = true)
 public class RequirementConfig<TConfig> extends ArtObjectConfig<TConfig> {
@@ -53,13 +52,37 @@ public class RequirementConfig<TConfig> extends ArtObjectConfig<TConfig> {
         }
     }
 
-    private boolean persistent = false;
+    @Description({
+            "Setting a count for the requirement will let it only become true if it was true for the number of the defined count.",
+            "e.g. setting a count of 5 means the requirement must be met 5 times before it comes true"
+    })
+    @Getter
+    @Setter(AccessLevel.PACKAGE)
     private int count = 0;
+
+    @Getter
+    @Setter(AccessLevel.PACKAGE)
+    @Description("Set to true if the outcome of the requirement should be negated/switched.")
+    private boolean negated;
+
+    @Description({
+            "Set to true if you only want to check the requirement once and store the result afterwards.",
+            "This will have the effect that a requirement that was true once will always be true in the future."
+    })
+    private boolean check_once;
 
     public RequirementConfig() {
     }
 
     public RequirementConfig(TConfig with) {
         super(with);
+    }
+
+    public void setCheckOnce(boolean checkOnce) {
+        this.check_once = checkOnce;
+    }
+
+    public boolean isCheckOnce() {
+        return check_once;
     }
 }
