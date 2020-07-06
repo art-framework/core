@@ -100,7 +100,7 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
 
                 getStorageProvider().store(this, target, LAST_EXECUTION, System.currentTimeMillis());
 
-                executeActions(target);
+                if (getOptions().isExecuteActions()) executeActions(target);
 
                 getEntryForTarget(target.getSource(), listeners).orElse(new HashSet<>()).stream()
                         .map(triggerListener -> (TriggerListener<TTarget>) triggerListener)

@@ -23,6 +23,7 @@ import com.google.inject.assistedinject.Assisted;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.config.ArtConfig;
@@ -50,11 +51,22 @@ public final class DefaultArtResult implements ArtResult, TriggerListener<Object
     private final Map<Class<?>, List<Filter<?>>> filters;
     private final Map<Class<?>, List<TriggerListener<?>>> triggerListeners = new HashMap<>();
 
+    @Getter
+    @Setter
+    private boolean autoTrigger = true;
+    @Getter
+    @Setter
+    private boolean executeActions = true;
+
     @Inject
     public DefaultArtResult(@Assisted ArtConfig config, @Assisted Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> art, @Assisted Map<Class<?>, List<Filter<?>>> filters) {
         this.config = config;
         this.art = ImmutableList.copyOf(art);
         this.filters = ImmutableMap.copyOf(filters);
+    }
+
+    public boolean isAutoTrigger() {
+        return autoTrigger || triggerListeners.size() > 0;
     }
 
     @Override
@@ -108,8 +120,9 @@ public final class DefaultArtResult implements ArtResult, TriggerListener<Object
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
     public void onTrigger(@NonNull Target target) {
-        if (test(target)) {
-            execute(target);
+        if (isAutoTrigger() && test(target)) {
+            if (isExecuteActions()) execute(target);
+
             getEntryForTarget(target.getSource(), triggerListeners)
                     .orElse(new ArrayList<>())
                     .forEach(triggerListener -> triggerListener.onTrigger(target));

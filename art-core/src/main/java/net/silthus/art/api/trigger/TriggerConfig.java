@@ -52,6 +52,12 @@ public class TriggerConfig<TConfig> extends ArtObjectConfig<TConfig> {
 
     private boolean execute_once = false;
 
+    @Description({
+            "Set this to false to prevent any actions being executed by this trigger.",
+            "Any listeners will still be informed and all requirements checked."
+    })
+    private boolean execute_actions = true;
+
     /**
      * Gets the delay of this trigger measured in ticks.
      * 20 ticks are 1 second.
@@ -73,5 +79,13 @@ public class TriggerConfig<TConfig> extends ArtObjectConfig<TConfig> {
 
     public boolean isExecuteOnce() {
         return execute_once;
+    }
+
+    public void setExecuteActions(boolean executeActions) {
+        this.execute_actions = executeActions;
+    }
+
+    public boolean isExecuteActions() {
+        return execute_actions;
     }
 }

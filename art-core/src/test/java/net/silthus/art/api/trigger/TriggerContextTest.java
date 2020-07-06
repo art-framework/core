@@ -18,6 +18,7 @@ package net.silthus.art.api.trigger;
 
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
+import static net.silthus.art.api.TestUtil.action;
 import static net.silthus.art.api.TestUtil.requirement;
 import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -297,6 +299,28 @@ class TriggerContextTest {
                 context.trigger(bar, truePredicate());
 
                 verify(listener, times(2)).onTrigger(any());
+            }
+        }
+
+        @Nested
+        @DisplayName("with execute_actions=false")
+        class withExecuteActions {
+
+            @BeforeEach
+            void beforeEach() {
+                context.getOptions().setExecuteActions(false);
+            }
+
+            @Test
+            @DisplayName("should not execute actions")
+            void shouldNotExecuteActions() {
+
+                ActionContext<String, ?> action = action(String.class);
+                context.addAction(action);
+
+                context.trigger(new StringTarget("foo"), triggerContext -> true);
+
+                verify(action, never()).execute(any());
             }
         }
     }
