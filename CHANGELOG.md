@@ -1,3 +1,11 @@
+# [1.0.0-alpha.8](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.7...v1.0.0-alpha.8) (2020-07-06)
+
+
+### Features
+
+* **trigger:** add options to prevent action execution on trigger ([d79c366](https://github.com/art-framework/art-framework/commit/d79c3667997d6c0b4aa00229f82cebc9348d2e9d))
+* **trigger:** add options to prevent action execution on trigger ([6534f12](https://github.com/art-framework/art-framework/commit/6534f12d22f2c6b42ff26a4685fa3f209b528356))
+
 # [1.0.0-alpha.7](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.6...v1.0.0-alpha.7) (2020-07-06)
 
 
