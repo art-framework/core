@@ -29,8 +29,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
@@ -53,7 +51,7 @@ class DefaultArtManagerTest {
         triggerManager = mock(TriggerManager.class);
         Provider<ArtBuilder> artBuilder = (Provider<ArtBuilder>) mock(Provider.class);
         when(artBuilder.get()).thenReturn(new ArtBuilder(actionManager, mock(TriggerManager.class), requirementManager));
-        artManager = new DefaultArtManager(actionManager, requirementManager, triggerManager, artBuilder, new HashMap<>());
+        artManager = new DefaultArtManager(actionManager, requirementManager, triggerManager, artBuilder);
     }
 
     @Nested

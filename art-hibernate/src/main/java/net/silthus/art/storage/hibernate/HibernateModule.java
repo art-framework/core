@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.actions;
+package net.silthus.art.storage.hibernate;
 
-import com.google.inject.ImplementedBy;
-import net.silthus.art.api.Action;
-import net.silthus.art.api.factory.ArtFactoryManager;
+import com.google.inject.AbstractModule;
+import com.google.inject.multibindings.MapBinder;
+import net.silthus.art.api.storage.StorageProvider;
 
-@ImplementedBy(ActionFactoryManager.class)
-public interface ActionManager extends ArtFactoryManager<ActionFactory<?, ?>> {
+public class HibernateModule extends AbstractModule {
 
-    <TTarget, TConfig> ActionFactory<TTarget, TConfig> create(Class<TTarget> targetClass, Action<TTarget, TConfig> action);
+    @Override
+    protected void configure() {
+
+        MapBinder.newMapBinder(binder(), String.class, StorageProvider.class)
+                .addBinding(HibernateStorageProvider.STORAGE_TYPE).to(HibernateStorageProvider.class);
+    }
 }

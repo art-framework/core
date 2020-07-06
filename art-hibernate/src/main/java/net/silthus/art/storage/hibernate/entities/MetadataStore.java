@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.actions;
+package net.silthus.art.storage.hibernate.entities;
 
-import com.google.inject.ImplementedBy;
-import net.silthus.art.api.Action;
-import net.silthus.art.api.factory.ArtFactoryManager;
+import lombok.Data;
 
-@ImplementedBy(ActionFactoryManager.class)
-public interface ActionManager extends ArtFactoryManager<ActionFactory<?, ?>> {
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-    <TTarget, TConfig> ActionFactory<TTarget, TConfig> create(Class<TTarget> targetClass, Action<TTarget, TConfig> action);
+@Data
+@Entity
+@Table(name = "art_metadata_store")
+public class MetadataStore {
+
+    @Id
+    private String id;
+
+    private String value;
 }

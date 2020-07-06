@@ -33,6 +33,8 @@ import java.util.logging.Logger;
 @Singleton
 public class MemoryStorageProvider implements StorageProvider {
 
+    public static final String STORAGE_TYPE = "in-memory";
+
     @Inject
     @Getter(AccessLevel.PROTECTED)
     private Logger logger;

@@ -14,9 +14,12 @@
  * limitations under the License.
  */
 
+apply plugin: 'com.github.johnrengelman.shadow'
+
 spigot {
-    depends = ['sLib', 'ConfigLib']
-    main = "net.silthus.art.ArtPlugin"
+    name = "${project.property("pluginName")}-Hibernate"
+    depends = ['ART', 'sLib']
+    main = "net.silthus.art.storage.hibernate.ArtHibernatePlugin"
 }
 
 repositories {
@@ -32,15 +35,25 @@ repositories {
 
 dependencies {
     api project(':art-core')
-    implementation project(':art-flow-parser')
 
     implementation 'net.silthus:slib:1.5.1'
     implementation 'de.exlll:configlib-core:2.6.0'
+
+    implementation 'org.hibernate:hibernate-core:5.4.18.Final'
+    implementation 'org.hibernate:hibernate-hikaricp:5.4.18.Final'
+    implementation 'org.hibernate:hibernate-ehcache:5.4.18.Final'
+    implementation 'org.hibernate:hibernate-entitymanager:5.4.18.Final'
+
+    // data sources
+    implementation 'com.h2database:h2:1.4.200'
 }
 
 shadowJar {
+    classifier = ''
     dependencies {
-        include(dependency(':art-core'))
-        include(dependency(':art-flow-parser'))
+        include(dependency('org.hibernate::'))
+        include(dependency('com.h2database::'))
     }
 }
+
+tasks.build.dependsOn(shadowJar)

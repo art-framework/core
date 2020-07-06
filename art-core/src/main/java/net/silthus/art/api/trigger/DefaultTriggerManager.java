@@ -16,9 +16,13 @@
 
 package net.silthus.art.api.trigger;
 
+import com.google.inject.Inject;
 import net.silthus.art.api.Trigger;
+import net.silthus.art.api.annotations.ActiveStorageProvider;
 import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.factory.AbstractFactoryManager;
+import net.silthus.art.api.scheduler.Scheduler;
+import net.silthus.art.api.storage.StorageProvider;
 
 import javax.inject.Singleton;
 import java.lang.reflect.Method;
@@ -32,10 +36,13 @@ import java.util.stream.Collectors;
 @Singleton
 public class DefaultTriggerManager extends AbstractFactoryManager<TriggerFactory<?>> implements TriggerManager {
 
-    private final TriggerFactoryProvider provider;
+    private final StorageProvider storageProvider;
+    @Inject(optional = true)
+    private Scheduler scheduler;
 
-    public DefaultTriggerManager(TriggerFactoryProvider provider) {
-        this.provider = provider;
+    @Inject
+    public DefaultTriggerManager(@ActiveStorageProvider StorageProvider storageProvider) {
+        this.storageProvider = storageProvider;
     }
 
     @Override
@@ -45,13 +52,13 @@ public class DefaultTriggerManager extends AbstractFactoryManager<TriggerFactory
         List<TriggerFactory<?>> factories = Arrays.stream(methods)
                 .filter(method -> method.isAnnotationPresent(Name.class))
                 .map(method -> {
-                    TriggerFactory<?> triggerFactory = provider.create(trigger);
+                    TriggerFactory<?> triggerFactory = new TriggerFactory<>(trigger, storageProvider, scheduler);
                     triggerFactory.setMethod(method);
                     return triggerFactory;
                 }).collect(Collectors.toList());
 
         if (factories.isEmpty()) {
-            factories.add(provider.create(trigger));
+            factories.add(new TriggerFactory<>(trigger, storageProvider, scheduler));
         }
 
         return factories;

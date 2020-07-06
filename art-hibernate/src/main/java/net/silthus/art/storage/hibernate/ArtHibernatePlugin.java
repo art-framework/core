@@ -14,14 +14,28 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.actions;
+package net.silthus.art.storage.hibernate;
 
-import com.google.inject.ImplementedBy;
-import net.silthus.art.api.Action;
-import net.silthus.art.api.factory.ArtFactoryManager;
+import com.google.inject.Binder;
+import kr.entree.spigradle.annotations.PluginMain;
+import net.silthus.slib.bukkit.BasePlugin;
 
-@ImplementedBy(ActionFactoryManager.class)
-public interface ActionManager extends ArtFactoryManager<ActionFactory<?, ?>> {
+@PluginMain
+public class ArtHibernatePlugin extends BasePlugin {
 
-    <TTarget, TConfig> ActionFactory<TTarget, TConfig> create(Class<TTarget> targetClass, Action<TTarget, TConfig> action);
+    @Override
+    public void enable() {
+
+        getLogger().info("Registered Hibernate as ART Storage Provider. Use it by setting \"storage_provider: hibernate\" in your config.yaml.");
+    }
+
+    @Override
+    public void disable() {
+
+    }
+
+    @Override
+    public void configure(Binder binder) {
+        binder.install(new HibernateModule());
+    }
 }

@@ -70,6 +70,7 @@ subprojects {
 
         api group: 'com.google.inject', name: 'guice', version: '4.2.3'
         api group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '4.2.3'
+        api group: 'com.netflix.governator', name: 'governator', version: '1.17.10'
         implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 
         //Test dependencies
@@ -87,9 +88,12 @@ subprojects {
         classifier = ''
         dependencies {
             include(dependency('com.google.inject:guice:'))
+            include(dependency('com.google.inject.extensions::'))
+            include(dependency('com.netflix.governator::'))
             include(dependency('org.apache.commons:commons-lang3:'))
         }
         relocate 'com.google.injection', "${packageName}.guice"
+        relocate 'com.netflix.governator', "${packageName}.governator"
         relocate 'com.apache.commons', "${packageName}.commonslang"
     }
 
@@ -104,7 +108,7 @@ subprojects {
     }
 }
 
-configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-example' }) {
+configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-example' || it.name == 'art-hibernate' }) {
 
     apply plugin: 'kr.entree.spigradle'
 
@@ -120,7 +124,6 @@ configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-examp
 
         testImplementation 'com.github.seeseemelk:MockBukkit-v1.15:0.3.0-SNAPSHOT'
     }
-
 }
 
 defaultTasks 'build'

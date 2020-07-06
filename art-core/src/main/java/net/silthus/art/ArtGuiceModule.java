@@ -17,20 +17,27 @@
 package net.silthus.art;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Provider;
+import com.google.inject.Provides;
+import com.google.inject.Singleton;
 import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.google.inject.multibindings.MapBinder;
 import com.google.inject.multibindings.OptionalBinder;
-import net.silthus.art.api.actions.ActionFactory;
-import net.silthus.art.api.actions.ActionFactoryProvider;
-import net.silthus.art.api.factory.ArtFactory;
+import com.netflix.governator.annotations.Configuration;
+import net.silthus.art.api.annotations.ActiveStorageProvider;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFactory;
-import net.silthus.art.api.requirements.RequirementFactory;
-import net.silthus.art.api.requirements.RequirementFactoryProvider;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.storage.MemoryStorageProvider;
 
+import java.util.Map;
+import java.util.logging.Logger;
+
 public class ArtGuiceModule extends AbstractModule {
+
+    @Configuration(value = "storage_provider")
+    private String providerType;
 
     @Override
     protected void configure() {
@@ -40,18 +47,22 @@ public class ArtGuiceModule extends AbstractModule {
                 .build(ArtResultFactory.class)
         );
 
-        install(new FactoryModuleBuilder()
-                .implement(ArtFactory.class, ActionFactory.class)
-                .build(ActionFactoryProvider.class)
-        );
-
-        install(new FactoryModuleBuilder()
-                .implement(ArtFactory.class, RequirementFactory.class)
-                .build(RequirementFactoryProvider.class)
-        );
+        MapBinder<String, StorageProvider> storageBinder = MapBinder.newMapBinder(binder(), String.class, StorageProvider.class);
+        storageBinder.addBinding(MemoryStorageProvider.STORAGE_TYPE).to(MemoryStorageProvider.class);
 
         OptionalBinder.newOptionalBinder(binder(), Scheduler.class);
-        OptionalBinder.newOptionalBinder(binder(), StorageProvider.class)
-                .setDefault().to(MemoryStorageProvider.class);
+    }
+
+    @Provides
+    @Singleton
+    @ActiveStorageProvider
+    public StorageProvider provideStorageProvider(Map<String, Provider<StorageProvider>> providerMap, Logger logger) {
+
+        Provider<StorageProvider> provider = providerMap.get(providerType);
+        if (provider == null) {
+            logger.warning("Unknown storage provider '" + providerType + "'. Falling back to in-memory provider.");
+            return providerMap.get(MemoryStorageProvider.STORAGE_TYPE).get();
+        }
+        return provider.get();
     }
 }

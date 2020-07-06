@@ -23,10 +23,12 @@ import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.Trigger;
+import net.silthus.art.api.annotations.ActiveStorageProvider;
 import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +36,8 @@ import java.util.Objects;
 
 public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger, TriggerConfig<TConfig>> {
 
-    @Inject(optional = true)
     @Getter(AccessLevel.PRIVATE)
-    private Scheduler scheduler;
+    private final Scheduler scheduler;
 
     @Getter(AccessLevel.PACKAGE)
     private final List<TriggerContext<TConfig>> createdTrigger = new ArrayList<>();
@@ -47,8 +48,9 @@ public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger
 
 
     @Inject
-    TriggerFactory(@Assisted Trigger trigger, StorageProvider storageProvider) {
+    TriggerFactory(@Assisted Trigger trigger, @ActiveStorageProvider StorageProvider storageProvider, @Nullable Scheduler scheduler) {
         super(storageProvider, Object.class, trigger);
+        this.scheduler = scheduler;
     }
 
     @Override

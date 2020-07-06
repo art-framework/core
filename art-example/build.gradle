@@ -18,7 +18,7 @@ packageName = 'net.silthus.examples.art'
 
 spigot {
     name = "${project.property("pluginName")}-example"
-    depends = ['ART']
+    depends = ['ART', 'sLib', 'ART-Hibernate']
     main = "net.silthus.examples.art.ExampleArtPlugin"
 }
 
