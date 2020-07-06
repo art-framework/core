@@ -19,7 +19,9 @@ package net.silthus.art.api.requirements;
 import com.google.inject.Inject;
 import lombok.EqualsAndHashCode;
 import net.silthus.art.api.Requirement;
+import net.silthus.art.api.annotations.ActiveStorageProvider;
 import net.silthus.art.api.factory.AbstractFactoryManager;
+import net.silthus.art.api.storage.StorageProvider;
 
 import javax.inject.Singleton;
 
@@ -27,15 +29,15 @@ import javax.inject.Singleton;
 @EqualsAndHashCode(callSuper = true)
 public class RequirementFactoryManager extends AbstractFactoryManager<RequirementFactory<?, ?>> implements RequirementManager {
 
-    private final RequirementFactoryProvider provider;
+    private final StorageProvider storageProvider;
 
     @Inject
-    public RequirementFactoryManager(RequirementFactoryProvider provider) {
-        this.provider = provider;
+    public RequirementFactoryManager(@ActiveStorageProvider StorageProvider storageProvider) {
+        this.storageProvider = storageProvider;
     }
 
     @Override
-    public <TTarget, TConfig> RequirementFactory<TTarget, TConfig> create(Class<TTarget> targetClass, Requirement<TTarget, TConfig> action) {
-        return provider.create(targetClass, action);
+    public <TTarget, TConfig> RequirementFactory<TTarget, TConfig> create(Class<TTarget> targetClass, Requirement<TTarget, TConfig> requirement) {
+        return new RequirementFactory<>(targetClass, requirement, storageProvider);
     }
 }

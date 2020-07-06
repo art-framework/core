@@ -47,6 +47,8 @@ public class ArtPlugin extends BasePlugin {
     @Override
     public void enable() {
 
+        saveResource("config.yaml", false);
+
         ART.setInstance(artManager);
         ART.load();
 
@@ -77,6 +79,7 @@ public class ArtPlugin extends BasePlugin {
     @Override
     public void configure(Binder binder) {
 
+        binder.install(new BukkitModule(this));
         binder.install(new ArtGuiceModule());
         binder.install(new FlowParserModule());
         binder.bind(Scheduler.class).to(BukkitScheduler.class);
