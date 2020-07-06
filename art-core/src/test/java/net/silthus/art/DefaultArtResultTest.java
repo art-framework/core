@@ -346,6 +346,19 @@ class DefaultArtResultTest {
             verify(stringAction, times(1)).execute(target);
             verify(integerAction, times(0)).execute(any(Target.class), any());
         }
+
+        @Test
+        @DisplayName("should bypass isExecuteActions() == false")
+        void shouldByPassActionExecution() {
+
+            ActionContext<?, ?> action = action();
+            DefaultArtResult result = resultOf(action);
+            result.setExecuteActions(false);
+
+            result.execute("foobar");
+
+            verify(action, times(1)).execute(any());
+        }
     }
 
     @Nested
@@ -353,6 +366,7 @@ class DefaultArtResultTest {
     class onTrigger {
 
         @Test
+        @DisplayName("should filter target type")
         void shouldFilterForCorrectTargetType() {
 
             TriggerListener<String> listener = (TriggerListener<String>) mock(TriggerListener.class);
@@ -362,6 +376,33 @@ class DefaultArtResultTest {
             result.onTrigger(target);
 
             verify(listener, times(1)).onTrigger(target);
+        }
+
+        @Test
+        @DisplayName("should execute actions without attached listeners by default")
+        void shouldNotAutoExecuteActionsByDefault() {
+
+            TriggerContext<?> trigger = trigger();
+            ActionContext<?, ?> action = action();
+            DefaultArtResult result = resultOf(trigger, action);
+
+            result.onTrigger(new StringTarget("foobar"));
+
+            verify(action, times(1)).execute(any());
+        }
+
+        @Test
+        @DisplayName("should not execute actions if execute_actions=false")
+        void shouldNotExecuteActionsIfExecuteIsFalse() {
+
+            ActionContext<?, ?> action = action();
+            TriggerContext<?> trigger = trigger();
+            DefaultArtResult result = resultOf(trigger, action);
+            result.setExecuteActions(false);
+
+            result.onTrigger(new StringTarget("foo"));
+
+            verify(action, never()).execute(any());
         }
     }
 

@@ -16,7 +16,6 @@
 
 spigot {
     depends = ['sLib']
-    main = "net.silthus.art.ArtPlugin"
 }
 
 repositories {

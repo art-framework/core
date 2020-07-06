@@ -197,4 +197,47 @@ public interface ArtResult {
      * @param <TTarget> type of the target
      */
     <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> triggerConsumer);
+
+    /**
+     * Set to true if you automatically want to trigger the {@link Action}s
+     * defined in this {@link ArtResult} event if there are no listeners
+     * subscribed to this result.
+     * Defaults to true.
+     * <br>
+     * As an alternative you can subscribe to this {@link ArtResult} by using the
+     * {@link #onTrigger(Class, TriggerListener)} method. Then all actions defined in the
+     * config will be executed, unless {@link #isExecuteActions()} is false.
+     *
+     * @param autoTrigger set to true to trigger actions without {@link TriggerListener}s
+     * @see #isExecuteActions()
+     */
+    void setAutoTrigger(boolean autoTrigger);
+
+    /**
+     * Defaults to true.
+     *
+     * @return true if actions in this result are automatically executed
+     *          regardless if there is a {@link TriggerListener} attached.
+     */
+    boolean isAutoTrigger();
+
+    /**
+     * Set to false if you want to prevent the {@link ArtResult} from executing
+     * any {@link Action}s. This only affects actions that would be automatically
+     * executed when a {@link Trigger} fires and a {@link TriggerListener} is attached
+     * or {@link #isAutoTrigger()} is set to true.
+     * Defaults to true.
+     * <br>
+     * You can always bypass this by directly calling one of the {@link #execute(Object)} methods.
+     *
+     * @param executeActions set to false to prevent action execution
+     */
+    void setExecuteActions(boolean executeActions);
+
+    /**
+     * Defaults to true.
+     *
+     * @return false if actions are not executed when a trigger is called
+     */
+    boolean isExecuteActions();
 }
