@@ -14,18 +14,32 @@
  * limitations under the License.
  */
 
-package net.silthus.art.storage.hibernate;
+package net.silthus.art.storage.persistence;
 
-import com.google.inject.AbstractModule;
+import com.google.inject.Binder;
 import com.google.inject.multibindings.MapBinder;
+import kr.entree.spigradle.annotations.PluginMain;
 import net.silthus.art.api.storage.StorageProvider;
+import net.silthus.slib.bukkit.BasePlugin;
 
-public class HibernateModule extends AbstractModule {
+@PluginMain
+public class ArtHibernatePlugin extends BasePlugin {
 
     @Override
-    protected void configure() {
+    public void enable() {
 
-        MapBinder.newMapBinder(binder(), String.class, StorageProvider.class)
-                .addBinding(HibernateStorageProvider.STORAGE_TYPE).to(HibernateStorageProvider.class);
+        getLogger().info("Registered Persistence as ART Storage Provider. Use it by setting \"storage_provider: persistence\" in your config.yaml.");
+    }
+
+    @Override
+    public void disable() {
+
+    }
+
+    @Override
+    public void configure(Binder binder) {
+
+        MapBinder.newMapBinder(binder, String.class, StorageProvider.class)
+                .addBinding(PersistenceStorageProvider.STORAGE_TYPE).to(PersistenceStorageProvider.class);
     }
 }

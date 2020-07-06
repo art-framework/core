@@ -14,32 +14,32 @@
  * limitations under the License.
  */
 
-package net.silthus.art.storage.hibernate;
+package net.silthus.art.storage.persistence;
 
-import lombok.Getter;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.api.trigger.Target;
+import net.silthus.art.storage.persistence.entities.MetadataKey;
+import net.silthus.art.storage.persistence.entities.MetadataStore;
+import net.silthus.art.storage.persistence.entities.query.QMetadataStore;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.Optional;
 
-@Getter
-@Singleton
-public class HibernateStorageProvider implements StorageProvider {
+public class PersistenceStorageProvider implements StorageProvider {
 
-    public static final String STORAGE_TYPE = "hibernate";
-
-    private final Connection connection;
-
-    @Inject
-    public HibernateStorageProvider(Connection connection) {
-        this.connection = connection;
-    }
+    public static final String STORAGE_TYPE = "ebean";
 
     @Override
     public <TValue> void store(Target<?> target, String key, TValue tValue) {
+
+        MetadataKey metadataKey = new MetadataKey(target.getUniqueId(), key);
+        Optional<MetadataStore> entry = new QMetadataStore().metadataKey.eq(metadataKey).findOneOrEmpty();
+        if (entry.isPresent()) {
+            entry.get().setMetadataValue(tValue.toString())
+                    .save();
+        } else {
+            new MetadataStore(metadataKey, tValue.toString()).save();
+        }
     }
 
     @Override
