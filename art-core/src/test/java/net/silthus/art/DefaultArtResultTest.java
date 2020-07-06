@@ -16,6 +16,7 @@
 
 package net.silthus.art;
 
+import lombok.NonNull;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.config.ArtConfig;
@@ -355,7 +356,7 @@ class DefaultArtResultTest {
             DefaultArtResult result = resultOf(action);
             result.setExecuteActions(false);
 
-            result.execute("foobar");
+            result.execute(new StringTarget("foobar"));
 
             verify(action, times(1)).execute(any());
         }
@@ -399,6 +400,41 @@ class DefaultArtResultTest {
             TriggerContext<?> trigger = trigger();
             DefaultArtResult result = resultOf(trigger, action);
             result.setExecuteActions(false);
+
+            result.onTrigger(new StringTarget("foo"));
+
+            verify(action, never()).execute(any());
+        }
+
+        @Test
+        @DisplayName("should inform listeners if execute_actions=false")
+        void shouldInformListenersIfExecuteActionsIsFalse() {
+
+            ActionContext<?, ?> action = action();
+            TriggerContext<?> trigger = trigger();
+            DefaultArtResult result = resultOf(trigger, action);
+            TriggerListener<String> listener = spy(new TriggerListener<String>() {
+                @Override
+                public void onTrigger(@NonNull Target<String> target) {
+
+                }
+            });
+            result.onTrigger(String.class, listener);
+            result.setExecuteActions(false);
+
+            result.onTrigger(new StringTarget("foo"));
+
+            verify(listener, times(1)).onTrigger(any());
+        }
+
+        @Test
+        @DisplayName("should not execute actions if auto_trigger=false")
+        void shouldNotExecuteActionsWithAutoTriggerFalse() {
+
+            ActionContext<?, ?> action = action();
+            TriggerContext<?> trigger = trigger();
+            DefaultArtResult result = resultOf(trigger, action);
+            result.setAutoTrigger(false);
 
             result.onTrigger(new StringTarget("foo"));
 
