@@ -22,6 +22,7 @@ buildscript {
 }
 
 plugins {
+    id 'idea'
     id 'kr.entree.spigradle' version '2.0.0' apply false
     id 'com.github.johnrengelman.shadow' version '5.2.0' apply false
 }
@@ -108,7 +109,7 @@ subprojects {
     }
 }
 
-configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-example' || it.name == 'art-hibernate' }) {
+configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-example' || it.name == 'art-persistence' }) {
 
     apply plugin: 'kr.entree.spigradle'
 

@@ -14,21 +14,34 @@
  * limitations under the License.
  */
 
-package net.silthus.art.storage.hibernate.entities;
+package net.silthus.art.storage.persistence.entities;
 
-import lombok.Data;
+import io.ebean.Model;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "art_metadata_store")
-public class MetadataStore {
+public class MetadataStore extends Model {
 
     @Id
-    private String id;
+    private MetadataKey metadataKey;
 
-    private String value;
+    private String metadataValue;
+
+    public MetadataStore(MetadataKey metadataKey, String value) {
+        this.metadataKey = metadataKey;
+        this.metadataValue = value;
+    }
+
+    public MetadataStore setMetadataValue(String metadataValue) {
+        this.metadataValue = metadataValue;
+        return this;
+    }
 }

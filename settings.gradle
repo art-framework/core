@@ -19,5 +19,4 @@ include 'art-core'
 include 'art-bukkit'
 include 'art-example'
 include 'art-flow-parser'
-include 'art-hibernate'
-
+include 'art-persistence'

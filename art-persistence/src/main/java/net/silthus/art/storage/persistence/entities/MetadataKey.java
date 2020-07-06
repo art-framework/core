@@ -14,28 +14,21 @@
  * limitations under the License.
  */
 
-package net.silthus.art.storage.hibernate;
+package net.silthus.art.storage.persistence.entities;
 
-import com.google.inject.Binder;
-import kr.entree.spigradle.annotations.PluginMain;
-import net.silthus.slib.bukkit.BasePlugin;
+import lombok.Data;
 
-@PluginMain
-public class ArtHibernatePlugin extends BasePlugin {
+import javax.persistence.Embeddable;
 
-    @Override
-    public void enable() {
+@Data
+@Embeddable
+public class MetadataKey {
 
-        getLogger().info("Registered Hibernate as ART Storage Provider. Use it by setting \"storage_provider: hibernate\" in your config.yaml.");
-    }
+    private String id;
+    private String key;
 
-    @Override
-    public void disable() {
-
-    }
-
-    @Override
-    public void configure(Binder binder) {
-        binder.install(new HibernateModule());
+    public MetadataKey(String id, String key) {
+        this.id = id;
+        this.key = key;
     }
 }
