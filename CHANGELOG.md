@@ -1,3 +1,20 @@
+# [1.0.0-alpha.7](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.6...v1.0.0-alpha.7) (2020-07-06)
+
+
+### Features
+
+* **action:** add execute_once option to actions ([203f7d0](https://github.com/art-framework/art-framework/commit/203f7d0c727dd993acdf16d2c086f567a662cb92))
+* **actions:** actions now can have a cooldown ([010fc83](https://github.com/art-framework/art-framework/commit/010fc837e0186dcd5d02ddbd7aa0e54abc9a2ff1)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
+* **config:** add BukkitArtConfig to load from a ConfigurationSection ([3baac1d](https://github.com/art-framework/art-framework/commit/3baac1d6400733b7ce9bb373632329a3e667e349))
+* **requirements:** add check_once, count and negated options ([f5cf864](https://github.com/art-framework/art-framework/commit/f5cf86434fb47d6f2da2b1a5e5dbb2bce1e52678))
+* **storage:** add storage api with default memory provider ([79e0fa9](https://github.com/art-framework/art-framework/commit/79e0fa999c338567d8e68de589e77fe5a4cb054d)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
+* **trigger:** add cooldown and execute_once to trigger ([96bc6e6](https://github.com/art-framework/art-framework/commit/96bc6e6703edc3733584d52f18a6226b94ace14b))
+
+
+### Reverts
+
+* upload codacy coverage ([f8598d6](https://github.com/art-framework/art-framework/commit/f8598d6554ab1c6960da7583e68a8a9ce01e9b4f))
+
 # [1.0.0-alpha.6](https://github.com/Silthus/art-framework/compare/v1.0.0-alpha.5...v1.0.0-alpha.6) (2020-07-01)
 
 
