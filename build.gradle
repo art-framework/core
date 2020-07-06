@@ -104,23 +104,4 @@ subprojects {
     }
 }
 
-configure(subprojects.findAll { it.name == 'art-bukkit' || it.name == 'art-example' }) {
-
-    apply plugin: 'kr.entree.spigradle'
-
-    spigot {
-        name = "${project.property("pluginName")}"
-        authors = [project.property("author")]
-        apiVersion = project.property("apiVersion")
-        load = STARTUP
-    }
-
-    dependencies {
-        implementation "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"
-
-        testImplementation 'com.github.seeseemelk:MockBukkit-v1.15:0.3.0-SNAPSHOT'
-    }
-
-}
-
 defaultTasks 'build'
