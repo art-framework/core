@@ -43,7 +43,7 @@ art:
 
 ## Examples
 
-All of these example requirements are provided by the [basic requirements package](../plugins.md) for Bukkit.
+All of these example requirements are provided by the [basic ART package](../plugins.md) for Bukkit.
 
 ### Checking the absolute location of a player
 
@@ -53,3 +53,5 @@ This requirement checks if the player is around 10 blocks of the `x=0,y=128,z=0`
 art:
   - '?location 0,128,0,world radius=10 zeros=true'
 ```
+
+TODO: add more examples

@@ -356,7 +356,7 @@ class DefaultArtResultTest {
             DefaultArtResult result = resultOf(action);
             result.setExecuteActions(false);
 
-            result.execute("foobar");
+            result.execute(new StringTarget("foobar"));
 
             verify(action, times(1)).execute(any());
         }
