@@ -22,6 +22,7 @@ spigot {
     apiVersion = project.property("apiVersion")
     load = STARTUP
     main = "net.silthus.art.ArtPlugin"
+    depends = ['sLib']
 }
 
 repositories {

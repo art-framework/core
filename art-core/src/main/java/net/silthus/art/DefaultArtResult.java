@@ -51,6 +51,7 @@ public final class DefaultArtResult implements ArtResult, TriggerListener<Object
     private final Map<Class<?>, List<Filter<?>>> filters;
     private final Map<Class<?>, List<TriggerListener<?>>> triggerListeners = new HashMap<>();
 
+    @Getter
     @Setter
     private boolean autoTrigger = true;
     @Getter
