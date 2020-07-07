@@ -9,4 +9,4 @@ nav:
   - Developer: developer/index.md
   - Admins: admin/index.md
 theme:
-  name: 'material'
+  name: 'readthedocs'
