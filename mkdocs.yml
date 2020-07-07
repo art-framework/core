@@ -2,11 +2,24 @@ site_name: ART-Framework
 site_description: 'Home of the documentation for the ART-Framework.'
 site_author: 'Michael Reichenbach'
 docs_dir: docs/
-repo_name: 'art-framework/art-framework'
 repo_url: 'https://github.com/art-framework/art-framework'
 nav:
   - Home: index.md
-  - Developer: developer/index.md
-  - Admins: admin/index.md
+  - 'Server Admins':
+    - 'Quickstart': 'admin/quickstart.md'
+    - 'Installation': 'admin/installation.md'
+    - 'ART Syntax':
+      - 'General Syntax': 'admin/syntax.md'
+      - 'Actions': 'admin/actions.md'
+      - 'Requirements': 'admin/requirements.md'
+      - 'Trigger': 'admin/trigger.md'
+  - 'Developers':
+    - 'Quickstart': 'developer/quickstart.md'
+    - 'Creating ART':
+      - 'Actions': 'developer/actions.md'
+      - 'Requirements': 'developer/requirements.md'
+      - 'Trigger': 'developer/trigger.md'
+  - 'Issue Tracker': 'https://github.com/art-framework/art-framework/issues'
+  - 'About': 'about.md'
 theme:
   name: 'readthedocs'

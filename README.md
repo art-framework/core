@@ -1,6 +1,7 @@
 # **A**ctions **R**equirements **T**rigger (ART) Framework
 
 [![Build Status](https://github.com/Silthus/art-framework/workflows/Build/badge.svg)](../../actions?query=workflow%3ABuild)
+[![Documentation Status](https://readthedocs.org/projects/art-framework/badge/?version=latest)](https://art.silthus.net/en/latest/?badge=latest)
 [![codecov](https://codecov.io/gh/Silthus/art-framework/branch/master/graph/badge.svg)](https://codecov.io/gh/Silthus/art-framework)
 [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/Silthus/art-framework?include_prereleases&label=release)](../../releases)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
@@ -8,7 +9,8 @@
 
 This framework enables you to easily provide actions, requirements and triggers that can be used in configs for any number of plugins.
 
-This framework is for [**DEVELOPERS**](docs/developer/README.md) and [**SERVER ADMINS**](docs/admin/README.md). Each have their own documentation and benefits, see below for more details.
+This framework is for [**DEVELOPERS**](https://art-framework.rtfd.io/page/developer/) and [**SERVER ADMINS**](https://art-framework.rtfd.io/page/admin/).
+Each have their own documentation and benefits, see [the documentation](https://art-framework.rtfd.io/) for more details.
 
 * [Getting started](#getting-started)
 * [Features](#features)
@@ -16,8 +18,11 @@ This framework is for [**DEVELOPERS**](docs/developer/README.md) and [**SERVER A
 
 ## Getting started
 
-* [Developer Documentation](docs/developer/README.md)
-* [Admin Documentation](docs/admin/README.md)
+You can find all of the documentation on the project homepage: [art.silthus.net](https://art-framework.rtfd.io/).
+But to make your life easier and give you some guidence there are two quickstart guides. One for admins and one for developers.
+
+* [Quickstart Guide for Server Admins](https://art-framework.rtfd.io/page/admin/quickstart)
+* [Quickstart Guide for Developers](https://art-framework.rtfd.io/page/developer/quickstart)
 
 ## Features
 
@@ -81,7 +86,7 @@ if (result.test(player)) {
 [Open an issue](https://github.com/Silthus/art-framework/issues/new/choose) if you want more features or found a bug.
 
 * Actions
-  * Use delays and other config options for more control
+  * ~~Use delays and other config options for more control~~
 * Requirements
   * ~~Check anything anywhere~~
   * Expression syntax for advanced scenarios  
@@ -93,7 +98,7 @@ if (result.test(player)) {
     `?worldguard:region spawn`  
     `@player.move[cooldown=24h]`  
     `!text &7Remember to vote for our server!`
-  * Can have cooldown, delay, and much more
-  * Persistent meta data storage accross server reboots
+  * ~~Can have cooldown, delay, and much more~~
+  * ~~Persistent meta data storage accross server reboots~~
 * Central **web app** that provides a searchable list of all plugins and their registered ART.  
   You can find details about every action, requirement, trigger, their config including a description and more.
