@@ -6,7 +6,6 @@ repo_url: 'https://github.com/art-framework/art-framework'
 nav:
   - Home: index.md
   - 'Issue Tracker': 'https://github.com/art-framework/art-framework/issues'
-  - 'About': 'about.md'
   - 'Server Admins':
     - 'Quickstart': 'admin/quickstart.md'
     - 'Installation': 'admin/installation.md'
@@ -17,6 +16,7 @@ nav:
       - 'Trigger': 'admin/syntax/trigger.md'
   - 'Developers':
     - 'Quickstart': 'developer/quickstart.md'
+    - 'Maven/Gradle': 'developer/maven.md'
     - 'Creating ART':
       - 'Actions': 'developer/creating/actions.md'
       - 'Requirements': 'developer/creating/requirements.md'
