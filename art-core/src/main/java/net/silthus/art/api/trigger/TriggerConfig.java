@@ -50,6 +50,7 @@ public class TriggerConfig<TConfig> extends ArtObjectConfig<TConfig> {
     })
     private String cooldown = "0s";
 
+    @Description("Set this to true to execute this trigger only once.")
     private boolean execute_once = false;
 
     @Description({
@@ -57,6 +58,9 @@ public class TriggerConfig<TConfig> extends ArtObjectConfig<TConfig> {
             "Any listeners will still be informed and all requirements checked."
     })
     private boolean execute_actions = true;
+
+    @Description("")
+    private int count = 0;
 
     /**
      * Gets the delay of this trigger measured in ticks.

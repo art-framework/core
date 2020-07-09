@@ -9,17 +9,28 @@ nav:
     - 'Quickstart': 'admin/quickstart.md'
     - 'Installation': 'admin/installation.md'
     - 'ART Syntax':
-      - 'General Syntax': 'admin/syntax.md'
-      - 'Actions': 'admin/actions.md'
-      - 'Requirements': 'admin/requirements.md'
-      - 'Trigger': 'admin/trigger.md'
+      - 'General Syntax': 'admin/syntax/index.md'
+      - 'Actions': 'admin/syntax/actions.md'
+      - 'Requirements': 'admin/syntax/requirements.md'
+      - 'Trigger': 'admin/syntax/trigger.md'
   - 'Developers':
     - 'Quickstart': 'developer/quickstart.md'
     - 'Creating ART':
-      - 'Actions': 'developer/actions.md'
-      - 'Requirements': 'developer/requirements.md'
-      - 'Trigger': 'developer/trigger.md'
+      - 'Actions': 'developer/creating/actions.md'
+      - 'Requirements': 'developer/creating/requirements.md'
+      - 'Trigger': 'developer/creating/trigger.md'
+      - 'Handling Data': 'developer/creating/data.md'
+      - 'Filter': 'developer/creating/filter.md'
   - 'Issue Tracker': 'https://github.com/art-framework/art-framework/issues'
   - 'About': 'about.md'
 theme:
   name: 'readthedocs'
+  titles_only: false
+markdown_extensions:
+  - smarty
+  - admonition
+  - codehilite
+  - nl2br
+  - sane_lists
+plugins:
+  - git-revision-date
