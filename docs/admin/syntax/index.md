@@ -21,7 +21,7 @@ There all ART that can be used on your server will be listed including their con
 
 *How can I use this information to create my ART config?*
 
-See below for a basic [syntax example](#syntax-example) on how to use ART objects in your config. You can also look at the individual documentation for [**A**ctions](actions.md), [**R**equirements](requirements.md) and [**T**rigger](trigger.md).
+See below for a basic [syntax example](#syntax-example) on how to use ART objects in your config. You can also look at the individual documentation for [Actions](actions.md), [Requirements](requirements.md) and [Trigger](trigger.md).
 
 ## Syntax Example
 
@@ -68,4 +68,4 @@ Each [ART Type](#art-types) has its own `ART Object Config` that can be used to 
     The `ART Object Config` must be placed directly after the identifier into square brackets <kbd>[ ]</kbd>.  
     For example: `!teleport[delay=5s] 1,2,3` teleports the player after five seconds.
 
-Look at each of the documentation for [**A**ctions](actions.md), [**R**equirements](requirements.md) and [**T**rigger](trigger.md) to learn more about the individual config options.
+Look at each of the documentation for [Actions](actions.md), [Requirements](requirements.md) and [Trigger](trigger.md) to learn more about the individual config options.

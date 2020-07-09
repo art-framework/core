@@ -62,5 +62,5 @@ result.execute(player, (target, config) -> !target.getSource().hasMetadata("NPC"
 ## Other Resources
 
 * [General Developer API Documentation](index.md)
-* [Creating **A**ctions **R**equirements **T**rigger](creating_art.md)
+* [Creating Actions Requirements Trigger](creating_art.md)
 * [Using ART inside your plugin](using_art.md)

@@ -3,7 +3,7 @@ package net.silthus.art.requirements;
 import net.silthus.art.api.Requirement;
 import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.requirements.RequirementContext;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 
 @Name("count")
 @Description({

@@ -74,7 +74,7 @@ art:
 All of these example actions are provided by the [basic ART package](../plugins.md) for Bukkit.
 
 !!! note
-    Most of these examples combine the use of [**A**ctions](actions.md), [**R**equirements](requirements.md) and [**T**rigger](trigger.md).
+    Most of these examples combine the use of [Actions](actions.md), [Requirements](requirements.md) and [Trigger](trigger.md).
     See the corresponding documentation for more information about each of them.
 
 ### Teleport the player when he enters a location

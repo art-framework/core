@@ -1,6 +1,6 @@
 package net.silthus.art.util;
 
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

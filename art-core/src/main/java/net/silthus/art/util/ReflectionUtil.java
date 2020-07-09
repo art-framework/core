@@ -1,6 +1,6 @@
 package net.silthus.art.util;
 
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;

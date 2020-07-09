@@ -1,6 +1,6 @@
 # Handling Data
 
-There comes the time when you need to store or provide data in your [**A**ctions](actions.md), [**R**equirements](requirements.md) and [**T**rigger](trigger.md).  
+There comes the time when you need to store or provide data in your [Actions](actions.md), [Requirements](requirements.md) and [Trigger](trigger.md).  
 The ART-Framework currently supports the two following scenarios:
 
 * Store the data for yourself in a persistent manner.
@@ -8,7 +8,7 @@ The ART-Framework currently supports the two following scenarios:
 * Provide data to other ART executed in the same context.
   *e.g.: you want to provide the amount of items added to a players inventory so it can be used in a text action following your action*
 
-## Storing data for later
+## Storing of persistent data
 
 The `ArtContext` that is provided in your `ArtObject` can be used to store and retrieve data. How the data is stored will depend on the configuration of the server admin.
 You store the data by providing the `Target` and a unique storage `key`. All data you pass to the `store(...)` method will be serialized as JSON if possible.

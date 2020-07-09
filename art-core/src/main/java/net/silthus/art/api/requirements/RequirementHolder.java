@@ -1,6 +1,6 @@
 package net.silthus.art.api.requirements;
 
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 
 import java.util.Collection;
 

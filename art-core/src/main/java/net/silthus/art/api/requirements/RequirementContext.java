@@ -22,7 +22,7 @@ import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.Requirement;
 import net.silthus.art.api.storage.StorageConstants;
 import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 
 import java.util.Objects;
 import java.util.Optional;

@@ -25,7 +25,7 @@ import net.silthus.art.DefaultArtManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.Filter;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
 import java.util.List;

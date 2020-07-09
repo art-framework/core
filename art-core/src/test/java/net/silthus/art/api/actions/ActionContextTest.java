@@ -21,7 +21,7 @@ import net.silthus.art.api.Action;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 import net.silthus.art.storage.MemoryStorageProvider;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;

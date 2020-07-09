@@ -17,7 +17,7 @@
 package net.silthus.art.api;
 
 import net.silthus.art.ART;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
 import java.util.Arrays;

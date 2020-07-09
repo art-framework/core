@@ -32,7 +32,7 @@ import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.api.trigger.TriggerFactory;
 import net.silthus.art.api.trigger.TriggerManager;

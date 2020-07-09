@@ -23,9 +23,16 @@ import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.parser.flow.FlowParserModule;
 import net.silthus.art.scheduler.BukkitScheduler;
+import net.silthus.art.targets.EntityTarget;
+import net.silthus.art.targets.LivingEntityTarget;
+import net.silthus.art.targets.OfflinePlayerTarget;
+import net.silthus.art.targets.PlayerTarget;
 import net.silthus.slib.bukkit.BasePlugin;
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.ServicePriority;
 
 import javax.inject.Inject;
@@ -43,10 +50,20 @@ public class ArtPlugin extends BasePlugin {
         ART.setInstance(artManager);
         ART.load();
 
-        ART.register(new ArtBukkitDescription(this), artBuilder ->
-                artBuilder.target(Entity.class).filter(new EntityWorldFilter()));
+        ART.register(new ArtBukkitDescription(this), artBuilder -> artBuilder
+                .target(Entity.class)
+                    .filter(new EntityWorldFilter())
+                    .and()
+                    .target(EntityTarget::new)
+                .and(Player.class)
+                    .target(PlayerTarget::new)
+                .and(LivingEntity.class)
+                    .target(LivingEntityTarget::new)
+                .and(OfflinePlayer.class)
+                    .target(OfflinePlayerTarget::new)
+        );
 
-        Bukkit.getServicesManager().register(ArtManager.class, artManager, this, ServicePriority.Normal);
+    Bukkit.getServicesManager().register(ArtManager.class, artManager, this, ServicePriority.Normal);
     }
 
     @Override
