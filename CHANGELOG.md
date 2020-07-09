@@ -1,3 +1,18 @@
+# [1.0.0-alpha.9](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.8...v1.0.0-alpha.9) (2020-07-09)
+
+
+### Bug Fixes
+
+* **docs:** use readthedocs theme ([71e991b](https://github.com/art-framework/art-framework/commit/71e991b065d6dbf9fb9ffac4ba417da370ab7e5d))
+
+
+### Features
+
+* add MessageSender and default targets ([b8c78c0](https://github.com/art-framework/art-framework/commit/b8c78c0113dccdfa0cb03dbabd282052a709717c))
+* add the option to store data via the context ([a3a52c4](https://github.com/art-framework/art-framework/commit/a3a52c471289eba73dd910dbe15440bd6b5ecc79))
+* **docs:** publish mkdocs to gh-pages ([411c48e](https://github.com/art-framework/art-framework/commit/411c48eae71e814adeb454bc1c85cff6bfeeaf80))
+* **trigger:** add options to prevent action execution on trigger ([144b043](https://github.com/art-framework/art-framework/commit/144b0431b24c0f3ad5cbbd042397a756d617fa10))
+
 # [1.0.0-alpha.8](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.7...v1.0.0-alpha.8) (2020-07-06)
 
 
