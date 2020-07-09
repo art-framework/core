@@ -5,10 +5,12 @@ docs_dir: docs/
 repo_url: 'https://github.com/art-framework/art-framework'
 nav:
   - Home: index.md
+  - 'Issue Tracker': 'https://github.com/art-framework/art-framework/issues'
+  - 'About': 'about.md'
   - 'Server Admins':
     - 'Quickstart': 'admin/quickstart.md'
     - 'Installation': 'admin/installation.md'
-    - 'ART Syntax':
+    - 'Configuration':
       - 'General Syntax': 'admin/syntax/index.md'
       - 'Actions': 'admin/syntax/actions.md'
       - 'Requirements': 'admin/syntax/requirements.md'
@@ -19,10 +21,10 @@ nav:
       - 'Actions': 'developer/creating/actions.md'
       - 'Requirements': 'developer/creating/requirements.md'
       - 'Trigger': 'developer/creating/trigger.md'
-      - 'Handling Data': 'developer/creating/data.md'
+      - 'Targets': 'developer/creating/target.md'
       - 'Filter': 'developer/creating/filter.md'
-  - 'Issue Tracker': 'https://github.com/art-framework/art-framework/issues'
-  - 'About': 'about.md'
+    - 'Handling Data': 'developer/creating/data.md'
+    - 'Using ART': 'developer/use-art.md'
 theme:
   name: 'readthedocs'
   titles_only: false
@@ -32,5 +34,9 @@ markdown_extensions:
   - codehilite
   - nl2br
   - sane_lists
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.superfences
+  - pymdownx.details
 plugins:
   - git-revision-date

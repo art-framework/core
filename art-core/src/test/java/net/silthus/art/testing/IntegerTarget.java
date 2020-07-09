@@ -1,7 +1,7 @@
 package net.silthus.art.testing;
 
 import lombok.Data;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 
 @Data
 public class IntegerTarget implements Target<Integer> {

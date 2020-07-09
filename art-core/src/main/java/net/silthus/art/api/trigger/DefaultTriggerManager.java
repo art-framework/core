@@ -19,6 +19,7 @@ package net.silthus.art.api.trigger;
 import net.silthus.art.api.Trigger;
 import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.factory.AbstractFactoryManager;
+import net.silthus.art.api.target.Target;
 
 import javax.inject.Singleton;
 import java.lang.reflect.Method;

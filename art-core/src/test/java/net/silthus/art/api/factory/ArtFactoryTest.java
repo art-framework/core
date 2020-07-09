@@ -25,7 +25,7 @@ import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

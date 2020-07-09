@@ -10,8 +10,8 @@ All of these code examples can also be found inside the [art-example](../../art-
 * [Creating Actions](#creating-actions)
 * [Creating Requirements](#creating-requirements)
 * [Creating Trigger](#creating-trigger)
-* [Register your **A**ctions **R**equirements **T**rigger](#register-your-actions-requirements-trigger)
-* [Using **A**ctions **R**equirements **T**rigger in your plugin](#using-actions-requirements-trigger-in-your-plugin)
+* [Register your Actions Requirements Trigger](#register-your-actions-requirements-trigger)
+* [Using Actions Requirements Trigger in your plugin](#using-actions-requirements-trigger-in-your-plugin)
   * [Using Bukkit's ConfigurationSection](#using-bukkits-configurationsection)
   * [Using ConfigLib](#using-configlib)
 
@@ -286,7 +286,7 @@ public class PlayerMoveTrigger implements Trigger, Listener {
 > You can create triggers for multiple events in the same class.  
 > Just make sure that every method that fires a trigger has the required annotations.
 
-## Register your **A**ctions **R**equirements **T**rigger
+## Register your Actions Requirements Trigger
 
 You need to register your actions, requirements and trigger when your plugin is enabled. Before you can do that, you need to make sure ART is loaded and enabled.
 
@@ -324,7 +324,7 @@ public class ExampleARTPlugin extends JavaPlugin {
 }
 ```
 
-## Using **A**ctions **R**equirements **T**rigger in your plugin
+## Using Actions Requirements Trigger in your plugin
 
 One powerfull feature ob the [ART-Framework](https://github.com/silthus/art-framework) is the reuseability of actions, requirements and trigger accross multiple plugins without knowing the implementation and config of those.
 

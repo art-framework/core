@@ -5,7 +5,7 @@ import lombok.Getter;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.storage.StorageConstants;
 import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 
 import java.util.Objects;
 import java.util.Optional;

@@ -24,7 +24,7 @@ import net.silthus.art.api.Action;
 import net.silthus.art.api.Requirement;
 import net.silthus.art.api.Trigger;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 import net.silthus.art.api.trigger.TriggerListener;
 
 import javax.annotation.concurrent.Immutable;

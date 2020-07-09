@@ -25,7 +25,7 @@ import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.requirements.RequirementHolder;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

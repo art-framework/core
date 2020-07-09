@@ -20,7 +20,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 
 import javax.annotation.Nullable;
 import javax.inject.Inject;

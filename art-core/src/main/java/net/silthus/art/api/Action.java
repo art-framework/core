@@ -17,7 +17,7 @@
 package net.silthus.art.api;
 
 import net.silthus.art.api.actions.ActionContext;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 
 /**
  * Defines an action that can get executed if the right {@link Trigger} was called.

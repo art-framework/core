@@ -29,7 +29,7 @@ import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.requirements.RequirementManager;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 import net.silthus.art.api.trigger.TriggerManager;
 
 import javax.annotation.concurrent.Immutable;
@@ -138,7 +138,7 @@ public class ArtBuilder {
             return factoryBuilder;
         }
 
-        public TargetBuilder<TTarget> wrapper(Function<TTarget, Target<TTarget>> constructor) {
+        public TargetBuilder<TTarget> target(Function<TTarget, Target<TTarget>> constructor) {
             targetWrapper = constructor;
             return this;
         }
@@ -150,6 +150,10 @@ public class ArtBuilder {
 
         public <TNewTarget> TargetBuilder<TNewTarget> and(Class<TNewTarget> targetClass) {
             return ArtBuilder.this.target(targetClass);
+        }
+
+        public TargetBuilder<TTarget> and() {
+            return this;
         }
 
         public class FactoryBuilder {

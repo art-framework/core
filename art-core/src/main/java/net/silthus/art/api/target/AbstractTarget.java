@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.trigger;
+package net.silthus.art.api.target;
 
 import lombok.Getter;
 import org.apache.commons.lang3.builder.EqualsBuilder;

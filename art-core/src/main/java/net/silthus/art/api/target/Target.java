@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.trigger;
+package net.silthus.art.api.target;
 
 import lombok.NonNull;
 import net.silthus.art.ART;
@@ -32,7 +32,10 @@ import java.util.function.Function;
  * which is needed to store meta data information and cache results.
  * <br>
  * Register your wrapper with the {@link ArtBuilder} on startup by calling
- * {@link ART#register(ArtModuleDescription, Consumer)} and then {@link ArtBuilder.TargetBuilder#wrapper(Function)}.
+ * {@link ART#register(ArtModuleDescription, Consumer)} and then {@link ArtBuilder.TargetBuilder#target(Function)}.
+ * <br>
+ * You can also extend your {@link Target} by implementing one or more of the following interfaces:
+ *      - {@link MessageSender}: allows your target to receive messages
  *
  * @param <TTarget> type of the underlying target
  */

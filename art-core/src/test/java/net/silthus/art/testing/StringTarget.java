@@ -1,6 +1,6 @@
 package net.silthus.art.testing;
 
-import net.silthus.art.api.trigger.AbstractTarget;
+import net.silthus.art.api.target.AbstractTarget;
 
 public class StringTarget extends AbstractTarget<String> {
 

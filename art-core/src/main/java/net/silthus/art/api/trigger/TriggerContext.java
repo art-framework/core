@@ -24,6 +24,7 @@ import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.requirements.RequirementHolder;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
+import net.silthus.art.api.target.Target;
 
 import java.util.*;
 import java.util.function.Predicate;
