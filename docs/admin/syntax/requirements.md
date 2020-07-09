@@ -24,8 +24,9 @@ All requirements have the following config options.
 You can combine multiple requirements in one ART config. All you need to do is write them directly after each other.  
 This will make sure all of your requirements are checked and only execute the underlying actions if all of them pass.
 
-> Multiple requirements are combined in an AND statement.  
-> This means all requirement checks must be successfull.
+!!! tip
+    Multiple requirements are combined in an **AND** statement.  
+    This means all requirement checks must be successfull.
 
 In this example, the chest must be empty **and** the player must be online for more than one hour.
 
@@ -53,5 +54,3 @@ This requirement checks if the player is around 10 blocks of the `x=0,y=128,z=0`
 art:
   - '?location 0,128,0,world radius=10 zeros=true'
 ```
-
-TODO: add more examples

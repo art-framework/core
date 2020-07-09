@@ -23,7 +23,8 @@ Actions are executed **sequentially** and grouped together using the same [requi
 
 ### Shared Action Context
 
-> All actions that directly follow an action are executed in the same context as their parent action.
+!!! important
+    All actions that directly follow an action are executed in the same context as their parent action.
 
 ```yaml
 art:
@@ -37,7 +38,8 @@ art:
 
 ### Separate Requirements
 
-> Actions always use the requirements that are directly above them, respecting the [shared context rule](#shared-action-context).
+!!! important
+    Actions always use the requirements that are directly above them, respecting the [shared context rule](#shared-action-context).
 
 ```yaml
 art:
@@ -54,7 +56,8 @@ art:
 
 ### Multiple Triggers
 
-> Actions can have multiple [triggers](trigger.md) and will execute if any of them fire.
+!!! important
+    Actions can have multiple [triggers](trigger.md) and will execute if any of them fire.
 
 ```yaml
 art:
@@ -70,8 +73,9 @@ art:
 
 All of these example actions are provided by the [basic ART package](../plugins.md) for Bukkit.
 
-> *Note: most of these examples combine the use of [**A**ctions](actions.md), [**R**equirements](requirements.md) and [**T**rigger](trigger.md).*  
-> *See the corresponding documentation for more information about each of them.*
+!!! note
+    Most of these examples combine the use of [**A**ctions](actions.md), [**R**equirements](requirements.md) and [**T**rigger](trigger.md).
+    See the corresponding documentation for more information about each of them.
 
 ### Teleport the player when he enters a location
 

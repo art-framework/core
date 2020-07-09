@@ -64,7 +64,8 @@ foobars_art:
 
 Each [ART Type](#art-types) has its own `ART Object Config` that can be used to control the executing or check of the ART.
 
-> The `ART Object Config` must be placed directly after the identifier into square brackets <kbd>[ ]</kbd>.  
-> For example: `!teleport[delay=5s] 1,2,3` teleports the player after five seconds.
+!!! note
+    The `ART Object Config` must be placed directly after the identifier into square brackets <kbd>[ ]</kbd>.  
+    For example: `!teleport[delay=5s] 1,2,3` teleports the player after five seconds.
 
 Look at each of the documentation for [**A**ctions](actions.md), [**R**equirements](requirements.md) and [**T**rigger](trigger.md) to learn more about the individual config options.

@@ -18,6 +18,7 @@ package net.silthus.art.api.storage;
 
 public final class StorageConstants {
 
+    public static final String LOCAL_KEY_PREFIX = "LOCAL_";
     public static final String LAST_EXECUTION = "last_execution";
     public static final String COUNT = "count";
     public static final String CHECK_ONCE_RESULT = "check_once_result";
