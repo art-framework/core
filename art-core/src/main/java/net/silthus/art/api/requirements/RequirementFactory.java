@@ -1,0 +1,39 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.silthus.art.api.requirements;
+
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+import lombok.EqualsAndHashCode;
+import net.silthus.art.api.ArtContext;
+import net.silthus.art.api.Requirement;
+import net.silthus.art.api.factory.ArtFactory;
+import net.silthus.art.api.storage.StorageProvider;
+
+@EqualsAndHashCode(callSuper = true)
+public class RequirementFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig, Requirement<TTarget, TConfig>, RequirementConfig<TConfig>> {
+
+    @Inject
+    RequirementFactory(@Assisted Class<TTarget> targetClass, @Assisted Requirement<TTarget, TConfig> artObject, StorageProvider storageProvider) {
+        super(storageProvider, targetClass, artObject);
+    }
+
+    @Override
+    public ArtContext<TTarget, TConfig, RequirementConfig<TConfig>> create(RequirementConfig<TConfig> config) {
+        return new RequirementContext<>(getTargetClass(), getArtObject(), config, getStorageProvider());
+    }
+}

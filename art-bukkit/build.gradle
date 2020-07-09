@@ -1,0 +1,57 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'kr.entree.spigradle'
+
+spigot {
+    name = "${project.property("pluginName")}"
+    authors = [project.property("author")]
+    apiVersion = project.property("apiVersion")
+    load = STARTUP
+    main = "net.silthus.art.ArtPlugin"
+    depends = ['sLib']
+}
+
+repositories {
+    maven {
+        name = 'slib'
+        url = 'https://maven.pkg.github.com/Silthus/sLib'
+        credentials {
+            username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+            password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+        }
+    }
+}
+
+dependencies {
+    api project(':art-core')
+    implementation project(':art-flow-parser')
+
+    implementation "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"
+
+    implementation 'net.silthus:slib:1.5.1'
+    implementation 'de.exlll:configlib-core:2.6.0'
+
+
+    testImplementation 'com.github.seeseemelk:MockBukkit-v1.15:0.3.0-SNAPSHOT'
+}
+
+shadowJar {
+    dependencies {
+        include(dependency(':art-core'))
+        include(dependency(':art-flow-parser'))
+    }
+}

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 buildscript {
     repositories {
         jcenter()
@@ -6,185 +22,86 @@ buildscript {
 }
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '5.1.0'
-    id 'kr.entree.spigradle' version '1.2.1'
-    id 'java'
-    id 'jacoco'
-    id "org.hibernate.build.maven-repo-auth" version "3.0.2"
+    id 'kr.entree.spigradle' version '2.0.0' apply false
+    id 'com.github.johnrengelman.shadow' version '5.2.0' apply false
 }
 
-apply from: "$rootDir/gradle/jacoco.gradle"
-apply from: "$rootDir/gradle/publish.gradle"
+subprojects {
+    repositories {
+        mavenCentral()
+        jcenter()
 
-sourceCompatibility = 8
-targetCompatibility = 8
+        maven {
+            name = 'Spigot'
+            url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
 
-ext {
-    //Define one of the supported mc versions
-    mcVersion = project.property("mcVersion")
-    packageName = project.property("packageName")
-    junitVersion = '5.6.2'
-    guavaVersion = '29.0-jre'
-    immutablesVersion = '2.8.7'
-    errorproneVersion = '2.3.4'
-}
+            content {
+                includeGroup 'org.bukkit'
+                includeGroup 'org.spigotmc'
+            }
+        }
 
-group project.property("group")
+        maven {
+            name = "github"
+            url = 'https://maven.pkg.github.com/Silthus/ConfigLib'
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
 
-spigot {
-    authors = [project.property("author")]
-    apiVersion = project.property("apiVersion")
-    load = STARTUP
-    //    depends = ['']
-}
+        maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
+        maven { url = 'https://oss.sonatype.org/content/repositories/central' }
+    }
 
-compileJava {
-    options.encoding = 'UTF-8'
-    options.compilerArgs += ["-parameters"]
-    options.fork = true
-    options.forkOptions.executable = 'javac'
-}
+    apply plugin: 'java-library'
+    apply plugin: 'jacoco'
+    apply plugin: 'com.github.johnrengelman.shadow'
 
-archivesBaseName = project.property("pluginName")
+    apply from: "$rootDir/gradle/jacoco.gradle"
+    apply from: "$rootDir/gradle/publish.gradle"
 
-repositories {
-    mavenCentral()
-    jcenter()
+    sourceCompatibility = 8
+    targetCompatibility = 8
 
-    //Added spigot repository
-    maven {
-        name = 'Spigot'
-        url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+    dependencies {
+        compile 'org.projectlombok:lombok:1.18.12'
+        annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-        content {
-            includeGroup 'org.bukkit'
-            includeGroup 'org.spigotmc'
+        api group: 'com.google.inject', name: 'guice', version: '4.2.3'
+        api group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '4.2.3'
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+
+        //Test dependencies
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
+        testImplementation "org.mockito:mockito-core:3.+"
+        testImplementation 'org.assertj:assertj-core:3.+'
+        testImplementation 'org.awaitility:awaitility:4.0.3'
+        testImplementation group: 'com.google.jimfs', name: 'jimfs', version: '1.+'
+        testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
+        testImplementation 'org.projectlombok:lombok:1.18.12'
+        testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+    }
+
+    shadowJar {
+        classifier = ''
+        dependencies {
+            include(dependency('com.google.inject:guice:'))
+            include(dependency('org.apache.commons:commons-lang3:'))
+        }
+        relocate 'com.google.injection', "${packageName}.guice"
+        relocate 'com.apache.commons', "${packageName}.commonslang"
+    }
+
+    tasks.build.dependsOn(shadowJar)
+    tasks.publish.dependsOn(shadowJar)
+
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
         }
     }
-
-    maven {
-        name = 'github'
-        url = 'https://maven.pkg.github.com/Silthus'
-    }
-
-    maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
-    maven { url = 'https://oss.sonatype.org/content/repositories/central' }
-
-    //Add your repositories here
-    maven { url = "https://repo.aikar.co/content/groups/aikar/" }
 }
 
-dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.12'
-    annotationProcessor 'org.projectlombok:lombok:1.18.12'
-
-    compileOnly "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"
-
-    //Add dependencies here
-
-    //Test dependencies
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'
-    testImplementation "org.mockito:mockito-core:3.+"
-    testImplementation 'com.github.seeseemelk:MockBukkit-v1.15:0.3.0-SNAPSHOT'
-    testImplementation 'org.assertj:assertj-core:3.16.1'
-    testImplementation 'org.projectlombok:lombok:1.18.12'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
-}
-
-test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-    ignoreFailures = true
-}
-
-test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-    }
-    ignoreFailures = true
-}
-
-shadowJar {
-    classifier = ''
-//    dependencies {
-//        include(dependency('co.aikar:acf-paper:0.5.0-SNAPSHOT'))
-//    }
-//    relocate 'co.aikar.commands', "${packageName}.acf"
-//    relocate 'co.aikar.locales', "${packageName}.locales"
-}
-
-tasks.build.dependsOn(shadowJar)
-tasks.publish.dependsOn(shadowJar)
-
-processResources {
-    project.properties.put("version", this.version)
-    expand project.properties
-}
-
-task cleanPlugin() {
-    group 'deploy'
-    description 'Cleans the plugin in the working directory up'
-    delete 'working/plugins/' + project.property("pluginName") + '*.jar'
-}
-
-task copyPluginYaml(type: Copy, dependsOn: spigotPluginYaml) {
-    from(new File(spigotPluginYaml.temporaryDir, "plugin.yml"))
-    into(sourceSets.main.resources.srcDirs[0])
-}
-
-task deploy(type: Copy, dependsOn: [
-    'cleanPlugin',
-    'jar'
-]) {
-    group 'deploy'
-    description 'Exports you plugin to the plugin directory in your test server'
-
-    def pluginFolder = project.property('pluginFolder').toString()
-
-    from shadowJar
-    into pluginFolder.isEmpty() ? 'working/plugins' : pluginFolder
-}
-
-task setupServer {
-    group 'server'
-    description 'Downloads the server jar'
-
-    def server = new File('working/server.jar')
-
-    if (server.exists()) {
-        server.delete()
-    }
-
-    def url = ''
-    switch (mcVersion) {
-        case '1.8.8':
-            url = 'https://cdn.getbukkit.org/spigot/spigot-1.8.8-R0.1-SNAPSHOT-latest.jar'
-            break
-
-        case '1.12.2':
-            url = 'https://cdn.getbukkit.org/spigot/spigot-1.12.2.jar'
-            break
-
-        case '1.13.2':
-            url = 'https://cdn.getbukkit.org/spigot/spigot-1.13.2.jar'
-            break
-
-        case '1.14.4':
-            url = 'https://cdn.getbukkit.org/spigot/spigot-1.14.4.jar'
-            break
-        case '1.15.2':
-            url = 'https://cdn.getbukkit.org/spigot/spigot-1.15.2.jar'
-            break
-    }
-
-    if (url.isEmpty()) {
-        throw new GradleException('NOT A SUPPORTED VERSION, PLEASE USE [1.8.8, 1.12.2, 1.13.2, 1.14.4, 1.15.2]!')
-    }
-
-    new URL(url).withInputStream { i -> server.withOutputStream { it << i } }
-}
-
-defaultTasks 'build', 'deploy'
+defaultTasks 'build'
