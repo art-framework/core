@@ -1,0 +1,20 @@
+plugins {
+    id 'com.github.johnrengelman.shadow'
+}
+
+dependencies {
+    implementation 'de.exlll:configlib-core:2.6.0'
+}
+
+shadowJar {
+    classifier = ''
+    dependencies {
+        include(dependency('com.google.inject:guice:'))
+        include(dependency('com.google.inject.extensions::'))
+        include(dependency('org.apache.commons:commons-lang3:'))
+    }
+    relocate 'com.google.inject', "${packageName}.guice"
+    relocate 'org.apache.commons', "${packageName}.apachecommons"
+}
+
+tasks.build.dependsOn(shadowJar)

@@ -1,0 +1,3 @@
+pymdown-extensions
+mkdocs-git-revision-date-plugin
+Pygments
