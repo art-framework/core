@@ -15,5 +15,5 @@
  */
 
 dependencies {
-    implementation 'de.exlll:configlib-core:2.6.0'
+    implementation group: 'com.netflix.governator', name: 'governator-api', version: '1.17.10'
 }

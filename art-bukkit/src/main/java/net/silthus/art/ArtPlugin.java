@@ -17,12 +17,15 @@
 package net.silthus.art;
 
 import com.google.inject.Binder;
+import com.google.inject.Provides;
+import com.google.inject.name.Named;
 import kr.entree.spigradle.annotations.PluginMain;
 import lombok.Getter;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.parser.flow.FlowParserModule;
 import net.silthus.art.scheduler.BukkitScheduler;
+import net.silthus.art.storage.persistence.PersistenceModule;
 import net.silthus.art.targets.EntityTarget;
 import net.silthus.art.targets.LivingEntityTarget;
 import net.silthus.art.targets.OfflinePlayerTarget;
@@ -46,8 +49,6 @@ public class ArtPlugin extends BasePlugin {
 
     @Override
     public void enable() {
-
-        saveResource("config.yaml", false);
 
         ART.setInstance(artManager);
         ART.load();
@@ -82,6 +83,13 @@ public class ArtPlugin extends BasePlugin {
         binder.install(new BukkitModule(this));
         binder.install(new ArtGuiceModule());
         binder.install(new FlowParserModule());
+        binder.install(new PersistenceModule());
         binder.bind(Scheduler.class).to(BukkitScheduler.class);
+    }
+
+    @Provides
+    @Named("SPIGOT_CLASSLOADER")
+    public ClassLoader provideClassLoader() {
+        return getClassLoader();
     }
 }

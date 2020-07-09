@@ -23,6 +23,7 @@ import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.factory.AbstractFactoryManager;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
+import net.silthus.art.api.target.Target;
 
 import javax.inject.Singleton;
 import java.lang.reflect.Method;

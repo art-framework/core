@@ -16,12 +16,16 @@
 
 package net.silthus.art.storage.persistence;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.inject.Inject;
+import io.ebean.Database;
+import lombok.Getter;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.trigger.Target;
+import net.silthus.art.api.target.Target;
 import net.silthus.art.storage.persistence.entities.MetadataKey;
 import net.silthus.art.storage.persistence.entities.MetadataStore;
-import net.silthus.art.storage.persistence.entities.query.QMetadataStore;
 
 import java.util.Optional;
 
@@ -29,31 +33,63 @@ public class PersistenceStorageProvider implements StorageProvider {
 
     public static final String STORAGE_TYPE = "ebean";
 
+    @Getter
+    private final Database database;
+
+    @Inject
+    public PersistenceStorageProvider(Database database) {
+        this.database = database;
+    }
+
     @Override
     public <TValue> void store(Target<?> target, String key, TValue tValue) {
-
-        MetadataKey metadataKey = new MetadataKey(target.getUniqueId(), key);
-        Optional<MetadataStore> entry = new QMetadataStore().metadataKey.eq(metadataKey).findOneOrEmpty();
-        if (entry.isPresent()) {
-            entry.get().setMetadataValue(tValue.toString())
-                    .save();
-        } else {
-            new MetadataStore(metadataKey, tValue.toString()).save();
-        }
+        store(target.getUniqueId(), key, tValue);
     }
 
     @Override
     public <TValue> void store(ArtContext<?, ?, ?> context, Target<?> target, String key, TValue tValue) {
+        store(context.getUniqueId() + "#" + target.getUniqueId(), key, tValue);
+    }
+
+    private <TValue> void store(String uniqueId, String key, TValue value) {
+
+        MetadataKey metadataKey = new MetadataKey(uniqueId, key);
+        Gson gson = new Gson();
+        String json = gson.toJson(value);
+
+        MetadataStore entry = getDatabase().find(MetadataStore.class, metadataKey);
+        if (entry != null) {
+            entry.setMetadataValue(json);
+            getDatabase().save(entry);
+        } else {
+            getDatabase().save(new MetadataStore(metadataKey, json));
+        }
 
     }
 
     @Override
     public <TValue> Optional<TValue> get(Target<?> target, String key, Class<TValue> tValueClass) {
-        return Optional.empty();
+        return get(target.getUniqueId(), key, tValueClass);
     }
 
     @Override
     public <TValue> Optional<TValue> get(ArtContext<?, ?, ?> context, Target<?> target, String key, Class<TValue> tValueClass) {
-        return Optional.empty();
+        return get(context.getUniqueId() + "#" + target.getUniqueId(), key, tValueClass);
+    }
+
+    private <TValue> Optional<TValue> get(String uniqueId, String key, Class<TValue> tValueClass) {
+
+        MetadataKey metadataKey = new MetadataKey(uniqueId, key);
+
+        MetadataStore store = getDatabase().find(MetadataStore.class, metadataKey);
+        if (store == null) return Optional.empty();
+
+        try {
+            Gson gson = new Gson();
+            return Optional.ofNullable(gson.fromJson(store.getMetadataValue(), tValueClass));
+        } catch (JsonSyntaxException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
 }

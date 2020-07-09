@@ -1,0 +1,8 @@
+## H2 setup - In memory
+datasource:
+  db:
+    url: jdbc:h2:~/art
+    driver: org.h2.Driver
+ebean:
+  migration:
+    run: true

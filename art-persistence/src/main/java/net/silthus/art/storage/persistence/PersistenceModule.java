@@ -16,30 +16,20 @@
 
 package net.silthus.art.storage.persistence;
 
-import com.google.inject.Binder;
+import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.MapBinder;
-import kr.entree.spigradle.annotations.PluginMain;
+import io.ebean.Database;
 import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.slib.bukkit.BasePlugin;
 
-@PluginMain
-public class ArtHibernatePlugin extends BasePlugin {
+public class PersistenceModule extends AbstractModule {
 
-    @Override
-    public void enable() {
-
-        getLogger().info("Registered Persistence as ART Storage Provider. Use it by setting \"storage_provider: persistence\" in your config.yaml.");
-    }
 
     @Override
-    public void disable() {
+    public void configure() {
 
-    }
-
-    @Override
-    public void configure(Binder binder) {
-
-        MapBinder.newMapBinder(binder, String.class, StorageProvider.class)
+        MapBinder.newMapBinder(binder(), String.class, StorageProvider.class)
                 .addBinding(PersistenceStorageProvider.STORAGE_TYPE).to(PersistenceStorageProvider.class);
+
+        binder().bind(Database.class).toProvider(EbeanServerProvider.class).asEagerSingleton();
     }
 }

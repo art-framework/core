@@ -14,33 +14,17 @@
  * limitations under the License.
  */
 
-package net.silthus.art.storage.persistence.entities;
+package net.silthus.art.api.config;
 
-import lombok.Getter;
-import lombok.Setter;
+import de.exlll.configlib.annotation.ConfigurationElement;
+import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+@Data
+@ConfigurationElement
+public class DatabaseConfig {
 
-@Getter
-@Setter
-@Entity
-@Table(name = "art_metadata_store")
-public class MetadataStore {
-
-    @Id
-    private MetadataKey metadataKey;
-
-    private String metadataValue;
-
-    public MetadataStore(MetadataKey metadataKey, String value) {
-        this.metadataKey = metadataKey;
-        this.metadataValue = value;
-    }
-
-    public MetadataStore setMetadataValue(String metadataValue) {
-        this.metadataValue = metadataValue;
-        return this;
-    }
+    private String platform = "h2";
+    private String username = "sa";
+    private String password = "sa";
+    private String url = "jdbc:h2:~/art";
 }

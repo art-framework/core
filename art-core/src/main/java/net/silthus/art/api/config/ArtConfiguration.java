@@ -24,8 +24,6 @@ import lombok.Setter;
 import net.silthus.art.storage.MemoryStorageProvider;
 
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The global configuration of ART.
@@ -37,7 +35,7 @@ import java.util.Map;
 public class ArtConfiguration extends YamlConfiguration {
 
     private String storageProvider = MemoryStorageProvider.STORAGE_TYPE;
-    private Map<String, String> hibernateSettings = new HashMap<>();
+    private DatabaseConfig database = new DatabaseConfig();
 
     public ArtConfiguration(Path path) {
         super(path, YamlProperties.builder().setFormatter(FieldNameFormatters.LOWER_UNDERSCORE).build());

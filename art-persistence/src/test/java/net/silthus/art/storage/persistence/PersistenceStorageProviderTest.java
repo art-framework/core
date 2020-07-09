@@ -17,7 +17,7 @@
 package net.silthus.art.storage.persistence;
 
 import io.ebean.DB;
-import net.silthus.art.api.trigger.AbstractTarget;
+import net.silthus.art.api.target.AbstractTarget;
 import net.silthus.art.storage.persistence.entities.MetadataKey;
 import net.silthus.art.storage.persistence.entities.MetadataStore;
 import net.silthus.art.storage.persistence.entities.query.QMetadataStore;
@@ -27,6 +27,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @DisplayName("PersistenceStorage")
 class PersistenceStorageProviderTest {
@@ -35,12 +36,12 @@ class PersistenceStorageProviderTest {
 
     @BeforeEach
     void beforeEach() {
-        storageProvider = new PersistenceStorageProvider();
+        storageProvider = new PersistenceStorageProvider(DB.getDefault());
     }
 
     @AfterEach
     void afterEach() {
-        DB.getDefault().deleteAllPermanent(MetadataStore.class, new QMetadataStore().findIds());
+        DB.deleteAllPermanent(MetadataStore.class, new QMetadataStore().findIds());
     }
 
     @Test
@@ -85,7 +86,48 @@ class PersistenceStorageProviderTest {
         storageProvider.store(new StringTarget("foo"), "key1", "foo");
         assertThat(new QMetadataStore().metadataKey.equalTo(new MetadataKey("foo", "key1")).findOne())
                 .extracting(MetadataStore::getMetadataValue)
-                .isEqualTo("foo");
+                .isEqualTo("\"foo\"");
+    }
+
+    @Test
+    @DisplayName("should return empty optional if no entry exists")
+    void shouldReturnEmptyOptionalIfNoEntryExists() {
+
+        assertThat(storageProvider.get(new StringTarget("foo"), "test", String.class))
+                .isEmpty();
+    }
+
+    @Test
+    @DisplayName("should return empty optional if types do not match")
+    void shouldReturnEmptyOptionalIfTargetTypeDoesNotMatch() {
+
+        storageProvider.store(new StringTarget("foo"), "test", new StringTarget("foobar"));
+
+        assertThatCode(() -> assertThat(storageProvider.get(new StringTarget("foo"), "test", String.class)).isEmpty())
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("should return stored primitive values")
+    void shouldReturnStoredPrimitiveValue() {
+
+        storageProvider.store(new StringTarget("foo"), "test", "foobar");
+
+        assertThat(storageProvider.get(new StringTarget("foo"), "test", String.class))
+                .isNotEmpty().get()
+                .isEqualTo("foobar");
+    }
+
+    @Test
+    @DisplayName("should return stored object")
+    void shouldReturnObject() {
+
+        StringTarget storageValue = new StringTarget("stored-foo");
+        storageProvider.store(new StringTarget("foo"), "test", storageValue);
+
+        assertThat(storageProvider.get(new StringTarget("foo"), "test", StringTarget.class))
+                .isNotEmpty().get()
+                .isEqualTo(storageValue);
     }
 
     public static class StringTarget extends AbstractTarget<String> {

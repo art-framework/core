@@ -20,6 +20,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import net.silthus.art.api.config.ArtConfiguration;
+import net.silthus.art.storage.persistence.PersistenceStorageProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -41,6 +42,7 @@ public class BukkitModule extends AbstractModule {
     @Singleton
     public ArtConfiguration provideConfiguration() {
         ArtConfiguration configuration = new ArtConfiguration(new File(plugin.getDataFolder(), "config.yaml").toPath());
+        configuration.setStorageProvider(PersistenceStorageProvider.STORAGE_TYPE);
         configuration.loadAndSave();
         return configuration;
     }
