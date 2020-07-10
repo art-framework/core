@@ -50,6 +50,7 @@ class AbstractFactoryManagerTest {
         when(factory.getIdentifier()).thenReturn(identifier);
         ArtObject action = mock(Action.class);
         when(factory.getArtObject()).thenReturn(action);
+        when(factory.getAlias()).thenReturn(new String[0]);
         return factory;
     }
 
@@ -138,6 +139,37 @@ class AbstractFactoryManagerTest {
 
             verify(foobar, times(1)).initialize();
         }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should register alias mappings")
+        void shouldRegisterAliasMappings() {
+
+            ActionFactory factory = factory("foobar", ActionFactory.class);
+            when(factory.getAlias()).thenReturn(new String[]{"foo", "bar"});
+
+            assertThatCode(() -> actionManager.register(factory))
+                    .doesNotThrowAnyException();
+
+            assertThat(actionManager.getAliasMappings())
+                    .containsKeys("foo", "bar")
+                    .containsValues("foobar", "foobar");
+        }
+
+        @Test
+        @DisplayName("should not override alias mappings")
+        void shouldNotOverrideAliasMapping() {
+            ActionFactory factory = factory("foobar", ActionFactory.class);
+            when(factory.getAlias()).thenReturn(new String[]{"foo", "bar"});
+            actionManager.getAliasMappings().put("foo", "test");
+
+            assertThatCode(() -> actionManager.register(factory))
+                    .doesNotThrowAnyException();
+
+            assertThat(actionManager.getAliasMappings())
+                    .containsKeys("foo", "bar")
+                    .containsValues("test", "foobar");
+        }
     }
 
     @Nested
@@ -160,6 +192,20 @@ class AbstractFactoryManagerTest {
 
             assertThat(actionManager.getFactory("foobar"))
                     .isEmpty();
+        }
+
+        @Test
+        @DisplayName("should return mapped alias")
+        void shouldReturnMappedAliasIfIdentifierIsNotFound() {
+
+            ActionFactory factory = mock(ActionFactory.class);
+            actionManager.getFactories().put("foobar", factory);
+            actionManager.getAliasMappings().put("bar", "foobar");
+
+            assertThat(actionManager.getFactory("bar"))
+                    .isNotEmpty()
+                    .get()
+                    .isEqualTo(factory);
         }
     }
 }

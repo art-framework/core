@@ -32,6 +32,8 @@ public abstract class AbstractFactoryManager<TFactory extends ArtFactory<?, ?, ?
 
     @Getter(AccessLevel.PACKAGE)
     private final Map<String, TFactory> factories = new HashMap<>();
+    @Getter(AccessLevel.PACKAGE)
+    private final Map<String, String> aliasMappings = new HashMap<>();
     @Inject
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.PACKAGE)
@@ -73,10 +75,21 @@ public abstract class AbstractFactoryManager<TFactory extends ArtFactory<?, ?, ?
                     + " but already found " + factories.get(identifier).getArtObject().getClass().getCanonicalName());
         } else {
             factories.put(identifier, factory);
+            for (String alias : factory.getAlias()) {
+                if (!aliasMappings.containsKey(alias)) {
+                    aliasMappings.put(alias, identifier);
+                } else {
+                    getLogger().warning("No registering duplicate alias " + alias + " of " + identifier + ". "
+                            + aliasMappings.get(alias) + " has already registered the alias.");
+                }
+            }
         }
     }
 
     public Optional<TFactory> getFactory(String identifier) {
+        if (!factories.containsKey(identifier) && aliasMappings.containsKey(identifier)) {
+            identifier = aliasMappings.get(identifier);
+        }
         return Optional.ofNullable(factories.get(identifier));
     }
 }
