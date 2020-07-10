@@ -1,3 +1,25 @@
+# [1.0.0-alpha.10](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.9...v1.0.0-alpha.10) (2020-07-10)
+
+
+### Features
+
+* add ebean persistence layer ([7c040ab](https://github.com/art-framework/art-framework/commit/7c040abb20ef7a5773db632342d882ab38c15ef9))
+* add ebean persistence layer ([ec1908f](https://github.com/art-framework/art-framework/commit/ec1908fa712c4020eb2034b0295753c3550db565))
+* add first draft of hiberate connector ([a181bae](https://github.com/art-framework/art-framework/commit/a181bae47e5684545165603abad5c80923cedb63))
+* add first draft of hiberate connector ([8d5c1a0](https://github.com/art-framework/art-framework/commit/8d5c1a0a714f90b7378bf235f6504461db21d149))
+* finish ebean persistence layer ([db530bd](https://github.com/art-framework/art-framework/commit/db530bdfa7b7ce179c52240b5440ba0738ffa277))
+* **action:** add execute_once option to actions ([20b775b](https://github.com/art-framework/art-framework/commit/20b775b01998f97729ccd8963b2ed90da84a10ac))
+* **actions:** actions now can have a cooldown ([853f2e8](https://github.com/art-framework/art-framework/commit/853f2e83a59dac8e14b8ebd0fee9b48d4df0e590)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
+* **config:** add BukkitArtConfig to load from a ConfigurationSection ([b56f5a3](https://github.com/art-framework/art-framework/commit/b56f5a3e9b24b23347ca3235522227826fec4aa8))
+* **requirements:** add check_once, count and negated options ([61b47f9](https://github.com/art-framework/art-framework/commit/61b47f9cc6f803536445d04286092a84a259d8df))
+* **storage:** add storage api with default memory provider ([4999de9](https://github.com/art-framework/art-framework/commit/4999de96f7cc4ec678a0e4db620018ef81506782)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
+* **trigger:** add cooldown and execute_once to trigger ([9f49c50](https://github.com/art-framework/art-framework/commit/9f49c501c2c467472fe239de11b0815b495f3397))
+
+
+### Reverts
+
+* upload codacy coverage ([9cf53e0](https://github.com/art-framework/art-framework/commit/9cf53e050d0724bb4f9bf9d55cdbafa617090139))
+
 # [1.0.0-alpha.9](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.8...v1.0.0-alpha.9) (2020-07-09)
 
 
