@@ -109,6 +109,7 @@ public class BukkitArtConfig extends ArtConfig {
 
     /**
      * Saves this {@link ArtConfig} by calling the given {@link Consumer}.
+     * @throws IOException if file cannot be saved
      */
     public void save() throws IOException {
         getFileConfiguration().set(getSectionKey(), getConfig());
@@ -122,6 +123,8 @@ public class BukkitArtConfig extends ArtConfig {
      *
      * @see #load()
      * @see #save()
+     * @throws IOException if file cannot be saved or loaded
+     * @throws InvalidConfigurationException if config is invalid
      */
     public void loadAndSave() throws IOException, InvalidConfigurationException {
         load();
