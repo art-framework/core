@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.actions;
+package net.silthus.art.api.config;
 
-import com.google.inject.ImplementedBy;
-import net.silthus.art.api.Action;
-import net.silthus.art.api.factory.ArtFactoryManager;
+import de.exlll.configlib.annotation.ConfigurationElement;
+import lombok.Data;
 
-@ImplementedBy(ActionFactoryManager.class)
-public interface ActionManager extends ArtFactoryManager<ActionFactory<?, ?>> {
+@Data
+@ConfigurationElement
+public class DatabaseConfig {
 
-    <TTarget, TConfig> ActionFactory<TTarget, TConfig> create(Class<TTarget> targetClass, Action<TTarget, TConfig> action);
+    private String platform = "h2";
+    private String username = "sa";
+    private String password = "sa";
+    private String url = "jdbc:h2:~/art";
 }

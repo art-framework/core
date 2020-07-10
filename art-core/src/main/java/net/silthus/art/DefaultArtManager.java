@@ -16,6 +16,8 @@
 
 package net.silthus.art;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import lombok.Data;
 import lombok.NonNull;
 import net.silthus.art.api.ArtManager;
@@ -38,8 +40,6 @@ import net.silthus.art.api.trigger.TriggerFactory;
 import net.silthus.art.api.trigger.TriggerManager;
 import net.silthus.art.util.ConfigUtil;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -58,20 +58,21 @@ public class DefaultArtManager implements ArtManager {
     private final TriggerManager triggerManager;
     private final Provider<ArtBuilder> artBuilderProvider;
 
-
+    @Inject
     private Logger logger = Logger.getLogger("ART");
-    private final Map<String, Provider<ArtParser>> parser;
+    @Inject
+    private Map<String, Provider<ArtParser>> parser = new HashMap<>();
+
     private final Map<Class<?>, List<Filter<?>>> globalFilters = new HashMap<>();
     private final Map<Class<?>, Function> targetWrapper = new HashMap<>();
     private final Map<ArtModuleDescription, ArtBuilder> registeredPlugins = new HashMap<>();
 
     @Inject
-    public DefaultArtManager(ActionManager actionManager, RequirementManager requirementManager, TriggerManager triggerManager, Provider<ArtBuilder> artBuilderProvider, Map<String, Provider<ArtParser>> parser) {
+    public DefaultArtManager(ActionManager actionManager, RequirementManager requirementManager, TriggerManager triggerManager, Provider<ArtBuilder> artBuilderProvider) {
         this.actionManager = actionManager;
         this.requirementManager = requirementManager;
         this.triggerManager = triggerManager;
         this.artBuilderProvider = artBuilderProvider;
-        this.parser = parser;
     }
 
     @Override
@@ -159,7 +160,7 @@ public class DefaultArtManager implements ArtManager {
             getLogger().info("   " + e.getMessage());
         } finally {
             getLogger().info("   " + factories.size() + "x " + type + "(s) successfully registered:");
-            factories.forEach(value -> getLogger().info("    - ?" + value.getIdentifier() + " " + value.getConfigString()));
+            factories.forEach(value -> getLogger().info("    - " + value.getIdentifier() + " " + value.getConfigString()));
             getLogger().info("");
         }
     }

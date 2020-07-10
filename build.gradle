@@ -22,8 +22,8 @@ buildscript {
 }
 
 plugins {
-    id 'kr.entree.spigradle' version '2.0.0' apply false
-    id 'com.github.johnrengelman.shadow' version '5.2.0' apply false
+    id 'kr.entree.spigradle' version '2.0.1' apply false
+    id 'com.github.johnrengelman.shadow' version '6.0.0' apply false
 }
 
 subprojects {
@@ -56,7 +56,6 @@ subprojects {
 
     apply plugin: 'java-library'
     apply plugin: 'jacoco'
-    apply plugin: 'com.github.johnrengelman.shadow'
 
     apply from: "$rootDir/gradle/jacoco.gradle"
     apply from: "$rootDir/gradle/publish.gradle"
@@ -68,6 +67,7 @@ subprojects {
         compile 'org.projectlombok:lombok:1.18.12'
         annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
+        api 'de.exlll:configlib-core:2.6.0'
         api group: 'com.google.inject', name: 'guice', version: '4.2.3'
         api group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '4.2.3'
         implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
@@ -82,19 +82,6 @@ subprojects {
         testImplementation 'org.projectlombok:lombok:1.18.12'
         testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
     }
-
-    shadowJar {
-        classifier = ''
-        dependencies {
-            include(dependency('com.google.inject:guice:'))
-            include(dependency('org.apache.commons:commons-lang3:'))
-        }
-        relocate 'com.google.injection', "${packageName}.guice"
-        relocate 'com.apache.commons', "${packageName}.commonslang"
-    }
-
-    tasks.build.dependsOn(shadowJar)
-    tasks.publish.dependsOn(shadowJar)
 
     test {
         useJUnitPlatform()

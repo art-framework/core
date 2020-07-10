@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.actions;
+package net.silthus.art.storage.persistence;
 
-import com.google.inject.ImplementedBy;
-import net.silthus.art.api.Action;
-import net.silthus.art.api.factory.ArtFactoryManager;
+import com.google.inject.AbstractModule;
+import com.google.inject.multibindings.MapBinder;
+import io.ebean.Database;
+import net.silthus.art.api.storage.StorageProvider;
 
-@ImplementedBy(ActionFactoryManager.class)
-public interface ActionManager extends ArtFactoryManager<ActionFactory<?, ?>> {
+public class PersistenceModule extends AbstractModule {
 
-    <TTarget, TConfig> ActionFactory<TTarget, TConfig> create(Class<TTarget> targetClass, Action<TTarget, TConfig> action);
+
+    @Override
+    public void configure() {
+
+        MapBinder.newMapBinder(binder(), String.class, StorageProvider.class)
+                .addBinding(PersistenceStorageProvider.STORAGE_TYPE).to(PersistenceStorageProvider.class);
+
+        binder().bind(Database.class).toProvider(EbeanServerProvider.class).asEagerSingleton();
+    }
 }

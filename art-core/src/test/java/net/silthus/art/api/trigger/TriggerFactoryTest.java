@@ -22,27 +22,28 @@ import net.silthus.art.api.Trigger;
 import net.silthus.art.api.annotations.Description;
 import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.factory.ArtFactory;
+import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
+import net.silthus.art.storage.MemoryStorageProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 @DisplayName("TriggerFactory")
 @SuppressWarnings({"rawtypes", "unused"})
 class TriggerFactoryTest {
 
-    private TriggerFactoryProvider provider;
+    private Scheduler scheduler;
+    private StorageProvider storageProvider;
 
     @BeforeEach
     void beforeEach() {
-        provider = mock(TriggerFactoryProvider.class);
-        when(provider.create(any())).thenAnswer(invocation -> new TriggerFactory<>(invocation.getArgument(0), mock(StorageProvider.class)));
+        scheduler = mock(Scheduler.class);
+        storageProvider = new MemoryStorageProvider();
     }
 
     @Nested
@@ -55,7 +56,7 @@ class TriggerFactoryTest {
         void shouldInitializeWithSingleMethod() {
 
             MyMultiTrigger trigger = new MyMultiTrigger();
-            TriggerFactory<Object> factory = new TriggerFactory<>(trigger, mock(StorageProvider.class));
+            TriggerFactory<Object> factory = new TriggerFactory<>(trigger, storageProvider, scheduler);
             factory.setMethod(trigger.getClass().getDeclaredMethod("methodTwo"));
 
             assertThatCode(factory::initialize)
@@ -71,7 +72,7 @@ class TriggerFactoryTest {
         @DisplayName("should initialize factory with class annotation only")
         void shouldInitializeWithClassAnnotation() {
 
-            TriggerFactory<Object> factory = new TriggerFactory<>(new MySecondTrigger(), mock(StorageProvider.class));
+            TriggerFactory<Object> factory = new TriggerFactory<>(new MySecondTrigger(), storageProvider, scheduler);
 
             assertThatCode(factory::initialize)
                     .doesNotThrowAnyException();
@@ -85,7 +86,7 @@ class TriggerFactoryTest {
         @DisplayName("should fail initialization if no class or method annotation exists")
         void shouldFailToInitializeIfNoClassAnnotationExists() {
 
-            TriggerFactory<?> factory = provider.create(new MyFailingTrigger());
+            TriggerFactory<Object> factory = new TriggerFactory<>(new MyFailingTrigger(), storageProvider, null);
 
             assertThatExceptionOfType(ArtRegistrationException.class)
                     .isThrownBy(factory::initialize)
@@ -101,7 +102,7 @@ class TriggerFactoryTest {
         @DisplayName("should store context in factory")
         void shouldStoreContextInFactory() {
 
-            TriggerFactory<?> factory = provider.create(new MyFailingTrigger());
+            TriggerFactory<Object> factory = new TriggerFactory<>(new MyFailingTrigger(), storageProvider, null);
 
             TriggerContext context1 = factory.create(new TriggerConfig<>());
             TriggerContext context2 = factory.create(new TriggerConfig<>());

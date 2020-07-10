@@ -19,9 +19,12 @@ package net.silthus.art.api.actions;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import net.silthus.art.api.Action;
+import net.silthus.art.api.annotations.ActiveStorageProvider;
 import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
+
+import javax.annotation.Nullable;
 
 /**
  * The {@link ActionFactory} creates a fresh {@link ActionContext} for each unique
@@ -34,12 +37,12 @@ import net.silthus.art.api.storage.StorageProvider;
  */
 public class ActionFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>> {
 
-    @Inject(optional = true)
-    private Scheduler scheduler;
+    private final Scheduler scheduler;
 
     @Inject
-    ActionFactory(@Assisted Class<TTarget> targetClass, @Assisted Action<TTarget, TConfig> action, StorageProvider storageProvider) {
+    ActionFactory(@Assisted Class<TTarget> targetClass, @Assisted Action<TTarget, TConfig> action, @ActiveStorageProvider StorageProvider storageProvider, @Nullable Scheduler scheduler) {
         super(storageProvider, targetClass, action);
+        this.scheduler = scheduler;
     }
 
     @Override

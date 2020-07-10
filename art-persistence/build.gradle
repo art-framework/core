@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.actions;
+plugins {
+    id 'io.ebean' version '12.3.6'
+    id 'com.github.johnrengelman.shadow'
+}
 
-import com.google.inject.ImplementedBy;
-import net.silthus.art.api.Action;
-import net.silthus.art.api.factory.ArtFactoryManager;
+dependencies {
+    annotationProcessor 'io.ebean:querybean-generator:12.3.6'
 
-@ImplementedBy(ActionFactoryManager.class)
-public interface ActionManager extends ArtFactoryManager<ActionFactory<?, ?>> {
+    api project(':art-core')
 
-    <TTarget, TConfig> ActionFactory<TTarget, TConfig> create(Class<TTarget> targetClass, Action<TTarget, TConfig> action);
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    implementation 'io.ebean:ebean:12.3.6'
+    implementation 'io.ebean:ebean-querybean:12.3.6'
+
+    implementation 'com.h2database:h2:1.4.200'
+
+    testImplementation 'io.ebean:ebean-test:12.3.6'
 }

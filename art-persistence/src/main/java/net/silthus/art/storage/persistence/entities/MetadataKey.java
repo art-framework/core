@@ -14,14 +14,21 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.actions;
+package net.silthus.art.storage.persistence.entities;
 
-import com.google.inject.ImplementedBy;
-import net.silthus.art.api.Action;
-import net.silthus.art.api.factory.ArtFactoryManager;
+import lombok.Data;
 
-@ImplementedBy(ActionFactoryManager.class)
-public interface ActionManager extends ArtFactoryManager<ActionFactory<?, ?>> {
+import javax.persistence.Embeddable;
 
-    <TTarget, TConfig> ActionFactory<TTarget, TConfig> create(Class<TTarget> targetClass, Action<TTarget, TConfig> action);
+@Data
+@Embeddable
+public class MetadataKey {
+
+    private String id;
+    private String key;
+
+    public MetadataKey(String id, String key) {
+        this.id = id;
+        this.key = key;
+    }
 }

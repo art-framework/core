@@ -16,8 +16,6 @@
 
 package net.silthus.art.api.requirements;
 
-import com.google.inject.Inject;
-import com.google.inject.assistedinject.Assisted;
 import lombok.EqualsAndHashCode;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.Requirement;
@@ -27,8 +25,7 @@ import net.silthus.art.api.storage.StorageProvider;
 @EqualsAndHashCode(callSuper = true)
 public class RequirementFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig, Requirement<TTarget, TConfig>, RequirementConfig<TConfig>> {
 
-    @Inject
-    RequirementFactory(@Assisted Class<TTarget> targetClass, @Assisted Requirement<TTarget, TConfig> artObject, StorageProvider storageProvider) {
+    RequirementFactory(Class<TTarget> targetClass, Requirement<TTarget, TConfig> artObject, StorageProvider storageProvider) {
         super(storageProvider, targetClass, artObject);
     }
 

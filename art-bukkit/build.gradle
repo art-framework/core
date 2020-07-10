@@ -15,14 +15,13 @@
  */
 
 apply plugin: 'kr.entree.spigradle'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 spigot {
     name = "${project.property("pluginName")}"
     authors = [project.property("author")]
     apiVersion = project.property("apiVersion")
     load = STARTUP
-    main = "net.silthus.art.ArtPlugin"
-    depends = ['sLib']
 }
 
 repositories {
@@ -39,19 +38,41 @@ repositories {
 dependencies {
     api project(':art-core')
     implementation project(':art-flow-parser')
+    implementation project(':art-persistence')
 
     implementation "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"
 
     implementation 'net.silthus:slib:1.5.1'
-    implementation 'de.exlll:configlib-core:2.6.0'
-
 
     testImplementation 'com.github.seeseemelk:MockBukkit-v1.15:0.3.0-SNAPSHOT'
 }
 
 shadowJar {
+    classifier = ''
     dependencies {
-        include(dependency(':art-core'))
-        include(dependency(':art-flow-parser'))
+        exclude(dependency('org.spigotmc::'))
+        exclude(dependency('net.md-5::'))
     }
+    relocate 'com.google.injection', "${packageName}.guice"
+    relocate 'com.apache.commons', "${packageName}.commonslang"
+    relocate 'de.exlll.configlib', "${packageName}.configlib"
+    relocate 'net.silthus.slib', "${packageName}.slib"
 }
+
+tasks.build.dependsOn(shadowJar)
+tasks.publish.dependsOn(shadowJar)
+
+//shadowJar {
+////    dependencies {
+////        include(dependency(':art-core'))
+////        include(dependency(':art-flow-parser'))
+////        include(dependency(':art-persistence'))
+////        include(dependency('net.silthus:slib:'))
+////        include(dependency('io.ebean::'))
+////        include(dependency('com.google.code.gson:gson:'))
+////        include(dependency('io.avaje::'))
+////        include(dependency('com.h2database::'))
+////    }
+//
+//    relocate 'net.silthus.slib', "${packageName}.slib"
+//}
