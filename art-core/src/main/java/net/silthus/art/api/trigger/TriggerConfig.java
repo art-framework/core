@@ -19,11 +19,13 @@ package net.silthus.art.api.trigger;
 import de.exlll.configlib.annotation.ConfigurationElement;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
-import net.silthus.art.api.annotations.Description;
+import net.silthus.art.api.annotations.ConfigOption;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.util.TimeUtil;
 
+@Getter
 @Setter(AccessLevel.PACKAGE)
 @ConfigurationElement
 @EqualsAndHashCode(callSuper = true)
@@ -36,30 +38,29 @@ public class TriggerConfig<TConfig> extends ArtObjectConfig<TConfig> {
         super(with);
     }
 
-    @Description({
+    @ConfigOption(description = {
             "Delay of the trigger,",
             "Use the 'time' (e.g.: 1h20s) annotation to specify the delay this trigger has.",
             "Delay means the time to wait before executing any actions and informing others about the execution of this trigger."
     })
     private String delay = "0s";
 
-    @Description({
+    @ConfigOption(description = {
             "Cooldown of the trigger.",
             "Use the 'time' (e.g.: 1h20s) annotation to specify the cooldown this trigger has.",
             "Cooldown means the time between executions."
     })
     private String cooldown = "0s";
 
-    @Description("Set this to true to execute this trigger only once.")
-    private boolean execute_once = false;
+    @ConfigOption(description = "Set this to true to execute this trigger only once.")
+    private boolean executeOnce = false;
 
-    @Description({
+    @ConfigOption(description = {
             "Set this to false to prevent any actions being executed by this trigger.",
             "Any listeners will still be informed and all requirements checked."
     })
-    private boolean execute_actions = true;
+    private boolean executeActions = true;
 
-    @Description("")
     private int count = 0;
 
     /**
@@ -79,17 +80,5 @@ public class TriggerConfig<TConfig> extends ArtObjectConfig<TConfig> {
      */
     public long getCooldown() {
         return TimeUtil.parseTimeAsMillis(cooldown);
-    }
-
-    public boolean isExecuteOnce() {
-        return execute_once;
-    }
-
-    public void setExecuteActions(boolean executeActions) {
-        this.execute_actions = executeActions;
-    }
-
-    public boolean isExecuteActions() {
-        return execute_actions;
     }
 }

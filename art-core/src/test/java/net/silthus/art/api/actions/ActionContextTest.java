@@ -26,7 +26,6 @@ import net.silthus.art.storage.MemoryStorageProvider;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
 import org.apache.commons.lang3.RandomUtils;
-import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -338,7 +337,7 @@ public class ActionContextTest {
 
             @BeforeEach
             void beforeEach() {
-                context.getOptions().setExecute_once(true);
+                context.getOptions().setExecuteOnce(true);
             }
 
             @Test

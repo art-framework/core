@@ -5,6 +5,8 @@
 /.idea/*.xml
 *.iml
 
+*.sql
+
 # Gradle
 
 .gradle

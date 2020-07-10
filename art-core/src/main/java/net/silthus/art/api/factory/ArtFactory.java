@@ -23,9 +23,6 @@ import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.actions.ActionFactory;
-import net.silthus.art.api.annotations.Config;
-import net.silthus.art.api.annotations.Description;
-import net.silthus.art.api.annotations.Name;
 import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
@@ -49,9 +46,10 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
     private final StorageProvider storageProvider;
     private final Class<TTarget> targetClass;
     private final TARTObject artObject;
-    private Class<TConfig> configClass = null;
     private String identifier;
+    private String[] alias = new String[0];
     private String[] description = new String[0];
+    private Class<TConfig> configClass = null;
 
     final Map<String, ConfigFieldInformation> configInformation = new HashMap<>();
 
@@ -94,6 +92,7 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
         try {
             setIdentifier(tryGetIdentifier(methods));
             setConfigClass(tryGetConfigClass(methods));
+            setAlias(tryGetAlias(methods));
             setDescription(tryGetDescription(methods));
             if (getConfigClass().isPresent()) {
                 configInformation.clear();
@@ -105,7 +104,7 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
 
         if (Strings.isNullOrEmpty(getIdentifier())) {
             throw new ArtObjectRegistrationException(artObject,
-                    String.format("%s has no defined name. Use the @Name annotation on the class or a method. " +
+                    String.format("%s has no defined name. Use the @ArtObject annotation on the class or a method. " +
                             "You can also use the withName(...) method of the ArtBuilder to provide a name.",
                             artObject.getClass().getCanonicalName()));
         }
@@ -114,43 +113,46 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
     private String tryGetIdentifier(Method... methods) {
         if (!Strings.isNullOrEmpty(getIdentifier())) return getIdentifier();
 
-        if (artObject.getClass().isAnnotationPresent(Name.class)) {
-            return artObject.getClass().getAnnotation(Name.class).value();
-        } else {
-            return Arrays.stream(methods)
-                    .filter(method -> method.isAnnotationPresent(Name.class))
-                    .findFirst()
-                    .map(method -> method.getAnnotation(Name.class).value())
-                    .orElse(null);
-        }
+        return getAnnotation(methods)
+                .map(net.silthus.art.api.annotations.ArtObject::value)
+                .orElse(null);
     }
 
     @SuppressWarnings("unchecked")
     private Class<TConfig> tryGetConfigClass(Method... methods) {
         if (getConfigClass().isPresent()) return getConfigClass().get();
 
-        if (artObject.getClass().isAnnotationPresent(Config.class)) {
-            return (Class<TConfig>) artObject.getClass().getAnnotation(Config.class).value();
-        } else {
-            return Arrays.stream(methods)
-                    .filter(method -> method.isAnnotationPresent(Config.class))
-                    .findFirst()
-                    .map(method -> (Class<TConfig>) method.getAnnotation(Config.class).value())
-                    .orElse(null);
-        }
+        return (Class<TConfig>)  getAnnotation(methods)
+                .map(net.silthus.art.api.annotations.ArtObject::config)
+                .filter(classes -> classes.length > 0)
+                .map(classes -> classes[0])
+                .orElse(null);
     }
 
     private String[] tryGetDescription(Method... methods) {
         if (description.length > 0) return description;
 
-        if (artObject.getClass().isAnnotationPresent(Description.class)) {
-            return artObject.getClass().getAnnotation(Description.class).value();
+        return getAnnotation(methods)
+                .map(net.silthus.art.api.annotations.ArtObject::description)
+                .orElse(new String[0]);
+    }
+
+    private String[] tryGetAlias(Method... methods) {
+        if (alias.length > 0) return alias;
+
+        return getAnnotation(methods)
+                .map(net.silthus.art.api.annotations.ArtObject::alias)
+                .orElse(new String[0]);
+    }
+
+    private Optional<net.silthus.art.api.annotations.ArtObject> getAnnotation(Method... methods) {
+        if (getArtObject().getClass().isAnnotationPresent(net.silthus.art.api.annotations.ArtObject.class)) {
+            return Optional.of(getArtObject().getClass().getAnnotation(net.silthus.art.api.annotations.ArtObject.class));
         } else {
             return Arrays.stream(methods)
-                    .filter(method -> method.isAnnotationPresent(Description.class))
+                    .filter(method -> method.isAnnotationPresent(net.silthus.art.api.annotations.ArtObject.class))
                     .findFirst()
-                    .map(method -> method.getAnnotation(Description.class).value())
-                    .orElse(new String[0]);
+                    .map(method -> method.getAnnotation(net.silthus.art.api.annotations.ArtObject.class));
         }
     }
 }

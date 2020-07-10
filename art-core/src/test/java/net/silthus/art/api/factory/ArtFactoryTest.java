@@ -77,7 +77,7 @@ public class ArtFactoryTest {
 
             factory.initialize();
             assertThat(factory.getConfigString())
-                    .isEqualTo("parentField=foobar, required*=0, allAnnotations*=2.0, defaultField=world, nested.nestedField=foobar, noAnnotations=false");
+                    .isEqualTo("parent_field=foobar, required*=0, all_annotations*=2.0, default_field=world, nested.nested_field=foobar, no_annotations=false");
         }
     }
 
@@ -170,8 +170,7 @@ public class ArtFactoryTest {
         public void shouldUseMethodAnnotation() {
 
             factory = factory(String.class, new Action<String, TestConfig>() {
-                @Name("foo")
-                @Config(TestConfig.class)
+                @ArtObject(value = "foo", config = TestConfig.class)
                 @Override
                 public void execute(Target<String> s, ActionContext<String, TestConfig> context) {
                 }
@@ -195,11 +194,11 @@ public class ArtFactoryTest {
                 assertThat(factory.getConfigInformation())
                         .hasSizeGreaterThanOrEqualTo(5)
                         .containsKeys(
-                                "parentField",
-                                "noAnnotations",
+                                "parent_field",
+                                "no_annotations",
                                 "required",
-                                "defaultField",
-                                "allAnnotations"
+                                "default_field",
+                                "all_annotations"
                         );
             }
 
@@ -218,7 +217,7 @@ public class ArtFactoryTest {
             public void shouldLoadDescriptionAttribute() {
 
                 assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-                assertThat(factory.getConfigInformation().get("defaultField"))
+                assertThat(factory.getConfigInformation().get("default_field"))
                         .extracting(ConfigFieldInformation::getDescription)
                         .isEqualTo(new String[]{"World to teleport the player to."});
             }
@@ -228,7 +227,7 @@ public class ArtFactoryTest {
             public void shouldLoadDefaultValue() {
 
                 assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-                assertThat(factory.getConfigInformation().get("defaultField"))
+                assertThat(factory.getConfigInformation().get("default_field"))
                         .extracting(ConfigFieldInformation::getDefaultValue)
                         .isEqualTo("world");
             }
@@ -238,7 +237,7 @@ public class ArtFactoryTest {
             public void shouldLoadRequiredDefaultValue() {
 
                 assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
-                assertThat(factory.getConfigInformation().get("allAnnotations"))
+                assertThat(factory.getConfigInformation().get("all_annotations"))
                         .extracting(ConfigFieldInformation::getDefaultValue, ConfigFieldInformation::getDescription)
                         .contains(2.0d, new String[]{"Required field with default value."});
             }
@@ -249,8 +248,8 @@ public class ArtFactoryTest {
 
                 assertThatCode(() -> factory.initialize()).doesNotThrowAnyException();
                 assertThat(factory.getConfigInformation())
-                        .containsKeys("nested.nestedField");
-                assertThat(factory.getConfigInformation().get("nested.nestedField"))
+                        .containsKeys("nested.nested_field");
+                assertThat(factory.getConfigInformation().get("nested.nested_field"))
                         .extracting(ConfigFieldInformation::getDescription, ConfigFieldInformation::getDefaultValue)
                         .contains(new String[]{"nested config field"}, "foobar");
             }
@@ -279,7 +278,7 @@ public class ArtFactoryTest {
                 assertThat(factory.getConfigInformation().get("required"))
                         .extracting(ConfigFieldInformation::getPosition)
                         .isEqualTo(1);
-                assertThat(factory.getConfigInformation().get("parentField"))
+                assertThat(factory.getConfigInformation().get("parent_field"))
                         .extracting(ConfigFieldInformation::getPosition)
                         .isEqualTo(0);
             }
@@ -289,8 +288,7 @@ public class ArtFactoryTest {
             public void shouldThrowExceptionForSamePosition() {
 
                 ArtFactory<String, ErrorConfig, Action<String, ErrorConfig>, ActionConfig<ErrorConfig>> factory = factory(String.class, new Action<String, ErrorConfig>() {
-                    @Name("test")
-                    @Config(ErrorConfig.class)
+                    @ArtObject(value = "test", config = ErrorConfig.class)
                     @Override
                     public void execute(Target<String> s, ActionContext<String, ErrorConfig> context) {
 
@@ -315,9 +313,11 @@ public class ArtFactoryTest {
         }
     }
 
-    @Name("Test")
-    @Description("Description")
-    @Config(TestConfig.class)
+    @ArtObject(
+            value = "Test",
+            description = "Description",
+            config = TestConfig.class
+    )
     public static class TestAction implements Action<String, TestConfig> {
         @Override
         public void execute(Target<String> s, ActionContext<String, TestConfig> context) {
@@ -327,21 +327,19 @@ public class ArtFactoryTest {
 
     public static class ConfigBase {
 
-        @Position(0)
+        @ConfigOption(position = 0)
         private final String parentField = "foobar";
     }
 
     public static class TestConfig extends ConfigBase {
 
         private boolean noAnnotations;
-        @Required
-        @Position(1)
+        @ConfigOption(required = true, position = 1)
         private int required;
-        @Description("World to teleport the player to.")
+        @ConfigOption(description = "World to teleport the player to.")
         private final String defaultField = "world";
 
-        @Required
-        @Description("Required field with default value.")
+        @ConfigOption(description = "Required field with default value.", required = true)
         private final double allAnnotations = 2.0d;
 
         @Ignore
@@ -351,13 +349,13 @@ public class ArtFactoryTest {
     }
 
     public static class NestedConfig {
-        @Description("nested config field")
+        @ConfigOption(description = "nested config field")
         private final String nestedField = "foobar";
     }
 
     public static class ErrorConfig extends ConfigBase {
 
-        @Position(0)
+        @ConfigOption(position = 0)
         private final int error = 2;
     }
 }
