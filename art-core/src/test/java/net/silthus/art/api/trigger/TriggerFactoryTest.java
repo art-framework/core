@@ -19,8 +19,7 @@ package net.silthus.art.api.trigger;
 import lombok.SneakyThrows;
 import net.silthus.art.api.ArtRegistrationException;
 import net.silthus.art.api.Trigger;
-import net.silthus.art.api.annotations.Description;
-import net.silthus.art.api.annotations.Name;
+import net.silthus.art.api.annotations.ArtObject;
 import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
@@ -112,7 +111,7 @@ class TriggerFactoryTest {
         }
     }
 
-    @Name("test")
+    @ArtObject("test")
     static class MyTrigger implements Trigger {
 
         public void myMethod() {
@@ -120,11 +119,10 @@ class TriggerFactoryTest {
         }
     }
 
-    @Name("test")
+    @ArtObject("test")
     static class MySecondTrigger implements Trigger {
 
-        @Name("method")
-        @Description("foobar")
+        @ArtObject(value = "method", description = "foobar")
         public void myMethod() {
 
         }
@@ -132,18 +130,17 @@ class TriggerFactoryTest {
     
     static class MyMultiTrigger implements Trigger {
 
-        @Name("one")
-        @Description("test")
+        @ArtObject(value = "one", description = "test")
         public void methodOne() {
             
         }
 
-        @Name("two")
+        @ArtObject("two")
         public void methodTwo() {
 
         }
 
-        @Name("three")
+        @ArtObject("three")
         public void methodThree() {
 
         }

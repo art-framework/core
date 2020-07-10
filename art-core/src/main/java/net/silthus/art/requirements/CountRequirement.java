@@ -5,12 +5,14 @@ import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.target.Target;
 
-@Name("count")
-@Description({
-        "This requirement returns true once it has been checked as often as defined in the count.",
-        "You also have some additional options to send messages to the player informing him about the counter."
-})
-@Config(CountRequirement.Config.class)
+@ArtObject(
+        value = "count",
+        description = {
+                "This requirement returns true once it has been checked as often as defined in the count.",
+                "You also have some additional options to send messages to the player informing him about the counter."
+        },
+        config = CountRequirement.Config.class
+)
 public class CountRequirement implements Requirement<Object, CountRequirement.Config> {
 
     private static final String COUNTER_KEY = "count";
@@ -26,9 +28,7 @@ public class CountRequirement implements Requirement<Object, CountRequirement.Co
 
     public static class Config {
 
-        @Required
-        @Position(0)
-        @Description("Set how often this requirement must be checked before it is successful.")
+        @ConfigOption(description = "Set how often this requirement must be checked before it is successful.")
         private int count;
     }
 }

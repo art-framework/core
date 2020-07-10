@@ -19,7 +19,7 @@ package net.silthus.art.api.trigger;
 import com.google.inject.Inject;
 import net.silthus.art.api.Trigger;
 import net.silthus.art.api.annotations.ActiveStorageProvider;
-import net.silthus.art.api.annotations.Name;
+import net.silthus.art.api.annotations.ArtObject;
 import net.silthus.art.api.factory.AbstractFactoryManager;
 import net.silthus.art.api.scheduler.Scheduler;
 import net.silthus.art.api.storage.StorageProvider;
@@ -51,7 +51,7 @@ public class DefaultTriggerManager extends AbstractFactoryManager<TriggerFactory
 
         Method[] methods = trigger.getClass().getDeclaredMethods();
         List<TriggerFactory<?>> factories = Arrays.stream(methods)
-                .filter(method -> method.isAnnotationPresent(Name.class))
+                .filter(method -> method.isAnnotationPresent(ArtObject.class))
                 .map(method -> {
                     TriggerFactory<?> triggerFactory = new TriggerFactory<>(trigger, storageProvider, scheduler);
                     triggerFactory.setMethod(method);

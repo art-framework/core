@@ -272,7 +272,7 @@ class TriggerContextTest {
 
             @BeforeEach
             void beforeEach() {
-                context.getOptions().setExecute_once(true);
+                context.getOptions().setExecuteOnce(true);
                 listener = (TriggerListener<String>) mock(TriggerListener.class);
                 context.addListener(String.class, listener);
             }

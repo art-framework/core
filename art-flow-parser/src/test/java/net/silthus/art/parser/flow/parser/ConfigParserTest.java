@@ -18,8 +18,7 @@ package net.silthus.art.parser.flow.parser;
 
 import lombok.Data;
 import lombok.SneakyThrows;
-import net.silthus.art.api.annotations.Position;
-import net.silthus.art.api.annotations.Required;
+import net.silthus.art.api.annotations.ConfigOption;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.util.ConfigUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -248,17 +247,17 @@ class ConfigParserTest {
     @Data
     static class TestConfig {
 
-        @Position(0)
+        @ConfigOption(position = 0)
         private String name;
-        @Position(1)
+        @ConfigOption(position = 1)
         private boolean required = false;
-        @Position(2)
+        @ConfigOption(position = 2)
         private String optional;
     }
 
     @Data
     static class SingleFieldConfig {
-        @Required
+        @ConfigOption(required = true)
         private double amount;
     }
 
@@ -272,9 +271,9 @@ class ConfigParserTest {
     @Data
     static class ConfigWithRequired {
 
-        @Position(0)
+        @ConfigOption(position = 0)
         private String name;
-        @Required
+        @ConfigOption(required = true)
         private String required;
         private String optional;
     }

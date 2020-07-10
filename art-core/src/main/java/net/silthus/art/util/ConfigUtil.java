@@ -16,12 +16,12 @@
 
 package net.silthus.art.util;
 
-import net.silthus.art.api.annotations.Description;
-import net.silthus.art.api.annotations.Ignore;
-import net.silthus.art.api.annotations.Position;
-import net.silthus.art.api.annotations.Required;
+import com.google.common.base.Strings;
+import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ConfigFieldInformation;
+import net.silthus.art.api.config.FieldNameFormatter;
+import net.silthus.art.api.config.FieldNameFormatters;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
@@ -39,18 +39,21 @@ import java.util.stream.Collectors;
 
 public final class ConfigUtil {
 
-    public static Map<String, ConfigFieldInformation> getConfigFields(Class<?> configClass) throws ArtConfigException {
-
+    public static Map<String, ConfigFieldInformation> getConfigFields(Class<?> configClass, FieldNameFormatter formatter) throws ArtConfigException {
         try {
             Constructor<?> constructor = configClass.getConstructor();
             constructor.setAccessible(true);
-            return getConfigFields("", configClass, constructor.newInstance());
+            return getConfigFields("", configClass, constructor.newInstance(), formatter);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
             throw new ArtConfigException(e);
         }
     }
 
-    private static Map<String, ConfigFieldInformation> getConfigFields(String basePath, Class<?> configClass, Object configInstance) throws ArtConfigException {
+    public static Map<String, ConfigFieldInformation> getConfigFields(Class<?> configClass) throws ArtConfigException {
+        return getConfigFields(configClass, FieldNameFormatters.LOWER_UNDERSCORE);
+    }
+
+    private static Map<String, ConfigFieldInformation> getConfigFields(String basePath, Class<?> configClass, Object configInstance, FieldNameFormatter formatter) throws ArtConfigException {
         Map<String, ConfigFieldInformation> fields = new HashMap<>();
 
         try {
@@ -59,26 +62,25 @@ public final class ConfigUtil {
                 if (Modifier.isStatic(field.getModifiers())) continue;
                 if (field.isAnnotationPresent(Ignore.class)) continue;
 
-                String identifier = basePath + field.getName();
+                Optional<ConfigOption> configOption = getConfigOption(field);
+
+                String identifier = basePath + configOption.map(ConfigOption::value)
+                        .filter(s -> !Strings.isNullOrEmpty(s))
+                        .orElse(formatter.apply(field.getName()));
                 ConfigFieldInformation configInformation = new ConfigFieldInformation(identifier, field.getName(), field.getType());
 
                 if (field.getType().isPrimitive() || field.getType().equals(String.class)) {
-                    if (field.isAnnotationPresent(Description.class)) {
-                        configInformation.setDescription(field.getAnnotation(Description.class).value());
-                    }
-                    if (field.isAnnotationPresent(Required.class)) {
-                        configInformation.setRequired(true);
-                    }
-                    if (field.isAnnotationPresent(Position.class)) {
-                        configInformation.setPosition(field.getAnnotation(Position.class).value());
-                    }
+
+                    configInformation.setDescription(configOption.map(ConfigOption::description).orElse(configInformation.getDescription()));
+                    configInformation.setRequired(configOption.map(ConfigOption::required).orElse(configInformation.isRequired()));
+                    configInformation.setPosition(configOption.map(ConfigOption::position).orElse(configInformation.getPosition()));
 
                     field.setAccessible(true);
                     configInformation.setDefaultValue(field.get(configInstance));
 
                     fields.put(identifier, configInformation);
                 } else {
-                    fields.putAll(getConfigFields(identifier + ".", field.getType(), field.getType().getConstructor().newInstance()));
+                    fields.putAll(getConfigFields(identifier + ".", field.getType(), field.getType().getConstructor().newInstance(), formatter));
                 }
             }
 
@@ -98,6 +100,14 @@ public final class ConfigUtil {
         }
 
         return fields;
+    }
+
+    public static Optional<ConfigOption> getConfigOption(Field field) {
+
+        if (field.isAnnotationPresent(ConfigOption.class)) {
+            return Optional.of(field.getAnnotation(ConfigOption.class));
+        }
+        return Optional.empty();
     }
 
     /**

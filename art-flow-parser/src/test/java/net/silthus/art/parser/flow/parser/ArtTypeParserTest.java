@@ -22,7 +22,7 @@ import net.silthus.art.api.actions.ActionConfig;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
-import net.silthus.art.api.annotations.Position;
+import net.silthus.art.api.annotations.ConfigOption;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.util.ConfigUtil;
@@ -169,7 +169,7 @@ class ArtTypeParserTest {
 
     @Data
     static class TestConfig {
-        @Position(0)
+        @ConfigOption(position = 0)
         private String name;
         private int number;
     }
