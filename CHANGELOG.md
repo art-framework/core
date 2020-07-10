@@ -1,3 +1,11 @@
+# [1.0.0-alpha.11](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.10...v1.0.0-alpha.11) (2020-07-10)
+
+
+### Features
+
+* add alias mappings ([b95e14f](https://github.com/art-framework/art-framework/commit/b95e14f8d29c9992846ab797f2a78a91a774a37c))
+* combine annotations into a single @ArtObject and @ConfigOption annotation ([e8e54ff](https://github.com/art-framework/art-framework/commit/e8e54ff9f669b877e95c755ee30d64c9fbc48f96))
+
 # [1.0.0-alpha.10](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.9...v1.0.0-alpha.10) (2020-07-10)
 
 
