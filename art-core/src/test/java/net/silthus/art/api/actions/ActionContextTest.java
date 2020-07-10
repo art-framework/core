@@ -318,27 +318,6 @@ public class ActionContextTest {
             }
 
             @Test
-            @SneakyThrows
-            @DisplayName("should set last execution time")
-            void shouldSetLastExecution() {
-
-                StringTarget foo = new StringTarget("foo");
-                StringTarget bar = new StringTarget("bar");
-
-                long time = System.currentTimeMillis();
-
-                context.execute(foo);
-                Thread.sleep(5);
-                context.execute(bar);
-
-                Long fooTime = storageProvider.get(context, foo, LAST_EXECUTION, Long.class).get();
-                assertThat(fooTime).isCloseTo(time, Offset.offset(10L));
-
-                Long barTime = storageProvider.get(context, bar, LAST_EXECUTION, Long.class).get();
-                assertThat(barTime).isCloseTo(time + 5, Offset.offset(10L));
-            }
-
-            @Test
             @DisplayName("should not test requirements if action is on cooldown")
             void shouldNotTestRequirementsIfActionIsOnCooldown() {
 
