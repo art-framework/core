@@ -18,11 +18,11 @@ package net.silthus.art.api.actions;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import net.silthus.art.api.Action;
+import net.silthus.art.Action;
+import net.silthus.art.Scheduler;
+import net.silthus.art.Storage;
 import net.silthus.art.api.annotations.ActiveStorageProvider;
 import net.silthus.art.api.factory.ArtFactory;
-import net.silthus.art.api.scheduler.Scheduler;
-import net.silthus.art.api.storage.StorageProvider;
 
 import javax.annotation.Nullable;
 
@@ -40,13 +40,13 @@ public class ActionFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig
     private final Scheduler scheduler;
 
     @Inject
-    ActionFactory(@Assisted Class<TTarget> targetClass, @Assisted Action<TTarget, TConfig> action, @ActiveStorageProvider StorageProvider storageProvider, @Nullable Scheduler scheduler) {
-        super(storageProvider, targetClass, action);
+    ActionFactory(@Assisted Class<TTarget> targetClass, @Assisted Action<TTarget, TConfig> action, @ActiveStorageProvider Storage storage, @Nullable Scheduler scheduler) {
+        super(storage, targetClass, action);
         this.scheduler = scheduler;
     }
 
     @Override
     public ActionContext<TTarget, TConfig> create(ActionConfig<TConfig> config) {
-        return new ActionContext<>(getTargetClass(), getArtObject(), config, scheduler, getStorageProvider());
+        return new ActionContext<>(getTargetClass(), getArtObject(), config, scheduler, getStorage());
     }
 }

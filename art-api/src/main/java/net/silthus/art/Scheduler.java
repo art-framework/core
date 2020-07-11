@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.scheduler;
+package net.silthus.art;
 
 import lombok.NonNull;
 

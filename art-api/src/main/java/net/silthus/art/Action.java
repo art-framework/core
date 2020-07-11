@@ -14,37 +14,41 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api;
+package net.silthus.art;
 
-import net.silthus.art.api.actions.ActionContext;
-import net.silthus.art.api.target.Target;
+import net.silthus.art.annotations.ConfigOption;
 
 /**
  * Defines an action that can get executed if the right {@link Trigger} was called.
+ * The implementing class must have a public parameterless constructor or you need
+ * to provide a {@link ArtObjectProvider} for the type and register it with the
+ * {@link Configuration#set(Class, ArtObjectProvider)}.
+ * <br>
  * The {@link Trigger} source and action target must match or the action will not be executed.
  * Make the {@link TTarget} as broad as possible to allow the action to be executed by as many triggers as possible.
+ * <br>
+ * You can use any field in this class as a config option as long as you annotate it with @{@link ConfigOption}.
  *
  * @param <TTarget> the target this action applies to.
  *                  This could be a player, entity or anything as long as there is a trigger for it.
- * @param <TConfig> the config that should be used by this action.
- *                  You can provide your own type safe configs or use generic implementations like the Bukkit ConfigurationSection.
  */
 @FunctionalInterface
-public interface Action<TTarget, TConfig> extends ArtObject {
+public interface Action<TTarget> extends ArtObject {
 
     /**
      * Called when the action is executed.
      * The action should handle the pure execution and no filtering.
      * All filtering is done beforehand and by the means of attached {@link Requirement}s.
-     * Use the config to provide configuration options for users of this action.
+     * Use the @{@link ConfigOption} annotation on fields of this class
+     * to provide configuration options for users of this action.
      * <br>
-     * Make sure to annotate this {@link Action} with a @{@link net.silthus.art.api.annotations.ArtObject}
-     * and optionally provide a config class.
+     * Make sure to annotate this {@link Action} with a @{@link net.silthus.art.annotations.ArtObject}
+     * and optionally provide a config class and implement {@link Configurable}.
      *
      * @param target target to apply this action to.
      * @param context context of this action.
-     *                Use the {@link ActionContext} to retrieve the config
+     *                Use the {@link Context} to retrieve the config
      *                and additional information about the execution context of this action.
      */
-    void execute(Target<TTarget> target, ActionContext<TTarget, TConfig> context);
+    void execute(Target<TTarget> target, Context<TTarget> context);
 }

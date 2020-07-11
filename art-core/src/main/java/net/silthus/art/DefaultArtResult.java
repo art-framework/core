@@ -31,7 +31,6 @@ import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.requirements.RequirementContext;
-import net.silthus.art.api.target.Target;
 import net.silthus.art.api.trigger.TriggerListener;
 
 import java.util.*;

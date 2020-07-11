@@ -17,20 +17,20 @@
 package net.silthus.art.api.requirements;
 
 import lombok.EqualsAndHashCode;
+import net.silthus.art.Requirement;
+import net.silthus.art.Storage;
 import net.silthus.art.api.ArtContext;
-import net.silthus.art.api.Requirement;
 import net.silthus.art.api.factory.ArtFactory;
-import net.silthus.art.api.storage.StorageProvider;
 
 @EqualsAndHashCode(callSuper = true)
 public class RequirementFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig, Requirement<TTarget, TConfig>, RequirementConfig<TConfig>> {
 
-    RequirementFactory(Class<TTarget> targetClass, Requirement<TTarget, TConfig> artObject, StorageProvider storageProvider) {
-        super(storageProvider, targetClass, artObject);
+    RequirementFactory(Class<TTarget> targetClass, Requirement<TTarget, TConfig> artObject, Storage storage) {
+        super(storage, targetClass, artObject);
     }
 
     @Override
     public ArtContext<TTarget, TConfig, RequirementConfig<TConfig>> create(RequirementConfig<TConfig> config) {
-        return new RequirementContext<>(getTargetClass(), getArtObject(), config, getStorageProvider());
+        return new RequirementContext<>(getTargetClass(), getArtObject(), config, getStorage());
     }
 }

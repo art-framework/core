@@ -17,12 +17,12 @@
 package net.silthus.art.api.actions;
 
 import lombok.SneakyThrows;
-import net.silthus.art.api.Action;
+import net.silthus.art.Action;
+import net.silthus.art.Scheduler;
+import net.silthus.art.Storage;
+import net.silthus.art.Target;
 import net.silthus.art.api.requirements.RequirementContext;
-import net.silthus.art.api.scheduler.Scheduler;
-import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.target.Target;
-import net.silthus.art.storage.MemoryStorageProvider;
+import net.silthus.art.storage.MemoryStorage;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
 import org.apache.commons.lang3.RandomUtils;
@@ -35,7 +35,8 @@ import org.mockito.InOrder;
 import static net.silthus.art.api.TestUtil.action;
 import static net.silthus.art.api.TestUtil.requirement;
 import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @DisplayName("ActionContext")
@@ -44,13 +45,13 @@ public class ActionContextTest {
 
     private Action<String, String> action;
     private ActionContext<String, String> context;
-    private StorageProvider storageProvider;
+    private Storage storage;
 
     @BeforeEach
     public void beforeEach() {
         action = (Action<String, String>) action();
-        storageProvider = new MemoryStorageProvider();
-        this.context = spy(new ActionContext<>(String.class, action, new ActionConfig<>(), null, storageProvider));
+        storage = new MemoryStorage();
+        this.context = spy(new ActionContext<>(String.class, action, new ActionConfig<>(), null, storage));
     }
 
     @Nested
@@ -61,7 +62,7 @@ public class ActionContextTest {
         void shouldThrowIfRequirementIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new ActionContext<>(null, action, new ActionConfig<>(), null, mock(StorageProvider.class)));
+                    .isThrownBy(() -> new ActionContext<>(null, action, new ActionConfig<>(), null, mock(Storage.class)));
         }
 
         @Test
@@ -69,7 +70,7 @@ public class ActionContextTest {
         void shouldThrowIfTargetClassIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new ActionContext<>(String.class, null, new ActionConfig<>(), null, mock(StorageProvider.class)));
+                    .isThrownBy(() -> new ActionContext<>(String.class, null, new ActionConfig<>(), null, mock(Storage.class)));
         }
 
         @Test
@@ -77,7 +78,7 @@ public class ActionContextTest {
         void shouldThrowIfConfigIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new ActionContext<>(String.class, action, null, null, mock(StorageProvider.class)));
+                    .isThrownBy(() -> new ActionContext<>(String.class, action, null, null, mock(Storage.class)));
         }
     }
 
@@ -231,7 +232,7 @@ public class ActionContextTest {
             @BeforeEach
             void beforeEach() {
                 scheduler = mock(Scheduler.class);
-                context = new ActionContext<>(String.class, action, new ActionConfig<>(), scheduler, mock(StorageProvider.class));
+                context = new ActionContext<>(String.class, action, new ActionConfig<>(), scheduler, mock(Storage.class));
             }
 
             @Test
@@ -258,7 +259,7 @@ public class ActionContextTest {
             @DisplayName("should execute action directly if no scheduler exists")
             void shouldExecuteActionDirectlyIfSchedulerIsNotLoaded() {
 
-                context = new ActionContext<>(String.class, action, new ActionConfig<>(), null, mock(StorageProvider.class));
+                context = new ActionContext<>(String.class, action, new ActionConfig<>(), null, mock(Storage.class));
 
                 context.execute(new StringTarget("foo"));
 
@@ -323,7 +324,7 @@ public class ActionContextTest {
                 StringTarget target = new StringTarget("foo");
                 RequirementContext<?, ?> requirement = requirement(true);
                 context.addRequirement(requirement);
-                storageProvider.store(context, target, LAST_EXECUTION, System.currentTimeMillis());
+                storage.data(context, target, LAST_EXECUTION, System.currentTimeMillis());
 
                 context.execute(target);
 
@@ -376,7 +377,7 @@ public class ActionContextTest {
 
             assertThatExceptionOfType(UnsupportedOperationException.class)
                     .isThrownBy(() -> context.execute(new StringTarget("foobar"), new ActionContext<>(String.class, (s, s2) -> {
-                    }, new ActionConfig<>(), null, mock(StorageProvider.class))))
+                    }, new ActionConfig<>(), null, mock(Storage.class))))
                     .withMessageContaining("ActionContext#execute(target, context) must not be called directly");
         }
     }

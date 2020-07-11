@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.silthus.art;
 
 import net.silthus.art.api.ArtContext;
@@ -6,7 +22,6 @@ import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.requirements.RequirementConfig;
 import net.silthus.art.api.requirements.RequirementContext;
-import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.api.trigger.TriggerConfig;
 import net.silthus.art.api.trigger.TriggerContext;
 import org.assertj.core.groups.Tuple;
@@ -34,15 +49,15 @@ class FlowLogicSorterTest {
 
     private ActionContext<?, ?> action() {
         return spy(new ActionContext<>(Object.class, (o, context) -> {
-        }, new ActionConfig<>(), null, mock(StorageProvider.class)));
+        }, new ActionConfig<>(), null, mock(Storage.class)));
     }
 
     private RequirementContext<?, ?> requirement() {
-        return spy(new RequirementContext<>(Object.class, (o, context) -> true, new RequirementConfig<>(), mock(StorageProvider.class)));
+        return spy(new RequirementContext<>(Object.class, (o, context) -> true, new RequirementConfig<>(), mock(Storage.class)));
     }
 
     private TriggerContext<?> trigger() {
-        return spy(new TriggerContext<>(new TriggerConfig<>(), null, mock(StorageProvider.class)));
+        return spy(new TriggerContext<>(new TriggerConfig<>(), null, mock(Storage.class)));
     }
 
     @Nested

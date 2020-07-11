@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.target;
+package net.silthus.art;
 
 import lombok.NonNull;
-import net.silthus.art.ART;
-import net.silthus.art.ArtBuilder;
-import net.silthus.art.ArtModuleDescription;
-import net.silthus.art.api.Trigger;
 
 import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 /**
- * The {@link Target} is a wrapper around your {@link Trigger} targets.
- * It is needed to provide a way to uniquely identify the target,
- * which is needed to store meta data information and cache results.
+ * The {@link Target} is a wrapper around the different target types used by all ART objects.
+ * It is needed to provide a consistent way to get a unique identifier
+ * for every target type. Target types could be players, entities, chests, etc.
  * <br>
- * Register your wrapper with the {@link ArtBuilder} on startup by calling
- * {@link ART#register(ArtModuleDescription, Consumer)} and then {@link ArtBuilder.TargetBuilder#target(Function)}.
+ * It is recommended that you create your own target types by extending {@link AbstractTarget}
+ * which already has the correct equals and hashcode implementation.
+ * Make sure that your equal and hashcode is only scoped to the {@link #getUniqueId()} method,
+ * if you directly implement the {@link Target}.
+ * <br>
+ * Register your target type with the {@link Configuration} on startup by calling
+ * {@link Configuration#set(Class, TargetProvider)} and provide a {@link TargetProvider}
+ * that is used as a factory to create new {@link Target} instances from the given source type.
  * <br>
  * You can also extend your {@link Target} by implementing one or more of the following interfaces:
  *      - {@link MessageSender}: allows your target to receive messages

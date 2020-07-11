@@ -17,9 +17,9 @@
 package net.silthus.art.api.trigger;
 
 import lombok.NonNull;
-import net.silthus.art.api.Trigger;
+import net.silthus.art.Target;
+import net.silthus.art.Trigger;
 import net.silthus.art.api.parser.ArtResult;
-import net.silthus.art.api.target.Target;
 
 /**
  * Used to listen on events fired by {@link Trigger}s.

@@ -22,7 +22,6 @@ import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.requirements.RequirementContext;
-import net.silthus.art.api.target.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 import net.silthus.art.api.trigger.TriggerListener;
 import net.silthus.art.testing.IntegerTarget;

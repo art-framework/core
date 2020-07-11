@@ -18,11 +18,11 @@ package net.silthus.art.api.requirements;
 
 import lombok.Getter;
 import lombok.NonNull;
+import net.silthus.art.Requirement;
+import net.silthus.art.Storage;
+import net.silthus.art.Target;
 import net.silthus.art.api.ArtContext;
-import net.silthus.art.api.Requirement;
 import net.silthus.art.api.storage.StorageConstants;
-import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.target.Target;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -39,8 +39,8 @@ public class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TC
     @Getter
     private final Requirement<TTarget, TConfig> requirement;
 
-    public RequirementContext(Class<TTarget> targetClass, Requirement<TTarget, TConfig> requirement, RequirementConfig<TConfig> config, StorageProvider storageProvider) {
-        super(storageProvider, targetClass, config);
+    public RequirementContext(Class<TTarget> targetClass, Requirement<TTarget, TConfig> requirement, RequirementConfig<TConfig> config, Storage storage) {
+        super(storage, targetClass, config);
         Objects.requireNonNull(requirement, "requirement must not be null");
         this.requirement = requirement;
     }
@@ -59,7 +59,7 @@ public class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TC
         if (!isTargetType(target.getSource())) return true;
 
         if (getOptions().isCheckOnce()) {
-            Optional<Boolean> result = getStorageProvider().get(this, target, StorageConstants.CHECK_ONCE_RESULT, Boolean.class);
+            Optional<Boolean> result = getStorage().get(this, target, StorageConstants.CHECK_ONCE_RESULT, Boolean.class);
             if (result.isPresent()) {
                 return result.get();
             }
@@ -67,13 +67,13 @@ public class RequirementContext<TTarget, TConfig> extends ArtContext<TTarget, TC
 
         boolean result = getRequirement().test(target, Objects.isNull(context) ? this : context);
 
-        int currentCount = getStorageProvider().get(this, target, StorageConstants.COUNT, Integer.class).orElse(0);
+        int currentCount = getStorage().get(this, target, StorageConstants.COUNT, Integer.class).orElse(0);
         if (result) {
-            getStorageProvider().store(this, target, StorageConstants.COUNT, ++currentCount);
+            getStorage().data(this, target, StorageConstants.COUNT, ++currentCount);
         }
 
         if (getOptions().isCheckOnce()) {
-            getStorageProvider().store(this, target, StorageConstants.CHECK_ONCE_RESULT, result);
+            getStorage().data(this, target, StorageConstants.CHECK_ONCE_RESULT, result);
         }
 
         if (getOptions().getCount() > 0) {

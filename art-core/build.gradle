@@ -15,5 +15,6 @@
  */
 
 dependencies {
+    api project(':art-api')
     implementation group: 'com.netflix.governator', name: 'governator-api', version: '1.17.10'
 }
