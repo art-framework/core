@@ -18,15 +18,15 @@ package net.silthus.art.api.factory;
 
 import com.google.common.base.Strings;
 import lombok.Data;
-import net.silthus.art.api.Action;
+import net.silthus.art.Action;
+import net.silthus.art.ArtObject;
+import net.silthus.art.Storage;
 import net.silthus.art.api.ArtContext;
-import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
-import net.silthus.art.api.storage.StorageProvider;
 import net.silthus.art.util.ConfigUtil;
 
 import java.lang.reflect.Method;
@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 @Data
 public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject, TArtConfig extends ArtObjectConfig<TConfig>> {
 
-    private final StorageProvider storageProvider;
+    private final Storage storage;
     private final Class<TTarget> targetClass;
     private final TARTObject artObject;
     private String identifier;
@@ -114,7 +114,7 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
         if (!Strings.isNullOrEmpty(getIdentifier())) return getIdentifier();
 
         return getAnnotation(methods)
-                .map(net.silthus.art.api.annotations.ArtObject::value)
+                .map(net.silthus.art.annotations.ArtObject::value)
                 .orElse(null);
     }
 
@@ -123,7 +123,7 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
         if (getConfigClass().isPresent()) return getConfigClass().get();
 
         return (Class<TConfig>)  getAnnotation(methods)
-                .map(net.silthus.art.api.annotations.ArtObject::config)
+                .map(net.silthus.art.annotations.ArtObject::config)
                 .filter(classes -> classes.length > 0)
                 .map(classes -> classes[0])
                 .orElse(null);
@@ -133,7 +133,7 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
         if (description.length > 0) return description;
 
         return getAnnotation(methods)
-                .map(net.silthus.art.api.annotations.ArtObject::description)
+                .map(net.silthus.art.annotations.ArtObject::description)
                 .orElse(new String[0]);
     }
 
@@ -141,18 +141,18 @@ public abstract class ArtFactory<TTarget, TConfig, TARTObject extends ArtObject,
         if (alias.length > 0) return alias;
 
         return getAnnotation(methods)
-                .map(net.silthus.art.api.annotations.ArtObject::alias)
+                .map(net.silthus.art.annotations.ArtObject::alias)
                 .orElse(new String[0]);
     }
 
-    private Optional<net.silthus.art.api.annotations.ArtObject> getAnnotation(Method... methods) {
-        if (getArtObject().getClass().isAnnotationPresent(net.silthus.art.api.annotations.ArtObject.class)) {
-            return Optional.of(getArtObject().getClass().getAnnotation(net.silthus.art.api.annotations.ArtObject.class));
+    private Optional<net.silthus.art.annotations.ArtObject> getAnnotation(Method... methods) {
+        if (getArtObject().getClass().isAnnotationPresent(net.silthus.art.annotations.ArtObject.class)) {
+            return Optional.of(getArtObject().getClass().getAnnotation(net.silthus.art.annotations.ArtObject.class));
         } else {
             return Arrays.stream(methods)
-                    .filter(method -> method.isAnnotationPresent(net.silthus.art.api.annotations.ArtObject.class))
+                    .filter(method -> method.isAnnotationPresent(net.silthus.art.annotations.ArtObject.class))
                     .findFirst()
-                    .map(method -> method.getAnnotation(net.silthus.art.api.annotations.ArtObject.class));
+                    .map(method -> method.getAnnotation(net.silthus.art.annotations.ArtObject.class));
         }
     }
 }

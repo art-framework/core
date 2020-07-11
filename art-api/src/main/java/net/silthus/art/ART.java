@@ -19,11 +19,9 @@ package net.silthus.art;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
-import net.silthus.art.api.Action;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
-import net.silthus.art.api.target.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
 import java.util.HashMap;

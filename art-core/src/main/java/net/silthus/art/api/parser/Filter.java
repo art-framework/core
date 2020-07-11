@@ -16,8 +16,8 @@
 
 package net.silthus.art.api.parser;
 
+import net.silthus.art.Target;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.target.Target;
 
 import java.util.function.BiPredicate;
 

@@ -20,16 +20,11 @@ import com.google.common.collect.ImmutableMap;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import net.silthus.art.api.Action;
-import net.silthus.art.api.ArtObject;
-import net.silthus.art.api.Requirement;
-import net.silthus.art.api.Trigger;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.requirements.RequirementManager;
-import net.silthus.art.api.target.Target;
 import net.silthus.art.api.trigger.TriggerManager;
 
 import javax.annotation.concurrent.Immutable;

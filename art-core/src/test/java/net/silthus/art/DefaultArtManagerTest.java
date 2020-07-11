@@ -22,7 +22,6 @@ import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
-import net.silthus.art.api.target.Target;
 import net.silthus.art.api.trigger.TriggerManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

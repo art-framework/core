@@ -17,13 +17,13 @@
 package net.silthus.art.api.trigger;
 
 import com.google.inject.Inject;
-import net.silthus.art.api.Trigger;
+import net.silthus.art.Scheduler;
+import net.silthus.art.Storage;
+import net.silthus.art.Target;
+import net.silthus.art.Trigger;
+import net.silthus.art.annotations.ArtObject;
 import net.silthus.art.api.annotations.ActiveStorageProvider;
-import net.silthus.art.api.annotations.ArtObject;
 import net.silthus.art.api.factory.AbstractFactoryManager;
-import net.silthus.art.api.scheduler.Scheduler;
-import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.target.Target;
 
 import javax.inject.Singleton;
 import java.lang.reflect.Method;
@@ -37,13 +37,13 @@ import java.util.stream.Collectors;
 @Singleton
 public class DefaultTriggerManager extends AbstractFactoryManager<TriggerFactory<?>> implements TriggerManager {
 
-    private final StorageProvider storageProvider;
+    private final Storage storage;
     @Inject(optional = true)
     private Scheduler scheduler;
 
     @Inject
-    public DefaultTriggerManager(@ActiveStorageProvider StorageProvider storageProvider) {
-        this.storageProvider = storageProvider;
+    public DefaultTriggerManager(@ActiveStorageProvider Storage storage) {
+        this.storage = storage;
     }
 
     @Override
@@ -53,13 +53,13 @@ public class DefaultTriggerManager extends AbstractFactoryManager<TriggerFactory
         List<TriggerFactory<?>> factories = Arrays.stream(methods)
                 .filter(method -> method.isAnnotationPresent(ArtObject.class))
                 .map(method -> {
-                    TriggerFactory<?> triggerFactory = new TriggerFactory<>(trigger, storageProvider, scheduler);
+                    TriggerFactory<?> triggerFactory = new TriggerFactory<>(trigger, storage, scheduler);
                     triggerFactory.setMethod(method);
                     return triggerFactory;
                 }).collect(Collectors.toList());
 
         if (factories.isEmpty()) {
-            factories.add(new TriggerFactory<>(trigger, storageProvider, scheduler));
+            factories.add(new TriggerFactory<>(trigger, storage, scheduler));
         }
 
         return factories;

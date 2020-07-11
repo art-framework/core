@@ -17,7 +17,8 @@
 package net.silthus.art.util;
 
 import com.google.common.base.Strings;
-import net.silthus.art.api.annotations.*;
+import net.silthus.art.annotations.ConfigOption;
+import net.silthus.art.annotations.Ignore;
 import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import net.silthus.art.api.config.FieldNameFormatter;

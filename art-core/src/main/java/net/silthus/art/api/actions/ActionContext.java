@@ -19,13 +19,13 @@ package net.silthus.art.api.actions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
-import net.silthus.art.api.Action;
+import net.silthus.art.Action;
+import net.silthus.art.Scheduler;
+import net.silthus.art.Storage;
+import net.silthus.art.Target;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.requirements.RequirementHolder;
-import net.silthus.art.api.scheduler.Scheduler;
-import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.target.Target;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -52,8 +52,8 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
     private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
     private final Scheduler scheduler;
 
-    public ActionContext(Class<TTarget> tTargetClass, Action<TTarget, TConfig> action, ActionConfig<TConfig> config, @Nullable Scheduler scheduler, StorageProvider storageProvider) {
-        super(storageProvider, tTargetClass, config);
+    public ActionContext(Class<TTarget> tTargetClass, Action<TTarget, TConfig> action, ActionConfig<TConfig> config, @Nullable Scheduler scheduler, Storage storage) {
+        super(storage, tTargetClass, config);
         this.scheduler = scheduler;
         Objects.requireNonNull(action);
         this.action = action;
@@ -92,7 +92,7 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
         Runnable runnable = () -> {
             getAction().execute(target, Objects.isNull(context) ? this : context);
 
-            getStorageProvider().store(this, target, LAST_EXECUTION, System.currentTimeMillis());
+            getStorage().data(this, target, LAST_EXECUTION, System.currentTimeMillis());
 
             getActions().stream()
                     .filter(actionContext -> actionContext.isTargetType(target.getSource()))
@@ -144,6 +144,6 @@ public final class ActionContext<TTarget, TConfig> extends ArtContext<TTarget, T
     }
 
     private long getLastExecution(Target<TTarget> target) {
-        return getStorageProvider().get(this, target, LAST_EXECUTION, Long.class).orElse(0L);
+        return getStorage().get(this, target, LAST_EXECUTION, Long.class).orElse(0L);
     }
 }

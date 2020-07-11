@@ -18,13 +18,8 @@ package net.silthus.art.api.parser;
 
 import com.google.inject.ImplementedBy;
 import lombok.NonNull;
-import net.silthus.art.ART;
-import net.silthus.art.DefaultArtResult;
-import net.silthus.art.api.Action;
-import net.silthus.art.api.Requirement;
-import net.silthus.art.api.Trigger;
+import net.silthus.art.*;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.target.Target;
 import net.silthus.art.api.trigger.TriggerListener;
 
 import javax.annotation.concurrent.Immutable;

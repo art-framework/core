@@ -19,7 +19,7 @@ package net.silthus.art.storage.persistence;
 import com.google.inject.AbstractModule;
 import com.google.inject.multibindings.MapBinder;
 import io.ebean.Database;
-import net.silthus.art.api.storage.StorageProvider;
+import net.silthus.art.Storage;
 
 public class PersistenceModule extends AbstractModule {
 
@@ -27,8 +27,8 @@ public class PersistenceModule extends AbstractModule {
     @Override
     public void configure() {
 
-        MapBinder.newMapBinder(binder(), String.class, StorageProvider.class)
-                .addBinding(PersistenceStorageProvider.STORAGE_TYPE).to(PersistenceStorageProvider.class);
+        MapBinder.newMapBinder(binder(), String.class, Storage.class)
+                .addBinding(PersistenceStorage.STORAGE_TYPE).to(PersistenceStorage.class);
 
         binder().bind(Database.class).toProvider(EbeanServerProvider.class).asEagerSingleton();
     }

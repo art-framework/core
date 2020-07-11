@@ -17,7 +17,7 @@
 package net.silthus.art.api.actions;
 
 import com.google.inject.ImplementedBy;
-import net.silthus.art.api.Action;
+import net.silthus.art.Action;
 import net.silthus.art.api.factory.ArtFactoryManager;
 
 @ImplementedBy(ActionFactoryManager.class)

@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api;
+package net.silthus.art;
 
-import net.silthus.art.ART;
-import net.silthus.art.ArtModuleDescription;
 import net.silthus.art.api.requirements.RequirementContext;
-import net.silthus.art.api.target.Target;
 
 import java.util.function.Consumer;
 

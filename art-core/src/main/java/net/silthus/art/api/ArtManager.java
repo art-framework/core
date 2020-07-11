@@ -18,14 +18,10 @@ package net.silthus.art.api;
 
 import com.google.inject.ImplementedBy;
 import lombok.NonNull;
-import net.silthus.art.ART;
-import net.silthus.art.ArtBuilder;
-import net.silthus.art.ArtModuleDescription;
-import net.silthus.art.DefaultArtManager;
+import net.silthus.art.*;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.Filter;
-import net.silthus.art.api.target.Target;
 import net.silthus.art.api.trigger.TriggerContext;
 
 import java.util.List;

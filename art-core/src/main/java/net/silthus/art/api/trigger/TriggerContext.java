@@ -17,14 +17,14 @@
 package net.silthus.art.api.trigger;
 
 import lombok.Getter;
+import net.silthus.art.Scheduler;
+import net.silthus.art.Storage;
+import net.silthus.art.Target;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.actions.ActionHolder;
 import net.silthus.art.api.requirements.RequirementContext;
 import net.silthus.art.api.requirements.RequirementHolder;
-import net.silthus.art.api.scheduler.Scheduler;
-import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.target.Target;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -41,8 +41,8 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
     private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
     private final Scheduler scheduler;
 
-    public TriggerContext(TriggerConfig<TConfig> config, Scheduler scheduler, StorageProvider storageProvider) {
-        super(storageProvider, Object.class, config);
+    public TriggerContext(TriggerConfig<TConfig> config, Scheduler scheduler, Storage storage) {
+        super(storage, Object.class, config);
         this.scheduler = scheduler;
     }
 
@@ -99,7 +99,7 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
         Runnable runnable = () -> {
             if (predicate.test(this) && testRequirements(target)) {
 
-                getStorageProvider().store(this, target, LAST_EXECUTION, System.currentTimeMillis());
+                getStorage().data(this, target, LAST_EXECUTION, System.currentTimeMillis());
 
                 if (getOptions().isExecuteActions()) executeActions(target);
 
@@ -154,6 +154,6 @@ public class TriggerContext<TConfig> extends ArtContext<Object, TConfig, Trigger
     }
 
     private <TTarget> long getLastExecution(Target<TTarget> target) {
-        return getStorageProvider().get(this, target, LAST_EXECUTION, Long.class).orElse(0L);
+        return getStorage().get(this, target, LAST_EXECUTION, Long.class).orElse(0L);
     }
 }

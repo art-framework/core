@@ -18,12 +18,12 @@ package net.silthus.art.api.trigger;
 
 import lombok.NonNull;
 import lombok.SneakyThrows;
+import net.silthus.art.Scheduler;
+import net.silthus.art.Storage;
+import net.silthus.art.Target;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.requirements.RequirementContext;
-import net.silthus.art.api.scheduler.Scheduler;
-import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.target.Target;
-import net.silthus.art.storage.MemoryStorageProvider;
+import net.silthus.art.storage.MemoryStorage;
 import net.silthus.art.testing.StringTarget;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,12 +43,12 @@ import static org.mockito.Mockito.*;
 class TriggerContextTest {
 
     private TriggerContext<?> context;
-    private StorageProvider storageProvider;
+    private Storage storage;
 
     @BeforeEach
     void beforeEach() {
-        storageProvider = new MemoryStorageProvider();
-        context = new TriggerContext<>(new TriggerConfig<>(), null, storageProvider);
+        storage = new MemoryStorage();
+        context = new TriggerContext<>(new TriggerConfig<>(), null, storage);
     }
 
     private <TTarget> Predicate<TriggerContext<TTarget>> truePredicate() {
@@ -131,7 +131,7 @@ class TriggerContextTest {
             @BeforeEach
             void beforeEach() {
                 scheduler = mock(Scheduler.class);
-                context = new TriggerContext<>(new TriggerConfig<>(), scheduler, mock(StorageProvider.class));
+                context = new TriggerContext<>(new TriggerConfig<>(), scheduler, mock(Storage.class));
             }
 
             @Test
@@ -149,7 +149,7 @@ class TriggerContextTest {
             @DisplayName("should execute directly if scheduler is null")
             void shouldDirectlyExecuteTriggerIfSchedulerIsNull() {
 
-                context = TriggerContextTest.this.context = new TriggerContext<>(new TriggerConfig<>(), null, mock(StorageProvider.class));
+                context = TriggerContextTest.this.context = new TriggerContext<>(new TriggerConfig<>(), null, mock(Storage.class));
                 context.getOptions().setDelay("1s");
                 TriggerListener<String> listener = addListener(String.class);
 
@@ -241,10 +241,10 @@ class TriggerContextTest {
                 Thread.sleep(5);
                 context.trigger(bar, truePredicate());
 
-                Long fooTime = storageProvider.get(context, foo, LAST_EXECUTION, Long.class).get();
+                Long fooTime = storage.get(context, foo, LAST_EXECUTION, Long.class).get();
                 assertThat(fooTime).isCloseTo(time, Offset.offset(5L));
 
-                Long barTime = storageProvider.get(context, bar, LAST_EXECUTION, Long.class).get();
+                Long barTime = storage.get(context, bar, LAST_EXECUTION, Long.class).get();
                 assertThat(barTime).isCloseTo(time + 5, Offset.offset(5L));
             }
 
@@ -255,7 +255,7 @@ class TriggerContextTest {
                 StringTarget target = new StringTarget("foo");
                 RequirementContext<?, ?> requirement = requirement(true);
                 context.addRequirement(requirement);
-                storageProvider.store(context, target, LAST_EXECUTION, System.currentTimeMillis());
+                storage.data(context, target, LAST_EXECUTION, System.currentTimeMillis());
 
                 context.trigger(target, truePredicate());
 

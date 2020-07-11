@@ -20,27 +20,27 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import lombok.AccessLevel;
 import lombok.Setter;
-import net.silthus.art.api.Action;
+import net.silthus.art.Action;
+import net.silthus.art.Scheduler;
+import net.silthus.art.Storage;
 import net.silthus.art.api.annotations.ActiveStorageProvider;
 import net.silthus.art.api.factory.AbstractFactoryManager;
-import net.silthus.art.api.scheduler.Scheduler;
-import net.silthus.art.api.storage.StorageProvider;
 
 @Singleton
 public class ActionFactoryManager extends AbstractFactoryManager<ActionFactory<?, ?>> implements ActionManager {
 
-    private final StorageProvider storageProvider;
+    private final Storage storage;
     @Inject(optional = true)
     @Setter(AccessLevel.PACKAGE)
     private Scheduler scheduler;
 
     @Inject
-    ActionFactoryManager(@ActiveStorageProvider StorageProvider storageProvider) {
-        this.storageProvider = storageProvider;
+    ActionFactoryManager(@ActiveStorageProvider Storage storage) {
+        this.storage = storage;
     }
 
     @Override
     public <TTarget, TConfig> ActionFactory<TTarget, TConfig> create(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
-        return new ActionFactory<>(targetClass, action, storageProvider, scheduler);
+        return new ActionFactory<>(targetClass, action, storage, scheduler);
     }
 }

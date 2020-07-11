@@ -17,7 +17,7 @@
 package net.silthus.art.api.requirements;
 
 import com.google.inject.ImplementedBy;
-import net.silthus.art.api.Requirement;
+import net.silthus.art.Requirement;
 import net.silthus.art.api.factory.ArtFactoryManager;
 
 @ImplementedBy(RequirementFactoryManager.class)

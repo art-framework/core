@@ -16,8 +16,8 @@
 
 package net.silthus.art.api.factory;
 
+import net.silthus.art.ArtObject;
 import net.silthus.art.api.ArtContext;
-import net.silthus.art.api.ArtObject;
 import net.silthus.art.api.ArtRegistrationException;
 
 import java.util.Optional;

@@ -21,15 +21,15 @@ import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import io.ebean.Database;
 import lombok.Getter;
+import net.silthus.art.Storage;
+import net.silthus.art.Target;
 import net.silthus.art.api.ArtContext;
-import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.target.Target;
 import net.silthus.art.storage.persistence.entities.MetadataKey;
 import net.silthus.art.storage.persistence.entities.MetadataStore;
 
 import java.util.Optional;
 
-public class PersistenceStorageProvider implements StorageProvider {
+public class PersistenceStorage implements Storage {
 
     public static final String STORAGE_TYPE = "ebean";
 
@@ -37,21 +37,20 @@ public class PersistenceStorageProvider implements StorageProvider {
     private final Database database;
 
     @Inject
-    public PersistenceStorageProvider(Database database) {
+    public PersistenceStorage(Database database) {
         this.database = database;
     }
 
     @Override
-    public <TValue> void store(Target<?> target, String key, TValue tValue) {
-        store(target.getUniqueId(), key, tValue);
+    public <TValue> void data(Target<?> target, String key, TValue tValue) {
+        data(target.getUniqueId(), key, tValue);
     }
 
-    @Override
-    public <TValue> void store(ArtContext<?, ?, ?> context, Target<?> target, String key, TValue tValue) {
-        store(context.getUniqueId() + "#" + target.getUniqueId(), key, tValue);
+    public <TValue> void data(ArtContext<?, ?, ?> context, Target<?> target, String key, TValue tValue) {
+        data(context.getUniqueId() + "#" + target.getUniqueId(), key, tValue);
     }
 
-    private <TValue> void store(String uniqueId, String key, TValue value) {
+    private <TValue> void data(String uniqueId, String key, TValue value) {
 
         MetadataKey metadataKey = new MetadataKey(uniqueId, key);
         Gson gson = new Gson();

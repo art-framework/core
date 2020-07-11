@@ -19,3 +19,5 @@ include 'art-core'
 include 'art-bukkit'
 include 'art-flow-parser'
 include 'art-persistence'
+include 'art-api'
+

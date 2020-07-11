@@ -27,9 +27,7 @@ import com.netflix.governator.annotations.Configuration;
 import net.silthus.art.api.annotations.ActiveStorageProvider;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFactory;
-import net.silthus.art.api.scheduler.Scheduler;
-import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.storage.MemoryStorageProvider;
+import net.silthus.art.storage.MemoryStorage;
 
 import java.util.Map;
 import java.util.logging.Logger;
@@ -47,8 +45,8 @@ public class ArtGuiceModule extends AbstractModule {
                 .build(ArtResultFactory.class)
         );
 
-        MapBinder<String, StorageProvider> storageBinder = MapBinder.newMapBinder(binder(), String.class, StorageProvider.class);
-        storageBinder.addBinding(MemoryStorageProvider.STORAGE_TYPE).to(MemoryStorageProvider.class);
+        MapBinder<String, Storage> storageBinder = MapBinder.newMapBinder(binder(), String.class, Storage.class);
+        storageBinder.addBinding(MemoryStorage.STORAGE_TYPE).to(MemoryStorage.class);
 
         OptionalBinder.newOptionalBinder(binder(), Scheduler.class);
     }
@@ -56,12 +54,12 @@ public class ArtGuiceModule extends AbstractModule {
     @Provides
     @Singleton
     @ActiveStorageProvider
-    public StorageProvider provideStorageProvider(Map<String, Provider<StorageProvider>> providerMap, Logger logger) {
+    public Storage provideStorageProvider(Map<String, Provider<Storage>> providerMap, Logger logger) {
 
-        Provider<StorageProvider> provider = providerMap.get(providerType);
+        Provider<Storage> provider = providerMap.get(providerType);
         if (provider == null) {
             logger.warning("Unknown storage provider '" + providerType + "'. Falling back to in-memory provider.");
-            return providerMap.get(MemoryStorageProvider.STORAGE_TYPE).get();
+            return providerMap.get(MemoryStorage.STORAGE_TYPE).get();
         }
         return provider.get();
     }

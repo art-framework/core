@@ -14,11 +14,18 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.target;
+package net.silthus.art;
 
 import lombok.Getter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
+/**
+ * Use this as an extension point to create your own {@link Target} wrapper.
+ * It already implements the required equals and hashcode methods correctly.
+ *
+ * @param <TTarget> type of the target to wrap
+ * @see Target
+ */
 public abstract class AbstractTarget<TTarget> implements Target<TTarget> {
 
     @Getter

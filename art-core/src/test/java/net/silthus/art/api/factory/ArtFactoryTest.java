@@ -17,15 +17,18 @@
 package net.silthus.art.api.factory;
 
 import lombok.SneakyThrows;
-import net.silthus.art.api.Action;
+import net.silthus.art.Action;
+import net.silthus.art.Context;
+import net.silthus.art.Storage;
+import net.silthus.art.Target;
+import net.silthus.art.annotations.ArtObject;
+import net.silthus.art.annotations.ConfigOption;
+import net.silthus.art.annotations.Ignore;
 import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.actions.ActionConfig;
 import net.silthus.art.api.actions.ActionContext;
-import net.silthus.art.api.annotations.*;
 import net.silthus.art.api.config.ConfigFieldInformation;
-import net.silthus.art.api.storage.StorageProvider;
-import net.silthus.art.api.target.Target;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -50,7 +53,7 @@ public class ArtFactoryTest {
     }
 
     public static <TTarget, TConfig> ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>> factory(Class<TTarget> targetClass, Action<TTarget, TConfig> action) {
-        return new ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>>(mock(StorageProvider.class), targetClass, action) {
+        return new ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>>(mock(Storage.class), targetClass, action) {
 
             @Override
             public ArtContext<TTarget, TConfig, ActionConfig<TConfig>> create(ActionConfig<TConfig> config) {
@@ -318,9 +321,9 @@ public class ArtFactoryTest {
             description = "Description",
             config = TestConfig.class
     )
-    public static class TestAction implements Action<String, TestConfig> {
+    public static class TestAction implements Action<String> {
         @Override
-        public void execute(Target<String> s, ActionContext<String, TestConfig> context) {
+        public void execute(Target<String> s, Context<String> context) {
 
         }
     }
