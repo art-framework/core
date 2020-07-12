@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.conf;
+
+import java.io.Serializable;
 
 /**
- * Provides a way to create new instances of the given {@link ArtObject} type.
- * Use the {@link Configuration#set(Class, ArtObjectProvider)} to register your {@link ArtObjectProvider}.
- *
- * @param <TArtObject> type of the {@link ArtObject}
+ * Settings that influence how ART works.
  */
-@FunctionalInterface
-public interface ArtObjectProvider<TArtObject extends ArtObject> {
-
-    /**
-     * Creates a new fresh instance of the given {@link ArtObject}.
-     * This must not be a singleton or cached. Create a new instance for every call.
-     *
-     * @return created {@link ArtObject}
-     */
-    TArtObject create();
+public class Settings extends SettingsBase implements Serializable, Cloneable {
 }

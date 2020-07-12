@@ -31,7 +31,7 @@ import java.util.Optional;
  * if you directly implement the {@link Target}.
  * <br>
  * Register your target type with the {@link Configuration} on startup by calling
- * {@link Configuration#set(Class, TargetProvider)} and provide a {@link TargetProvider}
+ * {@link Configuration#addTarget(Class, TargetProvider)} and provide a {@link TargetProvider}
  * that is used as a factory to create new {@link Target} instances from the given source type.
  * <br>
  * You can also extend your {@link Target} by implementing one or more of the following interfaces:

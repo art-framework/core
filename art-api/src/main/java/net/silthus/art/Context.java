@@ -18,19 +18,17 @@ package net.silthus.art;
 
 import java.util.Optional;
 
-public interface Context<TTarget> {
+public interface Context<TTarget> extends Scope {
 
-    String getUniqueId();
-
-    <TValue> Optional<TValue> set(String key, TValue value);
-
-    default <TValue> Optional<TValue> set(Target<TTarget> target, String key, TValue value) {
-        return set(target.getUniqueId() + "#" + key, value);
+    default Optional<Target<TTarget>> target(TTarget source) {
+        return configuration().targets().get(source);
     }
 
-    <TValue> Optional<TValue> get(String key, Class<TValue> valueClass);
+    default <TValue> Optional<TValue> data(Target<TTarget> target, String key, TValue value) {
+        return data(target.getUniqueId() + "#" + key, value);
+    }
 
-    default <TValue> Optional<TValue> get(Target<TTarget> target, String key, Class<TValue> valueClass) {
-        return get(target.getUniqueId() + "#" + key, valueClass);
+    default <TValue> Optional<TValue> data(Target<TTarget> target, String key, Class<TValue> valueClass) {
+        return data(target.getUniqueId() + "#" + key, valueClass);
     }
 }
