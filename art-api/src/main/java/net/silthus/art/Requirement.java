@@ -33,13 +33,12 @@ import java.util.function.Consumer;
  * that also target players.
  *
  * @param <TTarget> target type this requirement applies too. Defines the filtering scope.
- * @param <TConfig> config type of the requirement
- * @see RequirementContext
+ * @see Context
  * @see Action
  * @see Trigger
  */
 @FunctionalInterface
-public interface Requirement<TTarget, TConfig> extends ArtObject {
+public interface Requirement<TTarget> extends ArtObject {
 
     /**
      * Tests if this requirement should filter {@link Action}s or {@link Trigger}s for the given target.
@@ -47,8 +46,8 @@ public interface Requirement<TTarget, TConfig> extends ArtObject {
      * Return false if the check fails and the actions should be filtered.
      *
      * @param target  target to check against
-     * @param context {@link RequirementContext} that holds the config and context of the check
+     * @param context {@link Context} that holds the config and context of the check
      * @return false if the check fails and the filter should be applied or true if all checks pass and no filtering should be applied.
      */
-    boolean test(Target<TTarget> target, RequirementContext<TTarget, TConfig> context);
+    boolean test(Target<TTarget> target, Context<TTarget> context);
 }

@@ -16,11 +16,58 @@
 
 package net.silthus.art;
 
+import net.silthus.art.conf.Settings;
+
+import java.io.File;
+import java.util.function.Function;
+
 /**
  * Use the Configuration to retrieve and replace all elements of the ART-Framework.
  * You can for example provide your own {@link Scheduler} or {@link Storage} implementations.
  */
 public interface Configuration {
+
+    /**
+     * Use the {@link ArtProvider} to add and register your {@link ArtObject}s.
+     *
+     * @return implementing {@link ArtProvider}
+     */
+    ArtProvider art();
+
+    default Configuration findAllArt(File file) {
+        art().findAll(file);
+        return this;
+    }
+
+    default Configuration action(Class<? extends Action<?>> actionClass) {
+        art().action(actionClass);
+        return this;
+    }
+
+    default <TTarget> Configuration action(Action<TTarget> action) {
+        art().action(action);
+        return this;
+    }
+
+    default Configuration requirement(Class<? extends Requirement<?>> requirementClass) {
+        art().requirement(requirementClass);
+        return this;
+    }
+
+    default <TTarget> Configuration requirement(Requirement<TTarget> requirement) {
+        art().requirement(requirement);
+        return this;
+    }
+
+    default Configuration trigger(Class<? extends Trigger> triggerClass) {
+        art().trigger(triggerClass);
+        return this;
+    }
+
+    default Configuration trigger(Trigger trigger) {
+        art().trigger(trigger);
+        return this;
+    }
 
     /**
      * Gets the configured {@link Scheduler} implementation.
@@ -43,27 +90,45 @@ public interface Configuration {
     Storage storage();
 
     /**
+     * Gets the configured {@link Settings} of this configuration.
+     * You can provide your own settings by calling {@link #set(Settings)}.
+     *
+     * @return the {@link Settings} of this {@link Configuration}
+     */
+    Settings settings();
+
+    /**
+     * Use the {@link TargetProvider} to register new {@link Target} source types
+     * or get a {@link Target} for any given source.
+     *
+     * @return the implementing {@link TargetProvider}
+     */
+    TargetProvider targets();
+
+    /**
      * Adds a {@link TargetProvider} for the given {@link Target} type.
      * Will override any existing {@link TargetProvider} of the same target type.
+     * <br>
+     * This is just a convenience method and delegates to {@link TargetProvider#add(Class, Function)}.
      *
      * @param targetClass class of the target you want to add
      * @param targetProvider {@link TargetProvider} that creates the {@link Target} for the given type
      * @param <TTarget> type of the target
      * @return this {@link Configuration}
+     * @see TargetProvider#add(Class, Function)
      */
-    <TTarget> Configuration set(Class<TTarget> targetClass, TargetProvider<TTarget> targetProvider);
+    default <TTarget> Configuration target(Class<TTarget> targetClass, Function<TTarget, Target<TTarget>> targetProvider) {
+        targets().add(targetClass, targetProvider);
+        return this;
+    }
 
     /**
-     * Adds a {@link ArtObjectProvider} for the given {@link ArtObject} type.
-     * The provider will be used to create instances of the given {@link ArtObject}.
-     * Will override any existing {@link ArtObjectProvider} fo the same type.
+     * Sets a new implementation for the {@link ArtProvider}.
      *
-     * @param artObjectClass class of the {@link ArtObject}
-     * @param artObjectProvider {@link ArtObjectProvider} that should be added
-     * @param <TArtObject> type of the {@link ArtObject}
+     * @param artProvider art provider implementation to use
      * @return this {@link Configuration}
      */
-    <TArtObject extends ArtObject> Configuration set(Class<TArtObject> artObjectClass, ArtObjectProvider<TArtObject> artObjectProvider);
+    Configuration set(ArtProvider artProvider);
 
     /**
      * Sets a new implementation for the {@link Scheduler}.
@@ -77,17 +142,23 @@ public interface Configuration {
      * Sets a new implementation for the {@link Storage}.
      *
      * @param storage storage implementation to use
-     * @return this @{@link Configuration}
+     * @return this {@link Configuration}
      */
     Configuration set(Storage storage);
 
     /**
-     * Removes all existing {@link TargetProvider} from this {@link Configuration}.
-     * <br>
-     * Make sure you add your {@link TargetProvider} implementations afterwards or
-     * everything will silently fails since there will be no {@link Target} type wrappers.
+     * Provides a new set of settings to use in this context.
      *
+     * @param settings settings to use
      * @return this {@link Configuration}
      */
-    Configuration removeAllTargetProvider();
+    Configuration set(Settings settings);
+
+    /**
+     * Sets a new implementation for the {@link TargetProvider}.
+     *
+     * @param targetProvider target provider implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration set(TargetProvider targetProvider);
 }
