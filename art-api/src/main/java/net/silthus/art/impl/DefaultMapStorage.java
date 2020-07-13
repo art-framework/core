@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.silthus.art.storage;
+package net.silthus.art.impl;
 
 import lombok.NonNull;
 import net.silthus.art.Storage;
@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Singleton
-public class MemoryStorage implements Storage {
+public class DefaultMapStorage implements Storage {
 
     private final Map<String, Object> storage = new HashMap<>();
 

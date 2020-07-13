@@ -23,7 +23,7 @@ import net.silthus.art.Storage;
 import net.silthus.art.Target;
 import net.silthus.art.api.actions.ActionContext;
 import net.silthus.art.api.requirements.RequirementContext;
-import net.silthus.art.storage.MemoryStorage;
+import net.silthus.art.impl.DefaultMapStorage;
 import net.silthus.art.testing.StringTarget;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +47,7 @@ class TriggerContextTest {
 
     @BeforeEach
     void beforeEach() {
-        storage = new MemoryStorage();
+        storage = new DefaultMapStorage();
         context = new TriggerContext<>(new TriggerConfig<>(), null, storage);
     }
 

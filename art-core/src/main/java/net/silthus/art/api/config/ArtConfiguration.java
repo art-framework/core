@@ -21,7 +21,7 @@ import de.exlll.configlib.configs.yaml.YamlConfiguration;
 import de.exlll.configlib.format.FieldNameFormatters;
 import lombok.Getter;
 import lombok.Setter;
-import net.silthus.art.storage.MemoryStorage;
+import net.silthus.art.impl.DefaultMapStorage;
 
 import java.nio.file.Path;
 
@@ -34,7 +34,7 @@ import java.nio.file.Path;
 @ConfigurationElement
 public class ArtConfiguration extends YamlConfiguration {
 
-    private String storageProvider = MemoryStorage.STORAGE_TYPE;
+    private String storageProvider = DefaultMapStorage.STORAGE_TYPE;
     private DatabaseConfig database = new DatabaseConfig();
 
     public ArtConfiguration(Path path) {

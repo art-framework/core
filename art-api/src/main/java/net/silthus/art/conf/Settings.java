@@ -16,10 +16,37 @@
 
 package net.silthus.art.conf;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import net.silthus.art.annotations.ConfigOption;
+
 import java.io.Serializable;
 
 /**
  * Settings that influence how ART works.
  */
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class Settings extends SettingsBase implements Serializable, Cloneable {
+
+    public static final Settings DEFAULT = new Settings();
+
+    public static Settings of(Settings settings) {
+        return new Settings(settings);
+    }
+
+    Settings(Settings settings) {
+        this.autoRegisterAllArt = settings.autoRegisterAllArt;
+    }
+
+    /**
+     * If this is set to true, the ART-Framework will automatically scan the whole
+     * classpath to find and register any {@link net.silthus.art.ArtObject}s that
+     * have a parameterless public constructor.
+     * <br>
+     * Use the {@link net.silthus.art.ArtProvider} methods to register {@link net.silthus.art.ArtObject}s
+     * that cannot be constructed so easily.
+     */
+    @ConfigOption
+    private boolean autoRegisterAllArt = true;
 }

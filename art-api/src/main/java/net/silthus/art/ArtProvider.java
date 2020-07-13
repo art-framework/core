@@ -17,12 +17,32 @@
 package net.silthus.art;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.function.Predicate;
 
+/**
+ * The {@link ArtProvider} holds and handles all ART that is registered.
+ * Use it to register your ART or to retrieve registered implementations for a given identifier.
+ * <br>
+ * <p>You can also scan a path or JAR file and automatically register all ART that is found.
+ * Use the {@link #registerAll(File)} method for that, or {@link #registerAll()} if you want to scan
+ * the whole class path and add everything that was found.</p>
+ * <p>By default the ART-Framework will scan the whole classpath. You can disable this by
+ * setting {@link net.silthus.art.conf.Settings#setAutoRegisterAllArt(boolean)}</p> to false.
+ */
 public interface ArtProvider {
 
     Configuration configuration();
 
-    ArtProvider findAll(File file);
+    ArtFinder find();
+
+    ArtProvider registerAll();
+
+    ArtProvider registerAll(File file);
+
+    ArtProvider registerAll(File file, Predicate<File> filePredicate);
+
+    ArtProvider registerAll(Collection<ArtObjectInformation> artObjects);
 
     ArtProvider action(Class<? extends Action<?>> actionClass);
 

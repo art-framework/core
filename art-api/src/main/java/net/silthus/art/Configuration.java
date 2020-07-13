@@ -16,16 +16,19 @@
 
 package net.silthus.art;
 
+import lombok.NonNull;
 import net.silthus.art.conf.Settings;
 
 import java.io.File;
+import java.io.Serializable;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
  * Use the Configuration to retrieve and replace all elements of the ART-Framework.
  * You can for example provide your own {@link Scheduler} or {@link Storage} implementations.
  */
-public interface Configuration {
+public interface Configuration extends Serializable {
 
     /**
      * Use the {@link ArtProvider} to add and register your {@link ArtObject}s.
@@ -34,8 +37,13 @@ public interface Configuration {
      */
     ArtProvider art();
 
-    default Configuration findAllArt(File file) {
-        art().findAll(file);
+    default Configuration addAllArt() {
+        art().registerAll();
+        return this;
+    }
+
+    default Configuration addAllArt(File file) {
+        art().registerAll(file);
         return this;
     }
 
@@ -77,7 +85,7 @@ public interface Configuration {
      *
      * @return the configured {@link Scheduler} implementation
      */
-    Scheduler scheduler();
+    Optional<Scheduler> scheduler();
 
     /**
      * Gets the configured {@link Storage} implementation.
@@ -128,7 +136,7 @@ public interface Configuration {
      * @param artProvider art provider implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(ArtProvider artProvider);
+    Configuration set(@NonNull ArtProvider artProvider);
 
     /**
      * Sets a new implementation for the {@link Scheduler}.
@@ -144,7 +152,7 @@ public interface Configuration {
      * @param storage storage implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(Storage storage);
+    Configuration set(@NonNull Storage storage);
 
     /**
      * Provides a new set of settings to use in this context.
@@ -152,7 +160,7 @@ public interface Configuration {
      * @param settings settings to use
      * @return this {@link Configuration}
      */
-    Configuration set(Settings settings);
+    Configuration set(@NonNull Settings settings);
 
     /**
      * Sets a new implementation for the {@link TargetProvider}.
@@ -160,5 +168,5 @@ public interface Configuration {
      * @param targetProvider target provider implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(TargetProvider targetProvider);
+    Configuration set(@NonNull TargetProvider targetProvider);
 }

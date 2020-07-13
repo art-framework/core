@@ -22,7 +22,7 @@ import net.silthus.art.Scheduler;
 import net.silthus.art.Storage;
 import net.silthus.art.Target;
 import net.silthus.art.api.requirements.RequirementContext;
-import net.silthus.art.storage.MemoryStorage;
+import net.silthus.art.impl.DefaultMapStorage;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
 import org.apache.commons.lang3.RandomUtils;
@@ -50,7 +50,7 @@ public class ActionContextTest {
     @BeforeEach
     public void beforeEach() {
         action = (Action<String, String>) action();
-        storage = new MemoryStorage();
+        storage = new DefaultMapStorage();
         this.context = spy(new ActionContext<>(String.class, action, new ActionConfig<>(), null, storage));
     }
 

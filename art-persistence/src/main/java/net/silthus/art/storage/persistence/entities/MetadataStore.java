@@ -30,17 +30,12 @@ import javax.persistence.Table;
 public class MetadataStore {
 
     @Id
-    private MetadataKey metadataKey;
+    private String key;
 
-    private String metadataValue;
+    private String value;
 
-    public MetadataStore(MetadataKey metadataKey, String value) {
-        this.metadataKey = metadataKey;
-        this.metadataValue = value;
-    }
-
-    public MetadataStore setMetadataValue(String metadataValue) {
-        this.metadataValue = metadataValue;
-        return this;
+    public MetadataStore(String key, String value) {
+        this.key = key;
+        this.value = value;
     }
 }

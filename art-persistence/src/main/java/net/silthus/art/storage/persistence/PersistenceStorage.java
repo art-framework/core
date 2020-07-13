@@ -21,6 +21,7 @@ import com.google.gson.JsonSyntaxException;
 import com.google.inject.Inject;
 import io.ebean.Database;
 import lombok.Getter;
+import lombok.NonNull;
 import net.silthus.art.Storage;
 import net.silthus.art.Target;
 import net.silthus.art.api.ArtContext;
@@ -42,50 +43,32 @@ public class PersistenceStorage implements Storage {
     }
 
     @Override
-    public <TValue> void data(Target<?> target, String key, TValue tValue) {
-        data(target.getUniqueId(), key, tValue);
-    }
-
-    public <TValue> void data(ArtContext<?, ?, ?> context, Target<?> target, String key, TValue tValue) {
-        data(context.getUniqueId() + "#" + target.getUniqueId(), key, tValue);
-    }
-
-    private <TValue> void data(String uniqueId, String key, TValue value) {
-
-        MetadataKey metadataKey = new MetadataKey(uniqueId, key);
+    @SuppressWarnings("unchecked")
+    public <TValue> Optional<TValue> set(@NonNull String key, @NonNull TValue value) {
         Gson gson = new Gson();
         String json = gson.toJson(value);
 
-        MetadataStore entry = getDatabase().find(MetadataStore.class, metadataKey);
+        MetadataStore entry = getDatabase().find(MetadataStore.class, key);
         if (entry != null) {
-            entry.setMetadataValue(json);
+            TValue existingValue = (TValue) gson.fromJson(entry.getValue(), value.getClass());
+            entry.setValue(json);
             getDatabase().save(entry);
+            return Optional.ofNullable(existingValue);
         } else {
-            getDatabase().save(new MetadataStore(metadataKey, json));
+            getDatabase().save(new MetadataStore(key, json));
         }
 
+        return Optional.empty();
     }
 
     @Override
-    public <TValue> Optional<TValue> get(Target<?> target, String key, Class<TValue> tValueClass) {
-        return get(target.getUniqueId(), key, tValueClass);
-    }
-
-    @Override
-    public <TValue> Optional<TValue> get(ArtContext<?, ?, ?> context, Target<?> target, String key, Class<TValue> tValueClass) {
-        return get(context.getUniqueId() + "#" + target.getUniqueId(), key, tValueClass);
-    }
-
-    private <TValue> Optional<TValue> get(String uniqueId, String key, Class<TValue> tValueClass) {
-
-        MetadataKey metadataKey = new MetadataKey(uniqueId, key);
-
-        MetadataStore store = getDatabase().find(MetadataStore.class, metadataKey);
+    public <TValue> Optional<TValue> get(String key, Class<TValue> valueClass) {
+        MetadataStore store = getDatabase().find(MetadataStore.class, key);
         if (store == null) return Optional.empty();
 
         try {
             Gson gson = new Gson();
-            return Optional.ofNullable(gson.fromJson(store.getMetadataValue(), tValueClass));
+            return Optional.ofNullable(gson.fromJson(store.getValue(), valueClass));
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
             return Optional.empty();
