@@ -19,7 +19,7 @@ package net.silthus.art.api.requirements;
 import net.silthus.art.Requirement;
 import net.silthus.art.Storage;
 import net.silthus.art.api.storage.StorageConstants;
-import net.silthus.art.storage.MemoryStorage;
+import net.silthus.art.impl.DefaultMapStorage;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
 import org.junit.jupiter.api.BeforeEach;
@@ -43,7 +43,7 @@ class RequirementContextTest {
     @BeforeEach
     public void beforeEach() {
         requirement = requirement(String.class, true);
-        storage = new MemoryStorage();
+        storage = new DefaultMapStorage();
         this.context = new RequirementContext<>(String.class, requirement, new RequirementConfig<>(), storage);
     }
 

@@ -27,7 +27,7 @@ import com.netflix.governator.annotations.Configuration;
 import net.silthus.art.api.annotations.ActiveStorageProvider;
 import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFactory;
-import net.silthus.art.storage.MemoryStorage;
+import net.silthus.art.impl.DefaultMapStorage;
 
 import java.util.Map;
 import java.util.logging.Logger;
@@ -46,7 +46,7 @@ public class ArtGuiceModule extends AbstractModule {
         );
 
         MapBinder<String, Storage> storageBinder = MapBinder.newMapBinder(binder(), String.class, Storage.class);
-        storageBinder.addBinding(MemoryStorage.STORAGE_TYPE).to(MemoryStorage.class);
+        storageBinder.addBinding(DefaultMapStorage.STORAGE_TYPE).to(DefaultMapStorage.class);
 
         OptionalBinder.newOptionalBinder(binder(), Scheduler.class);
     }
@@ -59,7 +59,7 @@ public class ArtGuiceModule extends AbstractModule {
         Provider<Storage> provider = providerMap.get(providerType);
         if (provider == null) {
             logger.warning("Unknown storage provider '" + providerType + "'. Falling back to in-memory provider.");
-            return providerMap.get(MemoryStorage.STORAGE_TYPE).get();
+            return providerMap.get(DefaultMapStorage.STORAGE_TYPE).get();
         }
         return provider.get();
     }

@@ -23,7 +23,7 @@ import net.silthus.art.Trigger;
 import net.silthus.art.annotations.ArtObject;
 import net.silthus.art.api.ArtRegistrationException;
 import net.silthus.art.api.factory.ArtFactory;
-import net.silthus.art.storage.MemoryStorage;
+import net.silthus.art.impl.DefaultMapStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -42,7 +42,7 @@ class TriggerFactoryTest {
     @BeforeEach
     void beforeEach() {
         scheduler = mock(Scheduler.class);
-        storage = new MemoryStorage();
+        storage = new DefaultMapStorage();
     }
 
     @Nested

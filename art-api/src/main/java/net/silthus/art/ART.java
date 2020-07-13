@@ -114,4 +114,26 @@ public final class ART {
 
         return getInstance().flatMap(artManager -> artManager.getTarget(target));
     }
+
+    //
+    // new API design starts here
+    //
+
+    private static Configuration configuration;
+
+    public static void setGlobalConfiguration(Configuration configuration) {
+        ART.configuration = configuration;
+    }
+
+    public static Configuration configuration() {
+        return configuration;
+    }
+
+    public static ContextBuilder builder() {
+        return ContextBuilder.DEFAULT;
+    }
+
+    public static ContextBuilder builder(Configuration configuration) {
+        return ContextBuilder.of(configuration);
+    }
 }

@@ -80,12 +80,12 @@ class PersistenceStorageTest {
 
         storageProvider.data(new StringTarget("foo"), "key1", 2);
         assertThat(new QMetadataStore().metadataKey.equalTo(new MetadataKey("foo", "key1")).findOne())
-                .extracting(MetadataStore::getMetadataValue)
+                .extracting(MetadataStore::getValue)
                 .isEqualTo("2");
 
         storageProvider.data(new StringTarget("foo"), "key1", "foo");
         assertThat(new QMetadataStore().metadataKey.equalTo(new MetadataKey("foo", "key1")).findOne())
-                .extracting(MetadataStore::getMetadataValue)
+                .extracting(MetadataStore::getValue)
                 .isEqualTo("\"foo\"");
     }
 

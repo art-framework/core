@@ -17,6 +17,7 @@
 package net.silthus.art;
 
 import lombok.NonNull;
+import net.silthus.art.impl.DefaultMapStorage;
 
 import java.util.Optional;
 
@@ -41,17 +42,8 @@ import java.util.Optional;
  */
 public interface Storage {
 
-    /**
-     * Stores the given value under the given key.
-     * Will override any existing value that has the same key
-     * and return that value.
-     *
-     * Will return an empty {@link Optional} if this is the first entry for the given key.
-     *
-     * @param key key to store the data under
-     * @param value value to store
-     * @return an {@link Optional} containing the existing value
-     */
+    Storage DEFAULT = new DefaultMapStorage();
+
     <TValue> Optional<TValue> set(@NonNull String key, @NonNull TValue value);
 
     /**
@@ -71,24 +63,6 @@ public interface Storage {
      */
     default <TValue> Optional<TValue> set(@NonNull Target<?> target, @NonNull String key, @NonNull TValue value) {
         return set(target.getUniqueId() + "#" + key, value);
-    }
-
-    /**
-     * Stores a value for the given {@link Target} that is unique to
-     * the provided {@link Context}.
-     * <br>
-     * Use the {@link #set(Target, String, Object)} method to store data
-     * for a {@link Target} that has no reference to a {@link Context}.
-     *
-     * @param context  context to store value for
-     * @param target   target to store value for
-     * @param key      storage key
-     * @param value    value to store
-     * @param <TValue> type of the value
-     * @see #set(Target, String, Object)
-     */
-    default <TValue> Optional<TValue> set(Context<?> context, Target<?> target, String key, TValue value) {
-        return set(context.getUniqueId() + "#" + target.getUniqueId() + "#" + key, value);
     }
 
     /**
@@ -116,21 +90,5 @@ public interface Storage {
      */
     default <TValue> Optional<TValue> get(Target<?> target, String key, Class<TValue> valueClass) {
         return get(target.getUniqueId() + "#" + key, valueClass);
-    }
-
-    /**
-     * Retrieves a {@link Context} related value from the store.
-     * Will return the default value of the type or an empty {@link Optional} if the storage
-     * key is not found or the stored value cannot be cast to the needed type.
-     *
-     * @param <TValue>   type of the value
-     * @param context    context to retrieve value for
-     * @param target     target to retrieve value for
-     * @param key        storage key
-     * @param valueClass class of the value
-     * @return stored value or empty result if the value does not exist or cannot be cast into the value type.
-     */
-    default <TValue> Optional<TValue> get(Context<?> context, Target<?> target, String key, Class<TValue> valueClass) {
-        return get(context.getUniqueId() + "#" + target.getUniqueId() + "#" + key, valueClass);
     }
 }
