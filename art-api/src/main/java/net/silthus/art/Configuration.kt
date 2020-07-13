@@ -13,160 +13,154 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package net.silthus.art
 
-package net.silthus.art;
-
-import lombok.NonNull;
-import net.silthus.art.conf.Settings;
-
-import java.io.File;
-import java.io.Serializable;
-import java.util.Optional;
-import java.util.function.Function;
+import net.silthus.art.conf.Settings
+import java.io.File
+import java.io.Serializable
+import java.util.function.Function
 
 /**
  * Use the Configuration to retrieve and replace all elements of the ART-Framework.
- * You can for example provide your own {@link Scheduler} or {@link Storage} implementations.
+ * You can for example provide your own [Scheduler] or [Storage] implementations.
  */
-public interface Configuration extends Serializable {
-
+interface Configuration : Serializable {
     /**
-     * Use the {@link ArtProvider} to add and register your {@link ArtObject}s.
+     * Use the [ArtProvider] to add and register your [ArtObject]s.
      *
-     * @return implementing {@link ArtProvider}
+     * @return implementing [ArtProvider]
      */
-    ArtProvider art();
-
-    default Configuration addAllArt() {
-        art().registerAll();
-        return this;
+    fun art(): ArtProvider
+    fun addAllArt(): Configuration? {
+        art().registerAll()
+        return this
     }
 
-    default Configuration addAllArt(File file) {
-        art().registerAll(file);
-        return this;
+    fun addAllArt(file: File): Configuration? {
+        art().registerAll(file)
+        return this
     }
 
-    default Configuration action(Class<? extends Action<?>> actionClass) {
-        art().action(actionClass);
-        return this;
+    fun action(actionClass: Class<out Action<*>>): Configuration? {
+        art().action(actionClass)
+        return this
     }
 
-    default <TTarget> Configuration action(Action<TTarget> action) {
-        art().action(action);
-        return this;
+    fun <TTarget> action(action: Action<TTarget>): Configuration? {
+        art().action(action)
+        return this
     }
 
-    default Configuration requirement(Class<? extends Requirement<?>> requirementClass) {
-        art().requirement(requirementClass);
-        return this;
+    fun requirement(requirementClass: Class<out Requirement<*>>): Configuration? {
+        art().requirement(requirementClass)
+        return this
     }
 
-    default <TTarget> Configuration requirement(Requirement<TTarget> requirement) {
-        art().requirement(requirement);
-        return this;
+    fun <TTarget> requirement(requirement: Requirement<TTarget>): Configuration? {
+        art().requirement(requirement)
+        return this
     }
 
-    default Configuration trigger(Class<? extends Trigger> triggerClass) {
-        art().trigger(triggerClass);
-        return this;
+    fun trigger(triggerClass: Class<out Trigger>): Configuration? {
+        art().trigger(triggerClass)
+        return this
     }
 
-    default Configuration trigger(Trigger trigger) {
-        art().trigger(trigger);
-        return this;
+    fun trigger(trigger: Trigger): Configuration? {
+        art().trigger(trigger)
+        return this
     }
 
     /**
-     * Gets the configured {@link Scheduler} implementation.
-     * You can provide your own by calling {@link #set(Scheduler)}
+     * Gets the configured [Scheduler] implementation.
+     * You can provide your own by calling [.set]
      * which will replace the service you get from this method
      * with your own implementation.
      *
-     * @return the configured {@link Scheduler} implementation
+     * @return the configured [Scheduler] implementation
      */
-    Optional<Scheduler> scheduler();
+    fun scheduler(): Scheduler?
 
     /**
-     * Gets the configured {@link Storage} implementation.
-     * You can provide your own by calling {@link #set(Storage)}
+     * Gets the configured [Storage] implementation.
+     * You can provide your own by calling [.set]
      * which will replace the service you get from this method
      * with your own implementation.
      *
-     * @return the configured {@link Storage} implementation
+     * @return the configured [Storage] implementation
      */
-    Storage storage();
+    fun storage(): Storage
 
     /**
-     * Gets the configured {@link Settings} of this configuration.
-     * You can provide your own settings by calling {@link #set(Settings)}.
+     * Gets the configured [Settings] of this configuration.
+     * You can provide your own settings by calling [.set].
      *
-     * @return the {@link Settings} of this {@link Configuration}
+     * @return the [Settings] of this [Configuration]
      */
-    Settings settings();
+    fun settings(): Settings
 
     /**
-     * Use the {@link TargetProvider} to register new {@link Target} source types
-     * or get a {@link Target} for any given source.
+     * Use the [TargetProvider] to register new [Target] source types
+     * or get a [Target] for any given source.
      *
-     * @return the implementing {@link TargetProvider}
+     * @return the implementing [TargetProvider]
      */
-    TargetProvider targets();
+    fun targets(): TargetProvider
 
     /**
-     * Adds a {@link TargetProvider} for the given {@link Target} type.
-     * Will override any existing {@link TargetProvider} of the same target type.
-     * <br>
-     * This is just a convenience method and delegates to {@link TargetProvider#add(Class, Function)}.
+     * Adds a [TargetProvider] for the given [Target] type.
+     * Will override any existing [TargetProvider] of the same target type.
+     * <br></br>
+     * This is just a convenience method and delegates to [TargetProvider.add].
      *
      * @param targetClass class of the target you want to add
-     * @param targetProvider {@link TargetProvider} that creates the {@link Target} for the given type
+     * @param targetProvider [TargetProvider] that creates the [Target] for the given type
      * @param <TTarget> type of the target
-     * @return this {@link Configuration}
-     * @see TargetProvider#add(Class, Function)
-     */
-    default <TTarget> Configuration target(Class<TTarget> targetClass, Function<TTarget, Target<TTarget>> targetProvider) {
-        targets().add(targetClass, targetProvider);
-        return this;
+     * @return this [Configuration]
+     * @see TargetProvider.add
+    </TTarget> */
+    fun <TTarget> target(targetClass: Class<TTarget>, targetProvider: Function<TTarget, Target<TTarget>>): Configuration {
+        targets().add(targetClass, targetProvider)
+        return this
     }
 
     /**
-     * Sets a new implementation for the {@link ArtProvider}.
+     * Sets a new implementation for the [ArtProvider].
      *
      * @param artProvider art provider implementation to use
-     * @return this {@link Configuration}
+     * @return this [Configuration]
      */
-    Configuration set(@NonNull ArtProvider artProvider);
+    fun set(artProvider: ArtProvider): Configuration
 
     /**
-     * Sets a new implementation for the {@link Scheduler}.
+     * Sets a new implementation for the [Scheduler].
      *
      * @param scheduler scheduler implementation to use
-     * @return this {@link Configuration}
+     * @return this [Configuration]
      */
-    Configuration set(Scheduler scheduler);
+    fun set(scheduler: Scheduler?): Configuration
 
     /**
-     * Sets a new implementation for the {@link Storage}.
+     * Sets a new implementation for the [Storage].
      *
      * @param storage storage implementation to use
-     * @return this {@link Configuration}
+     * @return this [Configuration]
      */
-    Configuration set(@NonNull Storage storage);
+    fun set(storage: Storage): Configuration
 
     /**
      * Provides a new set of settings to use in this context.
      *
      * @param settings settings to use
-     * @return this {@link Configuration}
+     * @return this [Configuration]
      */
-    Configuration set(@NonNull Settings settings);
+    fun set(settings: Settings): Configuration
 
     /**
-     * Sets a new implementation for the {@link TargetProvider}.
+     * Sets a new implementation for the [TargetProvider].
      *
      * @param targetProvider target provider implementation to use
-     * @return this {@link Configuration}
+     * @return this [Configuration]
      */
-    Configuration set(@NonNull TargetProvider targetProvider);
+    fun set(targetProvider: TargetProvider): Configuration
 }
