@@ -33,6 +33,7 @@ repositories {
             password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
         }
     }
+    mavenCentral()
 }
 
 dependencies {
@@ -61,7 +62,6 @@ shadowJar {
 
 tasks.build.dependsOn(shadowJar)
 tasks.publish.dependsOn(shadowJar)
-
 //shadowJar {
 ////    dependencies {
 ////        include(dependency(':art-core'))
