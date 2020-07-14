@@ -21,7 +21,7 @@ public class DefaultConfiguration implements Configuration {
     private transient TargetProvider targets;
 
     public DefaultConfiguration() {
-        this(null, null, Storage.DEFAULT, Settings.DEFAULT, )
+        this(null, null, Storage.DEFAULT, Settings.DEFAULT, null);
     }
 
     DefaultConfiguration(ArtProvider art, Scheduler scheduler, Storage storage, Settings settings, TargetProvider targets) {

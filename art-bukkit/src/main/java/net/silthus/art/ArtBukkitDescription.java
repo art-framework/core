@@ -1,5 +1,6 @@
 package net.silthus.art;
 
+import net.silthus.art.impl.ArtModuleDescription;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class ArtBukkitDescription extends ArtModuleDescription {

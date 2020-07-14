@@ -36,7 +36,7 @@ repositories {
 }
 
 dependencies {
-    api project(':art-core')
+    api project(':art-api')
     implementation project(':art-flow-parser')
     implementation project(':art-persistence')
 

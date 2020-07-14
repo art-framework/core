@@ -1,5 +1,6 @@
 package net.silthus.art.impl;
 
+import net.silthus.art.ArtContext;
 import net.silthus.art.Configuration;
 import net.silthus.art.Context;
 import net.silthus.art.ContextBuilder;
@@ -22,22 +23,12 @@ public class DefaultContextBuilder implements ContextBuilder {
     }
 
     @Override
-    public ContextBuilder load(File file) {
-        return null;
-    }
-
-    @Override
-    public ContextBuilder load(Map<String, Object> map) {
-        return null;
-    }
-
-    @Override
     public ContextBuilder load(List<String> list) {
         return null;
     }
 
     @Override
-    public Context build() {
+    public ArtContext build() {
         return null;
     }
 }

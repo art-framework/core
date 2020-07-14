@@ -29,7 +29,7 @@ public interface Scheduler {
      * This task will be executed by the main server thread.
      *
      * @param task  Task to be executed
-     * @param delay Delay in server ticks before executing task
+     * @param delay Delay in milliseconds before executing task
      * @return Task id number (-1 if scheduling failed)
      */
     int scheduleSyncDelayedTask(@NonNull Runnable task, long delay);
@@ -50,8 +50,8 @@ public interface Scheduler {
      * This task will be executed by the main server thread.
      *
      * @param task   Task to be executed
-     * @param delay  Delay in server ticks before executing first repeat
-     * @param period Period in server ticks of the task
+     * @param delay  Delay in milliseconds before executing first repeat
+     * @param period Period in milliseconds of the task
      * @return Task id number (-1 if scheduling failed)
      */
     int scheduleSyncRepeatingTask(@NonNull Runnable task, long delay, long period);
@@ -157,7 +157,7 @@ public interface Scheduler {
      * should be taken to assure the thread-safety of asynchronous tasks.</b>
      * <p>
      * Returns a task that will run asynchronously after the specified number
-     * of server ticks.
+     * of milliseconds.
      *
      * @param task  the task to be run
      * @param delay the ticks to wait before running the task
@@ -170,7 +170,7 @@ public interface Scheduler {
 
     /**
      * Returns a task that will repeatedly run until cancelled, starting after
-     * the specified number of server ticks.
+     * the specified number of milliseconds.
      *
      * @param task   the task to be run
      * @param delay  the ticks to wait before running the task
@@ -187,7 +187,7 @@ public interface Scheduler {
      * should be taken to assure the thread-safety of asynchronous tasks.</b>
      * <p>
      * Returns a task that will repeatedly run asynchronously until cancelled,
-     * starting after the specified number of server ticks.
+     * starting after the specified number of milliseconds.
      *
      * @param task   the task to be run
      * @param delay  the ticks to wait before running the task for the first

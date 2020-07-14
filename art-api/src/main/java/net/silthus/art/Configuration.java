@@ -17,6 +17,7 @@
 package net.silthus.art;
 
 import lombok.NonNull;
+import net.silthus.art.conf.ArtContextSettings;
 import net.silthus.art.conf.Settings;
 
 import java.io.File;
@@ -106,6 +107,14 @@ public interface Configuration extends Serializable {
     Settings settings();
 
     /**
+     * Gets the {@link ArtContextSettings} that will be used by default
+     * when creating a new {@link ArtContext}.
+     *
+     * @return default {@link ArtContextSettings} used in an {@link ArtContext}
+     */
+    ArtContextSettings contextSettings();
+
+    /**
      * Use the {@link TargetProvider} to register new {@link Target} source types
      * or get a {@link Target} for any given source.
      *
@@ -161,6 +170,15 @@ public interface Configuration extends Serializable {
      * @return this {@link Configuration}
      */
     Configuration set(@NonNull Settings settings);
+
+    /**
+     * Provides new {@link ArtContextSettings} that will be used
+     * in the creation of all {@link ArtContext} objects.
+     *
+     * @param settings new default {@link ArtContextSettings}
+     * @return this {@link Configuration}
+     */
+    Configuration set(@NonNull ArtContextSettings settings);
 
     /**
      * Sets a new implementation for the {@link TargetProvider}.

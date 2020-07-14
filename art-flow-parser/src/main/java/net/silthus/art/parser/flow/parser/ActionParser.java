@@ -17,8 +17,8 @@
 package net.silthus.art.parser.flow.parser;
 
 import lombok.Getter;
-import net.silthus.art.api.actions.ActionConfig;
-import net.silthus.art.api.actions.ActionContext;
+import net.silthus.art.ActionContext;
+import net.silthus.art.conf.ActionConfig;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.config.ConfigFieldInformation;
@@ -28,7 +28,7 @@ import javax.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
 
-public class ActionParser extends ArtTypeParser<ActionContext<?, ?>, ActionConfig<?>> {
+public class ActionParser extends ArtTypeParser<ActionContext<?>, ActionConfig<?>> {
 
     @Getter
     private final ActionManager actionManager;

@@ -17,4 +17,5 @@
 package net.silthus.art;
 
 public interface ArtObject {
+
 }

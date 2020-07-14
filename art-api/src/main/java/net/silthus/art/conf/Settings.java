@@ -18,7 +18,7 @@ package net.silthus.art.conf;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.silthus.art.annotations.ConfigOption;
+import net.silthus.art.ConfigOption;
 
 import java.io.Serializable;
 

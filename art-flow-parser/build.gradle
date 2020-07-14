@@ -1,13 +1,13 @@
 apply plugin: 'com.github.johnrengelman.shadow'
 
 dependencies {
-    implementation project(':art-core')
+    implementation project(':art-api')
 }
 
 shadowJar {
     classifier = ''
     dependencies {
-        include(dependency(':art-core'))
+        include(dependency(':art-api'))
     }
 }
 

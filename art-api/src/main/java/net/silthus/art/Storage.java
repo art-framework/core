@@ -44,6 +44,15 @@ public interface Storage {
 
     Storage DEFAULT = new DefaultMapStorage();
 
+    /**
+     * Stores a value in the persistent metadata store and returns any value
+     * that was already stored. If no value was found an empty {@link Optional} is returned.
+     *
+     * @param key The unique key to store a value for.
+     * @param value The value to store.
+     * @param <TValue> type of the value
+     * @return existing value if it exists and is of the same type otherwise an empty {@link Optional}
+     */
     <TValue> Optional<TValue> set(@NonNull String key, @NonNull TValue value);
 
     /**

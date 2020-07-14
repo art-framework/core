@@ -18,11 +18,12 @@ package net.silthus.art;
 
 import com.google.inject.Provider;
 import lombok.SneakyThrows;
-import net.silthus.art.api.ArtContext;
+import net.silthus.art.api.AbstractArtObjectContext;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtParseException;
+import net.silthus.art.impl.DefaultArtContext;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -60,16 +61,16 @@ class FlowParserTest {
         when(artTypeParser.getMatcher()).thenCallRealMethod();
         when(artTypeParser.getInput()).thenCallRealMethod();
         when(artTypeParser.accept(anyString())).thenCallRealMethod();
-        ArtContext artContext = mock(ArtContext.class);
-        when(artContext.getOptions()).thenReturn(new ArtObjectConfig());
-        when(artTypeParser.parse()).thenReturn(artContext);
+        AbstractArtObjectContext artWrapper = mock(AbstractArtObjectContext.class);
+        when(artWrapper.getOptions()).thenReturn(new ArtObjectConfig());
+        when(artTypeParser.parse()).thenReturn(artWrapper);
 
         Provider<ArtTypeParser<?, ?>> actionParserProvider = mock(Provider.class);
         when(actionParserProvider.get()).thenReturn(this.artTypeParser);
 
         parsers.add(actionParserProvider);
 
-        parser = spy(new FlowParser(artManager, DefaultArtResult::new, parsers));
+        parser = spy(new FlowParser(artManager, DefaultArtContext::new, parsers));
     }
 
     @Nested
@@ -140,12 +141,12 @@ class FlowParserTest {
         void shouldThrowIfParsingALineFails() {
 
             ArtParseException exception = new ArtParseException("TEST ERROR");
-            doAnswer((Answer<ArtContext<?, ?, ?>>) invocation -> {
+            doAnswer((Answer<AbstractArtObjectContext<?, ?, ?>>) invocation -> {
                 ArtTypeParser<?, ?> parser = (ArtTypeParser<?, ?>) invocation.getMock();
                 if ("ERROR".equals(parser.getInput())) {
                     throw exception;
                 }
-                return mock(ArtContext.class);
+                return mock(AbstractArtObjectContext.class);
             }).when(artTypeParser).parse();
 
             addLines(

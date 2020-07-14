@@ -16,6 +16,8 @@
 
 package net.silthus.art;
 
+import net.silthus.art.conf.Settings;
+
 import java.io.File;
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -28,7 +30,7 @@ import java.util.function.Predicate;
  * Use the {@link #registerAll(File)} method for that, or {@link #registerAll()} if you want to scan
  * the whole class path and add everything that was found.</p>
  * <p>By default the ART-Framework will scan the whole classpath. You can disable this by
- * setting {@link net.silthus.art.conf.Settings#setAutoRegisterAllArt(boolean)}</p> to false.
+ * setting {@link Settings#setAutoRegisterAllArt(boolean)}</p> to false.
  */
 public interface ArtProvider {
 

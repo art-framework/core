@@ -2,14 +2,13 @@ package net.silthus.art;
 
 import java.util.Collection;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
  * Contains all of the classes that were found when searching the classpath
  * or a file for {@link ArtObject}s.
- * Classes that don't have an @{@link net.silthus.art.annotations.ArtObject} annotation
+ * Classes that don't have an @{@link ArtOptions} annotation
  * or public parameterless constructor can be found in the
  */
 public interface ArtFinderResult extends Iterable<ArtObjectInformation> {

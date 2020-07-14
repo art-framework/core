@@ -18,7 +18,7 @@ package net.silthus.art.parser.flow.parser;
 
 import com.google.common.base.Strings;
 import lombok.Getter;
-import net.silthus.art.api.ArtContext;
+import net.silthus.art.api.AbstractArtObjectContext;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
 import net.silthus.art.api.factory.ArtFactory;
@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public abstract class ArtTypeParser<TContext extends ArtContext<?, ?, ? extends ArtObjectConfig<?>>, TConfig extends ArtObjectConfig<?>> extends Parser<TContext> {
+public abstract class ArtTypeParser<TContext extends AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>, TConfig extends ArtObjectConfig<?>> extends Parser<TContext> {
 
     @Getter
     private final ArtType artType;

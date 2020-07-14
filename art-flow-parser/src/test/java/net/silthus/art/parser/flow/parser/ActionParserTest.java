@@ -18,7 +18,7 @@ package net.silthus.art.parser.flow.parser;
 
 import lombok.SneakyThrows;
 import net.silthus.art.Storage;
-import net.silthus.art.api.actions.ActionContext;
+import net.silthus.art.impl.DefaultActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +48,7 @@ class ActionParserTest {
         this.factory = mock(ActionFactory.class);
         this.actionManager = mock(ActionManager.class);
         when(actionManager.getFactory(anyString())).thenReturn(Optional.of(factory));
-        when(factory.create(any())).thenAnswer(invocation -> new ActionContext<>(Object.class, (o, context) -> {
+        when(factory.create(any())).thenAnswer(invocation -> new DefaultActionContext<>(Object.class, (o, context) -> {
         }, invocation.getArgument(0), null, mock(Storage.class)));
 
         this.parser = new ActionParser(actionManager);
@@ -64,7 +64,7 @@ class ActionParserTest {
         void shouldMatchActionIdentifier() {
 
             assertThat(parser.accept("!foobar")).isTrue();
-            assertThat(parser.parse()).extracting(ActionContext::getConfig)
+            assertThat(parser.parse()).extracting(DefaultActionContext::getConfig)
                     .isEqualTo(Optional.empty());
         }
 

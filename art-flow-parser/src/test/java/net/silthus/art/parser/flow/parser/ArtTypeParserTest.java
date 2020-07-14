@@ -18,10 +18,11 @@ package net.silthus.art.parser.flow.parser;
 
 import lombok.Data;
 import lombok.SneakyThrows;
+import net.silthus.art.ActionContext;
 import net.silthus.art.Storage;
-import net.silthus.art.annotations.ConfigOption;
-import net.silthus.art.api.actions.ActionConfig;
-import net.silthus.art.api.actions.ActionContext;
+import net.silthus.art.ConfigOption;
+import net.silthus.art.conf.ActionConfig;
+import net.silthus.art.impl.DefaultActionContext;
 import net.silthus.art.api.actions.ActionFactory;
 import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.parser.ArtParseException;
@@ -57,7 +58,7 @@ class ArtTypeParserTest {
 
         when(manager.getFactory(anyString())).thenReturn(Optional.of(factory));
 
-        when(factory.create(any())).thenAnswer(invocation -> new ActionContext<>(Object.class, (o, context) -> {
+        when(factory.create(any())).thenAnswer(invocation -> new DefaultActionContext<>(Object.class, (o, context) -> {
         }, invocation.getArgument(0), null, mock(Storage.class)));
         when(factory.getConfigClass()).thenReturn(Optional.of(TestConfig.class));
         when(factory.getConfigInformation()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
@@ -123,7 +124,7 @@ class ArtTypeParserTest {
         void shouldParseCustomConfigAndOptions() {
 
             assertThat(parser.accept("!foobar(delay=10) name=foo;number:2")).isTrue();
-            ActionContext<?, ?> result = parser.parse();
+            ActionContext<?> result = parser.parse();
             assertThat(result.getOptions())
                     .extracting(ActionConfig::getDelay)
                     .isEqualTo(10L);
@@ -154,7 +155,7 @@ class ArtTypeParserTest {
 
             when(manager.getFactory(anyString())).thenReturn(Optional.of(factory));
 
-            when(factory.create(any())).thenAnswer(invocation -> new ActionContext<>(null, null, invocation.getArgument(0), null, mock(Storage.class)));
+            when(factory.create(any())).thenAnswer(invocation -> new DefaultActionContext<>(null, null, invocation.getArgument(0), null, mock(Storage.class)));
             when(factory.getConfigClass()).thenReturn(Optional.of(WrongConfigClass.class));
             when(factory.getConfigInformation()).thenReturn(new HashMap<>());
 
