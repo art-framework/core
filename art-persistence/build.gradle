@@ -22,7 +22,7 @@ plugins {
 dependencies {
     annotationProcessor 'io.ebean:querybean-generator:12.3.6'
 
-    api project(':art-core')
+    api project(':art-api')
 
     implementation 'com.google.code.gson:gson:2.8.6'
 

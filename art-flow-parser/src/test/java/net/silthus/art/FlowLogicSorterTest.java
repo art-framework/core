@@ -16,14 +16,14 @@
 
 package net.silthus.art;
 
-import net.silthus.art.api.ArtContext;
-import net.silthus.art.api.actions.ActionConfig;
-import net.silthus.art.api.actions.ActionContext;
+import net.silthus.art.api.AbstractArtObjectContext;
+import net.silthus.art.conf.ActionConfig;
+import net.silthus.art.impl.DefaultActionContext;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.requirements.RequirementConfig;
-import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.requirements.RequirementWrapper;
 import net.silthus.art.api.trigger.TriggerConfig;
-import net.silthus.art.api.trigger.TriggerContext;
+import net.silthus.art.api.trigger.TriggerWrapper;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,24 +40,24 @@ import static org.mockito.Mockito.spy;
 
 class FlowLogicSorterTest {
 
-    private List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts;
+    private List<AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>> contexts;
 
     @BeforeEach
     void beforeEach() {
         contexts = new ArrayList<>();
     }
 
-    private ActionContext<?, ?> action() {
-        return spy(new ActionContext<>(Object.class, (o, context) -> {
+    private ActionContext<?> action() {
+        return spy(new DefaultActionContext<>(Object.class, (o, context) -> {
         }, new ActionConfig<>(), null, mock(Storage.class)));
     }
 
-    private RequirementContext<?, ?> requirement() {
-        return spy(new RequirementContext<>(Object.class, (o, context) -> true, new RequirementConfig<>(), mock(Storage.class)));
+    private RequirementWrapper<?, ?> requirement() {
+        return spy(new RequirementWrapper<>(Object.class, (o, context) -> true, new RequirementConfig<>(), mock(Storage.class)));
     }
 
-    private TriggerContext<?> trigger() {
-        return spy(new TriggerContext<>(new TriggerConfig<>(), null, mock(Storage.class)));
+    private TriggerWrapper<?> trigger() {
+        return spy(new TriggerWrapper<>(new TriggerConfig<>(), null, mock(Storage.class)));
     }
 
     @Nested
@@ -68,7 +68,7 @@ class FlowLogicSorterTest {
         @DisplayName("should nest actions if requirements exist")
         void shouldNestActionsIfRequirementsExist() {
 
-            ActionContext<?, ?> action = action();
+            ActionContext<?> action = action();
 
             contexts.addAll(Arrays.asList(
                     requirement(),
@@ -88,8 +88,8 @@ class FlowLogicSorterTest {
         @DisplayName("should create new action if new requirements exist")
         void shouldCreateNewActionsIfNewRequirementsExist() {
 
-            ActionContext<?, ?> firstAction = action();
-            ActionContext<?, ?> secondAction = action();
+            ActionContext<?> firstAction = action();
+            ActionContext<?> secondAction = action();
             contexts.addAll(Arrays.asList(
                     requirement(),
                     firstAction,
@@ -107,8 +107,8 @@ class FlowLogicSorterTest {
         @DisplayName("should discard requirements that come after the last action")
         void shouldDiscardRequirementsAfterLastAction() {
 
-            ActionContext<?, ?> firstAction = action();
-            ActionContext<?, ?> secondAction = action();
+            ActionContext<?> firstAction = action();
+            ActionContext<?> secondAction = action();
             contexts.addAll(Arrays.asList(
                     requirement(),
                     requirement(),
@@ -127,8 +127,8 @@ class FlowLogicSorterTest {
         @Test
         @DisplayName("should only add direct preceding requirements to action")
         void shouldOnlyAddRelevantRequirementsToAction() {
-            ActionContext<?, ?> firstAction = action();
-            ActionContext<?, ?> secondAction = action();
+            ActionContext<?> firstAction = action();
+            ActionContext<?> secondAction = action();
             contexts.addAll(Arrays.asList(
                     requirement(),
                     requirement(),
@@ -147,8 +147,8 @@ class FlowLogicSorterTest {
         @Test
         @DisplayName("should only add nested actions to preceding action")
         void shouldAddActionsToCorrespondingAction() {
-            ActionContext<?, ?> firstAction = action();
-            ActionContext<?, ?> secondAction = action();
+            ActionContext<?> firstAction = action();
+            ActionContext<?> secondAction = action();
             contexts.addAll(Arrays.asList(
                     requirement(),
                     firstAction,
@@ -169,7 +169,7 @@ class FlowLogicSorterTest {
         @DisplayName("should add single action to result")
         void shouldAddSingleAction() {
 
-            ActionContext<?, ?> action = action();
+            ActionContext<?> action = action();
             contexts.add(action);
 
             assertThat(FlowLogicSorter.of(contexts).getResult())
@@ -186,7 +186,7 @@ class FlowLogicSorterTest {
         @DisplayName("should add all requirements as flat list")
         void shouldAddAllRequirements() {
 
-            List<RequirementContext<?, ?>> requirements = Arrays.asList(
+            List<RequirementWrapper<?, ?>> requirements = Arrays.asList(
                     requirement(),
                     requirement(),
                     requirement(),
@@ -203,7 +203,7 @@ class FlowLogicSorterTest {
         @DisplayName("should add single requirement to result")
         void shouldAddASingleRequirement() {
 
-            RequirementContext<?, ?> requirement = requirement();
+            RequirementWrapper<?, ?> requirement = requirement();
             contexts.add(requirement);
 
             assertThat(FlowLogicSorter.of(contexts).getResult())
@@ -220,8 +220,8 @@ class FlowLogicSorterTest {
         @DisplayName("should register second trigger after action without requirements")
         void shouldAddAllTriggerAsList() {
 
-            TriggerContext<?> trigger = trigger();
-            TriggerContext<?> trigger2 = trigger();
+            TriggerWrapper<?> trigger = trigger();
+            TriggerWrapper<?> trigger2 = trigger();
 
             // does not add requirement to the second trigger
             contexts.add(requirement());
@@ -241,8 +241,8 @@ class FlowLogicSorterTest {
         @DisplayName("should add requirements to the trigger if trigger exists after it")
         void shouldRequirementsDirectlyToResultIfTriggerComesAfter() {
 
-            TriggerContext<?> trigger = trigger();
-            RequirementContext<?, ?> requirement = requirement();
+            TriggerWrapper<?> trigger = trigger();
+            RequirementWrapper<?, ?> requirement = requirement();
 
             // adds requirements to trigger
             contexts.add(requirement);
@@ -259,8 +259,8 @@ class FlowLogicSorterTest {
         @DisplayName("should add actions directly to result if no trigger exists before it")
         void shouldDirectlyAddActionsIfTriggerExists() {
 
-            ActionContext<?, ?> action = action();
-            TriggerContext<?> trigger = trigger();
+            ActionContext<?> action = action();
+            TriggerWrapper<?> trigger = trigger();
 
             // executes actions before the trigger
             contexts.add(action);
@@ -278,8 +278,8 @@ class FlowLogicSorterTest {
         @DisplayName("should add actions to all matching triggers")
         void shouldAddActionsToAllTriggers() {
 
-            TriggerContext<?> trigger1 = trigger();
-            TriggerContext<?> trigger2 = trigger();
+            TriggerWrapper<?> trigger1 = trigger();
+            TriggerWrapper<?> trigger2 = trigger();
 
             // adds actions only to the trigger above
             contexts.add(trigger1);
@@ -298,8 +298,8 @@ class FlowLogicSorterTest {
         @DisplayName("should add requirements to all triggers that come after it")
         void shouldAddRequirementsToAllTriggerBelow() {
 
-            TriggerContext<?> trigger1 = trigger();
-            TriggerContext<?> trigger2 = trigger();
+            TriggerWrapper<?> trigger1 = trigger();
+            TriggerWrapper<?> trigger2 = trigger();
 
             // adds requirements to both trigger
             contexts.add(requirement());
@@ -317,9 +317,9 @@ class FlowLogicSorterTest {
         @DisplayName("should execute the same action for multiple trigger")
         void shouldGetSameActions() {
 
-            TriggerContext<?> trigger = trigger();
-            TriggerContext<?> trigger1 = trigger();
-            ActionContext<?, ?> action = action();
+            TriggerWrapper<?> trigger = trigger();
+            TriggerWrapper<?> trigger1 = trigger();
+            ActionContext<?> action = action();
 
             // execute the action for both trigger
             contexts.add(trigger);
@@ -336,9 +336,9 @@ class FlowLogicSorterTest {
         @DisplayName("should add requirements to actions that follow after triggers")
         void shouldAddRequirementsToActionsFollowingTriggers() {
 
-            TriggerContext<?> trigger = trigger();
-            ActionContext<?, ?> action = action();
-            TriggerContext<?> trigger1 = trigger();
+            TriggerWrapper<?> trigger = trigger();
+            ActionContext<?> action = action();
+            TriggerWrapper<?> trigger1 = trigger();
 
             // add to action and not to the trigger
             contexts.add(trigger);
@@ -363,9 +363,9 @@ class FlowLogicSorterTest {
         @DisplayName("should combine multiple triggers in an OR statement")
         void shouldAddAllActionsBelowMultipleTriggersToAllTriggers() {
 
-            TriggerContext<?> trigger1 = trigger();
-            TriggerContext<?> trigger2 = trigger();
-            ActionContext<?, ?> action = action();
+            TriggerWrapper<?> trigger1 = trigger();
+            TriggerWrapper<?> trigger2 = trigger();
+            ActionContext<?> action = action();
 
             // combine trigger in an OR statement
             contexts.add(trigger1);
@@ -382,11 +382,11 @@ class FlowLogicSorterTest {
         @DisplayName("should execute actions of the same trigger with their own requirements")
         void shouldAddRequirementToActionsBelowTrigger() {
 
-            RequirementContext<?, ?> requirement1 = requirement();
-            ActionContext<?, ?> action1 = action();
-            RequirementContext<?, ?> requirement2 = requirement();
-            ActionContext<?, ?> action2 = action();
-            TriggerContext<?> trigger = trigger();
+            RequirementWrapper<?, ?> requirement1 = requirement();
+            ActionContext<?> action1 = action();
+            RequirementWrapper<?, ?> requirement2 = requirement();
+            ActionContext<?> action2 = action();
+            TriggerWrapper<?> trigger = trigger();
 
             // executes both actions after the trigger
             // but only if their own requirements match

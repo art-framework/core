@@ -1,11 +1,11 @@
 package net.silthus.art;
 
 import com.google.common.collect.ImmutableList;
-import net.silthus.art.api.ArtContext;
-import net.silthus.art.api.actions.ActionContext;
+import net.silthus.art.api.AbstractArtObjectContext;
+import net.silthus.art.impl.DefaultActionContext;
 import net.silthus.art.api.config.ArtObjectConfig;
-import net.silthus.art.api.requirements.RequirementContext;
-import net.silthus.art.api.trigger.TriggerContext;
+import net.silthus.art.api.requirements.RequirementWrapper;
+import net.silthus.art.api.trigger.TriggerWrapper;
 
 import java.util.*;
 
@@ -14,24 +14,24 @@ import static java.util.stream.Collectors.toList;
 
 public final class FlowLogicSorter {
 
-    public static FlowLogicSorter of(Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> artContexts) {
-        return new FlowLogicSorter(artContexts);
+    public static FlowLogicSorter of(Collection<AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>> artWrappers) {
+        return new FlowLogicSorter(artWrappers);
     }
 
-    private final Iterator<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> iterator;
+    private final Iterator<AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>> iterator;
 
-    private ActionContext<?, ?> activeAction = null;
-    private TriggerContext<?> currentActiveTrigger = null;
-    private final List<TriggerContext<?>> activeTriggers = new ArrayList<>();
-    private final List<RequirementContext<?, ?>> requirements = new ArrayList<>();
+    private ActionContext<?> activeAction = null;
+    private TriggerWrapper<?> currentActiveTrigger = null;
+    private final List<TriggerWrapper<?>> activeTriggers = new ArrayList<>();
+    private final List<RequirementWrapper<?, ?>> requirements = new ArrayList<>();
 
-    private List<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> result = new ArrayList<>();
+    private List<AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>> result = new ArrayList<>();
 
-    private FlowLogicSorter(Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> input) {
+    private FlowLogicSorter(Collection<AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>> input) {
         this.iterator = ImmutableList.copyOf(input).iterator();
     }
 
-    public Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> getResult() {
+    public Collection<AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>> getResult() {
 
         process();
 
@@ -43,20 +43,20 @@ public final class FlowLogicSorter {
         if (!iterator.hasNext()) return;
 
         while (iterator.hasNext()) {
-            ArtContext<?, ?, ? extends ArtObjectConfig<?>> context = iterator.next();
+            AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>> context = iterator.next();
 
-            if (context instanceof RequirementContext) {
-                handleRequirement((RequirementContext<?, ?>) context);
-            } else if (context instanceof ActionContext) {
-                handleAction((ActionContext<?, ?>) context);
-            } else if (context instanceof TriggerContext) {
-                handleTrigger((TriggerContext<?>) context);
+            if (context instanceof RequirementWrapper) {
+                handleRequirement((RequirementWrapper<?, ?>) context);
+            } else if (context instanceof DefaultActionContext) {
+                handleAction((ActionContext<?>) context);
+            } else if (context instanceof TriggerWrapper) {
+                handleTrigger((TriggerWrapper<?>) context);
             }
         }
 
         if (activeTriggers.size() > 0) {
             if (activeAction != null) {
-                for (TriggerContext<?> activeTrigger : activeTriggers) {
+                for (TriggerWrapper<?> activeTrigger : activeTriggers) {
                     activeTrigger.addAction(activeAction);
                 }
                 activeAction = null;
@@ -65,7 +65,7 @@ public final class FlowLogicSorter {
             result.addAll(activeTriggers);
         }
 
-        if (Objects.isNull(activeAction) && result.stream().noneMatch(artContext -> artContext instanceof ActionContext)) {
+        if (Objects.isNull(activeAction) && result.stream().noneMatch(artContext -> artContext instanceof DefaultActionContext)) {
             result.addAll(requirements);
         } else {
             result.add(activeAction);
@@ -74,7 +74,7 @@ public final class FlowLogicSorter {
         result = result.stream().filter(Objects::nonNull).collect(collectingAndThen(toList(), ImmutableList::copyOf));
     }
 
-    private void handleRequirement(RequirementContext<?, ?> requirement) {
+    private void handleRequirement(RequirementWrapper<?, ?> requirement) {
 
         if (activeTriggers.isEmpty()) {
             // requirements only apply to sections below it
@@ -86,7 +86,7 @@ public final class FlowLogicSorter {
         requirements.add(requirement);
     }
 
-    private void handleAction(ActionContext<?, ?> action) {
+    private void handleAction(ActionContext<?> action) {
         // there is no action before this action
         // this means we do not need to nest the action inside the other action
         if (Objects.isNull(activeAction)) {
@@ -111,7 +111,7 @@ public final class FlowLogicSorter {
         }
     }
 
-    private void handleTrigger(TriggerContext<?> trigger) {
+    private void handleTrigger(TriggerWrapper<?> trigger) {
         // this is the first trigger
         // add any actions before it into the result
         if (activeTriggers.isEmpty()) {

@@ -18,7 +18,7 @@ package net.silthus.art.parser.flow.parser;
 
 import lombok.SneakyThrows;
 import net.silthus.art.Storage;
-import net.silthus.art.api.requirements.RequirementContext;
+import net.silthus.art.api.requirements.RequirementWrapper;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
 import org.junit.jupiter.api.BeforeEach;
@@ -48,7 +48,7 @@ class RequirementParserTest {
         this.factory = mock(RequirementFactory.class);
         this.requirementManager = mock(RequirementManager.class);
         when(requirementManager.getFactory(anyString())).thenReturn(Optional.of(factory));
-        when(factory.create(any())).thenAnswer(invocation -> new RequirementContext<>(Object.class, (o, context) -> true, invocation.getArgument(0), mock(Storage.class)));
+        when(factory.create(any())).thenAnswer(invocation -> new RequirementWrapper<>(Object.class, (o, context) -> true, invocation.getArgument(0), mock(Storage.class)));
 
         this.parser = new RequirementParser(requirementManager);
     }
@@ -63,7 +63,7 @@ class RequirementParserTest {
         void shouldMatchActionIdentifier() {
 
             assertThat(parser.accept("?foobar")).isTrue();
-            assertThat(parser.parse()).extracting(RequirementContext::getConfig)
+            assertThat(parser.parse()).extracting(RequirementWrapper::getConfig)
                     .isEqualTo(Optional.empty());
         }
 

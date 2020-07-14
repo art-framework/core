@@ -23,9 +23,6 @@ import io.ebean.Database;
 import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.Storage;
-import net.silthus.art.Target;
-import net.silthus.art.api.ArtContext;
-import net.silthus.art.storage.persistence.entities.MetadataKey;
 import net.silthus.art.storage.persistence.entities.MetadataStore;
 
 import java.util.Optional;

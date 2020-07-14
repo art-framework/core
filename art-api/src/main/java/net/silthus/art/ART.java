@@ -21,10 +21,13 @@ import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.parser.ArtResult;
-import net.silthus.art.api.trigger.TriggerContext;
+import net.silthus.art.api.trigger.TriggerWrapper;
+import net.silthus.art.impl.ArtBuilder;
+import net.silthus.art.impl.ArtModuleDescription;
+import net.silthus.art.impl.DefaultArtContext;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -86,26 +89,26 @@ public final class ART {
     }
 
     /**
-     * Use this method to create and load an {@link ArtResult} from your {@link ArtConfig}.
+     * Use this method to create and load an {@link ArtContext} from your {@link ArtConfig}.
      * <br>
-     * You can then use the {@link ArtResult} to invoke {@link Action}s by calling
-     * {@link ArtResult#execute(Target)} or to check for requirements by calling {@link ArtResult#test(Target)}.
+     * You can then use the {@link ArtContext} to invoke {@link Action}s by calling
+     * {@link ArtContext#execute(Target)} or to check for requirements by calling {@link ArtContext#test(Target)}.
      * <br>
      *
      * @param config config to parse and create ART from
      * @return ARTResult containing the parsed config
      * @see ArtManager#load(ArtConfig)
      */
-    public static ArtResult load(ArtConfig config) {
+    public static ArtContext load(ArtConfig config) {
 
         if (!getInstance().isPresent()) {
-            return DefaultArtResult.empty();
+            return DefaultArtContext.empty();
         } else {
             return getInstance().get().load(config);
         }
     }
 
-    public static <TConfig> void trigger(String identifier, Predicate<TriggerContext<TConfig>> predicate, Target<?>... targets) {
+    public static <TConfig> void trigger(String identifier, Predicate<TriggerWrapper<TConfig>> predicate, Target<?>... targets) {
 
         getInstance().ifPresent(artManager -> artManager.trigger(identifier, predicate, targets));
     }
@@ -129,11 +132,23 @@ public final class ART {
         return configuration;
     }
 
+    public static ArtProvider register() {
+        return configuration().art();
+    }
+
+    public static ArtFinder find() {
+        return configuration().art().find();
+    }
+
     public static ContextBuilder builder() {
         return ContextBuilder.DEFAULT;
     }
 
     public static ContextBuilder builder(Configuration configuration) {
         return ContextBuilder.of(configuration);
+    }
+
+    public static ArtContext load(List<String> artLines) {
+        return builder().load(artLines).build();
     }
 }

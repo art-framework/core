@@ -15,10 +15,9 @@
  */
 
 rootProject.name = 'art'
-include 'art-core'
+include 'art-api'
 include 'art-bukkit'
 include 'art-flow-parser'
 include 'art-persistence'
-include 'art-api'
 include 'art-integration-test'
 

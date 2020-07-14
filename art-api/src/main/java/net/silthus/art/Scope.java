@@ -19,6 +19,7 @@ package net.silthus.art;
 import lombok.NonNull;
 import net.silthus.art.conf.Settings;
 
+import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 
@@ -80,22 +81,12 @@ public interface Scope {
     Configuration configuration();
 
     /**
-     * The settings wrapped by this context.
-     * <p>
-     * This method is a convenient way of accessing
-     * <code>configuration().settings()</code>.
-     */
-    @NonNull
-    default Settings settings() {
-        return configuration().settings();
-    }
-
-    /**
      * Get all custom data from this <code>Scope</code>.
-     * <p>
-     * This is custom data that was previously set to the context using
+     * <p>All data set like this is non persistent and only exists for the lifetime of this {@link Scope}.
+     * Use the {@link Storage} to store persistent data.</p>
+     * <p>This is custom data that was previously set to the context using
      * {@link #data(String, Object)}. Use custom data if you want to pass data
-     * to {@link Context} objects for a given {@link Scope}.
+     * to {@link Context} objects for a given {@link Scope}.</p>
      *
      * @return The custom data. This is never <code>null</code>
      */
@@ -103,11 +94,26 @@ public interface Scope {
     Map<String, Object> data();
 
     /**
+     * Set some custom data to this <code>Scope</code>.
+     * <p>All data set like this is non persistent and only exists for the lifetime of this {@link Scope}.
+     * Use the {@link Storage} to store persistent data.</p>
+     *
+     * @param key A key to identify the custom data
+     * @param value The custom data. A null value will remove the entry from the data store.
+     * @param <TValue> The type of the value
+     * @return The previously set custom data or <code>Optional.empty()</code> if no data
+     *         was previously set for the given key or if the current data cannot be cast
+     *         to the new data type.
+     */
+    <TValue> Optional<TValue> data(@NonNull String key, @Nullable TValue value);
+
+    /**
      * Get some custom data from this <code>Scope</code>.
-     * <p>
-     * This is custom data that was previously set to the context using
+     * <p>All data set like this is non persistent and only exists for the lifetime of this {@link Scope}.
+     * Use the {@link Storage} to store persistent data.</p>
+     * <p>This is custom data that was previously set to the context using
      * {@link #data(String, Object)}. Use custom data if you want to pass data
-     * to {@link Context} objects for a given {@link Scope}
+     * to {@link Context} objects for a given {@link Scope}</p>
      *
      * @param key A key to identify the custom data
      * @param valueClass The type class of the requested value
@@ -116,16 +122,4 @@ public interface Scope {
      *         in this <code>Scope</code>
      */
     <TValue> Optional<TValue> data(String key, Class<TValue> valueClass);
-
-    /**
-     * Set some custom data to this <code>Scope</code>.
-     * <p>
-     *
-     * @param key A key to identify the custom data
-     * @param value The custom data
-     * @param <TValue> The type of the value
-     * @return The previously set custom data or <code>Optional.empty()</code> if no data
-     *         was previously set for the given key
-     */
-    <TValue> Optional<TValue> data(String key, TValue value);
 }

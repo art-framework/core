@@ -16,8 +16,6 @@
 
 package net.silthus.art;
 
-import net.silthus.art.annotations.ConfigOption;
-
 /**
  * Defines an action that can get executed if the right {@link Trigger} was called.
  * The implementing class must have a public parameterless constructor or you need
@@ -42,7 +40,7 @@ public interface Action<TTarget> extends ArtObject {
      * Use the @{@link ConfigOption} annotation on fields of this class
      * to provide configuration options for users of this action.
      * <br>
-     * Make sure to annotate this {@link Action} with a @{@link net.silthus.art.annotations.ArtObject}
+     * Make sure to annotate this {@link Action} with a @{@link ArtOptions}
      * and optionally provide a config class and implement {@link Configurable}.
      *
      * @param target target to apply this action to.
@@ -50,5 +48,5 @@ public interface Action<TTarget> extends ArtObject {
      *                Use the {@link Context} to retrieve the config
      *                and additional information about the execution context of this action.
      */
-    void execute(Target<TTarget> target, Context<TTarget> context);
+    void execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context);
 }

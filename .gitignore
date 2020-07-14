@@ -16,7 +16,6 @@ lib/
 
 # Server
 working/*
-**/debug/**/*
 !working/server.properties
 /.idea/
 

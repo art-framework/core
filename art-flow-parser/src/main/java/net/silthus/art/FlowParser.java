@@ -18,13 +18,11 @@ package net.silthus.art;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import net.silthus.art.api.ArtContext;
 import net.silthus.art.api.ArtManager;
+import net.silthus.art.api.AbstractArtObjectContext;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.ArtParser;
-import net.silthus.art.api.parser.ArtResult;
 import net.silthus.art.api.parser.ArtResultFactory;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -49,11 +47,11 @@ public class FlowParser implements ArtParser {
     }
 
     @Override
-    public ArtResult parse(ArtConfig config) throws ArtParseException {
+    public ArtContext parse(ArtConfig config) throws ArtParseException {
 
         Objects.requireNonNull(config);
 
-        Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts = new ArrayList<>();
+        Collection<AbstractArtObjectContext> contexts = new ArrayList<>();
 
         List<String> art = config.getArt();
         List<? extends ArtTypeParser<?, ?>> parsers = this.parsers.stream().map(Provider::get).collect(Collectors.toList());
@@ -65,7 +63,7 @@ public class FlowParser implements ArtParser {
                 try {
                     if (parser.accept(line)) {
                         matched = true;
-                        ArtContext<?, ?, ? extends ArtObjectConfig<?>> context = parser.parse();
+                        AbstractArtObjectContext context = parser.parse();
                         if (context.getOptions() != null) {
                             context.getOptions().setParent(config);
                             // create a mostly unique hash code from the line string and line number
@@ -94,7 +92,7 @@ public class FlowParser implements ArtParser {
     // - requirements can neither have actions nor trigger
     // - actions can have requirements that are checked before execution and nested actions that are executed in sequence after the first action
     // - trigger can have requirements and execute actions
-    Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> sortAndCombineArtContexts(Collection<ArtContext<?, ?, ? extends ArtObjectConfig<?>>> contexts) {
+    Collection<AbstractArtObjectContext> sortAndCombineArtContexts(Collection<AbstractArtObjectContext> contexts) {
 
         return FlowLogicSorter.of(contexts).getResult();
     }
