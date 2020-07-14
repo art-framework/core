@@ -14,47 +14,34 @@
  * limitations under the License.
  */
 
-package net.silthus.art.impl;
+package net.silthus.art.api.trigger;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.*;
 import net.silthus.art.api.AbstractArtObjectContext;
-import net.silthus.art.conf.ActionConfig;
+import net.silthus.art.conf.TriggerConfig;
+import net.silthus.art.impl.DefaultActionContext;
+import net.silthus.art.impl.DefaultRequirementContext;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
 
 import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
+import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
 
-/**
- * The action context is created for every unique {@link Action} configuration.
- * It holds all relevant information to execute the action and tracks the dependencies.
- *
- * @param <TTarget> target type of the action
- */
-public final class DefaultActionContext<TTarget> extends AbstractArtObjectContext implements ActionContext<TTarget> {
-
-    @Getter(AccessLevel.PROTECTED)
-    private final Action<TTarget> action;
-    @Getter
-    private final ActionConfig config;
+public class DefaultTriggerContext extends AbstractArtObjectContext implements TriggerContext {
 
     @Getter
     private final List<ActionContext<?>> actions = new ArrayList<>();
     @Getter
-    private final List<DefaultRequirementContext<?>> requirements = new ArrayList<>();
+    private final List<RequirementContext<?>> requirements = new ArrayList<>();
+    private final Map<Class<?>, Set<TriggerListener<?>>> listeners = new HashMap<>();
+    @Getter
+    private final TriggerConfig config;
 
-    public DefaultActionContext(
-            @NonNull Configuration configuration,
-            @NonNull String uniqueId,
-            @NonNull Class<TTarget> targetClass,
-            @NonNull Action<TTarget> action,
-            @NonNull ActionConfig config
-    ) {
+    public DefaultTriggerContext(@NonNull Configuration configuration, @NonNull String uniqueId, @NonNull Class<?> targetClass, @NonNull TriggerConfig config) {
         super(configuration, uniqueId, targetClass);
-        this.action = action;
         this.config = config;
     }
 
@@ -64,32 +51,32 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     }
 
     @Override
-    public final void addRequirement(DefaultRequirementContext<?> requirement) {
+    public void addRequirement(DefaultRequirementContext<?> requirement) {
         this.requirements.add(requirement);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public void execute(ExecutionContext<TTarget, ActionContext<TTarget>> context) {
+    public <TTarget> void trigger(ExecutionContext<TTarget, TriggerContext> context, Predicate<ExecutionContext<TTarget, TriggerContext>> predicate) {
+
         Target<TTarget> target = context.target();
 
-        if (!isTargetType(target)) return;
         if (cannotExecute(target)) return;
-        if (!testRequirements(context)) return;
 
         Runnable runnable = () -> {
-            context.execute(this, getAction());
+            if (predicate.test(context) && testRequirements(context)) {
 
-            store(target, LAST_EXECUTION, System.currentTimeMillis());
+                store(target, LAST_EXECUTION, System.currentTimeMillis());
 
-            getActions().stream()
-                    .filter(actionContext -> actionContext.isTargetType(target))
-                    .map(actionContext -> (ActionContext<TTarget>) actionContext)
-                    .forEach(context::execute);
+                if (getConfig().isExecuteActions()) executeActions(target);
+
+                getEntryForTarget(target.getSource(), listeners).orElse(new HashSet<>()).stream()
+                        .map(triggerListener -> (TriggerListener<TTarget>) triggerListener)
+                        .forEach(listener -> listener.onTrigger(target));
+            }
         };
 
         long delay = getConfig().getDelay();
-
         if (configuration().scheduler().isPresent() && delay > 0) {
             configuration().scheduler().get().runTaskLater(runnable, delay);
         } else {
@@ -97,14 +84,32 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
         }
     }
 
+    private <TTarget> boolean cannotExecute(Target<TTarget> target) {
+        return wasExecutedOnce(target) || isOnCooldown(target);
+    }
+
+    @Override
+    public <TTarget> void addListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
+        if (!listeners.containsKey(targetClass)) {
+            listeners.put(targetClass, new HashSet<>());
+        }
+        listeners.get(targetClass).add(listener);
+    }
+
+    @Override
+    public <TTarget> void removeListener(TriggerListener<TTarget> listener) {
+        listeners.values().forEach(triggerListeners -> triggerListeners.remove(listener));
+    }
+
     /**
      * Checks if the {@link DefaultActionContext} has the execute_once option
      * and already executed once for the {@link Target}.
      *
      * @param target target to check
+     * @param <TTarget> target type
      * @return true if action was already executed and should only execute once
      */
-    public boolean wasExecutedOnce(Target<TTarget> target) {
+    private <TTarget> boolean wasExecutedOnce(Target<TTarget> target) {
 
         return getConfig().isExecuteOnce() && getLastExecution(target) > 0;
     }
@@ -114,9 +119,10 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
      * Will always return false if no cooldown is defined (set to zero).
      *
      * @param target target to check
+     * @param <TTarget> target type
      * @return true if action is on cooldown
      */
-    public boolean isOnCooldown(Target<TTarget> target) {
+    private <TTarget> boolean isOnCooldown(Target<TTarget> target) {
         long cooldown = getConfig().getCooldown();
         if (cooldown < 1) return false;
 
@@ -127,11 +133,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
         return System.currentTimeMillis() < lastExecution + cooldown;
     }
 
-    private boolean cannotExecute(Target<TTarget> target) {
-        return wasExecutedOnce(target) || isOnCooldown(target);
-    }
-
-    private long getLastExecution(Target<TTarget> target) {
+    private <TTarget> long getLastExecution(Target<TTarget> target) {
         return store(target, LAST_EXECUTION, Long.class).orElse(0L);
     }
 }

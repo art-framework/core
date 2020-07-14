@@ -16,139 +16,83 @@
 
 package net.silthus.art;
 
-import lombok.AccessLevel;
-import lombok.Getter;
 import lombok.NonNull;
-import net.silthus.art.api.ArtManager;
-import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.trigger.TriggerWrapper;
 import net.silthus.art.impl.ArtBuilder;
-import net.silthus.art.impl.ArtModuleDescription;
-import net.silthus.art.impl.DefaultArtContext;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.logging.Logger;
 
+// TODO: javadoc
 public final class ART {
 
-    @Getter(AccessLevel.PRIVATE)
-    private static final Logger logger = Logger.getLogger("ART");
-    private static ArtManager instance;
+    private ART() {}
 
-    private static final Map<ArtModuleDescription, Consumer<ArtBuilder>> queuedRegistrations = new HashMap<>();
-
-    static void setInstance(ArtManager artManager) {
-
-        if (getInstance().isPresent()) {
-            getLogger().warning("Tried to override already registered ARTManager " + instance.getClass().getCanonicalName() + " with " + artManager.getClass().getCanonicalName());
-            throw new UnsupportedOperationException("Overriding an existing ArtManager instance is not possible. There can be only one ART implementation at a time. Remove the other one from your plugins first.");
-        }
-
-        instance = artManager;
-    }
-
-    static Optional<ArtManager> getInstance() {
-        return Optional.ofNullable(instance);
-    }
-
-    static void load() {
-        if (!getInstance().isPresent()) {
-            throw new UnsupportedOperationException("No ARTManger found. Cannot load() ART. Make sure to provide an ARTManager with ART.setARTManager(...) before calling ART.load()");
-        }
-        ArtManager artManager = getInstance().get();
-
-        for (Map.Entry<ArtModuleDescription, Consumer<ArtBuilder>> entry : queuedRegistrations.entrySet()) {
-            artManager.register(entry.getKey(), entry.getValue());
-        }
-
-        queuedRegistrations.clear();
-        artManager.load();
-    }
+    private static Configuration configuration = Configuration.DEFAULT;
 
     /**
-     * Use this method to register all of your ART.
-     * <br>
-     * You can use {@link ArtManager#register(ArtModuleDescription, Consumer)} interchangeable with this method.
+     * Sets the global {@link Configuration} that should be used by all static
+     * methods in this class. You don't need to set this yourself and can always use
+     * the corresponding of(Configuration, ...) methods to create an instance with
+     * your custom {@link Configuration}.
      *
-     * @param moduleDescription description of the module registering with ART
-     * @param builder builder that will be used to register the ART
-     * @see ArtManager#register(ArtModuleDescription, Consumer)
+     * @param configuration configuration that should be set as the global configuration. Must not be null.
      */
-    public static void register(ArtModuleDescription moduleDescription, Consumer<ArtBuilder> builder) {
-
-        if (!getInstance().isPresent()) {
-            queuedRegistrations.put(moduleDescription, builder);
-        } else {
-            getInstance().get().register(moduleDescription, builder);
-        }
-    }
-
-    /**
-     * Use this method to create and load an {@link ArtContext} from your {@link ArtConfig}.
-     * <br>
-     * You can then use the {@link ArtContext} to invoke {@link Action}s by calling
-     * {@link ArtContext#execute(Target)} or to check for requirements by calling {@link ArtContext#test(Target)}.
-     * <br>
-     *
-     * @param config config to parse and create ART from
-     * @return ARTResult containing the parsed config
-     * @see ArtManager#load(ArtConfig)
-     */
-    public static ArtContext load(ArtConfig config) {
-
-        if (!getInstance().isPresent()) {
-            return DefaultArtContext.empty();
-        } else {
-            return getInstance().get().load(config);
-        }
-    }
-
-    public static <TConfig> void trigger(String identifier, Predicate<TriggerWrapper<TConfig>> predicate, Target<?>... targets) {
-
-        getInstance().ifPresent(artManager -> artManager.trigger(identifier, predicate, targets));
-    }
-
-    public static <TTarget> Optional<Target<TTarget>> getTarget(@NonNull TTarget target) {
-
-        return getInstance().flatMap(artManager -> artManager.getTarget(target));
-    }
-
-    //
-    // new API design starts here
-    //
-
-    private static Configuration configuration;
-
-    public static void setGlobalConfiguration(Configuration configuration) {
+    static void setGlobalConfiguration(@NonNull Configuration configuration) {
         ART.configuration = configuration;
     }
 
+    /**
+     * Gets the global {@link Configuration} configured for all static methods in this class.
+     * You can use the {@link Configuration#derive()} method to clone the configuration
+     * and provide a local modified copy of it to the {@link ArtBuilder}
+     * or any other object in the ART-Framework.
+     *
+     * @return the global {@link Configuration}
+     */
+    @NonNull
     public static Configuration configuration() {
         return configuration;
     }
 
+    // TODO: javadoc
     public static ArtProvider register() {
         return configuration().art();
     }
 
+    // TODO: javadoc
     public static ArtFinder find() {
         return configuration().art().find();
     }
 
-    public static ContextBuilder builder() {
-        return ContextBuilder.DEFAULT;
+    // TODO: javadoc
+    public static ArtContextBuilder builder() {
+        return builder(configuration());
     }
 
-    public static ContextBuilder builder(Configuration configuration) {
-        return ContextBuilder.of(configuration);
+    // TODO: javadoc
+    public static ArtContextBuilder builder(Configuration configuration) {
+        return ArtContextBuilder.of(configuration);
     }
 
+    /**
+     * Use this method to create and load an {@link ArtContext} from your config.
+     * <br>
+     * You can then use the {@link ArtContext} to invoke {@link Action}s by calling
+     * {@link ArtContext#execute(Target)} or to check for requirements by calling {@link ArtContext#test(Target)}.
+     * <br>
+     * This is actually a shortcut to {@link ArtContextBuilder#load(List)}. You can also call the
+     * builder directly ({@link #builder()}) and fine tune how you want to load and parse your ART.
+     *
+     * @param artLines a list of strings that contain the ART you want to load
+     * @return ArtContext containing the parsed config
+     * @see ArtContextBuilder
+     */
     public static ArtContext load(List<String> artLines) {
         return builder().load(artLines).build();
+    }
+
+    // TODO: javadoc
+    public static void trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> predicate, Target<?>... targets) {
+        configuration().triggers().trigger(identifier, predicate, targets);
     }
 }

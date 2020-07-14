@@ -17,12 +17,13 @@
 package net.silthus.art.api.trigger;
 
 import lombok.SneakyThrows;
+import net.silthus.art.ArtOptions;
 import net.silthus.art.Scheduler;
 import net.silthus.art.Storage;
 import net.silthus.art.Trigger;
-import net.silthus.art.ArtOptions;
 import net.silthus.art.api.ArtRegistrationException;
 import net.silthus.art.api.factory.ArtFactory;
+import net.silthus.art.conf.TriggerConfig;
 import net.silthus.art.impl.DefaultMapStorage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -103,8 +104,8 @@ class TriggerFactoryTest {
 
             TriggerFactory<Object> factory = new TriggerFactory<>(new MyFailingTrigger(), storage, null);
 
-            TriggerWrapper context1 = factory.create(new TriggerConfig<>());
-            TriggerWrapper context2 = factory.create(new TriggerConfig<>());
+            DefaultTriggerContext context1 = factory.create(new TriggerConfig<>());
+            DefaultTriggerContext context2 = factory.create(new TriggerConfig<>());
 
             assertThat(factory.getCreatedTrigger())
                     .containsExactly(context1, context2);

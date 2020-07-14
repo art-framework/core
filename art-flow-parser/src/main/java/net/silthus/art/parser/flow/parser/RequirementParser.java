@@ -17,17 +17,17 @@
 package net.silthus.art.parser.flow.parser;
 
 import net.silthus.art.api.config.ConfigFieldInformation;
-import net.silthus.art.api.requirements.RequirementConfig;
-import net.silthus.art.api.requirements.RequirementWrapper;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
+import net.silthus.art.conf.RequirementConfig;
+import net.silthus.art.impl.DefaultRequirementContext;
 import net.silthus.art.parser.flow.Constants;
 
 import javax.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
 
-public class RequirementParser extends ArtTypeParser<RequirementWrapper<?, ?>, RequirementConfig<?>> {
+public class RequirementParser extends ArtTypeParser<DefaultRequirementContext<?, ?>, RequirementConfig<?>> {
 
     private final RequirementManager requirementManager;
 

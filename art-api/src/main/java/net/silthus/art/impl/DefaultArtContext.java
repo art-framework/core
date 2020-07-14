@@ -22,13 +22,10 @@ import com.google.inject.assistedinject.Assisted;
 import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.*;
-import net.silthus.art.api.parser.Filter;
-import net.silthus.art.api.requirements.RequirementWrapper;
 import net.silthus.art.api.trigger.TriggerListener;
 import net.silthus.art.conf.ArtContextSettings;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
 
@@ -57,48 +54,29 @@ public final class DefaultArtContext extends AbstractScope implements ArtContext
     }
 
     @Override
-    public final <TTarget> boolean test(Target<TTarget> target) {
+    @SuppressWarnings("unchecked")
+    public final <TTarget> boolean test(@NonNull Target<TTarget> target) {
 
-        return test(target, new ArrayList<Filter<TTarget>>());
+        ExecutionContext<TTarget, ArtObjectContext> executionContext = ExecutionContext.of(configuration(), this, target);
+
+        return getArt().stream()
+                .filter(context -> context.isTargetType(target))
+                .filter(requirement -> requirement instanceof RequirementContext)
+                .map(requirement -> (RequirementContext<TTarget>) requirement)
+                .allMatch(executionContext::test);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <TTarget> boolean test(Target<TTarget> target, Collection<Filter<TTarget>> filters) {
+    public final <TTarget> void execute(@NonNull Target<TTarget> target) {
 
-        if (Objects.isNull(target)) return false;
+        ExecutionContext<TTarget, ArtObjectContext> executionContext = ExecutionContext.of(configuration(), this, target);
 
-        return testFilter(target, filters) && testGlobalFilter(target) && getArt().stream()
-                .filter(artContext -> artContext.isTargetType(target))
-                .filter(artContext -> artContext instanceof RequirementWrapper)
-                .map(artContext -> (RequirementWrapper<TTarget, ?>) artContext)
-                .allMatch(requirement -> requirement.test(target));
-    }
-
-    @Override
-    public final <TTarget> void execute(Target<TTarget> target) {
-
-        execute(target, new ArrayList<Filter<TTarget>>());
-    }
-
-    @Override
-    @SuppressWarnings("unchecked")
-    public <TTarget> void execute(Target<TTarget> target, Collection<Filter<TTarget>> filters) {
-
-        if (Objects.isNull(target)) return;
-        if (!testFilter(target, filters)) return;
-        if (!testGlobalFilter(target)) return;
-
-        List<ActionContext<TTarget>> actions = getArt().stream()
-                .filter(artContext -> artContext.isTargetType(target))
-                .filter(artContext -> artContext instanceof DefaultActionContext)
-                .map(artContext -> (ActionContext<TTarget>) artContext)
-                .collect(Collectors.toList());
-
-        ExecutionContext<?> context = ExecutionContext.of(configuration(), this);
-        for (ActionContext<TTarget> action : actions) {
-            context = action.execute(target, context);
-        }
+        getArt().stream()
+                .filter(context -> context.isTargetType(target))
+                .filter(action -> action instanceof ActionContext)
+                .map(action -> (ActionContext<TTarget>) action)
+                .forEach(executionContext::execute);
     }
 
     @Override
@@ -119,19 +97,5 @@ public final class DefaultArtContext extends AbstractScope implements ArtContext
                     .orElse(new ArrayList<>())
                     .forEach(triggerListener -> triggerListener.onTrigger(target));
         }
-    }
-
-    private <TTarget> boolean testFilter(Target<TTarget> target, Collection<Filter<TTarget>> filters) {
-        return filters.stream().allMatch(filter -> filter.test(target));
-    }
-
-    @SuppressWarnings("unchecked")
-    private <TTarget> boolean testGlobalFilter(Target<TTarget> target) {
-
-        if (Objects.isNull(target)) return false;
-
-        return getEntryForTarget(target, ).orElse(new ArrayList<>()).stream()
-                .map(filter -> (Filter<TTarget>) filter)
-                .allMatch(filter -> filter.test(target, config));
     }
 }

@@ -27,6 +27,7 @@ import net.silthus.art.Trigger;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.annotations.ActiveStorageProvider;
 import net.silthus.art.api.factory.ArtFactory;
+import net.silthus.art.conf.TriggerConfig;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Method;
@@ -40,7 +41,7 @@ public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger
     private final Scheduler scheduler;
 
     @Getter(AccessLevel.PACKAGE)
-    private final List<TriggerWrapper<TConfig>> createdTrigger = new ArrayList<>();
+    private final List<DefaultTriggerContext<TConfig>> createdTrigger = new ArrayList<>();
 
     @Getter(AccessLevel.PROTECTED)
     @Setter(AccessLevel.PROTECTED)
@@ -63,8 +64,8 @@ public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger
     }
 
     @Override
-    public TriggerWrapper<TConfig> create(TriggerConfig<TConfig> config) {
-        TriggerWrapper<TConfig> triggerContext = new TriggerWrapper<>(config, getScheduler(), getStorage());
+    public DefaultTriggerContext<TConfig> create(TriggerConfig<TConfig> config) {
+        DefaultTriggerContext<TConfig> triggerContext = new DefaultTriggerContext<>(config, getScheduler(), getStorage());
         createdTrigger.add(triggerContext);
         return triggerContext;
     }

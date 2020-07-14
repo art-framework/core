@@ -16,21 +16,19 @@
 
 package net.silthus.art;
 
-import net.silthus.art.api.requirements.RequirementHolder;
-import net.silthus.art.conf.ActionConfig;
+import net.silthus.art.impl.DefaultArtContextBuilder;
 
-/**
- * The <pre>ActionContext</pre> wraps the actual {@link Action} and handles
- * the execution logic of the action.
- *
- * @param <TTarget> type of the target
- */
-public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContext, RequirementHolder, ActionHolder {
+import java.util.List;
 
-    /**
-     * Gets the config used by this {@link ActionContext}.
-     *
-     * @return config of this context
-     */
-    ActionConfig getConfig();
+public interface ArtContextBuilder {
+
+    static ArtContextBuilder of(Configuration configuration) {
+        return new DefaultArtContextBuilder(configuration);
+    }
+
+    Configuration configuration();
+
+    ArtContextBuilder load(List<String> list);
+
+    ArtContext build();
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.trigger;
+package net.silthus.art.conf;
 
 import de.exlll.configlib.annotation.ConfigurationElement;
 import lombok.AccessLevel;
@@ -29,14 +29,7 @@ import net.silthus.art.util.TimeUtil;
 @Setter(AccessLevel.PACKAGE)
 @ConfigurationElement
 @EqualsAndHashCode(callSuper = true)
-public class TriggerConfig<TConfig> extends ArtObjectConfig<TConfig> {
-
-    public TriggerConfig() {
-    }
-
-    public TriggerConfig(TConfig with) {
-        super(with);
-    }
+public class TriggerConfig extends ArtObjectConfig {
 
     @ConfigOption(description = {
             "Delay of the trigger,",

@@ -20,9 +20,8 @@ import com.google.inject.ImplementedBy;
 import lombok.NonNull;
 import net.silthus.art.*;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.ArtContext;
 import net.silthus.art.api.parser.Filter;
-import net.silthus.art.api.trigger.TriggerWrapper;
+import net.silthus.art.api.trigger.DefaultTriggerContext;
 import net.silthus.art.impl.ArtBuilder;
 import net.silthus.art.impl.ArtModuleDescription;
 import net.silthus.art.impl.DefaultArtManager;
@@ -69,7 +68,7 @@ public interface ArtManager {
      */
     ArtContext load(ArtConfig config);
 
-    <TConfig> void trigger(String identifier, Predicate<TriggerWrapper<TConfig>> context, Target<?>... targets);
+    <TConfig> void trigger(String identifier, Predicate<DefaultTriggerContext<TConfig>> context, Target<?>... targets);
 
     /**
      * Wraps the given target object into a {@link Target}.

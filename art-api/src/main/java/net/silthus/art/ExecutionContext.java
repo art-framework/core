@@ -1,11 +1,24 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.silthus.art;
 
-import lombok.NonNull;
 import net.silthus.art.impl.DefaultExecutionContext;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
-import java.util.Stack;
 
 /**
  * The <pre>ExecutionContext</pre> holds a hierarchical order of execution
@@ -19,10 +32,10 @@ import java.util.Stack;
  *
  * @param <TContext> type of the context that is currently executing
  */
-public interface ExecutionContext<TContext extends ArtObjectContext> extends Context, Iterable<ArtObjectContext> {
+public interface ExecutionContext<TTarget, TContext extends ArtObjectContext> extends Context {
 
-    static <TContext extends ArtObjectContext> ExecutionContext<TContext> of(Configuration configuration, ArtContext root) {
-        return new DefaultExecutionContext<>(configuration, root);
+    static <TTarget, TContext extends ArtObjectContext> ExecutionContext<TTarget, TContext> of(Configuration configuration, ArtContext root, Target<TTarget> target) {
+        return new DefaultExecutionContext<>(configuration, root, target);
     }
 
     /**
@@ -47,13 +60,31 @@ public interface ExecutionContext<TContext extends ArtObjectContext> extends Con
     Optional<ArtObjectContext> parent();
 
     /**
+     * Gets the full history of this {@link ExecutionContext} ordered
+     * from newest to oldest {@link ArtObjectContext}.
+     * This means the first item in the array (index 0) is the {@link #parent()}
+     * of the {@link #current()} context.
+     *
+     * @return Execution history in a stack sorted format. From newest to oldest.
+     */
+    ArtObjectContext[] history();
+
+    /**
+     * Gets the {@link Target} that is attached to this context.
+     * All actions of this context chain will be executed against the given target.
+     *
+     * @return target of this context
+     */
+    Target<TTarget> target();
+
+    /**
      * Gets the context that is currently being executed.
      * Can be null if the {@link ExecutionContext} was just constructed
      * and only contains a parent context.
      *
      * @return current {@link ArtObjectContext}
      */
-    @Nullable TContext current();
+    TContext current();
 
     /**
      * Uses this {@link ExecutionContext} as a parent for the next {@link ArtObjectContext}
@@ -63,5 +94,13 @@ public interface ExecutionContext<TContext extends ArtObjectContext> extends Con
      * @param <TNextContext> type of the next context
      * @return the next execution context containing the properties of this context
      */
-    <TNextContext extends ArtObjectContext> ExecutionContext<TNextContext> next(TNextContext nextContext);
+    <TNextContext extends ArtObjectContext> ExecutionContext<TTarget, TNextContext> next(TNextContext nextContext);
+
+    <TNextContext extends ActionContext<TTarget>> void execute(TNextContext nextContext);
+
+    <TNextContext extends ActionContext<TTarget>> void execute(TNextContext nextContext, Action<TTarget> action);
+
+    <TNextContext extends RequirementContext<TTarget>> boolean test(TNextContext nextContext);
+
+    <TNextContext extends RequirementContext<TTarget>> boolean test(TNextContext nextContext, Requirement<TTarget> requirement);
 }

@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import lombok.Data;
 import lombok.NonNull;
+import net.silthus.art.ArtContext;
 import net.silthus.art.Target;
 import net.silthus.art.api.ArtManager;
 import net.silthus.art.api.ArtRegistrationException;
@@ -31,11 +32,10 @@ import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.api.factory.ArtFactoryRegistration;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.ArtParser;
-import net.silthus.art.ArtContext;
 import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
-import net.silthus.art.api.trigger.TriggerWrapper;
+import net.silthus.art.api.trigger.DefaultTriggerContext;
 import net.silthus.art.api.trigger.TriggerFactory;
 import net.silthus.art.api.trigger.TriggerManager;
 import net.silthus.art.util.ConfigUtil;
@@ -134,7 +134,7 @@ public class DefaultArtManager implements ArtManager {
     }
 
     @Override
-    public <TConfig> void trigger(String identifier, Predicate<TriggerWrapper<TConfig>> context, Target<?>... targets) {
+    public <TConfig> void trigger(String identifier, Predicate<DefaultTriggerContext<TConfig>> context, Target<?>... targets) {
         getTriggerManager().trigger(identifier, context, targets);
     }
 

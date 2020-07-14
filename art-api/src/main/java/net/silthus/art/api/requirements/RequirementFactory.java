@@ -21,6 +21,8 @@ import net.silthus.art.Requirement;
 import net.silthus.art.Storage;
 import net.silthus.art.api.AbstractArtObjectContext;
 import net.silthus.art.api.factory.ArtFactory;
+import net.silthus.art.conf.RequirementConfig;
+import net.silthus.art.impl.DefaultRequirementContext;
 
 @EqualsAndHashCode(callSuper = true)
 public class RequirementFactory<TTarget, TConfig> extends ArtFactory<TTarget, TConfig, Requirement<TTarget, TConfig>, RequirementConfig<TConfig>> {
@@ -31,6 +33,6 @@ public class RequirementFactory<TTarget, TConfig> extends ArtFactory<TTarget, TC
 
     @Override
     public AbstractArtObjectContext<TTarget, TConfig, RequirementConfig<TConfig>> create(RequirementConfig<TConfig> config) {
-        return new RequirementWrapper<>(getTargetClass(), getArtObject(), config, getStorage());
+        return new DefaultRequirementContext<>(getTargetClass(), getArtObject(), config, getStorage());
     }
 }

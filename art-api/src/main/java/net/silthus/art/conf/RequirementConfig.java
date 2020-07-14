@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.requirements;
+package net.silthus.art.conf;
 
 import de.exlll.configlib.annotation.ConfigurationElement;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
-import net.silthus.art.Requirement;
 import net.silthus.art.ConfigOption;
+import net.silthus.art.Requirement;
 import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.config.ConfigFieldInformation;
@@ -35,14 +35,14 @@ import java.util.Map;
  * The {@link RequirementConfig} holds general information about the execution
  * properties of the requirement.
  * e.g. if the {@link Requirement} should be negated
- *
- * @param <TConfig> custom config type of the requirement
  */
 @Getter
 @Setter(AccessLevel.PACKAGE)
 @ConfigurationElement
 @EqualsAndHashCode(callSuper = true)
-public class RequirementConfig<TConfig> extends ArtObjectConfig<TConfig> {
+public class RequirementConfig extends ArtObjectConfig {
+
+    private static final long serialVersionUID = 2530536893768L;
 
     public static final Map<String, ConfigFieldInformation> CONFIG_FIELD_INFORMATION = new HashMap<>();
 
@@ -68,11 +68,4 @@ public class RequirementConfig<TConfig> extends ArtObjectConfig<TConfig> {
             "This will have the effect that a requirement that was true once will always be true in the future."
     })
     private boolean checkOnce;
-
-    public RequirementConfig() {
-    }
-
-    public RequirementConfig(TConfig with) {
-        super(with);
-    }
 }

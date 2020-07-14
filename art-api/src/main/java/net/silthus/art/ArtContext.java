@@ -26,14 +26,12 @@ import net.silthus.art.impl.DefaultArtContext;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Collection;
-import java.util.Collections;
 
 /**
  * The {@link ArtContext} is a core piece of the ART-Framework.
  * Use it to test for {@link Requirement}s or execute {@link Action}s.
  * <br>
  * Test if all requirements are met by calling {@link #test(Target)}.
- * You can pass additional filters by calling {@link #test(Target, Collection)}.
  * <br>
  * Execute your actions by calling {@link #execute(Target)}.
  * <br>
@@ -81,14 +79,11 @@ public interface ArtContext extends Context {
      * <br>
      * Global filters are always checked before checking requirements.
      * This means that persistent counted requirements will never be checked and increased.
-     * <br>
-     * Use the {@link #test(Target, Collection)} method if you want to apply local filters before checking requirements.
      *
      * @param target    target to check. Can be null.
      * @param <TTarget> type of the target. Any requirements not matching the target type will not be checked.
      * @return true if all requirement checks and filter pass or if the list of requirements is empty (after filtering the target type).
      * false if any filter or requirement check fails.
-     * @see #test(Target, Collection)
      */
     <TTarget> boolean test(@NonNull Target<TTarget> target);
 
@@ -106,47 +101,6 @@ public interface ArtContext extends Context {
     }
 
     /**
-     * Tests if all requirements for the given target pass after testing if all filters pass.
-     * Does the same as {@link #test(Target)}, except it first checks the provided filters.
-     * Will return false as soon as any filter fails.
-     *
-     * @param target    target to check requirements and filter against. Can be null.
-     * @param filters   list of local filters to check before anything else
-     * @param <TTarget> type of the target
-     * @return true if all filter checks pass and {@link #test(Target)} returns true.
-     * false if any check or filter fails.
-     * @see #test(Target)
-     */
-    <TTarget> boolean test(@NonNull Target<TTarget> target, Collection<Filter<TTarget>> filters);
-
-    /**
-     * Wraps the given target into a {@link Target} and then calls {@link #test(Target, Collection)}.
-     * Returns false if no {@link Target} wrapper was found for the given source.
-     *
-     * @param target    target object to wrap into a {@link Target}
-     * @param filters   list of local filters to check before anything else
-     * @param <TTarget> type of the target
-     * @return result of {@link #test(Target, Collection)} or false if no {@link Target} wrapper exists
-     * @see #test(Target, Collection)
-     */
-    default <TTarget> boolean test(@NonNull TTarget target, Collection<Filter<TTarget>> filters) {
-        return Target.of(target).map(tTargetTarget -> test(tTargetTarget, filters)).orElse(false);
-    }
-
-    /**
-     * Tests all requirements in this {@link ArtContext} after checking the given {@link Filter}.
-     *
-     * @param target    target to check
-     * @param filter    filter to apply before checking
-     * @param <TTarget> target type
-     * @return true if all checks are successful
-     * @see #test(Object, Collection)
-     */
-    default <TTarget> boolean test(@NonNull TTarget target, Filter<TTarget> filter) {
-        return test(target, Collections.singletonList(filter));
-    }
-
-    /**
      * Executes all {@link Action}s and child actions of actions against the given target.
      * Will do nothing if the target type does not match the target type of the action.
      * <br>
@@ -155,7 +109,6 @@ public interface ArtContext extends Context {
      *
      * @param target    target to execute actions against. Can be null.
      * @param <TTarget> type of the target
-     * @see #execute(Target, Collection)
      */
     <TTarget> void execute(@NonNull Target<TTarget> target);
 
@@ -169,44 +122,6 @@ public interface ArtContext extends Context {
     default <TTarget> void execute(@NonNull TTarget target) {
         Target.of(target).ifPresent(this::execute);
     }
-
-    /**
-     * Executes all {@link Action}s and child actions of actions against the given target
-     * after checking the list of given filters.
-     * <br>
-     * Also see {@link #execute(Target)}
-     *
-     * @param target    target to check filters and execute actions against.
-     * @param filters   list of local filters to test before executing actions
-     * @param <TTarget> type of the target
-     * @see #execute(Target)
-     */
-    <TTarget> void execute(@NonNull Target<TTarget> target, Collection<Filter<TTarget>> filters);
-
-    /**
-     * Wraps the given target into a {@link Target} and then calls {@link #execute(Target, Collection)}.
-     * Does nothing if no {@link Target} wrapper was found for the given source.
-     *
-     * @param target    target to execute actions for
-     * @param filters   list of local filters to test before executing actions
-     * @param <TTarget> type of the target
-     */
-    default <TTarget> void execute(@NonNull TTarget target, Collection<Filter<TTarget>> filters) {
-        Target.of(target).ifPresent(tTargetTarget -> execute(tTargetTarget, filters));
-    }
-
-    /**
-     * Executes all {@link Action}s against the given target after checking the provided {@link Filter}.
-     *
-     * @param target    target to execute against
-     * @param filter    filter to apply
-     * @param <TTarget> type of the target
-     * @see #execute(Object, Collection)
-     */
-    default <TTarget> void execute(@NonNull TTarget target, Filter<TTarget> filter) {
-        execute(target, Collections.singletonList(filter));
-    }
-
     /**
      * Listens on all {@link Trigger}s in the {@link ArtContext} for the given target type.
      * You can add multiple {@link TriggerListener}s of the same target type
@@ -218,8 +133,8 @@ public interface ArtContext extends Context {
      *
      *
      * @param targetClass class of the target you wish to listen for
-     * @param triggerConsumer function to react to the trigger
+     * @param listener function to react to the trigger
      * @param <TTarget> type of the target
      */
-    <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> triggerConsumer);
+    <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> listener);
 }

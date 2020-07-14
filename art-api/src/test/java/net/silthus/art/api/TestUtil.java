@@ -17,7 +17,7 @@
 package net.silthus.art.api;
 
 import net.silthus.art.impl.DefaultActionContext;
-import net.silthus.art.api.requirements.RequirementWrapper;
+import net.silthus.art.impl.DefaultRequirementContext;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
@@ -39,16 +39,16 @@ public final class TestUtil {
         return action;
     }
 
-    public static RequirementWrapper<?, ?> requirement(boolean result) {
-        RequirementWrapper requirement = mock(RequirementWrapper.class);
+    public static DefaultRequirementContext<?, ?> requirement(boolean result) {
+        DefaultRequirementContext requirement = mock(DefaultRequirementContext.class);
         when(requirement.isTargetType(any())).thenReturn(true);
         when(requirement.test(any(), any())).thenReturn(result);
         when(requirement.test(any())).thenReturn(result);
         return requirement;
     }
 
-    public static <TTarget> RequirementWrapper<TTarget, ?> requirement(Class<TTarget> targetClass, boolean result) {
-        RequirementWrapper requirement = mock(RequirementWrapper.class);
+    public static <TTarget> DefaultRequirementContext<TTarget, ?> requirement(Class<TTarget> targetClass, boolean result) {
+        DefaultRequirementContext requirement = mock(DefaultRequirementContext.class);
         when(requirement.getTargetClass()).thenReturn(targetClass);
         when(requirement.isTargetType(any())).thenCallRealMethod();
         when(requirement.test(any(), any())).thenReturn(result);

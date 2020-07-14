@@ -19,7 +19,9 @@ package net.silthus.art.api.requirements;
 import net.silthus.art.Requirement;
 import net.silthus.art.Storage;
 import net.silthus.art.api.storage.StorageConstants;
+import net.silthus.art.conf.RequirementConfig;
 import net.silthus.art.impl.DefaultMapStorage;
+import net.silthus.art.impl.DefaultRequirementContext;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,22 +39,22 @@ import static org.mockito.Mockito.*;
 class RequirementContextTest {
 
     private Requirement<String, ?> requirement;
-    private RequirementWrapper<String, ?> context;
+    private DefaultRequirementContext<String, ?> context;
     private Storage storage;
 
     @BeforeEach
     public void beforeEach() {
         requirement = requirement(String.class, true);
         storage = new DefaultMapStorage();
-        this.context = new RequirementWrapper<>(String.class, requirement, new RequirementConfig<>(), storage);
+        this.context = new DefaultRequirementContext<>(String.class, requirement, new RequirementConfig<>(), storage);
     }
 
-    private <TTarget> RequirementWrapper<TTarget, ?> withRequirement(Class<TTarget> targetClass, Requirement<TTarget, ?> requirement) {
-        return new RequirementWrapper<>(targetClass, requirement, new RequirementConfig<>(), storage);
+    private <TTarget> DefaultRequirementContext<TTarget, ?> withRequirement(Class<TTarget> targetClass, Requirement<TTarget, ?> requirement) {
+        return new DefaultRequirementContext<>(targetClass, requirement, new RequirementConfig<>(), storage);
     }
 
-    private RequirementWrapper<String, ?> withRequirement(Requirement<String, ?> requirement) {
-        return new RequirementWrapper<>(String.class, requirement, new RequirementConfig<>(), storage);
+    private DefaultRequirementContext<String, ?> withRequirement(Requirement<String, ?> requirement) {
+        return new DefaultRequirementContext<>(String.class, requirement, new RequirementConfig<>(), storage);
     }
 
     @Nested
@@ -63,7 +65,7 @@ class RequirementContextTest {
         void shouldThrowIfRequirementIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new RequirementWrapper<>(null, requirement, new RequirementConfig<>(), mock(Storage.class)));
+                    .isThrownBy(() -> new DefaultRequirementContext<>(null, requirement, new RequirementConfig<>(), mock(Storage.class)));
         }
 
         @Test
@@ -71,7 +73,7 @@ class RequirementContextTest {
         void shouldThrowIfTargetClassIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new RequirementWrapper<>(String.class, null, new RequirementConfig<>(), mock(Storage.class)));
+                    .isThrownBy(() -> new DefaultRequirementContext<>(String.class, null, new RequirementConfig<>(), mock(Storage.class)));
         }
 
         @Test
@@ -79,7 +81,7 @@ class RequirementContextTest {
         void shouldThrowIfConfigIsNull() {
 
             assertThatExceptionOfType(NullPointerException.class)
-                    .isThrownBy(() -> new RequirementWrapper<>(String.class, requirement, null, mock(Storage.class)));
+                    .isThrownBy(() -> new DefaultRequirementContext<>(String.class, requirement, null, mock(Storage.class)));
         }
     }
 
@@ -91,7 +93,7 @@ class RequirementContextTest {
         @DisplayName("should directly invoke test(TTarget, Context) with current context")
         void shouldInvokeTestWithContext() {
 
-            RequirementWrapper context = spy(RequirementContextTest.this.context);
+            DefaultRequirementContext context = spy(RequirementContextTest.this.context);
             assertThat(context.test(new StringTarget("foo"))).isTrue();
             verify(context, times(1)).test(new StringTarget("foo"), context);
         }
@@ -109,7 +111,7 @@ class RequirementContextTest {
         @DisplayName("should return true if target does not match")
         void shouldReturnTrueIfTargetDoesNotMatch() {
 
-            RequirementWrapper context = spy(withRequirement(requirement(String.class, false)));
+            DefaultRequirementContext context = spy(withRequirement(requirement(String.class, false)));
 
             assertThat(context.test(new IntegerTarget(2))).isTrue();
             verify(context, times(1)).isTargetType(2);
@@ -120,7 +122,7 @@ class RequirementContextTest {
         void shouldTestRequirement() {
 
             assertThat(context.test(new StringTarget("foo"))).isTrue();
-            verify(requirement, times(1)).test(new StringTarget("foo"), (RequirementWrapper) context);
+            verify(requirement, times(1)).test(new StringTarget("foo"), (DefaultRequirementContext) context);
         }
 
         @Nested
@@ -156,7 +158,7 @@ class RequirementContextTest {
             @DisplayName("should not increase counter if requirement is false")
             void shouldNotIncreaseCounterIfFalse() {
 
-                RequirementWrapper<String, ?> requirement = withRequirement(requirement(String.class, false));
+                DefaultRequirementContext<String, ?> requirement = withRequirement(requirement(String.class, false));
 
                 StringTarget target = new StringTarget("foobar");
                 requirement.test(target);
@@ -214,7 +216,7 @@ class RequirementContextTest {
             @Test
             @DisplayName("should return true if count was reached but check fails")
             void shouldReturnTrueRegardlessOfRequirementResult() {
-                RequirementWrapper<String, ?> requirement = withRequirement(requirement(String.class, false));
+                DefaultRequirementContext<String, ?> requirement = withRequirement(requirement(String.class, false));
                 requirement.getOptions().setCount(2);
                 StringTarget target = new StringTarget("foo");
 
@@ -245,7 +247,7 @@ class RequirementContextTest {
             @DisplayName("should return the stored result")
             void shouldAlwaysReturnTheStoredResult() {
 
-                RequirementWrapper<String, ?> requirement = withRequirement(requirement(String.class, false));
+                DefaultRequirementContext<String, ?> requirement = withRequirement(requirement(String.class, false));
                 requirement.getOptions().setCheckOnce(true);
                 StringTarget target = new StringTarget("foo");
 
@@ -258,7 +260,7 @@ class RequirementContextTest {
             @DisplayName("should not override check once result")
             void shouldNotOverrideResult() {
 
-                RequirementWrapper<String, ?> requirement = withRequirement(requirement(String.class, false));
+                DefaultRequirementContext<String, ?> requirement = withRequirement(requirement(String.class, false));
                 requirement.getOptions().setCheckOnce(true);
                 StringTarget target = new StringTarget("foo");
 
@@ -281,7 +283,7 @@ class RequirementContextTest {
         void shouldThrowIfCalledDirectly() {
 
             assertThatExceptionOfType(UnsupportedOperationException.class)
-                    .isThrownBy(() -> context.test(new StringTarget("foobar"), new RequirementWrapper(String.class, requirement, new RequirementConfig<>(), mock(Storage.class))))
+                    .isThrownBy(() -> context.test(new StringTarget("foobar"), new DefaultRequirementContext(String.class, requirement, new RequirementConfig<>(), mock(Storage.class))))
                     .withMessageContaining("RequirementContext#test(target, context) must not be called directly");
 
         }

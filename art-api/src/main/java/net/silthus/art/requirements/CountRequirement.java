@@ -16,11 +16,11 @@
 
 package net.silthus.art.requirements;
 
-import net.silthus.art.Requirement;
-import net.silthus.art.Target;
 import net.silthus.art.ArtOptions;
 import net.silthus.art.ConfigOption;
-import net.silthus.art.api.requirements.RequirementWrapper;
+import net.silthus.art.Requirement;
+import net.silthus.art.Target;
+import net.silthus.art.impl.DefaultRequirementContext;
 
 @ArtOptions(
         value = "count",
@@ -35,7 +35,7 @@ public class CountRequirement implements Requirement<Object, CountRequirement.Co
     private static final String COUNTER_KEY = "count";
 
     @Override
-    public boolean test(Target<Object> target, RequirementWrapper<Object, Config> context) {
+    public boolean test(Target<Object> target, DefaultRequirementContext<Object, Config> context) {
 
         final int currentCount = context.store(target, COUNTER_KEY, Integer.class).orElse(0) + 1;
         context.store(target, COUNTER_KEY, currentCount);

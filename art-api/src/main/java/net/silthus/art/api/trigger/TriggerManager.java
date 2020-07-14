@@ -31,5 +31,5 @@ public interface TriggerManager extends ArtFactoryManager<TriggerFactory<?>> {
 
     <TTarget> void addListener(String identifier, Class<TTarget> targetClass, TriggerListener<TTarget> listener);
 
-    <TConfig> void trigger(String identifier, Predicate<TriggerWrapper<TConfig>> context, Target<?>... targets);
+    <TConfig> void trigger(String identifier, Predicate<DefaultTriggerContext<TConfig>> context, Target<?>... targets);
 }
