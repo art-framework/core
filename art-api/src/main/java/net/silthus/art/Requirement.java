@@ -16,8 +16,8 @@
 
 package net.silthus.art;
 
-import net.silthus.art.api.requirements.RequirementWrapper;
 import net.silthus.art.impl.ArtModuleDescription;
+import net.silthus.art.impl.DefaultRequirementContext;
 
 import java.util.function.Consumer;
 
@@ -26,7 +26,7 @@ import java.util.function.Consumer;
  * or be used inside other plugins for filtering.
  * <br>
  * Register your requirements by calling {@link ART#register(ArtModuleDescription, Consumer)}.
- * This will wrap the {@link Requirement} into a {@link RequirementWrapper} and bundle it with the configured options.
+ * This will wrap the {@link Requirement} into a {@link DefaultRequirementContext} and bundle it with the configured options.
  * <br>
  * A requirement will only be used for filtering if the target type matches with the object that is being filtered.
  * <br>
@@ -46,9 +46,8 @@ public interface Requirement<TTarget> extends ArtObject {
      * Return true for the check to pass and not to filter out the action.
      * Return false if the check fails and the actions should be filtered.
      *
-     * @param target  target to check against
      * @param context {@link Context} that holds the config and context of the check
      * @return false if the check fails and the filter should be applied or true if all checks pass and no filtering should be applied.
      */
-    boolean test(Target<TTarget> target, Context context);
+    boolean test(ExecutionContext<TTarget, RequirementContext<TTarget>> context);
 }

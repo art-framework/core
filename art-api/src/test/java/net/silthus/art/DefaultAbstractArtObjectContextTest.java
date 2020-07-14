@@ -17,14 +17,14 @@
 package net.silthus.art;
 
 import net.silthus.art.api.AbstractArtObjectContext;
-import net.silthus.art.impl.DefaultActionContext;
 import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.api.parser.Filter;
-import net.silthus.art.api.requirements.RequirementWrapper;
-import net.silthus.art.api.trigger.TriggerWrapper;
+import net.silthus.art.api.trigger.DefaultTriggerContext;
 import net.silthus.art.api.trigger.TriggerListener;
+import net.silthus.art.impl.DefaultActionContext;
 import net.silthus.art.impl.DefaultArtContext;
+import net.silthus.art.impl.DefaultRequirementContext;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
 import org.junit.jupiter.api.BeforeEach;
@@ -75,8 +75,8 @@ class DefaultAbstractArtObjectContextTest {
         return new DefaultArtContext(config, Arrays.asList(contexts), filters);
     }
 
-    private TriggerWrapper<?> trigger() {
-        return mock(TriggerWrapper.class);
+    private DefaultTriggerContext<?> trigger() {
+        return mock(DefaultTriggerContext.class);
     }
 
     private <TTarget> Filter<TTarget> filter(Target<TTarget> target, boolean result) {
@@ -89,17 +89,17 @@ class DefaultAbstractArtObjectContextTest {
     @DisplayName("test(Target)")
     class test {
 
-        RequirementWrapper<String, ?> requirement;
+        DefaultRequirementContext<String, ?> requirement;
 
         @BeforeEach
         @SuppressWarnings("unchecked")
         void beforeEach() {
-            requirement = (RequirementWrapper<String, ?>) mock(RequirementWrapper.class);
+            requirement = (DefaultRequirementContext<String, ?>) mock(DefaultRequirementContext.class);
             when(requirement.isTargetType(anyString())).thenReturn(true);
 
             List<AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>> artWrappers = Arrays.asList(
                     mock(DefaultActionContext.class),
-                    mock(TriggerWrapper.class),
+                    mock(DefaultTriggerContext.class),
                     requirement
             );
             contexts.addAll(artWrappers);
@@ -125,7 +125,7 @@ class DefaultAbstractArtObjectContextTest {
         @DisplayName("should not test requirements if target is null")
         void shouldNotTestRequirementsIfTargetIsNull() {
 
-            RequirementWrapper<?, ?> requirement = requirement(true);
+            DefaultRequirementContext<?, ?> requirement = requirement(true);
             assertThat(resultOf(requirement).test(null)).isFalse();
             verify(requirement, times(0)).test(any(), any());
         }
@@ -177,7 +177,7 @@ class DefaultAbstractArtObjectContextTest {
         @DisplayName("should filter requirements that do not match the target type")
         void shouldFilterRequirementsWithoutSameTargetType() {
 
-            RequirementWrapper<Integer, ?> requirement = requirement(Integer.class, false);
+            DefaultRequirementContext<Integer, ?> requirement = requirement(Integer.class, false);
             DefaultArtContext result = resultOf(
                     requirement,
                     requirement(String.class, true)
@@ -238,7 +238,7 @@ class DefaultAbstractArtObjectContextTest {
             @DisplayName("should skip requirement checks if filter fails")
             void shouldSkipRequirementsIfFilterFails() {
 
-                RequirementWrapper<String, ?> requirement = (RequirementWrapper<String, ?>) requirement(true);
+                DefaultRequirementContext<String, ?> requirement = (DefaultRequirementContext<String, ?>) requirement(true);
                 DefaultArtContext result = resultOfWithFilter(String.class, filter(new StringTarget("foo"), false), requirement);
 
                 assertThat(result.test("foo")).isFalse();
@@ -382,7 +382,7 @@ class DefaultAbstractArtObjectContextTest {
         @DisplayName("should execute actions without attached listeners by default")
         void shouldNotAutoExecuteActionsByDefault() {
 
-            TriggerWrapper<?> trigger = trigger();
+            DefaultTriggerContext<?> trigger = trigger();
             DefaultActionContext<?, ?> action = action();
             DefaultArtContext result = resultOf(trigger, action);
 
@@ -396,7 +396,7 @@ class DefaultAbstractArtObjectContextTest {
         void shouldNotExecuteActionsIfExecuteIsFalse() {
 
             DefaultActionContext<?, ?> action = action();
-            TriggerWrapper<?> trigger = trigger();
+            DefaultTriggerContext<?> trigger = trigger();
             DefaultArtContext result = resultOf(trigger, action);
             result.setExecuteActions(false);
 

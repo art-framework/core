@@ -43,10 +43,9 @@ public interface Action<TTarget> extends ArtObject {
      * Make sure to annotate this {@link Action} with a @{@link ArtOptions}
      * and optionally provide a config class and implement {@link Configurable}.
      *
-     * @param target target to apply this action to.
      * @param context context of this action.
-     *                Use the {@link Context} to retrieve the config
-     *                and additional information about the execution context of this action.
+     *                Use the {@link ExecutionContext} to retrieve the config, target
+     *                and a lot of additional information about the execution.
      */
-    void execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context);
+    void execute(ExecutionContext<TTarget, ActionContext<TTarget>> context);
 }

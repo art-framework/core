@@ -17,11 +17,7 @@
 package net.silthus.art.api.trigger;
 
 import com.google.inject.Inject;
-import net.silthus.art.Scheduler;
-import net.silthus.art.Storage;
-import net.silthus.art.Target;
-import net.silthus.art.Trigger;
-import net.silthus.art.ArtOptions;
+import net.silthus.art.*;
 import net.silthus.art.api.annotations.ActiveStorageProvider;
 import net.silthus.art.api.factory.AbstractFactoryManager;
 
@@ -72,10 +68,10 @@ public class DefaultTriggerManager extends AbstractFactoryManager<TriggerFactory
 
     @Override
     @SuppressWarnings("unchecked")
-    public <TConfig> void trigger(String identifier, Predicate<TriggerWrapper<TConfig>> predicate, Target<?>... targets) {
-        List<TriggerWrapper<TConfig>> contextList = getFactory(identifier).map(TriggerFactory::getCreatedTrigger)
+    public <TConfig> void trigger(String identifier, Predicate<DefaultTriggerContext<TConfig>> predicate, Target<?>... targets) {
+        List<DefaultTriggerContext<TConfig>> contextList = getFactory(identifier).map(TriggerFactory::getCreatedTrigger)
                 .map(triggerContexts -> triggerContexts.stream()
-                        .map(triggerContext -> (TriggerWrapper<TConfig>) triggerContext)
+                        .map(triggerContext -> (DefaultTriggerContext<TConfig>) triggerContext)
                         .collect(Collectors.toList()))
                 .orElse(new ArrayList<>());
 
@@ -84,7 +80,7 @@ public class DefaultTriggerManager extends AbstractFactoryManager<TriggerFactory
         }
     }
 
-    private <TTarget, TConfig> void trigger(Target<TTarget> target, Predicate<TriggerWrapper<TConfig>> predicate, List<TriggerWrapper<TConfig>> contextList) {
+    private <TTarget, TConfig> void trigger(Target<TTarget> target, Predicate<DefaultTriggerContext<TConfig>> predicate, List<DefaultTriggerContext<TConfig>> contextList) {
         contextList.forEach(context -> context.trigger(target, predicate));
     }
 }

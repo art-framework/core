@@ -16,21 +16,22 @@
 
 package net.silthus.art.api.requirements;
 
-import net.silthus.art.Target;
+import net.silthus.art.ExecutionContext;
+import net.silthus.art.impl.DefaultRequirementContext;
 
 import java.util.Collection;
 
 public interface RequirementHolder {
 
-    void addRequirement(RequirementWrapper<?, ?> requirement);
+    void addRequirement(DefaultRequirementContext<?> requirement);
 
-    Collection<RequirementWrapper<?, ?>> getRequirements();
+    Collection<DefaultRequirementContext<?>> getRequirements();
 
     @SuppressWarnings("unchecked")
-    default <TTarget> boolean testRequirements(Target<TTarget> target) {
+    default <TTarget> boolean testRequirements(ExecutionContext<TTarget, ?> context) {
         return getRequirements().stream()
-                .filter(requirementContext -> requirementContext.isTargetType(target))
-                .map(requirementContext -> (RequirementWrapper<TTarget, ?>) requirementContext)
-                .allMatch(requirementContext -> requirementContext.test(target));
+                .filter(requirementContext -> requirementContext.isTargetType(context.target()))
+                .map(requirementContext -> (DefaultRequirementContext<TTarget>) requirementContext)
+                .allMatch(requirementContext -> requirementContext.test(context.next(requirementContext)));
     }
 }

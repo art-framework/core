@@ -19,6 +19,7 @@ package net.silthus.art;
 import lombok.NonNull;
 import net.silthus.art.conf.ArtContextSettings;
 import net.silthus.art.conf.Settings;
+import net.silthus.art.impl.DefaultConfiguration;
 
 import java.io.File;
 import java.io.Serializable;
@@ -29,7 +30,9 @@ import java.util.function.Function;
  * Use the Configuration to retrieve and replace all elements of the ART-Framework.
  * You can for example provide your own {@link Scheduler} or {@link Storage} implementations.
  */
-public interface Configuration extends Serializable {
+public interface Configuration extends Serializable, Cloneable {
+
+    Configuration DEFAULT = new DefaultConfiguration();
 
     /**
      * Use the {@link ArtProvider} to add and register your {@link ArtObject}s.
@@ -122,6 +125,9 @@ public interface Configuration extends Serializable {
      */
     TargetProvider targets();
 
+    // TODO: javadoc
+    TriggerHandler triggers();
+
     /**
      * Adds a {@link TargetProvider} for the given {@link Target} type.
      * Will override any existing {@link TargetProvider} of the same target type.
@@ -187,4 +193,17 @@ public interface Configuration extends Serializable {
      * @return this {@link Configuration}
      */
     Configuration set(@NonNull TargetProvider targetProvider);
+
+    // TODO: javadoc
+    Configuration set(@NonNull TriggerHandler triggerHandler);
+
+    /**
+     * Creates a new {@link Configuration} derived from the current configuration.
+     * This is actually just a shortcut to {@link #clone()}.
+     * You can then use the configuration to modify locally scoped properties
+     * and use it to load and create your ART with {@link ART#builder(Configuration)}.
+     *
+     * @return this cloned {@link Configuration}
+     */
+    Configuration derive();
 }

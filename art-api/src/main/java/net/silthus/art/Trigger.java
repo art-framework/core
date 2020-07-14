@@ -16,19 +16,17 @@
 
 package net.silthus.art;
 
-import net.silthus.art.api.trigger.TriggerWrapper;
-
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.function.Predicate;
 
 public interface Trigger extends ArtObject {
 
-    default <TConfig> void trigger(String identifier, Predicate<TriggerWrapper<TConfig>> context, Target<?>... targets) {
+    default void trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> context, Target<?>... targets) {
         ART.trigger(identifier, context, targets);
     }
 
-    default <TConfig> void trigger(String identifier, Predicate<TriggerWrapper<TConfig>> context, Object... targets) {
+    default void trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> context, Object... targets) {
         ART.trigger(identifier, context, Arrays.stream(targets)
                 .map(Target::of)
                 .filter(Optional::isPresent)

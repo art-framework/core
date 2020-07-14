@@ -22,8 +22,9 @@ import net.silthus.art.ActionContext;
 import net.silthus.art.Scheduler;
 import net.silthus.art.Storage;
 import net.silthus.art.Target;
-import net.silthus.art.api.requirements.RequirementWrapper;
+import net.silthus.art.conf.TriggerConfig;
 import net.silthus.art.impl.DefaultMapStorage;
+import net.silthus.art.impl.DefaultRequirementContext;
 import net.silthus.art.testing.StringTarget;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,16 +43,16 @@ import static org.mockito.Mockito.*;
 @DisplayName("TriggerContext")
 class TriggerContextTest {
 
-    private TriggerWrapper<?> context;
+    private DefaultTriggerContext<?> context;
     private Storage storage;
 
     @BeforeEach
     void beforeEach() {
         storage = new DefaultMapStorage();
-        context = new TriggerWrapper<>(new TriggerConfig<>(), null, storage);
+        context = new DefaultTriggerContext<>(new TriggerConfig<>(), null, storage);
     }
 
-    private <TTarget> Predicate<TriggerWrapper<TTarget>> truePredicate() {
+    private <TTarget> Predicate<DefaultTriggerContext<TTarget>> truePredicate() {
         return triggerContext -> true;
     }
 
@@ -131,7 +132,7 @@ class TriggerContextTest {
             @BeforeEach
             void beforeEach() {
                 scheduler = mock(Scheduler.class);
-                context = new TriggerWrapper<>(new TriggerConfig<>(), scheduler, mock(Storage.class));
+                context = new DefaultTriggerContext<>(new TriggerConfig<>(), scheduler, mock(Storage.class));
             }
 
             @Test
@@ -149,7 +150,7 @@ class TriggerContextTest {
             @DisplayName("should execute directly if scheduler is null")
             void shouldDirectlyExecuteTriggerIfSchedulerIsNull() {
 
-                context = TriggerContextTest.this.context = new TriggerWrapper<>(new TriggerConfig<>(), null, mock(Storage.class));
+                context = TriggerContextTest.this.context = new DefaultTriggerContext<>(new TriggerConfig<>(), null, mock(Storage.class));
                 context.getOptions().setDelay("1s");
                 TriggerListener<String> listener = addListener(String.class);
 
@@ -253,7 +254,7 @@ class TriggerContextTest {
             void shouldNotTestRequirementsIfActionIsOnCooldown() {
 
                 StringTarget target = new StringTarget("foo");
-                RequirementWrapper<?, ?> requirement = requirement(true);
+                DefaultRequirementContext<?, ?> requirement = requirement(true);
                 context.addRequirement(requirement);
                 storage.data(context, target, LAST_EXECUTION, System.currentTimeMillis());
 

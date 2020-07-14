@@ -18,10 +18,10 @@ package net.silthus.art.api.actions;
 
 import lombok.SneakyThrows;
 import net.silthus.art.*;
-import net.silthus.art.api.requirements.RequirementWrapper;
 import net.silthus.art.conf.ActionConfig;
 import net.silthus.art.impl.DefaultActionContext;
 import net.silthus.art.impl.DefaultMapStorage;
+import net.silthus.art.impl.DefaultRequirementContext;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
 import org.apache.commons.lang3.RandomUtils;
@@ -183,7 +183,7 @@ public class DefaultActionContextTest {
             @DisplayName("should check requirements before executing any actions")
             void shouldCheckRequirementsBeforeActionExecution() {
 
-                RequirementWrapper requirement = requirement(true);
+                DefaultRequirementContext requirement = requirement(true);
                 context.addRequirement(requirement);
 
                 context.execute(new StringTarget("foobar"));
@@ -197,7 +197,7 @@ public class DefaultActionContextTest {
             @DisplayName("should not execute actions if requirements fail")
             void shouldNotExecuteActionIfRequirementsFail() {
 
-                RequirementWrapper requirement = requirement(false);
+                DefaultRequirementContext requirement = requirement(false);
                 context.addRequirement(requirement);
                 ActionContext<?> childAction = action();
                 context.addAction(childAction);
@@ -212,7 +212,7 @@ public class DefaultActionContextTest {
             @DisplayName("should not check requirement if target type does not match")
             void shouldNotCheckRequirementIfTargetTypeDoesNotMatch() {
 
-                RequirementWrapper requirement = requirement(Integer.class, false);
+                DefaultRequirementContext requirement = requirement(Integer.class, false);
                 context.addRequirement(requirement);
 
                 context.execute(new StringTarget("foobar"));
@@ -321,7 +321,7 @@ public class DefaultActionContextTest {
             void shouldNotTestRequirementsIfActionIsOnCooldown() {
 
                 StringTarget target = new StringTarget("foo");
-                RequirementWrapper<?, ?> requirement = requirement(true);
+                DefaultRequirementContext<?, ?> requirement = requirement(true);
                 context.addRequirement(requirement);
                 storage.data(context, target, LAST_EXECUTION, System.currentTimeMillis());
 
