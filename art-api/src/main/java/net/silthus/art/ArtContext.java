@@ -26,6 +26,7 @@ import net.silthus.art.impl.DefaultArtContext;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Collection;
+import java.util.List;
 
 /**
  * The {@link ArtContext} is a core piece of the ART-Framework.
@@ -36,7 +37,7 @@ import java.util.Collection;
  * Execute your actions by calling {@link #execute(Target)}.
  * <br>
  * It is created from an {@link ArtConfig} and holds all loaded {@link Action}s, {@link Requirement}s and {@link Trigger}.
- * Create an {@link ArtContext} by parsing your {@link ArtConfig} with {@link ART#load(ArtConfig)}.
+ * Create an {@link ArtContext} by parsing your {@link ArtConfig} with {@link ART#load(List)}.
  * <br>
  * The {@link ArtContext} is immutable and accepts any input, including null without throwing an exception.
  */

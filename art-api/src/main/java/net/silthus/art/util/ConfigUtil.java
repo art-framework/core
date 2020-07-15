@@ -20,10 +20,9 @@ import com.google.common.base.Strings;
 import net.silthus.art.ConfigOption;
 import net.silthus.art.Ignore;
 import net.silthus.art.api.config.ArtConfigException;
-import net.silthus.art.api.config.ConfigFieldInformation;
+import net.silthus.art.conf.ConfigFieldInformation;
 import net.silthus.art.api.config.FieldNameFormatter;
 import net.silthus.art.api.config.FieldNameFormatters;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.io.File;
@@ -150,29 +149,5 @@ public final class ConfigUtil {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public static void setConfigFields(Object config, Map<ConfigFieldInformation, Object> fieldValueMap) {
-        fieldValueMap.forEach((configFieldInformation, o) -> setConfigField(config, configFieldInformation, o));
-    }
-
-    public static void setConfigField(Object config, ConfigFieldInformation fieldInformation, Object value) {
-
-        try {
-            if (fieldInformation.getIdentifier().contains(".")) {
-                // handle nested config objects
-                String nestedIdentifier = StringUtils.substringBefore(fieldInformation.getIdentifier(), ".");
-                Field parentField = config.getClass().getDeclaredField(nestedIdentifier);
-                parentField.setAccessible(true);
-                Object nestedConfigObject = parentField.get(config);
-                setConfigField(nestedConfigObject, fieldInformation.copyOf(nestedIdentifier), value);
-            } else {
-                Field field = config.getClass().getDeclaredField(fieldInformation.getName());
-                field.setAccessible(true);
-                field.set(config, value);
-            }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
     }
 }

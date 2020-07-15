@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.factory;
+package net.silthus.art;
 
 import lombok.SneakyThrows;
-import net.silthus.art.*;
 import net.silthus.art.api.AbstractArtObjectContext;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.conf.ActionConfig;
-import net.silthus.art.api.config.ConfigFieldInformation;
+import net.silthus.art.conf.ConfigFieldInformation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -33,14 +32,14 @@ import static org.mockito.Mockito.mock;
 @DisplayName("ActionFactory")
 public class ArtFactoryTest {
 
-    private ArtFactory<String, TestConfig, Action<String, TestConfig>, ActionConfig<TestConfig>> factory;
+    private ArtFactory<?, ?> factory;
 
     @BeforeEach
     public void beforeEach() {
         this.factory = factory(String.class, new TestAction());
     }
 
-    public static <TTarget, TConfig> ArtFactory<TTarget, TConfig, Action<TTarget, TConfig>, ActionConfig<TConfig>> factory(Class<TTarget> targetClass) {
+    public static <TTarget, TConfig> ArtFactory<?, ?> factory(Class<TTarget> targetClass) {
         return factory(targetClass, (target, context) -> {
         });
     }

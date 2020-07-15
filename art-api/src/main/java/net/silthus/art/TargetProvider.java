@@ -30,14 +30,7 @@ import java.util.function.Function;
  *
  * @see Target
  */
-public interface TargetProvider {
-
-    /**
-     * Gets the {@link Configuration} associated with this {@link TargetProvider}.
-     *
-     * @return the underlying {@link Configuration}
-     */
-    Configuration configuration();
+public interface TargetProvider extends Provider {
 
     /**
      * Tries to wrap the given target source into a {@link Target}.

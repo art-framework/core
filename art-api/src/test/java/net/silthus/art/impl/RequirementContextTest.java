@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.requirements;
+package net.silthus.art.impl;
 
 import net.silthus.art.Requirement;
 import net.silthus.art.Storage;
 import net.silthus.art.api.storage.StorageConstants;
 import net.silthus.art.conf.RequirementConfig;
-import net.silthus.art.impl.DefaultMapStorage;
-import net.silthus.art.impl.DefaultRequirementContext;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
 import org.junit.jupiter.api.BeforeEach;
@@ -29,7 +27,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static net.silthus.art.api.TestUtil.requirement;
+import static net.silthus.art.testing.TestUtil.requirement;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;

@@ -17,6 +17,7 @@
 package net.silthus.art.util;
 
 import net.silthus.art.Target;
+import org.checkerframework.checker.nullness.Opt;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -76,5 +77,18 @@ public final class ReflectionUtil {
         }
 
         return Optional.ofNullable(result);
+    }
+
+    public static Optional<Class<?>> getInterfaceTypeArgument(Class<?> clazz, Class<?> interfaceType, int position) {
+        Type[] genericInterfaces = clazz.getGenericInterfaces();
+        for (Type genericInterface : genericInterfaces) {
+            if (genericInterface instanceof ParameterizedType && genericInterface.equals(interfaceType)) {
+                Type[] genericTypes = ((ParameterizedType) genericInterface).getActualTypeArguments();
+                if (genericTypes.length > position) {
+                    return Optional.of((Class<?>) genericTypes[position]);
+                }
+            }
+        }
+        return Optional.empty();
     }
 }

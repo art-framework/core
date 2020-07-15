@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.trigger;
+package net.silthus.art.impl;
 
-import net.silthus.art.impl.DefaultMapStorage;
+import net.silthus.art.api.trigger.DefaultTriggerManager;
+import net.silthus.art.api.trigger.TriggerFactory;
+import net.silthus.art.api.trigger.TriggerManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.Optional;
 
@@ -36,7 +39,7 @@ class DefaultTriggerManagerTest {
 
     @BeforeEach
     void beforeEach() {
-        manager = spy(new DefaultTriggerManager(new DefaultMapStorage()));
+        manager = Mockito.spy(new DefaultTriggerManager(new DefaultMapStorage()));
         test1Factory = mock(TriggerFactory.class);
         when(manager.getFactory(eq("test1"))).thenReturn(Optional.of(test1Factory));
         test2Factory = mock(TriggerFactory.class);

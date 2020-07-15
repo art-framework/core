@@ -16,18 +16,15 @@
 
 package net.silthus.art.conf;
 
-import de.exlll.configlib.annotation.ConfigurationElement;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.ConfigOption;
-import net.silthus.art.api.config.ArtObjectConfig;
 import net.silthus.art.util.TimeUtil;
 
 @Getter
 @Setter(AccessLevel.PACKAGE)
-@ConfigurationElement
 @EqualsAndHashCode(callSuper = true)
 public class TriggerConfig extends ArtObjectConfig {
 

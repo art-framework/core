@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.config;
+package net.silthus.art.conf;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

@@ -26,15 +26,14 @@ import java.util.function.Predicate;
  * The {@link ArtProvider} holds and handles all ART that is registered.
  * Use it to register your ART or to retrieve registered implementations for a given identifier.
  * <br>
- * <p>You can also scan a path or JAR file and automatically register all ART that is found.
+ * You can also scan a path or JAR file and automatically register all ART that is found.
  * Use the {@link #registerAll(File)} method for that, or {@link #registerAll()} if you want to scan
- * the whole class path and add everything that was found.</p>
- * <p>By default the ART-Framework will scan the whole classpath. You can disable this by
- * setting {@link Settings#setAutoRegisterAllArt(boolean)}</p> to false.
+ * the whole class path and add everything that was found.
+ * <br>
+ * By default the ART-Framework will scan the whole classpath. You can disable this by
+ * setting {@link Settings#setAutoRegisterAllArt(boolean)} to <pre>false</pre>.
  */
-public interface ArtProvider {
-
-    Configuration configuration();
+public interface ArtProvider extends Provider {
 
     ArtFinder find();
 
@@ -46,21 +45,9 @@ public interface ArtProvider {
 
     ArtProvider registerAll(Collection<ArtObjectInformation> artObjects);
 
-    ArtProvider action(Class<? extends Action<?>> actionClass);
+    ActionProvider actions();
 
-    <TTarget> ArtProvider action(Action<TTarget> action);
+    RequirementProvider requirements();
 
-    <TAction extends Action<?>> ArtProvider action(Class<TAction> actionClass, ArtObjectProvider<TAction> actionProvider);
-
-    ArtProvider requirement(Class<? extends Requirement<?>> requirementClass);
-
-    <TTarget> ArtProvider requirement(Requirement<TTarget> requirement);
-
-    <TRequirement extends Requirement<?>> ArtProvider requirement(Class<TRequirement> requirementClass, ArtObjectProvider<TRequirement> requirementProvider);
-
-    ArtProvider trigger(Class<? extends Trigger> triggerClass);
-
-    ArtProvider trigger(Trigger trigger);
-
-    <TTrigger extends Trigger> ArtProvider trigger(Class<TTrigger> triggerClass, ArtObjectProvider<TTrigger> triggerProvider);
+    TriggerProvider trigger();
 }

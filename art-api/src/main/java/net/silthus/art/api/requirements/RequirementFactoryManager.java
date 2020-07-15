@@ -21,13 +21,13 @@ import lombok.EqualsAndHashCode;
 import net.silthus.art.Requirement;
 import net.silthus.art.Storage;
 import net.silthus.art.api.annotations.ActiveStorageProvider;
-import net.silthus.art.api.factory.AbstractFactoryManager;
+import net.silthus.art.AbstractArtFactoryProvider;
 
 import javax.inject.Singleton;
 
 @Singleton
 @EqualsAndHashCode(callSuper = true)
-public class RequirementFactoryManager extends AbstractFactoryManager<RequirementFactory<?, ?>> implements RequirementManager {
+public class RequirementFactoryManager extends AbstractArtFactoryProvider<RequirementFactory<?, ?>> implements RequirementManager {
 
     private final Storage storage;
 

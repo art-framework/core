@@ -40,9 +40,18 @@ public class DefaultTriggerContext extends AbstractArtObjectContext implements T
     @Getter
     private final TriggerConfig config;
 
-    public DefaultTriggerContext(@NonNull Configuration configuration, @NonNull String uniqueId, @NonNull Class<?> targetClass, @NonNull TriggerConfig config) {
-        super(configuration, uniqueId, targetClass);
+    public DefaultTriggerContext(
+            @NonNull Configuration configuration,
+            @NonNull Class<?> targetClass,
+            @NonNull TriggerConfig config
+    ) {
+        super(configuration, targetClass);
         this.config = config;
+    }
+
+    @Override
+    public @NonNull String getUniqueId() {
+        return getConfig().getIdentifier();
     }
 
     @Override

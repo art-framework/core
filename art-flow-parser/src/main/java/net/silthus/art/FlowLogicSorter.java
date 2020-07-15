@@ -18,7 +18,7 @@ package net.silthus.art;
 
 import com.google.common.collect.ImmutableList;
 import net.silthus.art.api.AbstractArtObjectContext;
-import net.silthus.art.api.config.ArtObjectConfig;
+import net.silthus.art.conf.ArtObjectConfig;
 import net.silthus.art.api.trigger.DefaultTriggerContext;
 import net.silthus.art.impl.DefaultActionContext;
 import net.silthus.art.impl.DefaultRequirementContext;

@@ -6,7 +6,7 @@ public class ArtRegistrationException extends ArtException {
         super(message);
     }
 
-    public ArtRegistrationException(Throwable cause) {
-        super(cause);
+    public ArtRegistrationException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

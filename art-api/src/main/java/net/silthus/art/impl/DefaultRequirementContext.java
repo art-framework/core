@@ -39,14 +39,18 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
 
     public DefaultRequirementContext(
             @NonNull Configuration configuration,
-            @NonNull String uniqueId,
             @NonNull Class<?> targetClass,
             @NonNull Requirement<TTarget> requirement,
             @NonNull RequirementConfig config
     ) {
-        super(configuration, uniqueId, targetClass);
+        super(configuration, targetClass);
         this.requirement = requirement;
         this.config = config;
+    }
+
+    @Override
+    public @NonNull String getUniqueId() {
+        return getConfig().getIdentifier();
     }
 
     @Override

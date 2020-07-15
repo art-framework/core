@@ -20,7 +20,6 @@ import lombok.EqualsAndHashCode;
 import net.silthus.art.Requirement;
 import net.silthus.art.Storage;
 import net.silthus.art.api.AbstractArtObjectContext;
-import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.conf.RequirementConfig;
 import net.silthus.art.impl.DefaultRequirementContext;
 

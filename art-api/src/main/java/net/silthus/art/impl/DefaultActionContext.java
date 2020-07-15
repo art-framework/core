@@ -48,14 +48,18 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
     public DefaultActionContext(
             @NonNull Configuration configuration,
-            @NonNull String uniqueId,
             @NonNull Class<TTarget> targetClass,
             @NonNull Action<TTarget> action,
             @NonNull ActionConfig config
     ) {
-        super(configuration, uniqueId, targetClass);
+        super(configuration, targetClass);
         this.action = action;
         this.config = config;
+    }
+
+    @Override
+    public @NonNull String getUniqueId() {
+        return getConfig().getIdentifier();
     }
 
     @Override

@@ -18,8 +18,6 @@ package net.silthus.art;
 
 import com.google.inject.Provider;
 import lombok.SneakyThrows;
-import net.silthus.art.api.actions.ActionFactory;
-import net.silthus.art.api.actions.ActionManager;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
 import net.silthus.art.api.trigger.TriggerManager;

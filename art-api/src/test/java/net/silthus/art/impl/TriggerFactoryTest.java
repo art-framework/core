@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.trigger;
+package net.silthus.art.impl;
 
 import lombok.SneakyThrows;
 import net.silthus.art.ArtOptions;
@@ -22,7 +22,8 @@ import net.silthus.art.Scheduler;
 import net.silthus.art.Storage;
 import net.silthus.art.Trigger;
 import net.silthus.art.api.ArtRegistrationException;
-import net.silthus.art.api.factory.ArtFactory;
+import net.silthus.art.api.trigger.DefaultTriggerContext;
+import net.silthus.art.api.trigger.TriggerFactory;
 import net.silthus.art.conf.TriggerConfig;
 import net.silthus.art.impl.DefaultMapStorage;
 import org.junit.jupiter.api.BeforeEach;

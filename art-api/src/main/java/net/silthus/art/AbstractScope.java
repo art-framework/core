@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.silthus.art.impl;
+package net.silthus.art;
 
 import lombok.NonNull;
 import net.silthus.art.Configuration;

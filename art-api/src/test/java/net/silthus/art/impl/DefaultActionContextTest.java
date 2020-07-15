@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.actions;
+package net.silthus.art.impl;
 
 import lombok.SneakyThrows;
 import net.silthus.art.*;
 import net.silthus.art.conf.ActionConfig;
-import net.silthus.art.impl.DefaultActionContext;
-import net.silthus.art.impl.DefaultMapStorage;
-import net.silthus.art.impl.DefaultRequirementContext;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
 import org.apache.commons.lang3.RandomUtils;
@@ -31,8 +28,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
-import static net.silthus.art.api.TestUtil.action;
-import static net.silthus.art.api.TestUtil.requirement;
+import static net.silthus.art.testing.TestUtil.action;
+import static net.silthus.art.testing.TestUtil.requirement;
 import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
