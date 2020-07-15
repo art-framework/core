@@ -16,7 +16,7 @@
 
 package net.silthus.art.parser.flow.parser;
 
-import net.silthus.art.api.config.ConfigFieldInformation;
+import net.silthus.art.conf.ConfigFieldInformation;
 import net.silthus.art.api.requirements.RequirementFactory;
 import net.silthus.art.api.requirements.RequirementManager;
 import net.silthus.art.conf.RequirementConfig;

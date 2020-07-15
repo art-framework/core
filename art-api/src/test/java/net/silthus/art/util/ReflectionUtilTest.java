@@ -146,6 +146,19 @@ class ReflectionUtilTest {
         }
     }
 
+    @Nested
+    @DisplayName("getInterfaceTypeArgument(...)")
+    class getInterfaceTypeArgument {
+
+        @Test
+        @DisplayName("should get generic interface type of class")
+        void shouldParseInterfaceType() {
+
+            assertThat(ReflectionUtil.getInterfaceTypeArgument(TypeArgumentClass.class, TypeInterface.class, 0))
+                    .isNotEmpty()
+                    .hasValue(Double.class);
+        }
+    }
 
     interface TypeInterface<TType> {
 

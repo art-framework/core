@@ -16,10 +16,7 @@
 
 package net.silthus.art.requirements;
 
-import net.silthus.art.ArtOptions;
-import net.silthus.art.ConfigOption;
-import net.silthus.art.Requirement;
-import net.silthus.art.Target;
+import net.silthus.art.*;
 import net.silthus.art.impl.DefaultRequirementContext;
 
 @ArtOptions(
@@ -27,25 +24,21 @@ import net.silthus.art.impl.DefaultRequirementContext;
         description = {
                 "This requirement returns true once it has been checked as often as defined in the count.",
                 "You also have some additional options to send messages to the player informing him about the counter."
-        },
-        config = CountRequirement.Config.class
+        }
 )
-public class CountRequirement implements Requirement<Object, CountRequirement.Config> {
+public class CountRequirement implements GenericRequirement {
 
     private static final String COUNTER_KEY = "count";
 
+    @ConfigOption(description = "Set how often this requirement must be checked before it is successful.")
+    private int count = 0;
+
     @Override
-    public boolean test(Target<Object> target, DefaultRequirementContext<Object, Config> context) {
+    public boolean test(ExecutionContext<Object, RequirementContext<Object>> context) {
 
-        final int currentCount = context.store(target, COUNTER_KEY, Integer.class).orElse(0) + 1;
-        context.store(target, COUNTER_KEY, currentCount);
+        final int currentCount = context.store(COUNTER_KEY, Integer.class).orElse(0) + 1;
+        context.store(COUNTER_KEY, currentCount);
 
-        return context.getConfig().map(config -> config.count <= currentCount).orElse(true);
-    }
-
-    public static class Config {
-
-        @ConfigOption(description = "Set how often this requirement must be checked before it is successful.")
-        private int count;
+        return count <= currentCount;
     }
 }

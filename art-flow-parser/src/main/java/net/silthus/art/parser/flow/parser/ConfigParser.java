@@ -20,9 +20,12 @@ import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import lombok.Data;
 import lombok.Getter;
-import net.silthus.art.api.config.ConfigFieldInformation;
+import net.silthus.art.ConfigMap;
+import net.silthus.art.api.config.ArtConfigException;
+import net.silthus.art.conf.ConfigFieldInformation;
 import net.silthus.art.api.parser.ArtParseException;
 import net.silthus.art.api.parser.flow.Parser;
+import net.silthus.art.conf.KeyValuePair;
 import net.silthus.art.util.ConfigUtil;
 import net.silthus.art.util.ReflectionUtil;
 
@@ -31,70 +34,27 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ConfigParser extends Parser<ConfigParser.Result> {
+public class ConfigParser extends Parser<ConfigMap> {
 
     @Getter
-    private final Map<String, ConfigFieldInformation> configMap;
+    private final ConfigMap configMap;
 
-    public ConfigParser(Map<String, ConfigFieldInformation> configMap) {
+    public ConfigParser(ConfigMap configMap) {
         // always edit the regexr link and update the link below!
         // the regexr link and the regex should always match
         // regexr.com/576km
         super(Pattern.compile("^(?<keyValue>((?<key>[\\w\\d._-]+)?[:=])?((\"(?<quotedValue>.*?)\")|((?<value>[^;, ]*)[,; ]?)))(?<config>.*)?$"));
-        this.configMap = ImmutableMap.copyOf(configMap);
+        this.configMap = configMap;
     }
 
     @Override
-    public Result parse() throws ArtParseException {
+    public ConfigMap parse() throws ArtParseException {
 
-        Map<ConfigFieldInformation, Object> fieldValueMap = new HashMap<>();
-        List<KeyValuePair> keyValuePairs = extractKeyValuePairs(getMatcher());
-        Set<ConfigFieldInformation> mappedFields = new HashSet<>();
-
-        boolean usedKeyValue = false;
-
-        for (int i = 0; i < keyValuePairs.size(); i++) {
-            KeyValuePair keyValue = keyValuePairs.get(i);
-            ConfigFieldInformation configFieldInformation;
-            if (keyValue.getKey().isPresent() && getConfigMap().containsKey(keyValue.getKey().get())) {
-                configFieldInformation = getConfigMap().get(keyValue.getKey().get());
-                usedKeyValue = true;
-            } else if (getConfigMap().size() == 1) {
-                //noinspection OptionalGetWithoutIsPresent
-                configFieldInformation = getConfigMap().values().stream().findFirst().get();
-            } else {
-                if (usedKeyValue) {
-                    throw new ArtParseException("Positioned parameter found after key=value pair usage. Positioned parameters must come first.");
-                }
-                int finalI = i;
-                Optional<ConfigFieldInformation> optionalFieldInformation = getConfigMap().values().stream().filter(info -> info.getPosition() == finalI).findFirst();
-                if (!optionalFieldInformation.isPresent()) {
-                    throw new ArtParseException("Config does not define positioned parameters. Use key value pairs instead.");
-                }
-                configFieldInformation = optionalFieldInformation.get();
-            }
-
-            if (!keyValue.getValue().isPresent()) {
-                throw new ArtParseException("Config " + configFieldInformation.getIdentifier() + " has an empty value.");
-            }
-
-            Object value = ReflectionUtil.toObject(configFieldInformation.getType(), keyValue.getValue().get());
-
-            fieldValueMap.put(configFieldInformation, value);
-            mappedFields.add(configFieldInformation);
+        try {
+            return configMap.loadValues(extractKeyValuePairs(getMatcher()));
+        } catch (ArtConfigException e) {
+            throw new ArtParseException(e.getMessage(), e);
         }
-
-        List<ConfigFieldInformation> missingRequiredFields = getConfigMap().values().stream()
-                .filter(ConfigFieldInformation::isRequired)
-                .filter(configFieldInformation -> !mappedFields.contains(configFieldInformation))
-                .collect(Collectors.toList());
-
-        if (!missingRequiredFields.isEmpty()) {
-            throw new ArtParseException("Config is missing " + missingRequiredFields.size() + " required parameters: "
-                    + missingRequiredFields.stream().map(ConfigFieldInformation::getIdentifier).collect(Collectors.joining(",")));
-        }
-
-        return new Result(fieldValueMap);
     }
 
     protected List<KeyValuePair> extractKeyValuePairs(Matcher matcher) {
@@ -117,34 +77,4 @@ public class ConfigParser extends Parser<ConfigParser.Result> {
 
         return pairs;
     }
-
-    @Data
-    static class KeyValuePair {
-
-        private final String key;
-        private final String value;
-
-        public Optional<String> getKey() {
-            return Optional.ofNullable(key);
-        }
-
-        public Optional<String> getValue() {
-            return Optional.ofNullable(value);
-        }
-    }
-
-    public static class Result {
-
-        private final Map<ConfigFieldInformation, Object> keyValueMap;
-
-        private Result(Map<ConfigFieldInformation, Object> keyValueMap) {
-            this.keyValueMap = ImmutableMap.copyOf(keyValueMap);
-        }
-
-        public <TConfig> TConfig applyTo(TConfig config) {
-            ConfigUtil.setConfigFields(config, keyValueMap);
-            return config;
-        }
-    }
-
 }

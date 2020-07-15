@@ -49,15 +49,6 @@ public @interface ArtOptions {
     String value();
 
     /**
-     * Provide a reference to the class that represents the configuration of this
-     * {@link net.silthus.art.ArtObject}. The config class must have a parameterless
-     * public constructor.
-     *
-     * @return config class of this {@link net.silthus.art.ArtObject}
-     */
-    Class<?>[] config() default {};
-
-    /**
      * You can provide a list of alias names for your actions, requirements and trigger.
      * ART aliases are only registered if there is no existing identifier.
      *

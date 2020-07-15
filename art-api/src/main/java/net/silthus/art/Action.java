@@ -16,11 +16,13 @@
 
 package net.silthus.art;
 
+import lombok.NonNull;
+
 /**
  * Defines an action that can get executed if the right {@link Trigger} was called.
  * The implementing class must have a public parameterless constructor or you need
  * to provide a {@link ArtObjectProvider} for the type and register it with the
- * {@link ArtProvider#action(Class, ArtObjectProvider)}.
+ * {@link ActionProvider#add(Class, ArtObjectProvider)}.
  * <br>
  * The {@link Trigger} source and action target must match or the action will not be executed.
  * Make the {@link TTarget} as broad as possible to allow the action to be executed by as many triggers as possible.
@@ -47,5 +49,5 @@ public interface Action<TTarget> extends ArtObject {
      *                Use the {@link ExecutionContext} to retrieve the config, target
      *                and a lot of additional information about the execution.
      */
-    void execute(ExecutionContext<TTarget, ActionContext<TTarget>> context);
+    void execute(@NonNull ExecutionContext<TTarget, ActionContext<TTarget>> context);
 }

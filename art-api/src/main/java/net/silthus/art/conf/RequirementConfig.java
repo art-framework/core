@@ -16,7 +16,6 @@
 
 package net.silthus.art.conf;
 
-import de.exlll.configlib.annotation.ConfigurationElement;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -24,21 +23,20 @@ import lombok.Setter;
 import net.silthus.art.ConfigOption;
 import net.silthus.art.Requirement;
 import net.silthus.art.api.config.ArtConfigException;
-import net.silthus.art.api.config.ArtObjectConfig;
-import net.silthus.art.api.config.ConfigFieldInformation;
 import net.silthus.art.util.ConfigUtil;
 
+import javax.annotation.concurrent.Immutable;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * The {@link RequirementConfig} holds general information about the execution
  * properties of the requirement.
- * e.g. if the {@link Requirement} should be negated
+ * The config will be created when the underlying {@link Requirement} is created.
  */
+@Immutable
 @Getter
 @Setter(AccessLevel.PACKAGE)
-@ConfigurationElement
 @EqualsAndHashCode(callSuper = true)
 public class RequirementConfig extends ArtObjectConfig {
 
@@ -69,3 +67,4 @@ public class RequirementConfig extends ArtObjectConfig {
     })
     private boolean checkOnce;
 }
+

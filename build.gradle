@@ -67,9 +67,9 @@ subprojects {
         compile 'org.projectlombok:lombok:1.18.12'
         annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-        api 'de.exlll:configlib-core:2.6.0'
         api group: 'com.google.inject', name: 'guice', version: '4.2.3'
         api group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '4.2.3'
+        implementation group: 'com.netflix.governator', name: 'governator-api', version: '1.17.10'
         implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 
         //Test dependencies

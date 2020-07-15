@@ -18,7 +18,7 @@ package net.silthus.art;
 
 import net.silthus.art.api.AbstractArtObjectContext;
 import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.config.ArtObjectConfig;
+import net.silthus.art.conf.ArtObjectConfig;
 import net.silthus.art.api.parser.Filter;
 import net.silthus.art.api.trigger.DefaultTriggerContext;
 import net.silthus.art.api.trigger.TriggerListener;
@@ -34,8 +34,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static net.silthus.art.api.TestUtil.action;
-import static net.silthus.art.api.TestUtil.requirement;
+import static net.silthus.art.testing.TestUtil.action;
+import static net.silthus.art.testing.TestUtil.requirement;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.*;
