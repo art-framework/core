@@ -19,7 +19,7 @@ package net.silthus.art.api.trigger;
 import com.google.inject.Inject;
 import net.silthus.art.*;
 import net.silthus.art.api.annotations.ActiveStorageProvider;
-import net.silthus.art.api.factory.AbstractFactoryManager;
+import net.silthus.art.AbstractArtFactoryProvider;
 
 import javax.inject.Singleton;
 import java.lang.reflect.Method;
@@ -31,7 +31,7 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Singleton
-public class DefaultTriggerManager extends AbstractFactoryManager<TriggerFactory<?>> implements TriggerManager {
+public class DefaultTriggerManager extends AbstractArtFactoryProvider<TriggerFactory<?>> implements TriggerManager {
 
     private final Storage storage;
     @Inject(optional = true)

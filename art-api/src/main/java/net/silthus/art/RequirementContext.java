@@ -18,7 +18,23 @@ package net.silthus.art;
 
 import net.silthus.art.conf.RequirementConfig;
 
+/**
+ * The {@link RequirementContext} holds all of the information to execute the contained {@link Requirement}.
+ * It also provides a lot of useful additional features like storing data for the context of the
+ * requirement execution or accessing the {@link Configuration}.
+ *
+ * @param <TTarget> type of the target that is targeted by the {@link Requirement}
+ */
 public interface RequirementContext<TTarget> extends Requirement<TTarget>, ArtObjectContext {
 
+    /**
+     * Gets the {@link RequirementConfig} used by the {@link Requirement}.
+     *
+     * @return the underlying {@link RequirementConfig}
+     */
     RequirementConfig getConfig();
+
+    default RequirementConfig options() {
+        return getConfig();
+    }
 }

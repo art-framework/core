@@ -14,14 +14,22 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.annotations;
+package net.silthus.art.conf;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import lombok.*;
+import net.silthus.art.ConfigOption;
 
-@Target({ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.METHOD, ElementType.PARAMETER})
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ActiveStorageProvider {
+import javax.annotation.concurrent.Immutable;
+import java.io.Serializable;
+
+@Getter
+@Setter(AccessLevel.PACKAGE)
+@EqualsAndHashCode
+@Immutable
+public class ArtObjectConfig implements Serializable {
+
+    private static final long serialVersionUID = 326862832907325L;
+
+    @ConfigOption("id")
+    private String identifier;
 }

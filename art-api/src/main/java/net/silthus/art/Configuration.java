@@ -126,7 +126,7 @@ public interface Configuration extends Serializable, Cloneable {
     TargetProvider targets();
 
     // TODO: javadoc
-    TriggerHandler triggers();
+    TriggerProvider triggers();
 
     /**
      * Adds a {@link TargetProvider} for the given {@link Target} type.
@@ -195,7 +195,7 @@ public interface Configuration extends Serializable, Cloneable {
     Configuration set(@NonNull TargetProvider targetProvider);
 
     // TODO: javadoc
-    Configuration set(@NonNull TriggerHandler triggerHandler);
+    Configuration set(@NonNull TriggerProvider triggerProvider);
 
     /**
      * Creates a new {@link Configuration} derived from the current configuration.

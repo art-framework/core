@@ -26,7 +26,6 @@ import net.silthus.art.Storage;
 import net.silthus.art.Trigger;
 import net.silthus.art.api.ArtObjectRegistrationException;
 import net.silthus.art.api.annotations.ActiveStorageProvider;
-import net.silthus.art.api.factory.ArtFactory;
 import net.silthus.art.conf.TriggerConfig;
 
 import javax.annotation.Nullable;

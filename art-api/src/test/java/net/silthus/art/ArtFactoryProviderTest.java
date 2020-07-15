@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.factory;
+package net.silthus.art;
 
 import lombok.SneakyThrows;
+import net.silthus.art.AbstractArtFactoryProvider;
 import net.silthus.art.Action;
 import net.silthus.art.ArtObject;
 import net.silthus.art.api.ArtRegistrationException;
-import net.silthus.art.api.actions.ActionFactory;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -34,13 +35,13 @@ import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
 @DisplayName("DefaultActionManager")
-class AbstractFactoryManagerTest {
+class ArtFactoryProviderTest {
 
-    private AbstractFactoryManager<ActionFactory<?, ?>> actionManager;
+    private AbstractArtFactoryProvider<ActionFactory<?, ?>> actionManager;
 
     @BeforeEach
     void beforeEach() {
-        this.actionManager = new AbstractFactoryManager<ActionFactory<?, ?>>() {
+        this.actionManager = new AbstractArtFactoryProvider<ActionFactory<?, ?>>() {
         };
         actionManager.setLogger(Logger.getGlobal());
     }
@@ -122,7 +123,7 @@ class AbstractFactoryManagerTest {
                     factory("test5", ActionFactory.class)
             ));
 
-            assertThat(actionManager.getFactories())
+            Assertions.assertThat(actionManager.getFactories())
                     .hasSize(5)
                     .containsKeys("test1", "test2", "test3", "test4", "test5");
         }

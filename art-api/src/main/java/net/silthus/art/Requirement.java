@@ -16,6 +16,7 @@
 
 package net.silthus.art;
 
+import lombok.NonNull;
 import net.silthus.art.impl.ArtModuleDescription;
 import net.silthus.art.impl.DefaultRequirementContext;
 
@@ -25,8 +26,8 @@ import java.util.function.Consumer;
  * A {@link Requirement} can be used to filter {@link Action}s, {@link Trigger}
  * or be used inside other plugins for filtering.
  * <br>
- * Register your requirements by calling {@link ART#register(ArtModuleDescription, Consumer)}.
- * This will wrap the {@link Requirement} into a {@link DefaultRequirementContext} and bundle it with the configured options.
+ * Register your requirements by calling {@link ART#register()}.
+ * This will wrap the {@link Requirement} into a {@link RequirementContext} and bundle it with the configured options.
  * <br>
  * A requirement will only be used for filtering if the target type matches with the object that is being filtered.
  * <br>
@@ -49,5 +50,5 @@ public interface Requirement<TTarget> extends ArtObject {
      * @param context {@link Context} that holds the config and context of the check
      * @return false if the check fails and the filter should be applied or true if all checks pass and no filtering should be applied.
      */
-    boolean test(ExecutionContext<TTarget, RequirementContext<TTarget>> context);
+    boolean test(@NonNull ExecutionContext<TTarget, RequirementContext<TTarget>> context);
 }

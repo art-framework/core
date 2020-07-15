@@ -16,8 +16,11 @@
 
 package net.silthus.art;
 
+import lombok.NonNull;
+import net.silthus.art.impl.DefaultConfiguration;
 import net.silthus.art.impl.DefaultExecutionContext;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -34,12 +37,25 @@ import java.util.Optional;
  */
 public interface ExecutionContext<TTarget, TContext extends ArtObjectContext> extends Context {
 
-    static <TTarget, TContext extends ArtObjectContext> ExecutionContext<TTarget, TContext> of(Configuration configuration, ArtContext root, Target<TTarget> target) {
-        return new DefaultExecutionContext<>(configuration, root, target);
+    /**
+     * Creates a new {@link DefaultConfiguration} from the given parameters.
+     *
+     * @param configuration configuration of the context
+     * @param rootContext The root {@link Context} that initiated the execution. This can be null.
+     * @param target The {@link Target} of this {@link ExecutionContext}
+     * @param <TTarget> type of the target
+     * @return a new {@link ExecutionContext} for executing the ART
+     */
+    static <TTarget> ExecutionContext<TTarget, ?> of(
+            @NonNull Configuration configuration,
+            @Nullable Context rootContext,
+            @NonNull Target<TTarget> target
+    ) {
+        return new DefaultExecutionContext<>(configuration, rootContext, target);
     }
 
     /**
-     * Gets the root {@link ArtContext} that initially triggered the execution
+     * Gets the root {@link Context} that initially triggered the execution
      * or test of this {@link ArtObject}.
      * The root context may not exist since {@link ArtObjectContext} objects
      * can be constructed any time and executed any time. It will exist if
@@ -48,7 +64,7 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext> ex
      * @return the {@link ArtContext} that initialized the execution tree.
      *          This may be empty if the execution was manually invoked.
      */
-    Optional<ArtContext> root();
+    Optional<Context> root();
 
     /**
      * Gets the parent of this {@link ExecutionContext} that
@@ -85,6 +101,42 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext> ex
      * @return current {@link ArtObjectContext}
      */
     TContext current();
+
+    /**
+     * Stores a value for the {@link Target} of this {@link ExecutionContext} and the current {@link ArtObjectContext}.
+     * This means a unique key is generated from the {@link Target#getUniqueId()} and
+     * {@link ArtObjectContext#getUniqueId()} and will be appended by your key.
+     * <br>
+     * Then the {@link Storage#set(String, Object)} method is called and the data is persisted.
+     * <br>
+     * Use the {@link #data()} methods to store data that is only available in this scope
+     * and not persisted to the database.
+     *
+     * @param key      storage key
+     * @param value    value to store
+     * @param <TValue> type of the value
+     * @return an {@link Optional} containing the existing value
+     * @see Storage#set(String, Object)
+     */
+    <TValue> Optional<TValue> store(@NonNull String key, @NonNull TValue value);
+
+    /**
+     * Retrieves a persistently stored value from the {@link Storage} and returns
+     * it cast to the given type. Will return an empty {@link Optional} if casting
+     * fails or the data does not exist.
+     * <br>
+     * The data that is fetched will be stored under a unique key combination of
+     * {@link ArtObjectContext#getUniqueId()} and {@link Target#getUniqueId()}.
+     * <br>
+     * Use the {@link #data()} methods to store data that is only available in this scope
+     * and not persisted to the database.
+     *
+     * @param key      storage key
+     * @param valueClass class of the value type you expect in return
+     * @param <TValue> type of the value
+     * @return the stored value or an empty {@link Optional} if the value type cannot be cast or does not exist
+     */
+    <TValue> Optional<TValue> store(@NonNull String key, @NonNull Class<TValue> valueClass);
 
     /**
      * Uses this {@link ExecutionContext} as a parent for the next {@link ArtObjectContext}

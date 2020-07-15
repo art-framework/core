@@ -19,7 +19,9 @@ package net.silthus.art;
 import lombok.NonNull;
 import net.silthus.art.impl.ArtBuilder;
 
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 // TODO: javadoc
@@ -64,6 +66,18 @@ public final class ART {
         return configuration().art().find();
     }
 
+    public static ActionProvider actions() {
+        return configuration().art().actions();
+    }
+
+    public static RequirementProvider requirements() {
+        return configuration().art().requirements();
+    }
+
+    public static TriggerProvider trigger() {
+        return configuration().art().trigger();
+    }
+
     // TODO: javadoc
     public static ArtContextBuilder builder() {
         return builder(configuration());
@@ -84,15 +98,39 @@ public final class ART {
      * builder directly ({@link #builder()}) and fine tune how you want to load and parse your ART.
      *
      * @param artLines a list of strings that contain the ART you want to load
-     * @return ArtContext containing the parsed config
+     * @return ArtContext containing the parsed art lines
      * @see ArtContextBuilder
      */
     public static ArtContext load(List<String> artLines) {
         return builder().load(artLines).build();
     }
 
+    /**
+     * This is just an alias for the {@link #load(List)} function.
+     *
+     * @param artLines a list of strings that contain the ART you want to create
+     * @return ArtContext containing the parsed art lines
+     * @see #load(List)
+     */
+    public static ArtContext create(List<String> artLines) {
+        return load(artLines);
+    }
+
     // TODO: javadoc
     public static void trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> predicate, Target<?>... targets) {
         configuration().triggers().trigger(identifier, predicate, targets);
+    }
+
+    /**
+     * Tries to get a valid {@link Target} wrapper for the given object.
+     * Delegates to {@link TargetProvider#get(Object)}.
+     *
+     * @param target The source object that should be wrapped as a {@link Target}
+     * @param <TTarget> type of the target source
+     * @return wrapped {@link Target} or an empty {@link Optional} if the source was null or no target is found
+     * @see TargetProvider#get(Object)
+     */
+    public static <TTarget> Optional<Target<TTarget>> target(@Nullable TTarget target) {
+        return configuration().targets().get(target);
     }
 }

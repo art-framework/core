@@ -22,7 +22,11 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 // TODO: javadoc
-public interface TriggerHandler {
+public interface TriggerProvider extends ArtProvider {
+
+    TriggerProvider add(Class<? extends Trigger> triggerClass);
+
+    <TTrigger extends Trigger> TriggerProvider add(Class<? extends TTrigger> triggerClass, ArtObjectProvider<TTrigger> trigger);
 
     // TODO: javadoc
     void trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> predicate, Target<?>... targets);

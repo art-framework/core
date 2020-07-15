@@ -18,7 +18,6 @@ package net.silthus.art;
 
 /**
  * Provides a way to create new instances of the given {@link ArtObject} type.
- * Use the {@link Configuration#set(Class, ArtObjectProvider)} to register your {@link ArtObjectProvider}.
  *
  * @param <TArtObject> type of the {@link ArtObject}
  */

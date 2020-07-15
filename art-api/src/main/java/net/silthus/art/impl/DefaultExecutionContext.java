@@ -27,14 +27,14 @@ import java.util.Stack;
 
 public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext> extends AbstractScope implements ExecutionContext<TTarget, TContext> {
 
-    private final ArtContext rootContext;
+    private final Context rootContext;
     private final Target<TTarget> target;
     private final Container container;
     private final TContext currentContext;
 
     public DefaultExecutionContext(
             @NonNull Configuration configuration,
-            @Nullable ArtContext rootContext,
+            @Nullable Context rootContext,
             @NonNull Target<TTarget> target
     ) {
         super(configuration);
@@ -44,7 +44,7 @@ public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext>
         this.currentContext = null;
     }
 
-    DefaultExecutionContext(Configuration configuration, ArtContext rootContext, Target<TTarget> target, Container container, TContext currentContext) {
+    DefaultExecutionContext(Configuration configuration, Context rootContext, Target<TTarget> target, Container container, TContext currentContext) {
         super(configuration);
         this.rootContext = rootContext;
         this.target = target;
@@ -53,7 +53,7 @@ public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext>
     }
 
     @Override
-    public Optional<ArtContext> root() {
+    public Optional<Context> root() {
         return Optional.ofNullable(rootContext);
     }
 
@@ -78,6 +78,22 @@ public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext>
     @Override
     public Target<TTarget> target() {
         return target;
+    }
+
+    @Override
+    public <TValue> Optional<TValue> store(@NonNull String key, @NonNull TValue value) {
+        if (current() != null) {
+            return current().store(target(), key, value);
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public <TValue> Optional<TValue> store(@NonNull String key, @NonNull Class<TValue> valueClass) {
+        if (current() != null) {
+            return current().store(target(), key, valueClass);
+        }
+        return Optional.empty();
     }
 
     @Override
@@ -119,11 +135,6 @@ public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext>
         Container() {
             this.data = new HashMap<>();
             this.history = new Stack<>();
-        }
-
-        Container(Map<String, Object> data, Stack<ArtObjectContext> history) {
-            this.data = data;
-            this.history = history;
         }
     }
 }

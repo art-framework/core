@@ -18,7 +18,6 @@ package net.silthus.art.api.requirements;
 
 import com.google.inject.ImplementedBy;
 import net.silthus.art.Requirement;
-import net.silthus.art.api.factory.ArtFactoryManager;
 
 @ImplementedBy(RequirementFactoryManager.class)
 public interface RequirementManager extends ArtFactoryManager<RequirementFactory<?, ?>> {

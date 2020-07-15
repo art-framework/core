@@ -14,8 +14,11 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api;
+package net.silthus.art.testing;
 
+import net.silthus.art.AbstractArtFactory;
+import net.silthus.art.ArtFactory;
+import net.silthus.art.ArtObject;
 import net.silthus.art.impl.DefaultActionContext;
 import net.silthus.art.impl.DefaultRequirementContext;
 

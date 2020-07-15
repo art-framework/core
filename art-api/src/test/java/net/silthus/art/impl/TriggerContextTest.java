@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.trigger;
+package net.silthus.art.impl;
 
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -22,9 +22,9 @@ import net.silthus.art.ActionContext;
 import net.silthus.art.Scheduler;
 import net.silthus.art.Storage;
 import net.silthus.art.Target;
+import net.silthus.art.api.trigger.DefaultTriggerContext;
+import net.silthus.art.api.trigger.TriggerListener;
 import net.silthus.art.conf.TriggerConfig;
-import net.silthus.art.impl.DefaultMapStorage;
-import net.silthus.art.impl.DefaultRequirementContext;
 import net.silthus.art.testing.StringTarget;
 import org.assertj.core.data.Offset;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,8 +34,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
-import static net.silthus.art.api.TestUtil.action;
-import static net.silthus.art.api.TestUtil.requirement;
+import static net.silthus.art.testing.TestUtil.action;
+import static net.silthus.art.testing.TestUtil.requirement;
 import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;

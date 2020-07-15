@@ -19,7 +19,6 @@ package net.silthus.art.api.trigger;
 import com.google.inject.ImplementedBy;
 import net.silthus.art.Target;
 import net.silthus.art.Trigger;
-import net.silthus.art.api.factory.ArtFactoryManager;
 
 import java.util.Collection;
 import java.util.function.Predicate;
