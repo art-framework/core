@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.config;
+package net.silthus.art.conf;
 
 import lombok.Data;
 
 @Data
-public class ConfigFieldInformation implements Comparable<ConfigFieldInformation> {
+public final class ConfigFieldInformation implements Comparable<ConfigFieldInformation> {
 
     /**
      * The identifier of the config object.
