@@ -37,26 +37,26 @@ public interface ArtFactory<TContext extends ArtObjectContext, TArtObject extend
 
     static <TTarget> ArtFactory<ActionContext<TTarget>, Action<TTarget>> ofAction(
             @NonNull Configuration configuration,
-            @NonNull ArtObjectInformation<Action<TTarget>> information
+            @NonNull ArtInformation<Action<TTarget>> information
     ) {
         return ActionFactory.of(configuration, information);
     }
 
     static <TTarget> ArtFactory<RequirementContext<TTarget>, Requirement<TTarget>> ofRequirement(
             @NonNull Configuration configuration,
-            @NonNull ArtObjectInformation<Requirement<TTarget>> information
+            @NonNull ArtInformation<Requirement<TTarget>> information
     ) {
         return RequirementFactory.of(configuration, information);
     }
 
     static ArtFactory<TriggerContext, Trigger> ofTrigger(
             @NonNull Configuration configuration,
-            @NonNull ArtObjectInformation<Trigger> information
+            @NonNull ArtInformation<Trigger> information
     ) {
         return TriggerFactory.of(configuration, information);
     }
 
-    ArtObjectInformation<TArtObject> info();
+    ArtInformation<TArtObject> info();
 
     default TContext create() {
         return create(new HashMap<>());

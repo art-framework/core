@@ -22,9 +22,9 @@ import java.util.Optional;
 
 public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> extends AbstractScope implements ArtObjectContext<TArtObject> {
 
-    private final ArtObjectInformation<TArtObject> information;
+    private final ArtInformation<TArtObject> information;
 
-    public AbstractArtObjectContext(@NonNull Configuration configuration, ArtObjectInformation<TArtObject> information) {
+    public AbstractArtObjectContext(@NonNull Configuration configuration, ArtInformation<TArtObject> information) {
         super(configuration);
         this.information = information;
     }
@@ -35,7 +35,7 @@ public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> ext
     }
 
     @Override
-    public ArtObjectInformation<TArtObject> info() {
+    public ArtInformation<TArtObject> info() {
         return information;
     }
 

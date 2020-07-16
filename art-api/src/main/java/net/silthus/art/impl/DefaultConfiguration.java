@@ -21,6 +21,7 @@ import net.silthus.art.*;
 import net.silthus.art.conf.ArtContextSettings;
 import net.silthus.art.conf.Settings;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class DefaultConfiguration implements Configuration, Cloneable {
@@ -32,45 +33,75 @@ public class DefaultConfiguration implements Configuration, Cloneable {
 
     private Settings settings;
 
-    private transient ArtProvider art;
-    private transient ActionProvider actions;
-    private transient RequirementProvider requirements;
-    private transient TriggerProvider trigger;
+    private transient ArtProvider artProvider;
+    private transient ActionProvider actionProvider;
+    private transient RequirementProvider requirementProvider;
+    private transient TriggerProvider triggerProvider;
     private transient ArtFinder artFinder;
     private transient Scheduler scheduler;
     private transient Storage storage;
-    private transient TargetProvider targets;
+    private transient TargetProvider targetProvider;
+    private transient EventProvider eventProvider;
+    private transient ArtContextSettings artContextSettings;
 
     public DefaultConfiguration() {
-        this(null, null, Storage.DEFAULT, Settings.DEFAULT, null);
+        this(Settings.DEFAULT,
+                ArtProvider.DEFAULT,
+                ActionProvider.DEFAULT,
+                RequirementProvider.DEFAULT,
+                TriggerProvider.DEFAULT,
+                ArtFinder.DEFAULT,
+                null,
+                Storage.DEFAULT,
+                TargetProvider.DEFAULT,
+                EventProvider.DEFAULT,
+                ArtContextSettings.DEFAULT);
     }
 
-    DefaultConfiguration(ArtProvider art, Scheduler scheduler, Storage storage, Settings settings, TargetProvider targets) {
-        set(art);
-        set(scheduler);
-        set(storage);
-        set(settings);
-        set(targets);
+    DefaultConfiguration(
+            @NonNull Settings settings,
+            @NonNull ArtProvider artProvider,
+            @NonNull ActionProvider actionProvider,
+            @NonNull RequirementProvider requirementProvider,
+            @NonNull TriggerProvider triggerProvider,
+            @NonNull ArtFinder artFinder,
+            @Nullable Scheduler scheduler,
+            @NonNull Storage storage,
+            @NonNull TargetProvider targetProvider,
+            @NonNull EventProvider eventProvider,
+            @NonNull ArtContextSettings artContextSettings
+    ) {
+        this.settings = settings;
+        this.artProvider = artProvider;
+        this.actionProvider = actionProvider;
+        this.requirementProvider = requirementProvider;
+        this.triggerProvider = triggerProvider;
+        this.artFinder = artFinder;
+        this.scheduler = scheduler;
+        this.storage = storage;
+        this.targetProvider = targetProvider;
+        this.eventProvider = eventProvider;
+        this.artContextSettings = artContextSettings;
     }
 
     @Override
     public ArtProvider art() {
-        return art;
+        return artProvider;
     }
 
     @Override
     public ActionProvider actions() {
-        return actions;
+        return actionProvider;
     }
 
     @Override
     public RequirementProvider requirements() {
-        return requirements;
+        return requirementProvider;
     }
 
     @Override
     public TriggerProvider trigger() {
-        return trigger;
+        return triggerProvider;
     }
 
     @Override
@@ -95,17 +126,22 @@ public class DefaultConfiguration implements Configuration, Cloneable {
 
     @Override
     public TargetProvider targets() {
-        return targets;
+        return targetProvider;
     }
 
     @Override
     public ArtContextSettings contextSettings() {
-        return null;
+        return artContextSettings;
+    }
+
+    @Override
+    public EventProvider events() {
+        return eventProvider;
     }
 
     @Override
     public Configuration set(@NonNull ArtProvider artProvider) {
-        this.art = artProvider;
+        this.artProvider = artProvider;
         return this;
     }
 
@@ -129,28 +165,60 @@ public class DefaultConfiguration implements Configuration, Cloneable {
 
     @Override
     public Configuration set(@NonNull TargetProvider targetProvider) {
-        this.targets = targetProvider;
+        this.targetProvider = targetProvider;
+        return this;
+    }
+
+    @Override
+    public Configuration set(@NonNull ActionProvider actionProvider) {
+        this.actionProvider = actionProvider;
+        return this;
+    }
+
+    @Override
+    public Configuration set(@NonNull RequirementProvider requirementProvider) {
+        this.requirementProvider = requirementProvider;
         return this;
     }
 
     @Override
     public Configuration set(@NonNull TriggerProvider triggerProvider) {
-        this.trigger = triggerProvider;
+        this.triggerProvider = triggerProvider;
         return this;
     }
 
     @Override
     public Configuration set(@NonNull ArtContextSettings settings) {
-        return null;
+        this.artContextSettings = settings;
+        return this;
+    }
+
+    @Override
+    public Configuration set(@NonNull ArtFinder artFinder) {
+        this.artFinder = artFinder;
+        return this;
+    }
+
+    @Override
+    public Configuration set(@NonNull EventProvider eventProvider) {
+        this.eventProvider = eventProvider;
+        return this;
     }
 
     @Override
     public Configuration derive() {
-        try {
-            return (Configuration) clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return this;
+        return new DefaultConfiguration(
+                settings(),
+                art(),
+                actions(),
+                requirements(),
+                trigger(),
+                findArt(),
+                scheduler,
+                storage(),
+                targets(),
+                events(),
+                contextSettings()
+        );
     }
 }

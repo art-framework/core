@@ -14,29 +14,17 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.events;
 
-import net.silthus.art.impl.DefaultArtFinder;
+/**
+ * @author lahwran
+ */
+public abstract class Event {
 
-import java.io.File;
-import java.util.function.Predicate;
-
-public interface ArtFinder extends ArtProvider {
-
-    ArtFinder DEFAULT = new DefaultArtFinder(ART.configuration());
-
-    default ArtProvider art() {
-        return configuration().art();
-    }
-
-    ArtFinderResult all();
-
-    default ArtProvider allAndRegister() {
-        all().register();
-        return art();
-    }
-
-    ArtFinderResult allIn(File file);
-
-    ArtFinderResult allIn(File file, Predicate<File> predicate);
+    /**
+     * Get the static handler list of this event subclass.
+     *
+     * @return HandlerList to call event with
+     */
+    protected abstract HandlerList getHandlers();
 }

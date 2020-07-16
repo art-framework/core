@@ -39,7 +39,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
     public DefaultTriggerContext(
             @NonNull Configuration configuration,
-            @NonNull ArtObjectInformation<Trigger> information,
+            @NonNull ArtInformation<Trigger> information,
             @NonNull TriggerConfig config
     ) {
         super(configuration, information);

@@ -26,7 +26,7 @@ public class DefaultTriggerFactory extends AbstractArtFactory<TriggerContext, Tr
 
     public DefaultTriggerFactory(
             @NonNull Configuration configuration,
-            @NonNull ArtObjectInformation<Trigger> information
+            @NonNull ArtInformation<Trigger> information
     ) {
         super(configuration, information);
     }

@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.silthus.art;
 
 import java.util.Collection;
@@ -11,7 +27,7 @@ import java.util.stream.Stream;
  * Classes that don't have an @{@link ArtOptions} annotation
  * or public parameterless constructor can be found in the
  */
-public interface ArtFinderResult extends Iterable<ArtObjectInformation> {
+public interface ArtFinderResult extends Iterable<ArtInformation> {
 
     /**
      * @return the {@link ArtFinder} that created this result
@@ -29,9 +45,9 @@ public interface ArtFinderResult extends Iterable<ArtObjectInformation> {
         return finder();
     }
 
-    ArtFinderResult filter(Predicate<ArtObjectInformation<?>> predicate);
+    ArtFinderResult filter(Predicate<ArtInformation<?>> predicate);
 
-    Stream<ArtObjectInformation<?>> stream();
+    Stream<ArtInformation<?>> stream();
 
     /**
      * Returns a list of all classes excluding any classes that had errors.
@@ -40,7 +56,7 @@ public interface ArtFinderResult extends Iterable<ArtObjectInformation> {
      *
      * @return a list of all classes found by the {@link ArtFinder}
      */
-    Collection<ArtObjectInformation<?>> getAll();
+    Collection<ArtInformation<?>> getAll();
 
     /**
      * Gives the option to handle the errors in a fluent syntax style.

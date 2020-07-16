@@ -16,27 +16,16 @@
 
 package net.silthus.art;
 
-import net.silthus.art.impl.DefaultArtFinder;
+public class IllegalArtAccessException extends RuntimeException {
 
-import java.io.File;
-import java.util.function.Predicate;
-
-public interface ArtFinder extends ArtProvider {
-
-    ArtFinder DEFAULT = new DefaultArtFinder(ART.configuration());
-
-    default ArtProvider art() {
-        return configuration().art();
+    public IllegalArtAccessException() {
     }
 
-    ArtFinderResult all();
-
-    default ArtProvider allAndRegister() {
-        all().register();
-        return art();
+    public IllegalArtAccessException(String message) {
+        super(message);
     }
 
-    ArtFinderResult allIn(File file);
-
-    ArtFinderResult allIn(File file, Predicate<File> predicate);
+    public IllegalArtAccessException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

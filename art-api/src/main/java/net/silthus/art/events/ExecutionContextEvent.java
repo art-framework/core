@@ -14,29 +14,23 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.events;
 
-import net.silthus.art.impl.DefaultArtFinder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import net.silthus.art.ArtObject;
+import net.silthus.art.ArtObjectContext;
+import net.silthus.art.ExecutionContext;
 
-import java.io.File;
-import java.util.function.Predicate;
+@Getter
+@EqualsAndHashCode(callSuper = true)
+public abstract class ExecutionContextEvent<TArtObject extends ArtObject, TContext extends ArtObjectContext<TArtObject>> extends ArtObjectEvent<ArtObject> {
 
-public interface ArtFinder extends ArtProvider {
+    private final ExecutionContext<?, TContext> executionContext;
 
-    ArtFinder DEFAULT = new DefaultArtFinder(ART.configuration());
-
-    default ArtProvider art() {
-        return configuration().art();
+    public ExecutionContextEvent(ArtObject artObject, ExecutionContext<?, TContext> executionContext) {
+        super(artObject);
+        this.executionContext = executionContext;
     }
 
-    ArtFinderResult all();
-
-    default ArtProvider allAndRegister() {
-        all().register();
-        return art();
-    }
-
-    ArtFinderResult allIn(File file);
-
-    ArtFinderResult allIn(File file, Predicate<File> predicate);
 }

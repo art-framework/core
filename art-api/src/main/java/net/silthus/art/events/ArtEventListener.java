@@ -14,29 +14,14 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.events;
 
-import net.silthus.art.impl.DefaultArtFinder;
-
-import java.io.File;
-import java.util.function.Predicate;
-
-public interface ArtFinder extends ArtProvider {
-
-    ArtFinder DEFAULT = new DefaultArtFinder(ART.configuration());
-
-    default ArtProvider art() {
-        return configuration().art();
-    }
-
-    ArtFinderResult all();
-
-    default ArtProvider allAndRegister() {
-        all().register();
-        return art();
-    }
-
-    ArtFinderResult allIn(File file);
-
-    ArtFinderResult allIn(File file, Predicate<File> predicate);
+/**
+ * Use this class to listen on various events that are happening
+ * inside the ART-Framework.
+ * Simple tag your class and then create a method that takes any
+ * {@link Event} as an parameter and is tagged
+ * with @{@link ArtEventHandler}.
+ */
+public interface ArtEventListener {
 }

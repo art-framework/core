@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package net.silthus.art.testing;
+package net.silthus.art.events;
 
-import net.silthus.art.AbstractTarget;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public class StringTarget extends AbstractTarget<String> {
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ArtEventHandler {
 
-    public StringTarget(String source) {
-        super(source);
-    }
+    EventPriority priority() default EventPriority.NORMAL;
 
-    @Override
-    public String getUniqueId() {
-        return getSource();
-    }
+    boolean ignoreCancelled() default false;
 }

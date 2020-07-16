@@ -26,7 +26,7 @@ public class DefaultRequirementFactory<TTarget> extends AbstractArtFactory<Requi
 
     public DefaultRequirementFactory(
             @NonNull Configuration configuration,
-            @NonNull ArtObjectInformation<Requirement<TTarget>> information
+            @NonNull ArtInformation<Requirement<TTarget>> information
     ) {
         super(configuration, information);
     }

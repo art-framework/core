@@ -19,8 +19,10 @@ package net.silthus.art;
 import lombok.NonNull;
 import net.silthus.art.conf.ArtContextSettings;
 import net.silthus.art.conf.Settings;
+import net.silthus.art.events.ArtEventListener;
 import net.silthus.art.impl.DefaultConfiguration;
 
+import java.io.File;
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.function.Function;
@@ -58,7 +60,7 @@ public interface Configuration extends Serializable, Cloneable {
     /**
      * Use the {@link RequirementProvider} to register and query your {@link Requirement}s.
      * Register requirements with the add(...) methods and get an existing {@link RequirementFactory}
-     * with the {@link RequirementProvider#get(String)} method.
+     * with the {@link ArtFactoryProvider#get(String)} method.
      *
      * @return the configured {@link ActionProvider} implementation
      */
@@ -73,7 +75,20 @@ public interface Configuration extends Serializable, Cloneable {
      */
     TriggerProvider trigger();
 
+    /**
+     * Use the {@link ArtFinder} to find all of your {@link ArtObject}s inside
+     * {@link File}s and the classpath. You can then register the found ART.
+     *
+     * @return the configured {@link ArtFinder} implementation
+     */
     ArtFinder findArt();
+
+    /**
+     * Use the {@link EventProvider} to register your {@link ArtEventListener}s.
+     *
+     * @return the configured {@link EventProvider} implementation
+     */
+    EventProvider events();
 
     /**
      * Gets the configured {@link Scheduler} implementation.
@@ -185,8 +200,45 @@ public interface Configuration extends Serializable, Cloneable {
      */
     Configuration set(@NonNull TargetProvider targetProvider);
 
-    // TODO: javadoc
+    /**
+     * Sets a new implementation for the {@link ActionProvider}.
+     *
+     * @param actionProvider {@link ActionProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration set(@NonNull ActionProvider actionProvider);
+
+    /**
+     * Sets a new implementation for the {@link RequirementProvider}.
+     *
+     * @param requirementProvider {@link RequirementProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration set(@NonNull RequirementProvider requirementProvider);
+
+    /**
+     * Sets a new implementation for the {@link TriggerProvider}.
+     *
+     * @param triggerProvider trigger provider implementation to use
+     * @return this {@link Configuration}
+     */
     Configuration set(@NonNull TriggerProvider triggerProvider);
+
+    /**
+     * Sets a new implementation for the {@link ArtFinder}.
+     *
+     * @param artFinder {@link ArtFinder} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration set(@NonNull ArtFinder artFinder);
+
+    /**
+     * Sets a new implementation for the {@link EventProvider}.
+     *
+     * @param eventProvider {@link EventProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration set(@NonNull EventProvider eventProvider);
 
     /**
      * Creates a new {@link Configuration} derived from the current configuration.

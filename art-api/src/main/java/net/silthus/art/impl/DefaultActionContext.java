@@ -22,6 +22,9 @@ import lombok.NonNull;
 import net.silthus.art.*;
 import net.silthus.art.conf.ActionConfig;
 import net.silthus.art.conf.Constants;
+import net.silthus.art.events.ActionExecutedEvent;
+import net.silthus.art.events.ActionExecutionEvent;
+import net.silthus.art.events.PreActionExecutionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +49,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
     public DefaultActionContext(
             @NonNull Configuration configuration,
-            @NonNull ArtObjectInformation<Action<TTarget>> information,
+            @NonNull ArtInformation<Action<TTarget>> information,
             @NonNull Action<TTarget> action,
             @NonNull ActionConfig config
     ) {
@@ -73,6 +76,11 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     @Override
     @SuppressWarnings("unchecked")
     public void execute(ExecutionContext<TTarget, ActionContext<TTarget>> context) {
+
+        if (ART.callEvent(new PreActionExecutionEvent<>(getAction(), context)).isCancelled()) {
+            return;
+        }
+
         Target<TTarget> target = context.target();
 
         if (!isTargetType(target)) return;
@@ -80,7 +88,14 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
         if (!testRequirements(context)) return;
 
         Runnable runnable = () -> {
+
+            if (ART.callEvent(new ActionExecutionEvent<>(getAction(), context)).isCancelled()) {
+                return;
+            }
+
             context.execute(this, getAction());
+
+            ART.callEvent(new ActionExecutedEvent<>(getAction(), context));
 
             store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 

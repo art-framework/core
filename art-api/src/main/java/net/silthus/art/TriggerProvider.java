@@ -16,13 +16,17 @@
 
 package net.silthus.art;
 
+import net.silthus.art.impl.DefaultTriggerProvider;
+
 import java.util.Set;
 import java.util.function.Predicate;
 
 // TODO: javadoc
 public interface TriggerProvider extends ArtProvider {
 
-    TriggerProvider add(ArtObjectInformation<Trigger> triggerInformation);
+    TriggerProvider DEFAULT = new DefaultTriggerProvider(ART.configuration());
+
+    TriggerProvider add(ArtInformation<Trigger> triggerInformation);
 
     TriggerProvider add(Class<? extends Trigger> triggerClass);
 

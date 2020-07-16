@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package net.silthus.art.testing;
+package net.silthus.art.events;
 
-import lombok.Data;
-import net.silthus.art.Target;
+import net.silthus.art.ArtException;
 
-@Data
-public class IntegerTarget implements Target<Integer> {
-
-    private final int source;
-
-    @Override
-    public String getUniqueId() {
-        return hashCode() + "";
+public class EventException extends ArtException {
+    public EventException(String message) {
+        super(message);
     }
 
-    public Integer getSource() {
-        return source;
+    public EventException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public EventException(Throwable cause) {
+        super(cause);
     }
 }
