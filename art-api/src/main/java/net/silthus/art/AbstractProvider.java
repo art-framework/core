@@ -16,19 +16,18 @@
 
 package net.silthus.art;
 
-import java.net.URL;
+import lombok.NonNull;
 
-public interface ArtObjectInformation<TArtObject extends ArtObject> {
+public abstract class AbstractProvider implements Provider {
 
-    String getIdentifier();
+    private final Configuration configuration;
 
-    String[] getDescription();
+    protected AbstractProvider(@NonNull Configuration configuration) {
+        this.configuration = configuration;
+    }
 
-    String[] getAlias();
-
-    Class<?> getConfigClass();
-
-    Class<TArtObject> getArtObjectClass();
-
-    URL getLocation();
+    @Override
+    public Configuration configuration() {
+        return configuration;
+    }
 }

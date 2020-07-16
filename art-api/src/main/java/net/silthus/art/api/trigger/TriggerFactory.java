@@ -24,7 +24,7 @@ import lombok.Setter;
 import net.silthus.art.Scheduler;
 import net.silthus.art.Storage;
 import net.silthus.art.Trigger;
-import net.silthus.art.api.ArtObjectRegistrationException;
+import net.silthus.art.api.ArtObjectInformationException;
 import net.silthus.art.api.annotations.ActiveStorageProvider;
 import net.silthus.art.conf.TriggerConfig;
 
@@ -54,7 +54,7 @@ public class TriggerFactory<TConfig> extends ArtFactory<Object, TConfig, Trigger
     }
 
     @Override
-    public void initialize() throws ArtObjectRegistrationException {
+    public void initialize() throws ArtObjectInformationException {
         if (Objects.isNull(getMethod())) {
             initialize(new Method[0]);
         } else {

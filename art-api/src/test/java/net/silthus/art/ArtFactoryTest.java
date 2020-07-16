@@ -18,7 +18,7 @@ package net.silthus.art;
 
 import lombok.SneakyThrows;
 import net.silthus.art.api.AbstractArtObjectContext;
-import net.silthus.art.api.ArtObjectRegistrationException;
+import net.silthus.art.api.ArtObjectInformationException;
 import net.silthus.art.conf.ActionConfig;
 import net.silthus.art.conf.ConfigFieldInformation;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +26,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 
 @DisplayName("ActionFactory")
@@ -129,7 +130,7 @@ public class ArtFactoryTest {
 
             factory = factory(String.class);
 
-            assertThatExceptionOfType(ArtObjectRegistrationException.class)
+            assertThatExceptionOfType(ArtObjectInformationException.class)
                     .isThrownBy(() -> factory.initialize());
         }
 
@@ -290,7 +291,7 @@ public class ArtFactoryTest {
                     }
                 });
 
-                assertThatExceptionOfType(ArtObjectRegistrationException.class)
+                assertThatExceptionOfType(ArtObjectInformationException.class)
                         .isThrownBy(factory::initialize)
                         .withMessageContaining("found same position");
             }

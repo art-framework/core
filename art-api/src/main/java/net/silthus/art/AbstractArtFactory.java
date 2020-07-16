@@ -1,3 +1,19 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.silthus.art;
 
 import com.google.common.base.Strings;
@@ -5,7 +21,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
-import net.silthus.art.api.ArtObjectRegistrationException;
+import net.silthus.art.api.ArtObjectInformationException;
 import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.conf.ConfigFieldInformation;
 import net.silthus.art.util.ConfigUtil;
@@ -15,6 +31,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URL;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +44,8 @@ public abstract class AbstractArtFactory<TTarget, TContext extends ArtObjectCont
     private final Class<TTarget> targetClass;
     @Getter
     private final Class<TArtObject> artObjectClass;
+    @Getter
+    private final URL location;
 
     @Getter(AccessLevel.PRIVATE)
     @Setter
@@ -55,6 +74,7 @@ public abstract class AbstractArtFactory<TTarget, TContext extends ArtObjectCont
         this.configuration = configuration;
         this.targetClass = targetClass;
         this.artObjectClass = artObjectClass;
+        this.location = artObjectClass.getProtectionDomain().getCodeSource().getLocation();
     }
 
     protected AbstractArtFactory(
@@ -73,11 +93,11 @@ public abstract class AbstractArtFactory<TTarget, TContext extends ArtObjectCont
     }
 
     @Override
-    public void initialize() throws ArtObjectRegistrationException {
+    public void initialize() throws ArtObjectInformationException {
         initialize(getArtObjectClass().getMethods());
     }
 
-    protected final void initialize(Method... methods) throws ArtObjectRegistrationException {
+    protected final void initialize(Method... methods) throws ArtObjectInformationException {
         try {
             setIdentifier(tryGetIdentifier(methods));
             setAlias(tryGetAlias(methods));
@@ -90,14 +110,14 @@ public abstract class AbstractArtFactory<TTarget, TContext extends ArtObjectCont
             getConfigInformation().putAll(tryGetConfigInformation());
 
             if (Strings.isNullOrEmpty(getIdentifier())) {
-                throw new ArtObjectRegistrationException(ArtObjectError.of(
+                throw new ArtObjectInformationException(ArtObjectError.of(
                         getArtObjectClass().getCanonicalName() + " has no defined name. Use the @ArtOptions annotation on the class or a method.",
                         ArtObjectError.Reason.NO_IDENTIFIER,
                         getArtObjectClass()
                 ));
             }
         } catch (ArtConfigException e) {
-            throw new ArtObjectRegistrationException(new ArtObjectError(e.getMessage(), ArtObjectError.Reason.INVALID_CONFIG, getArtObjectClass()), e);
+            throw new ArtObjectInformationException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONFIG, getArtObjectClass()), e);
         }
     }
 
@@ -140,7 +160,7 @@ public abstract class AbstractArtFactory<TTarget, TContext extends ArtObjectCont
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private Class<?> tryGetConfigClass(Method... methods) throws ArtObjectRegistrationException {
+    private Class<?> tryGetConfigClass(Method... methods) throws ArtObjectInformationException {
         Class configClass = getAnnotation(Config.class, methods).map(Config::value)
                 .orElse((Class) ReflectionUtil.getInterfaceTypeArgument(getArtObjectClass(), Configurable.class, 0)
                         .orElse(getArtObjectClass()));
@@ -149,7 +169,7 @@ public abstract class AbstractArtFactory<TTarget, TContext extends ArtObjectCont
             try {
                 configClass.getConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new ArtObjectRegistrationException(new ArtObjectError(
+                throw new ArtObjectInformationException(new ArtObjectError(
                         "Unable to create a new instance of the config class " + configClass.getCanonicalName() + ": " + e.getMessage(),
                         ArtObjectError.Reason.INVALID_CONFIG,
                         getArtObjectClass()
@@ -159,7 +179,7 @@ public abstract class AbstractArtFactory<TTarget, TContext extends ArtObjectCont
         return configClass;
     }
 
-    private ArtObjectProvider<TArtObject> tryGetArtObjectProvider() throws ArtObjectRegistrationException {
+    private ArtObjectProvider<TArtObject> tryGetArtObjectProvider() throws ArtObjectInformationException {
         try {
             Constructor<TArtObject> constructor = getArtObjectClass().getDeclaredConstructor();
             constructor.newInstance();
@@ -172,7 +192,7 @@ public abstract class AbstractArtFactory<TTarget, TContext extends ArtObjectCont
                 }
             };
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
-            throw new ArtObjectRegistrationException(new ArtObjectError(e.getMessage(), ArtObjectError.Reason.INVALID_CONSTRUCTOR, getArtObjectClass()), e);
+            throw new ArtObjectInformationException(new ArtObjectError(e.getMessage(), ArtObjectError.Reason.INVALID_CONSTRUCTOR, getArtObjectClass()), e);
         }
     }
 
