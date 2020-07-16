@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.trigger;
+package net.silthus.art.impl;
 
 import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.*;
-import net.silthus.art.api.AbstractArtObjectContext;
+import net.silthus.art.conf.Constants;
 import net.silthus.art.conf.TriggerConfig;
-import net.silthus.art.impl.DefaultActionContext;
-import net.silthus.art.impl.DefaultRequirementContext;
 
 import java.util.*;
 import java.util.function.Predicate;
 
-import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
 import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
 
-public class DefaultTriggerContext extends AbstractArtObjectContext implements TriggerContext {
+public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> implements TriggerContext {
 
     @Getter
     private final List<ActionContext<?>> actions = new ArrayList<>();
@@ -42,10 +39,10 @@ public class DefaultTriggerContext extends AbstractArtObjectContext implements T
 
     public DefaultTriggerContext(
             @NonNull Configuration configuration,
-            @NonNull Class<?> targetClass,
+            @NonNull ArtObjectInformation<Trigger> information,
             @NonNull TriggerConfig config
     ) {
-        super(configuration, targetClass);
+        super(configuration, information);
         this.config = config;
     }
 
@@ -60,7 +57,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext implements T
     }
 
     @Override
-    public void addRequirement(DefaultRequirementContext<?> requirement) {
+    public void addRequirement(RequirementContext<?> requirement) {
         this.requirements.add(requirement);
     }
 
@@ -75,9 +72,9 @@ public class DefaultTriggerContext extends AbstractArtObjectContext implements T
         Runnable runnable = () -> {
             if (predicate.test(context) && testRequirements(context)) {
 
-                store(target, LAST_EXECUTION, System.currentTimeMillis());
+                store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
-                if (getConfig().isExecuteActions()) executeActions(target);
+                if (getConfig().isExecuteActions()) executeActions(context);
 
                 getEntryForTarget(target.getSource(), listeners).orElse(new HashSet<>()).stream()
                         .map(triggerListener -> (TriggerListener<TTarget>) triggerListener)
@@ -143,6 +140,6 @@ public class DefaultTriggerContext extends AbstractArtObjectContext implements T
     }
 
     private <TTarget> long getLastExecution(Target<TTarget> target) {
-        return store(target, LAST_EXECUTION, Long.class).orElse(0L);
+        return store(target, Constants.Storage.LAST_EXECUTION, Long.class).orElse(0L);
     }
 }

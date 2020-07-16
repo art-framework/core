@@ -14,12 +14,9 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.trigger;
+package net.silthus.art;
 
 import lombok.NonNull;
-import net.silthus.art.Target;
-import net.silthus.art.Trigger;
-import net.silthus.art.ArtContext;
 
 /**
  * Used to listen on events fired by {@link Trigger}s.

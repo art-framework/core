@@ -16,13 +16,13 @@
 
 package net.silthus.art;
 
-import net.silthus.art.api.trigger.TriggerListener;
-
 import java.util.Set;
 import java.util.function.Predicate;
 
 // TODO: javadoc
 public interface TriggerProvider extends ArtProvider {
+
+    TriggerProvider add(ArtObjectInformation<Trigger> triggerInformation);
 
     TriggerProvider add(Class<? extends Trigger> triggerClass);
 

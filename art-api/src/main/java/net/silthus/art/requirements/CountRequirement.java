@@ -17,7 +17,6 @@
 package net.silthus.art.requirements;
 
 import net.silthus.art.*;
-import net.silthus.art.impl.DefaultRequirementContext;
 
 @ArtOptions(
         value = "count",

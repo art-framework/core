@@ -17,22 +17,16 @@
 package net.silthus.art.parser.flow.parser;
 
 import com.google.common.base.Strings;
-import com.google.common.collect.ImmutableMap;
-import lombok.Data;
 import lombok.Getter;
 import net.silthus.art.ConfigMap;
-import net.silthus.art.api.config.ArtConfigException;
-import net.silthus.art.conf.ConfigFieldInformation;
-import net.silthus.art.api.parser.ArtParseException;
+import net.silthus.art.ArtConfigException;
+import net.silthus.art.ArtParseException;
 import net.silthus.art.api.parser.flow.Parser;
 import net.silthus.art.conf.KeyValuePair;
-import net.silthus.art.util.ConfigUtil;
-import net.silthus.art.util.ReflectionUtil;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class ConfigParser extends Parser<ConfigMap> {
 

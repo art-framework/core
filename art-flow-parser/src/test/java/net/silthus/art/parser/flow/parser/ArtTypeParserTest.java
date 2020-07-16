@@ -23,7 +23,7 @@ import net.silthus.art.Storage;
 import net.silthus.art.ConfigOption;
 import net.silthus.art.conf.ActionConfig;
 import net.silthus.art.impl.DefaultActionContext;
-import net.silthus.art.api.parser.ArtParseException;
+import net.silthus.art.ArtParseException;
 import net.silthus.art.util.ConfigUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

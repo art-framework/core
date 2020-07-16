@@ -14,21 +14,23 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.trigger;
+package net.silthus.art;
 
-import com.google.inject.ImplementedBy;
-import net.silthus.art.Target;
-import net.silthus.art.Trigger;
+public class ArtObjectInformationException extends ArtException {
 
-import java.util.Collection;
-import java.util.function.Predicate;
+    private final ArtObjectError error;
 
-@ImplementedBy(DefaultTriggerManager.class)
-public interface TriggerManager extends ArtFactoryManager<TriggerFactory<?>> {
+    public ArtObjectInformationException(ArtObjectError error, Throwable cause) {
+        super(error.getMessage(), cause);
+        this.error = error;
+    }
 
-    Collection<TriggerFactory<?>> create(Trigger trigger);
+    public ArtObjectInformationException(ArtObjectError error) {
+        super(error.getMessage());
+        this.error = error;
+    }
 
-    <TTarget> void addListener(String identifier, Class<TTarget> targetClass, TriggerListener<TTarget> listener);
-
-    <TConfig> void trigger(String identifier, Predicate<DefaultTriggerContext<TConfig>> context, Target<?>... targets);
+    public ArtObjectError error() {
+        return error;
+    }
 }

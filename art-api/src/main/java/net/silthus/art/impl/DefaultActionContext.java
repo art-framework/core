@@ -20,13 +20,11 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.*;
-import net.silthus.art.api.AbstractArtObjectContext;
 import net.silthus.art.conf.ActionConfig;
+import net.silthus.art.conf.Constants;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
 
 /**
  * The action context is created for every unique {@link Action} configuration.
@@ -34,7 +32,7 @@ import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
  *
  * @param <TTarget> target type of the action
  */
-public final class DefaultActionContext<TTarget> extends AbstractArtObjectContext implements ActionContext<TTarget> {
+public final class DefaultActionContext<TTarget> extends AbstractArtObjectContext<Action<TTarget>> implements ActionContext<TTarget> {
 
     @Getter(AccessLevel.PROTECTED)
     private final Action<TTarget> action;
@@ -44,15 +42,15 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     @Getter
     private final List<ActionContext<?>> actions = new ArrayList<>();
     @Getter
-    private final List<DefaultRequirementContext<?>> requirements = new ArrayList<>();
+    private final List<RequirementContext<?>> requirements = new ArrayList<>();
 
     public DefaultActionContext(
             @NonNull Configuration configuration,
-            @NonNull Class<TTarget> targetClass,
+            @NonNull ArtObjectInformation<Action<TTarget>> information,
             @NonNull Action<TTarget> action,
             @NonNull ActionConfig config
     ) {
-        super(configuration, targetClass);
+        super(configuration, information);
         this.action = action;
         this.config = config;
     }
@@ -68,7 +66,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     }
 
     @Override
-    public final void addRequirement(DefaultRequirementContext<?> requirement) {
+    public final void addRequirement(RequirementContext<?> requirement) {
         this.requirements.add(requirement);
     }
 
@@ -84,7 +82,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
         Runnable runnable = () -> {
             context.execute(this, getAction());
 
-            store(target, LAST_EXECUTION, System.currentTimeMillis());
+            store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
             getActions().stream()
                     .filter(actionContext -> actionContext.isTargetType(target))
@@ -136,6 +134,6 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     }
 
     private long getLastExecution(Target<TTarget> target) {
-        return store(target, LAST_EXECUTION, Long.class).orElse(0L);
+        return store(target, Constants.Storage.LAST_EXECUTION, Long.class).orElse(0L);
     }
 }

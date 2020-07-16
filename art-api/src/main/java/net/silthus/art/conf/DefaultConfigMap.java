@@ -3,9 +3,9 @@ package net.silthus.art.conf;
 import com.google.common.collect.ImmutableMap;
 import lombok.Getter;
 import lombok.NonNull;
+import net.silthus.art.ArtConfigException;
 import net.silthus.art.ConfigMap;
 import net.silthus.art.ConfigMapType;
-import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.util.ReflectionUtil;
 import org.apache.commons.lang3.StringUtils;
 

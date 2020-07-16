@@ -16,7 +16,6 @@
 
 package net.silthus.art;
 
-import net.silthus.art.api.ArtObjectInformationException;
 import net.silthus.art.conf.ConfigFieldInformation;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

@@ -7,18 +7,8 @@ public interface ActionFactory<TTarget> extends ArtFactory<ActionContext<TTarget
 {
     static <TTarget> ActionFactory<TTarget> of(
             @NonNull Configuration configuration,
-            @NonNull Class<TTarget> targetClass,
-            @NonNull Class<Action<TTarget>> actionClass
+            @NonNull ArtObjectInformation<Action<TTarget>> information
     ) {
-        return new DefaultActionFactory<>(configuration, targetClass, actionClass);
-    }
-
-    static <TTarget> ActionFactory<TTarget> of(
-            @NonNull Configuration configuration,
-            @NonNull Class<TTarget> targetClass,
-            @NonNull Class<Action<TTarget>> actionClass,
-            @NonNull ArtObjectProvider<Action<TTarget>> artObjectProvider
-    ) {
-        return new DefaultActionFactory<>(configuration, targetClass, actionClass, artObjectProvider);
+        return new DefaultActionFactory<>(configuration, information);
     }
 }

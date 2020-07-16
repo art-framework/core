@@ -17,8 +17,6 @@
 package net.silthus.art;
 
 import lombok.NonNull;
-import net.silthus.art.Configuration;
-import net.silthus.art.Scope;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;

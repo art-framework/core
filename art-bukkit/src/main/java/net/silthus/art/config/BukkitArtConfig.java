@@ -19,7 +19,6 @@ package net.silthus.art.config;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
-import net.silthus.art.api.config.ArtConfig;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;

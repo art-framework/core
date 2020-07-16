@@ -18,10 +18,10 @@ package net.silthus.art.parser.flow.parser;
 
 import com.google.common.base.Strings;
 import lombok.Getter;
-import net.silthus.art.api.AbstractArtObjectContext;
+import net.silthus.art.AbstractArtObjectContext;
 import net.silthus.art.conf.ArtObjectConfig;
 import net.silthus.art.conf.ConfigFieldInformation;
-import net.silthus.art.api.parser.ArtParseException;
+import net.silthus.art.ArtParseException;
 import net.silthus.art.api.parser.flow.Parser;
 import net.silthus.art.parser.flow.ArtType;
 

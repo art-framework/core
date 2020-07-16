@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api;
+package net.silthus.art;
 
-import net.silthus.art.ArtObjectError;
+import net.silthus.art.impl.DefaultRequirementContext;
 
-public class ArtObjectInformationException extends ArtException {
+import java.util.Collection;
 
-    private final ArtObjectError error;
+public interface RequirementHolder {
 
-    public ArtObjectInformationException(ArtObjectError error, Throwable cause) {
-        super(error.getMessage(), cause);
-        this.error = error;
-    }
+    void addRequirement(RequirementContext<?> requirement);
 
-    public ArtObjectInformationException(ArtObjectError error) {
-        super(error.getMessage());
-        this.error = error;
-    }
+    Collection<RequirementContext<?>> getRequirements();
 
-    public ArtObjectError error() {
-        return error;
+    @SuppressWarnings("unchecked")
+    default <TTarget> boolean testRequirements(ExecutionContext<TTarget, ?> context) {
+        return getRequirements().stream()
+                .filter(requirementContext -> requirementContext.isTargetType(context.target()))
+                .map(requirementContext -> (DefaultRequirementContext<TTarget>) requirementContext)
+                .allMatch(context::test);
     }
 }

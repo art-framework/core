@@ -5,7 +5,9 @@ import java.util.function.Predicate;
 
 public interface ArtFinder extends ArtProvider {
 
-    ArtProvider art();
+    default ArtProvider art() {
+        return configuration().art();
+    }
 
     ArtFinderResult all();
 

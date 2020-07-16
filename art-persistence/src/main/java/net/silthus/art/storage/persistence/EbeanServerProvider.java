@@ -23,7 +23,6 @@ import io.ebean.EbeanServer;
 import io.ebean.EbeanServerFactory;
 import io.ebean.config.ServerConfig;
 import io.ebean.datasource.DataSourceConfig;
-import net.silthus.art.api.config.ArtConfiguration;
 
 import java.util.HashMap;
 import java.util.Map;

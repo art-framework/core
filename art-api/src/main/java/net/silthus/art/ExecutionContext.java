@@ -35,7 +35,7 @@ import java.util.Optional;
  *
  * @param <TContext> type of the context that is currently executing
  */
-public interface ExecutionContext<TTarget, TContext extends ArtObjectContext> extends Context {
+public interface ExecutionContext<TTarget, TContext extends ArtObjectContext<?>> extends Context {
 
     /**
      * Creates a new {@link DefaultConfiguration} from the given parameters.
@@ -73,7 +73,7 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext> ex
      * @return the parent that was executed before this context.
      *          May be empty if no parent exists.
      */
-    Optional<ArtObjectContext> parent();
+    Optional<ArtObjectContext<?>> parent();
 
     /**
      * Gets the full history of this {@link ExecutionContext} ordered
@@ -83,7 +83,7 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext> ex
      *
      * @return Execution history in a stack sorted format. From newest to oldest.
      */
-    ArtObjectContext[] history();
+    ArtObjectContext<?>[] history();
 
     /**
      * Gets the {@link Target} that is attached to this context.
@@ -92,6 +92,11 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext> ex
      * @return target of this context
      */
     Target<TTarget> target();
+
+    @SuppressWarnings("unchecked")
+    default Class<TTarget> getTargetClass() {
+        return (Class<TTarget>) target().getSource().getClass();
+    }
 
     /**
      * Gets the context that is currently being executed.
@@ -146,7 +151,7 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext> ex
      * @param <TNextContext> type of the next context
      * @return the next execution context containing the properties of this context
      */
-    <TNextContext extends ArtObjectContext> ExecutionContext<TTarget, TNextContext> next(TNextContext nextContext);
+    <TNextContext extends ArtObjectContext<?>> ExecutionContext<TTarget, TNextContext> next(TNextContext nextContext);
 
     <TNextContext extends ActionContext<TTarget>> void execute(TNextContext nextContext);
 

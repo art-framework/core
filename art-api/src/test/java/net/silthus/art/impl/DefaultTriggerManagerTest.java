@@ -16,9 +16,6 @@
 
 package net.silthus.art.impl;
 
-import net.silthus.art.api.trigger.DefaultTriggerManager;
-import net.silthus.art.api.trigger.TriggerFactory;
-import net.silthus.art.api.trigger.TriggerManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

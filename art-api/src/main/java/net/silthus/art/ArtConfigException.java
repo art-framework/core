@@ -1,6 +1,4 @@
-package net.silthus.art.api.config;
-
-import net.silthus.art.api.ArtException;
+package net.silthus.art;
 
 public class ArtConfigException extends ArtException {
 

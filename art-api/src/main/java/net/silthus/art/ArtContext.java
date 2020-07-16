@@ -18,9 +18,6 @@ package net.silthus.art;
 
 import com.google.inject.ImplementedBy;
 import lombok.NonNull;
-import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.parser.Filter;
-import net.silthus.art.api.trigger.TriggerListener;
 import net.silthus.art.conf.ArtContextSettings;
 import net.silthus.art.impl.DefaultArtContext;
 
@@ -36,8 +33,8 @@ import java.util.List;
  * <br>
  * Execute your actions by calling {@link #execute(Target)}.
  * <br>
- * It is created from an {@link ArtConfig} and holds all loaded {@link Action}s, {@link Requirement}s and {@link Trigger}.
- * Create an {@link ArtContext} by parsing your {@link ArtConfig} with {@link ART#load(List)}.
+ * It is created from any object by a {@link ArtParser} and holds all loaded {@link Action}s, {@link Requirement}s and {@link Trigger}.
+ * Create an {@link ArtContext} by parsing your config with {@link ART#load(List)}.
  * <br>
  * The {@link ArtContext} is immutable and accepts any input, including null without throwing an exception.
  */
@@ -45,20 +42,20 @@ import java.util.List;
 @ImplementedBy(DefaultArtContext.class)
 public interface ArtContext extends Context {
 
-    static ArtContext of(Collection<ArtObjectContext> art) {
-        return of(ART.configuration(), art);
+    static ArtContext of(Configuration configuration, ArtContextSettings settings, Collection<ArtObjectContext<?>> art) {
+        return new DefaultArtContext(configuration, settings, art);
     }
 
-    static ArtContext of(ArtContextSettings settings, Collection<ArtObjectContext> art) {
+    static ArtContext of(Configuration configuration, Collection<ArtObjectContext<?>> art) {
+        return of(configuration, ART.configuration().contextSettings(), art);
+    }
+
+    static ArtContext of(ArtContextSettings settings, Collection<ArtObjectContext<?>> art) {
         return of(ART.configuration(), settings, art);
     }
 
-    static ArtContext of(Configuration configuration, Collection<ArtObjectContext> art) {
-        return of(configuration, new ArtContextSettings(), art);
-    }
-
-    static ArtContext of(Configuration configuration, ArtContextSettings settings, Collection<ArtObjectContext> art) {
-        return new DefaultArtContext(configuration, settings, art);
+    static ArtContext of(Collection<ArtObjectContext<?>> art) {
+        return of(ART.configuration(), art);
     }
 
     /**

@@ -22,7 +22,6 @@ import com.google.inject.assistedinject.Assisted;
 import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.*;
-import net.silthus.art.api.trigger.TriggerListener;
 import net.silthus.art.conf.ArtContextSettings;
 
 import java.util.*;
@@ -34,11 +33,11 @@ public final class DefaultArtContext extends AbstractScope implements ArtContext
     private final ArtContextSettings settings;
 
     @Getter
-    private final List<ArtObjectContext> art;
+    private final List<ArtObjectContext<?>> art;
     private final Map<Class<?>, List<TriggerListener<?>>> triggerListeners = new HashMap<>();
 
     @Inject
-    public DefaultArtContext(Configuration configuration, ArtContextSettings settings, @Assisted Collection<ArtObjectContext> art) {
+    public DefaultArtContext(Configuration configuration, ArtContextSettings settings, @Assisted Collection<ArtObjectContext<?>> art) {
         super(configuration);
         this.settings = settings;
         this.art = ImmutableList.copyOf(art);
@@ -57,7 +56,7 @@ public final class DefaultArtContext extends AbstractScope implements ArtContext
     @SuppressWarnings("unchecked")
     public final <TTarget> boolean test(@NonNull Target<TTarget> target) {
 
-        ExecutionContext<TTarget, ArtObjectContext> executionContext = ExecutionContext.of(configuration(), this, target);
+        ExecutionContext<TTarget, ?> executionContext = ExecutionContext.of(configuration(), this, target);
 
         return getArt().stream()
                 .filter(context -> context.isTargetType(target))
@@ -70,7 +69,7 @@ public final class DefaultArtContext extends AbstractScope implements ArtContext
     @SuppressWarnings("unchecked")
     public final <TTarget> void execute(@NonNull Target<TTarget> target) {
 
-        ExecutionContext<TTarget, ArtObjectContext> executionContext = ExecutionContext.of(configuration(), this, target);
+        ExecutionContext<TTarget, ?> executionContext = ExecutionContext.of(configuration(), this, target);
 
         getArt().stream()
                 .filter(context -> context.isTargetType(target))

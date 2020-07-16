@@ -18,15 +18,11 @@ package net.silthus.art;
 
 import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
-import net.silthus.art.ArtFactory;
-import net.silthus.art.ArtFactoryProvider;
-import net.silthus.art.Configuration;
-import net.silthus.art.api.ArtRegistrationException;
 
-import javax.inject.Inject;
-import java.util.*;
-import java.util.logging.Logger;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 public abstract class AbstractArtFactoryProvider<TFactory extends ArtFactory<?, ?>> implements ArtFactoryProvider<TFactory> {
 
@@ -40,44 +36,13 @@ public abstract class AbstractArtFactoryProvider<TFactory extends ArtFactory<?, 
         this.configuration = configuration;
     }
 
+    @Override
+    public Configuration configuration() {
+        return configuration;
+    }
+
     public boolean exists(String identifier) {
         return factories.containsKey(identifier);
-    }
-
-    @Override
-    public ArtFactoryProvider<TFactory> add(Collection<TFactory> factories) {
-        factories.forEach(this::add);
-        return this;
-    }
-
-    @Override
-    public ArtFactoryProvider<TFactory> add(TFactory factory) {
-
-        try {
-            factory.initialize();
-
-            String identifier = factory.getIdentifier();
-
-            if (exists(identifier)) {
-                throw new ArtRegistrationException("Duplicate ArtFactory for identifier \"" + identifier + "\" found. " +
-                        "Tried to register " + factory.getArtObjectClass().getCanonicalName()
-                        + " but already found " + factories.get(identifier).getArtObjectClass().getCanonicalName());
-            } else {
-                factories.put(identifier, factory);
-                for (String alias : factory.getAlias()) {
-                    if (!aliasMappings.containsKey(alias)) {
-                        aliasMappings.put(alias, identifier);
-                    } else {
-//                        getLogger().warning("No registering duplicate alias " + alias + " of " + identifier + ". "
-//                                + aliasMappings.get(alias) + " has already registered the alias.");
-                    }
-                }
-            }
-        } catch (ArtRegistrationException e) {
-            e.printStackTrace();
-        }
-
-        return this;
     }
 
     @Override
@@ -88,5 +53,9 @@ public abstract class AbstractArtFactoryProvider<TFactory extends ArtFactory<?, 
         }
 
         return Optional.ofNullable(factories.get(identifier));
+    }
+
+    protected void addFactory(TFactory factory) {
+
     }
 }

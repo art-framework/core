@@ -33,6 +33,10 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     private Settings settings;
 
     private transient ArtProvider art;
+    private transient ActionProvider actions;
+    private transient RequirementProvider requirements;
+    private transient TriggerProvider trigger;
+    private transient ArtFinder artFinder;
     private transient Scheduler scheduler;
     private transient Storage storage;
     private transient TargetProvider targets;
@@ -52,6 +56,26 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     @Override
     public ArtProvider art() {
         return art;
+    }
+
+    @Override
+    public ActionProvider actions() {
+        return actions;
+    }
+
+    @Override
+    public RequirementProvider requirements() {
+        return requirements;
+    }
+
+    @Override
+    public TriggerProvider trigger() {
+        return trigger;
+    }
+
+    @Override
+    public ArtFinder findArt() {
+        return artFinder;
     }
 
     @Override
@@ -106,6 +130,12 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     @Override
     public Configuration set(@NonNull TargetProvider targetProvider) {
         this.targets = targetProvider;
+        return this;
+    }
+
+    @Override
+    public Configuration set(@NonNull TriggerProvider triggerProvider) {
+        this.trigger = triggerProvider;
         return this;
     }
 
