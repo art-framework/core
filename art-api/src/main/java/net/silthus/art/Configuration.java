@@ -21,7 +21,6 @@ import net.silthus.art.conf.ArtContextSettings;
 import net.silthus.art.conf.Settings;
 import net.silthus.art.impl.DefaultConfiguration;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.Optional;
 import java.util.function.Function;
@@ -35,51 +34,46 @@ public interface Configuration extends Serializable, Cloneable {
     Configuration DEFAULT = new DefaultConfiguration();
 
     /**
-     * Use the {@link ArtProvider} to add and register your {@link ArtObject}s.
+     * Use the {@link ArtProvider} and its sub provider to register your ART.
+     * Sub providers are:
+     * <ul>
+     *     <li>{@link ActionProvider}</li>
+     *     <li>{@link RequirementProvider}</li>
+     *     <li>{@link TriggerProvider}</li>
+     * </ul>
      *
-     * @return implementing {@link ArtProvider}
+     * @return the configured {@link ArtProvider} implementation
      */
     ArtProvider art();
 
-    default Configuration addAllArt() {
-        art().registerAll();
-        return this;
-    }
+    /**
+     * Use the {@link ActionProvider} to register and query your {@link Action}s.
+     * Register actions with the add(...) methods and get an existing {@link ActionFactory}
+     * with the {@link ActionProvider#get(String)} method.
+     *
+     * @return the configured {@link ActionProvider} implementation
+     */
+    ActionProvider actions();
 
-    default Configuration addAllArt(File file) {
-        art().registerAll(file);
-        return this;
-    }
+    /**
+     * Use the {@link RequirementProvider} to register and query your {@link Requirement}s.
+     * Register requirements with the add(...) methods and get an existing {@link RequirementFactory}
+     * with the {@link RequirementProvider#get(String)} method.
+     *
+     * @return the configured {@link ActionProvider} implementation
+     */
+    RequirementProvider requirements();
 
-    default Configuration action(Class<? extends Action<?>> actionClass) {
-        art().action(actionClass);
-        return this;
-    }
+    /**
+     * Use the {@link ActionProvider} to register and query your {@link Action}s.
+     * Register actions with the add(...) methods and get an existing {@link ActionFactory}
+     * with the {@link ActionProvider#get(String)} method.
+     *
+     * @return the configured {@link ActionProvider} implementation
+     */
+    TriggerProvider trigger();
 
-    default <TTarget> Configuration action(Action<TTarget> action) {
-        art().action(action);
-        return this;
-    }
-
-    default Configuration requirement(Class<? extends Requirement<?>> requirementClass) {
-        art().requirement(requirementClass);
-        return this;
-    }
-
-    default <TTarget> Configuration requirement(Requirement<TTarget> requirement) {
-        art().requirement(requirement);
-        return this;
-    }
-
-    default Configuration trigger(Class<? extends Trigger> triggerClass) {
-        art().trigger(triggerClass);
-        return this;
-    }
-
-    default Configuration trigger(Trigger trigger) {
-        art().trigger(trigger);
-        return this;
-    }
+    ArtFinder findArt();
 
     /**
      * Gets the configured {@link Scheduler} implementation.
@@ -124,9 +118,6 @@ public interface Configuration extends Serializable, Cloneable {
      * @return the implementing {@link TargetProvider}
      */
     TargetProvider targets();
-
-    // TODO: javadoc
-    TriggerProvider triggers();
 
     /**
      * Adds a {@link TargetProvider} for the given {@link Target} type.

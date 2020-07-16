@@ -18,16 +18,16 @@ package net.silthus.art.api;
 
 import net.silthus.art.ArtObjectError;
 
-public class ArtObjectRegistrationException extends ArtRegistrationException {
+public class ArtObjectInformationException extends ArtException {
 
     private final ArtObjectError error;
 
-    public ArtObjectRegistrationException(ArtObjectError error, Throwable cause) {
+    public ArtObjectInformationException(ArtObjectError error, Throwable cause) {
         super(error.getMessage(), cause);
         this.error = error;
     }
 
-    public ArtObjectRegistrationException(ArtObjectError error) {
+    public ArtObjectInformationException(ArtObjectError error) {
         super(error.getMessage());
         this.error = error;
     }
