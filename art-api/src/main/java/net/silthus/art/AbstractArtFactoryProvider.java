@@ -19,7 +19,6 @@ package net.silthus.art;
 import lombok.AccessLevel;
 import lombok.Getter;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;

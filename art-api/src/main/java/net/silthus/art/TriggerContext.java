@@ -27,7 +27,7 @@ public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder,
 
     static TriggerContext of(
             @NonNull Configuration configuration,
-            @NonNull ArtObjectInformation<Trigger> information,
+            @NonNull ArtInformation<Trigger> information,
             @NonNull TriggerConfig config
     ) {
         return new DefaultTriggerContext(configuration, information, config);

@@ -17,6 +17,8 @@
 package net.silthus.art;
 
 import lombok.NonNull;
+import net.silthus.art.events.Event;
+import net.silthus.art.events.EventManager;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -45,7 +47,7 @@ public final class ART {
     /**
      * Gets the global {@link Configuration} configured for all static methods in this class.
      * You can use the {@link Configuration#derive()} method to clone the configuration
-     * and provide a local modified copy of it to the {@link ArtBuilder}
+     * and provide a local modified copy of it to the {@link ArtContextBuilder}
      * or any other object in the ART-Framework.
      *
      * @return the global {@link Configuration}
@@ -131,5 +133,9 @@ public final class ART {
      */
     public static <TTarget> Optional<Target<TTarget>> target(@Nullable TTarget target) {
         return configuration().targets().get(target);
+    }
+
+    public static <TEvent extends Event> TEvent callEvent(TEvent event) {
+        return EventManager.callEvent(event);
     }
 }

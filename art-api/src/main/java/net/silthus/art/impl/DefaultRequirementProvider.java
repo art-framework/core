@@ -22,29 +22,29 @@ import net.silthus.art.*;
 import java.util.Collection;
 import java.util.Objects;
 
-public class DefaultActionProvider extends AbstractArtFactoryProvider<ActionFactory<?>> implements ActionProvider {
+public class DefaultRequirementProvider extends AbstractArtFactoryProvider<RequirementFactory<?>> implements RequirementProvider {
 
-    public DefaultActionProvider(Configuration configuration) {
+    public DefaultRequirementProvider(Configuration configuration) {
         super(configuration);
     }
 
     @Override
-    public ActionProvider add(@NonNull ArtInformation<Action<?>> actionInformation) {
-        addFactory(ActionFactory.of(configuration(), actionInformation.get()));
+    public RequirementProvider add(@NonNull ArtInformation<Requirement<?>> information) {
+        addFactory(RequirementFactory.of(configuration(), information.get()));
         return this;
     }
 
     @Override
-    public ActionProvider add(@NonNull String identifier, @NonNull GenericAction action) {
+    public RequirementProvider add(@NonNull String identifier, @NonNull GenericRequirement action) {
         return add(ArtInformation.of(identifier, Object.class, action));
     }
 
     @Override
-    public <TTarget> ActionProvider add(String identifier, Class<TTarget> targetClass, Action<TTarget> action) {
+    public <TTarget> RequirementProvider add(String identifier, Class<TTarget> targetClass, Requirement<TTarget> action) {
         return add(ArtInformation.of(identifier, targetClass, action));
     }
 
-    public ActionProvider add(@NonNull Class<? extends Action<?>> aClass) {
+    public RequirementProvider add(@NonNull Class<? extends Requirement<?>> aClass) {
         try {
             return add(Objects.requireNonNull(ArtInformation.of(aClass).get()));
         } catch (ArtObjectInformationException e) {
@@ -54,7 +54,7 @@ public class DefaultActionProvider extends AbstractArtFactoryProvider<ActionFact
         return this;
     }
 
-    public <TAction extends Action<TTarget>, TTarget> ActionProvider add(Class<TAction> aClass, ArtObjectProvider<TAction> artObjectProvider) {
+    public <TRequirement extends Requirement<TTarget>, TTarget> RequirementProvider add(Class<TRequirement> aClass, ArtObjectProvider<TRequirement> artObjectProvider) {
         try {
             return add(Objects.requireNonNull(ArtInformation.of(aClass, artObjectProvider).get()));
         } catch (ArtObjectInformationException e) {
@@ -64,7 +64,7 @@ public class DefaultActionProvider extends AbstractArtFactoryProvider<ActionFact
         return this;
     }
 
-    public ActionProvider addAll(Collection<ArtInformation<?>> artObjects) {
+    public RequirementProvider addAll(Collection<ArtInformation<?>> artObjects) {
         for (ArtInformation<?> artObject : artObjects) {
             add(Objects.requireNonNull(artObject.get()));
         }

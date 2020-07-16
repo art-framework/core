@@ -17,29 +17,33 @@
 package net.silthus.art.impl;
 
 import lombok.NonNull;
-import net.silthus.art.*;
+import net.silthus.art.AbstractProvider;
+import net.silthus.art.Configuration;
+import net.silthus.art.EventProvider;
+import net.silthus.art.events.ArtEventListener;
+import net.silthus.art.events.EventManager;
 
-import java.util.Collection;
+public class DefaultEventProvider extends AbstractProvider implements EventProvider {
 
-public class DefaultArtProvider extends AbstractProvider implements ArtProvider {
-
-    public DefaultArtProvider(@NonNull Configuration configuration) {
+    public DefaultEventProvider(@NonNull Configuration configuration) {
         super(configuration);
     }
 
     @Override
-    public ArtProvider addAll(Collection<ArtInformation<?>> artObjects) {
+    public EventProvider register(ArtEventListener listener) {
+        EventManager.registerListeners(listener);
+        return this;
+    }
 
-        for (ArtInformation<?> artObject : artObjects) {
-            if (Action.class.isAssignableFrom(artObject.getArtObjectClass())) {
-                actions().add(artObject.get());
-            } else if (Requirement.class.isAssignableFrom(artObject.getArtObjectClass())) {
-                actions().add(artObject.get());
-            } else if (Trigger.class.isAssignableFrom(artObject.getArtObjectClass())) {
-                trigger().add(artObject.get());
-            }
-        }
+    @Override
+    public EventProvider unregister(ArtEventListener listener) {
+        EventManager.unregisterListeners(listener);
+        return this;
+    }
 
+    @Override
+    public EventProvider unregisterAll() {
+        EventManager.unregisterAll();
         return this;
     }
 }

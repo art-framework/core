@@ -17,6 +17,7 @@
 package net.silthus.art;
 
 import lombok.NonNull;
+import net.silthus.art.impl.DefaultTargetProvider;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -31,6 +32,8 @@ import java.util.function.Function;
  * @see Target
  */
 public interface TargetProvider extends Provider {
+
+    TargetProvider DEFAULT = new DefaultTargetProvider(ART.configuration());
 
     /**
      * Tries to wrap the given target source into a {@link Target}.

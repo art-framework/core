@@ -14,29 +14,11 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.events;
 
-import net.silthus.art.impl.DefaultArtFinder;
+public interface Cancellable {
 
-import java.io.File;
-import java.util.function.Predicate;
+    boolean isCancelled();
 
-public interface ArtFinder extends ArtProvider {
-
-    ArtFinder DEFAULT = new DefaultArtFinder(ART.configuration());
-
-    default ArtProvider art() {
-        return configuration().art();
-    }
-
-    ArtFinderResult all();
-
-    default ArtProvider allAndRegister() {
-        all().register();
-        return art();
-    }
-
-    ArtFinderResult allIn(File file);
-
-    ArtFinderResult allIn(File file, Predicate<File> predicate);
+    void setCancelled(boolean cancelled);
 }

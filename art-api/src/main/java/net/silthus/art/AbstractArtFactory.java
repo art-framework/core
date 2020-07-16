@@ -23,15 +23,15 @@ import java.lang.reflect.InvocationTargetException;
 public abstract class AbstractArtFactory<TContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> implements ArtFactory<TContext, TArtObject> {
 
     private final Configuration configuration;
-    private final ArtObjectInformation<TArtObject> information;
+    private final ArtInformation<TArtObject> information;
 
-    protected AbstractArtFactory(@NonNull Configuration configuration, @NonNull ArtObjectInformation<TArtObject> information) {
+    protected AbstractArtFactory(@NonNull Configuration configuration, @NonNull ArtInformation<TArtObject> information) {
         this.configuration = configuration;
         this.information = information;
     }
 
     @Override
-    public ArtObjectInformation<TArtObject> info() {
+    public ArtInformation<TArtObject> info() {
         return information;
     }
 

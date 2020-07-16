@@ -38,7 +38,7 @@ import java.util.Optional;
 
 @Immutable
 @EqualsAndHashCode
-public class DefaultArtObjectInformation<TArtObject extends ArtObject> implements ArtObjectInformation<TArtObject> {
+public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtInformation<TArtObject> {
 
     @Getter
     private final Class<TArtObject> artObjectClass;
@@ -55,7 +55,7 @@ public class DefaultArtObjectInformation<TArtObject extends ArtObject> implement
 
     private Method[] methods;
 
-    private DefaultArtObjectInformation(
+    private DefaultArtInformation(
             @NonNull Class<TArtObject> artObjectClass,
             @NonNull String identifier,
             @NonNull String[] description,
@@ -77,7 +77,7 @@ public class DefaultArtObjectInformation<TArtObject extends ArtObject> implement
         this.initialized = true;
     }
 
-    public DefaultArtObjectInformation(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) {
+    public DefaultArtInformation(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) {
         this.artObjectClass = artObjectClass;
         this.location = artObjectClass.getProtectionDomain().getCodeSource().getLocation();
         this.artObjectProvider = provider;
@@ -93,16 +93,16 @@ public class DefaultArtObjectInformation<TArtObject extends ArtObject> implement
         this.initialized = false;
     }
 
-    public DefaultArtObjectInformation(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> artObjectProvider) {
+    public DefaultArtInformation(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> artObjectProvider) {
         this(artObjectClass, artObjectProvider, artObjectClass.getDeclaredMethods());
     }
 
-    public DefaultArtObjectInformation(@NonNull Class<TArtObject> artObjectClass) {
+    public DefaultArtInformation(@NonNull Class<TArtObject> artObjectClass) {
         this(artObjectClass, null, artObjectClass.getDeclaredMethods());
     }
 
     @SuppressWarnings("unchecked")
-    public DefaultArtObjectInformation(@NonNull String identifier, @NonNull Class<?> targetClass, @NonNull TArtObject artObject) {
+    public DefaultArtInformation(@NonNull String identifier, @NonNull Class<?> targetClass, @NonNull TArtObject artObject) {
         this.artObjectClass = (Class<TArtObject>) artObject.getClass();
         this.location = artObjectClass.getProtectionDomain().getCodeSource().getLocation();
         this.artObjectProvider = () -> artObject;
@@ -183,9 +183,9 @@ public class DefaultArtObjectInformation<TArtObject extends ArtObject> implement
 
     @Override
     @SuppressWarnings("unchecked")
-    public <TObject extends ArtObject> ArtObjectInformation<TObject> get() {
+    public <TObject extends ArtObject> ArtInformation<TObject> get() {
         try {
-            return (ArtObjectInformation<TObject>) this;
+            return (ArtInformation<TObject>) this;
         } catch (ClassCastException e) {
             e.printStackTrace();
             return null;
@@ -193,7 +193,7 @@ public class DefaultArtObjectInformation<TArtObject extends ArtObject> implement
     }
 
     @Override
-    public ArtObjectInformation<TArtObject> initialize() throws ArtObjectInformationException {
+    public ArtInformation<TArtObject> initialize() throws ArtObjectInformationException {
         if (isInitialized()) return this;
 
         try {
@@ -212,7 +212,7 @@ public class DefaultArtObjectInformation<TArtObject extends ArtObject> implement
                 ));
             }
 
-            return new DefaultArtObjectInformation<>(artObjectClass, identifier, description, alias, configClass, targetClass, configMap, provider);
+            return new DefaultArtInformation<>(artObjectClass, identifier, description, alias, configClass, targetClass, configMap, provider);
         } catch (ArtConfigException e) {
             throw new ArtObjectInformationException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONFIG, getArtObjectClass()), e);
         }
@@ -277,7 +277,7 @@ public class DefaultArtObjectInformation<TArtObject extends ArtObject> implement
             return ReflectionUtil.getInterfaceTypeArgument(getArtObjectClass(), Requirement.class, 0).orElseThrow(() -> exception);
         }
 
-        return ReflectionUtil.getInterfaceTypeArgument(getClass(), ArtObjectInformation.class, 0)
+        return ReflectionUtil.getInterfaceTypeArgument(getClass(), ArtInformation.class, 0)
                 .flatMap(aClass -> ReflectionUtil.getInterfaceTypeArgument(getArtObjectClass(), aClass, 0))
                 .orElseThrow(() -> exception);
     }

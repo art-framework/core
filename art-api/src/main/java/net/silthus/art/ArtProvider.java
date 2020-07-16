@@ -17,6 +17,7 @@
 package net.silthus.art;
 
 import net.silthus.art.conf.Settings;
+import net.silthus.art.impl.DefaultArtProvider;
 
 import java.util.Collection;
 
@@ -33,6 +34,8 @@ import java.util.Collection;
  */
 public interface ArtProvider extends Provider {
 
+    ArtProvider DEFAULT = new DefaultArtProvider(ART.configuration());
+
     /**
      * Gets the {@link ArtFinder} to find {@link ArtObject}s inside your
      * classpath or file tree. Use the {@link ArtFinderResult} to register
@@ -46,13 +49,13 @@ public interface ArtProvider extends Provider {
 
     /**
      * Adds all of the provided {@link ArtObject}s to the relevant {@link ArtProvider}.
-     * Make sure that {@link ArtObjectInformation#isInitialized()} returns true.
+     * Make sure that {@link ArtInformation#isInitialized()} returns true.
      * Otherwise the registration will fail.
      *
      * @param artObjects The list of {@link ArtObject}s that should be added to the provider
      * @return this {@link ArtProvider}
      */
-    ArtProvider addAll(Collection<ArtObjectInformation<?>> artObjects);
+    ArtProvider addAll(Collection<ArtInformation<?>> artObjects);
 
     default ActionProvider actions() {
         return configuration().actions();
