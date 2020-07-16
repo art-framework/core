@@ -17,12 +17,12 @@
 package net.silthus.art.util;
 
 import com.google.common.base.Strings;
+import net.silthus.art.ArtConfigException;
 import net.silthus.art.ConfigOption;
+import net.silthus.art.FieldNameFormatter;
 import net.silthus.art.Ignore;
-import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.conf.ConfigFieldInformation;
-import net.silthus.art.api.config.FieldNameFormatter;
-import net.silthus.art.api.config.FieldNameFormatters;
+import net.silthus.art.conf.FieldNameFormatters;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.io.File;

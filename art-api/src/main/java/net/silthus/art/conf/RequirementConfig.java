@@ -20,9 +20,9 @@ import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
+import net.silthus.art.ArtConfigException;
 import net.silthus.art.ConfigOption;
 import net.silthus.art.Requirement;
-import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.util.ConfigUtil;
 
 import javax.annotation.concurrent.Immutable;

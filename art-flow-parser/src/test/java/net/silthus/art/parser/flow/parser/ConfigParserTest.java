@@ -19,7 +19,7 @@ package net.silthus.art.parser.flow.parser;
 import lombok.Data;
 import lombok.SneakyThrows;
 import net.silthus.art.ConfigOption;
-import net.silthus.art.api.parser.ArtParseException;
+import net.silthus.art.ArtParseException;
 import net.silthus.art.util.ConfigUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

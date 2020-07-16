@@ -35,6 +35,9 @@ public class Settings extends SettingsBase implements Serializable, Cloneable {
         return new Settings(settings);
     }
 
+    Settings() {
+    }
+
     Settings(Settings settings) {
         this.autoRegisterAllArt = settings.autoRegisterAllArt;
     }

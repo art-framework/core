@@ -17,7 +17,6 @@
 package net.silthus.art;
 
 import lombok.NonNull;
-import net.silthus.art.api.requirements.RequirementHolder;
 import net.silthus.art.conf.ActionConfig;
 import net.silthus.art.impl.DefaultActionContext;
 
@@ -27,15 +26,15 @@ import net.silthus.art.impl.DefaultActionContext;
  *
  * @param <TTarget> type of the target
  */
-public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContext, RequirementHolder, ActionHolder {
+public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContext<Action<TTarget>>, RequirementHolder, ActionHolder {
 
     static <TTarget> ActionContext<TTarget> of(
             @NonNull Configuration configuration,
-            @NonNull Class<TTarget> targetClass,
+            @NonNull ArtObjectInformation<Action<TTarget>> information,
             @NonNull Action<TTarget> action,
             @NonNull ActionConfig config
     ) {
-        return new DefaultActionContext<>(configuration, targetClass, action, config);
+        return new DefaultActionContext<>(configuration, information, action, config);
     }
 
     /**

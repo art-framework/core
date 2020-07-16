@@ -18,12 +18,7 @@ package net.silthus.art;
 
 import com.google.inject.Provider;
 import lombok.SneakyThrows;
-import net.silthus.art.api.requirements.RequirementFactory;
-import net.silthus.art.api.requirements.RequirementManager;
-import net.silthus.art.api.trigger.TriggerManager;
-import net.silthus.art.impl.ArtBuilder;
 import net.silthus.art.impl.ArtModuleDescription;
-import net.silthus.art.impl.DefaultArtManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

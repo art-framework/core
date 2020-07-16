@@ -2,7 +2,7 @@ package net.silthus.art.api.parser.flow;
 
 import com.google.common.base.Strings;
 import lombok.Data;
-import net.silthus.art.api.parser.ArtParseException;
+import net.silthus.art.ArtParseException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

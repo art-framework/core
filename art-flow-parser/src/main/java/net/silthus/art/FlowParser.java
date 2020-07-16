@@ -18,12 +18,6 @@ package net.silthus.art;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import net.silthus.art.api.ArtManager;
-import net.silthus.art.api.AbstractArtObjectContext;
-import net.silthus.art.api.config.ArtConfig;
-import net.silthus.art.api.parser.ArtParseException;
-import net.silthus.art.api.parser.ArtParser;
-import net.silthus.art.api.parser.ArtResultFactory;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 

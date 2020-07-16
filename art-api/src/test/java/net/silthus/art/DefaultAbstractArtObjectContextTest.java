@@ -16,12 +16,8 @@
 
 package net.silthus.art;
 
-import net.silthus.art.api.AbstractArtObjectContext;
-import net.silthus.art.api.config.ArtConfig;
 import net.silthus.art.conf.ArtObjectConfig;
-import net.silthus.art.api.parser.Filter;
-import net.silthus.art.api.trigger.DefaultTriggerContext;
-import net.silthus.art.api.trigger.TriggerListener;
+import net.silthus.art.impl.DefaultTriggerContext;
 import net.silthus.art.impl.DefaultActionContext;
 import net.silthus.art.impl.DefaultArtContext;
 import net.silthus.art.impl.DefaultRequirementContext;

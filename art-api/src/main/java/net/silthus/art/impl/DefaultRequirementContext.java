@@ -19,8 +19,7 @@ package net.silthus.art.impl;
 import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.*;
-import net.silthus.art.api.AbstractArtObjectContext;
-import net.silthus.art.api.storage.StorageConstants;
+import net.silthus.art.conf.Constants;
 import net.silthus.art.conf.RequirementConfig;
 
 import java.util.Optional;
@@ -31,7 +30,7 @@ import java.util.Optional;
  *
  * @param <TTarget> target type of the requirement
  */
-public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext implements RequirementContext<TTarget> {
+public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext<Requirement<TTarget>> implements RequirementContext<TTarget> {
 
     private final Requirement<TTarget> requirement;
     @Getter
@@ -39,11 +38,11 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
 
     public DefaultRequirementContext(
             @NonNull Configuration configuration,
-            @NonNull Class<?> targetClass,
+            @NonNull ArtObjectInformation<Requirement<TTarget>> information,
             @NonNull Requirement<TTarget> requirement,
             @NonNull RequirementConfig config
     ) {
-        super(configuration, targetClass);
+        super(configuration, information);
         this.requirement = requirement;
         this.config = config;
     }
@@ -61,7 +60,7 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
         if (!isTargetType(target.getSource())) return true;
 
         if (getConfig().isCheckOnce()) {
-            Optional<Boolean> result = store(target, StorageConstants.CHECK_ONCE_RESULT, Boolean.class);
+            Optional<Boolean> result = store(target, Constants.Storage.CHECK_ONCE_RESULT, Boolean.class);
             if (result.isPresent()) {
                 return result.get();
             }
@@ -69,13 +68,13 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
 
         boolean result = context.test(this, requirement);
 
-        int currentCount = store(target, StorageConstants.COUNT, Integer.class).orElse(0);
+        int currentCount = store(target, Constants.Storage.COUNT, Integer.class).orElse(0);
         if (result) {
-            store(target, StorageConstants.COUNT, ++currentCount);
+            store(target, Constants.Storage.COUNT, ++currentCount);
         }
 
         if (getConfig().isCheckOnce()) {
-            store(target, StorageConstants.CHECK_ONCE_RESULT, result);
+            store(target, Constants.Storage.CHECK_ONCE_RESULT, result);
         }
 
         if (getConfig().getCount() > 0) {

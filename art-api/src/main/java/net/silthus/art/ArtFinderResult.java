@@ -20,18 +20,18 @@ public interface ArtFinderResult extends Iterable<ArtObjectInformation> {
 
     /**
      * Adds all classes that do not have an error to the {@link ArtProvider}
-     * by calling {@link ArtProvider#registerAll(Collection)}.
+     * by calling {@link ArtProvider#addAll(Collection)}.
      *
      * @return the {@link ArtFinder} that created this result
      */
     default ArtFinder register() {
-        finder().registerAll(getAll());
+        finder().addAll(getAll());
         return finder();
     }
 
-    ArtFinderResult filter(Predicate<ArtObjectInformation> predicate);
+    ArtFinderResult filter(Predicate<ArtObjectInformation<?>> predicate);
 
-    Stream<ArtObjectInformation> stream();
+    Stream<ArtObjectInformation<?>> stream();
 
     /**
      * Returns a list of all classes excluding any classes that had errors.
@@ -40,7 +40,7 @@ public interface ArtFinderResult extends Iterable<ArtObjectInformation> {
      *
      * @return a list of all classes found by the {@link ArtFinder}
      */
-    Collection<ArtObjectInformation> getAll();
+    Collection<ArtObjectInformation<?>> getAll();
 
     /**
      * Gives the option to handle the errors in a fluent syntax style.

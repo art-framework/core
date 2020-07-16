@@ -25,7 +25,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 
-public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext> extends AbstractScope implements ExecutionContext<TTarget, TContext> {
+public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext<?>> extends AbstractScope implements ExecutionContext<TTarget, TContext> {
 
     private final Context rootContext;
     private final Target<TTarget> target;
@@ -58,7 +58,7 @@ public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext>
     }
 
     @Override
-    public Optional<ArtObjectContext> parent() {
+    public Optional<ArtObjectContext<?>> parent() {
         if (container.history.empty()) {
             return Optional.empty();
         }
@@ -66,7 +66,7 @@ public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext>
     }
 
     @Override
-    public ArtObjectContext[] history() {
+    public ArtObjectContext<?>[] history() {
         return container.history.toArray(new ArtObjectContext[0]);
     }
 
@@ -102,7 +102,7 @@ public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext>
     }
 
     @Override
-    public <TNextContext extends ArtObjectContext> ExecutionContext<TTarget, TNextContext> next(TNextContext nextContext) {
+    public <TNextContext extends ArtObjectContext<?>> ExecutionContext<TTarget, TNextContext> next(TNextContext nextContext) {
         if (current() != null) container.history.push(current());
         return new DefaultExecutionContext<>(configuration(), rootContext, target, container, nextContext);
     }
@@ -130,7 +130,7 @@ public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext>
     static class Container {
 
         private final Map<String, Object> data;
-        private final Stack<ArtObjectContext> history;
+        private final Stack<ArtObjectContext<?>> history;
 
         Container() {
             this.data = new HashMap<>();

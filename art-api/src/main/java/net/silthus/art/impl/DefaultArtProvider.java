@@ -28,36 +28,18 @@ public class DefaultArtProvider extends AbstractProvider implements ArtProvider 
     }
 
     @Override
-    public ArtFinder find() {
-        return configuration().findArt();
-    }
+    public ArtProvider addAll(Collection<ArtObjectInformation<?>> artObjects) {
 
-    @Override
-    public ArtProvider registerAll(Collection<ArtObjectInformation> artObjects) {
-        for (ArtObjectInformation artObject : artObjects) {
+        for (ArtObjectInformation<?> artObject : artObjects) {
             if (Action.class.isAssignableFrom(artObject.getArtObjectClass())) {
-
+                actions().add(artObject.get());
             } else if (Requirement.class.isAssignableFrom(artObject.getArtObjectClass())) {
-
+                actions().add(artObject.get());
             } else if (Trigger.class.isAssignableFrom(artObject.getArtObjectClass())) {
-                trigger().add(artObject)
+                trigger().add(artObject.get());
             }
         }
-        return null;
-    }
 
-    @Override
-    public ActionProvider actions() {
-        return configuration().actions();
-    }
-
-    @Override
-    public RequirementProvider requirements() {
-        return configuration().requirements();
-    }
-
-    @Override
-    public TriggerProvider trigger() {
-        return configuration().trigger();
+        return this;
     }
 }

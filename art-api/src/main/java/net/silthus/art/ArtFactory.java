@@ -16,25 +16,47 @@
 
 package net.silthus.art;
 
-import net.silthus.art.api.ArtObjectInformationException;
+import lombok.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * The {@link ArtFactory} is used to create new instances of {@link ArtObject}s which
+ * are wrapped inside an {@link ArtObjectContext}.
+ * The created context and art object is initialized with its configuration and properties.
+ * <br>
+ * Every {@link ArtObject} must have exactly one {@link ArtObjectContext} and an {@link ArtFactory}
+ * that knows how to create the context, a new instance of the art object and how to load the configuration
+ * of the art object.
+ *
+ * @param <TContext>
+ * @param <TArtObject>
+ */
 public interface ArtFactory<TContext extends ArtObjectContext, TArtObject extends ArtObject> extends Provider {
 
-    ArtObjectInformation<TArtObject> info();
+    static <TTarget> ArtFactory<ActionContext<TTarget>, Action<TTarget>> ofAction(
+            @NonNull Configuration configuration,
+            @NonNull ArtObjectInformation<Action<TTarget>> information
+    ) {
+        return ActionFactory.of(configuration, information);
+    }
 
-    /**
-     * Initializes the {@link ArtFactory}, loads all annotations and checks
-     * if the {@link ArtObject} is configured correctly.
-     * <br>
-     * If everything looks good the {@link ArtObject} is registered for execution.
-     * If not a {@link ArtObjectInformationException} is thrown.
-     *
-     * @throws ArtObjectInformationException if the {@link ArtObject} could not be registered.
-     */
-    void initialize() throws ArtObjectInformationException;
+    static <TTarget> ArtFactory<RequirementContext<TTarget>, Requirement<TTarget>> ofRequirement(
+            @NonNull Configuration configuration,
+            @NonNull ArtObjectInformation<Requirement<TTarget>> information
+    ) {
+        return RequirementFactory.of(configuration, information);
+    }
+
+    static ArtFactory<TriggerContext, Trigger> ofTrigger(
+            @NonNull Configuration configuration,
+            @NonNull ArtObjectInformation<Trigger> information
+    ) {
+        return TriggerFactory.of(configuration, information);
+    }
+
+    ArtObjectInformation<TArtObject> info();
 
     default TContext create() {
         return create(new HashMap<>());

@@ -16,14 +16,22 @@
 
 package net.silthus.art;
 
-import net.silthus.art.api.requirements.RequirementHolder;
-import net.silthus.art.api.trigger.TriggerListener;
+import lombok.NonNull;
 import net.silthus.art.conf.TriggerConfig;
+import net.silthus.art.impl.DefaultTriggerContext;
 
 import java.util.Set;
 import java.util.function.Predicate;
 
-public interface TriggerContext extends ArtObjectContext, ActionHolder, RequirementHolder {
+public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder, RequirementHolder {
+
+    static TriggerContext of(
+            @NonNull Configuration configuration,
+            @NonNull ArtObjectInformation<Trigger> information,
+            @NonNull TriggerConfig config
+    ) {
+        return new DefaultTriggerContext(configuration, information, config);
+    }
 
     /**
      * Gets the {@link TriggerConfig} used in this {@link TriggerContext}.

@@ -1,4 +1,4 @@
-package net.silthus.art.api.config;
+package net.silthus.art;
 
 import java.util.function.Function;
 

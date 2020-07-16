@@ -14,17 +14,13 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.config;
+package net.silthus.art.conf;
 
-import de.exlll.configlib.annotation.ConfigurationElement;
-import lombok.Data;
+public final class Constants {
 
-@Data
-@ConfigurationElement
-public class DatabaseConfig {
-
-    private String platform = "h2";
-    private String username = "sa";
-    private String password = "sa";
-    private String url = "jdbc:h2:~/art";
+    public static final class Storage {
+        public static final String LAST_EXECUTION = "last_execution";
+        public static final String COUNT = "count";
+        public static final String CHECK_ONCE_RESULT = "check_once_result";
+    }
 }

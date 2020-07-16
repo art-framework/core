@@ -16,30 +16,34 @@
 
 package net.silthus.art.impl;
 
+import lombok.NonNull;
 import net.silthus.art.*;
-import net.silthus.art.conf.ActionConfig;
+import net.silthus.art.conf.RequirementConfig;
 
 import java.util.Map;
 
-public class DefaultActionFactory<TTarget> extends AbstractArtFactory<ActionContext<TTarget>, Action<TTarget>> implements ActionFactory<TTarget> {
+public class DefaultRequirementFactory<TTarget> extends AbstractArtFactory<RequirementContext<TTarget>, Requirement<TTarget>> implements RequirementFactory<TTarget> {
 
-    public DefaultActionFactory(Configuration configuration, ArtObjectInformation<Action<TTarget>> information) {
+    public DefaultRequirementFactory(
+            @NonNull Configuration configuration,
+            @NonNull ArtObjectInformation<Requirement<TTarget>> information
+    ) {
         super(configuration, information);
     }
 
     @Override
-    public ActionContext<TTarget> create(Map<ConfigMapType, ConfigMap> configMaps) {
+    public RequirementContext<TTarget> create(Map<ConfigMapType, ConfigMap> configMaps) {
 
-        ActionConfig actionConfig = new ActionConfig();
+        RequirementConfig config = new RequirementConfig();
         if (configMaps.containsKey(ConfigMapType.ART_CONFIG)) {
-            actionConfig = configMaps.get(ConfigMapType.ART_CONFIG).applyTo(actionConfig);
+            config = configMaps.get(ConfigMapType.ART_CONFIG).applyTo(config);
         }
 
-        return ActionContext.of(
+        return RequirementContext.of(
                 configuration(),
                 info(),
                 createArtObject(configMaps.get(ConfigMapType.ART_OBJECT_CONFIG)),
-                actionConfig
+                config
         );
     }
 }

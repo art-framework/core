@@ -30,7 +30,7 @@ import org.mockito.InOrder;
 
 import static net.silthus.art.testing.TestUtil.action;
 import static net.silthus.art.testing.TestUtil.requirement;
-import static net.silthus.art.api.storage.StorageConstants.LAST_EXECUTION;
+import static net.silthus.art.conf.Constants.LAST_EXECUTION;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;

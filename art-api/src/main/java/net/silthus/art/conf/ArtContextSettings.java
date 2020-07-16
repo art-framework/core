@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import net.silthus.art.Action;
 import net.silthus.art.ArtContext;
 import net.silthus.art.Trigger;
-import net.silthus.art.api.trigger.TriggerListener;
+import net.silthus.art.TriggerListener;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -15,6 +15,9 @@ public class ArtContextSettings extends SettingsBase {
 
     public static ArtContextSettings of(ArtContextSettings settings) {
         return new ArtContextSettings(settings);
+    }
+
+    ArtContextSettings() {
     }
 
     ArtContextSettings(ArtContextSettings settings) {

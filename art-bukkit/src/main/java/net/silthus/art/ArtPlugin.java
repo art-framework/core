@@ -21,8 +21,6 @@ import com.google.inject.Provides;
 import com.google.inject.name.Named;
 import kr.entree.spigradle.annotations.PluginMain;
 import lombok.Getter;
-import net.silthus.art.api.ArtManager;
-import net.silthus.art.impl.ArtGuiceModule;
 import net.silthus.art.parser.flow.FlowParserModule;
 import net.silthus.art.scheduler.BukkitScheduler;
 import net.silthus.art.storage.persistence.PersistenceModule;

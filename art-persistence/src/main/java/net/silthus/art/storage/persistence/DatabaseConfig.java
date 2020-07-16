@@ -14,12 +14,15 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api.storage;
+package net.silthus.art.storage.persistence;
 
-public final class StorageConstants {
+import lombok.Data;
 
-    public static final String LOCAL_KEY_PREFIX = "LOCAL_";
-    public static final String LAST_EXECUTION = "last_execution";
-    public static final String COUNT = "count";
-    public static final String CHECK_ONCE_RESULT = "check_once_result";
+@Data
+public class DatabaseConfig {
+
+    private String platform = "h2";
+    private String username = "sa";
+    private String password = "sa";
+    private String url = "jdbc:h2:~/art";
 }

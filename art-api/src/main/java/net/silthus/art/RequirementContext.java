@@ -16,7 +16,9 @@
 
 package net.silthus.art;
 
+import lombok.NonNull;
 import net.silthus.art.conf.RequirementConfig;
+import net.silthus.art.impl.DefaultRequirementContext;
 
 /**
  * The {@link RequirementContext} holds all of the information to execute the contained {@link Requirement}.
@@ -25,7 +27,16 @@ import net.silthus.art.conf.RequirementConfig;
  *
  * @param <TTarget> type of the target that is targeted by the {@link Requirement}
  */
-public interface RequirementContext<TTarget> extends Requirement<TTarget>, ArtObjectContext {
+public interface RequirementContext<TTarget> extends Requirement<TTarget>, ArtObjectContext<Requirement<TTarget>> {
+
+    static <TTarget> RequirementContext<TTarget> of(
+            @NonNull Configuration configuration,
+            @NonNull ArtObjectInformation<Requirement<TTarget>> information,
+            @NonNull Requirement<TTarget> requirement,
+            @NonNull RequirementConfig config
+    ) {
+        return new DefaultRequirementContext<>(configuration, information, requirement, config);
+    }
 
     /**
      * Gets the {@link RequirementConfig} used by the {@link Requirement}.

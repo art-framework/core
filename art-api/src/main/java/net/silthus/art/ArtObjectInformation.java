@@ -16,9 +16,33 @@
 
 package net.silthus.art;
 
+import lombok.NonNull;
+import net.silthus.art.conf.ConfigFieldInformation;
+import net.silthus.art.conf.DefaultArtObjectInformation;
+
+import javax.annotation.Nullable;
+import java.lang.reflect.Method;
 import java.net.URL;
+import java.util.Map;
+import java.util.Optional;
 
 public interface ArtObjectInformation<TArtObject extends ArtObject> {
+
+    static <TArtObject extends ArtObject> ArtObjectInformation<TArtObject> of(@NonNull Class<TArtObject> artObjectClass) throws ArtObjectInformationException {
+        return new DefaultArtObjectInformation<>(artObjectClass).initialize();
+    }
+
+    static <TArtObject extends ArtObject> ArtObjectInformation<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider) throws ArtObjectInformationException {
+        return new DefaultArtObjectInformation<>(artObjectClass, provider).initialize();
+    }
+
+    static <TArtObject extends ArtObject> ArtObjectInformation<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) throws ArtObjectInformationException {
+        return new DefaultArtObjectInformation<>(artObjectClass, provider, methods).initialize();
+    }
+
+    static <TArtObject extends ArtObject> ArtObjectInformation<TArtObject> of(@NonNull String identifier, @NonNull Class<?> targetClass, @NonNull TArtObject artObject) {
+        return new DefaultArtObjectInformation<>(identifier, targetClass, artObject);
+    }
 
     String getIdentifier();
 
@@ -26,9 +50,44 @@ public interface ArtObjectInformation<TArtObject extends ArtObject> {
 
     String[] getAlias();
 
-    Class<?> getConfigClass();
+    Optional<Class<?>> getConfigClass();
+
+    Class<?> getTargetClass();
 
     Class<TArtObject> getArtObjectClass();
 
+    Map<String, ConfigFieldInformation> getConfigMap();
+
+    ArtObjectProvider<TArtObject> getProvider();
+
     URL getLocation();
+
+    boolean isInitialized();
+
+    /**
+     * Tries to cast this {@link ArtObjectInformation} into the target type.
+     * You should only use this method if you are sure that the {@link #getArtObjectClass()}
+     * matches the required target class. If that is not the case, null will be returned.
+     * <br>
+     * This is useful if you have collections of <pre>ArtObjectInformation<?></pre> and want to
+     * pass individual types of the object to other methods like {@link ActionProvider#add(ArtObjectInformation)}.
+     * Make sure you do a <pre>YourTargetArtObject.class.isAssignableFrom(this.getArtObjectClass)</pre> check
+     * before using this method. Otherwise null is very likely.
+     *
+     * @param <TObject> type of the {@link ArtObject} you need
+     * @return this {@link ArtObjectInformation} with the concrete {@link ArtObject} type
+     */
+    @Nullable
+    <TObject extends ArtObject> ArtObjectInformation<TObject> get();
+
+    /**
+     * Initializes the {@link ArtFactory}, loads all annotations and checks
+     * if the {@link ArtObject} is configured correctly.
+     * <br>
+     * If everything looks good the {@link ArtObject} is registered for execution.
+     * If not a {@link ArtObjectInformationException} is thrown.
+     *
+     * @throws ArtObjectInformationException if the {@link ArtObject} could not be registered.
+     */
+    ArtObjectInformation<TArtObject> initialize() throws ArtObjectInformationException;
 }

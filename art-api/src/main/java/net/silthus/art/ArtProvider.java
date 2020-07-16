@@ -33,13 +33,36 @@ import java.util.Collection;
  */
 public interface ArtProvider extends Provider {
 
-    ArtFinder find();
+    /**
+     * Gets the {@link ArtFinder} to find {@link ArtObject}s inside your
+     * classpath or file tree. Use the {@link ArtFinderResult} to register
+     * the found art objects with the {@link ArtProvider}.
+     *
+     * @return The {@link ArtFinder} to find {@link ArtObject}s in your filesystem and classpath.
+     */
+    default ArtFinder find() {
+        return configuration().findArt();
+    }
 
-    ArtProvider registerAll(Collection<ArtObjectInformation> artObjects);
+    /**
+     * Adds all of the provided {@link ArtObject}s to the relevant {@link ArtProvider}.
+     * Make sure that {@link ArtObjectInformation#isInitialized()} returns true.
+     * Otherwise the registration will fail.
+     *
+     * @param artObjects The list of {@link ArtObject}s that should be added to the provider
+     * @return this {@link ArtProvider}
+     */
+    ArtProvider addAll(Collection<ArtObjectInformation<?>> artObjects);
 
-    ActionProvider actions();
+    default ActionProvider actions() {
+        return configuration().actions();
+    }
 
-    RequirementProvider requirements();
+    default RequirementProvider requirements() {
+        return configuration().requirements();
+    }
 
-    TriggerProvider trigger();
+    default TriggerProvider trigger() {
+        return configuration().trigger();
+    }
 }

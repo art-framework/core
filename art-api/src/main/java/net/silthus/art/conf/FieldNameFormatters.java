@@ -1,4 +1,6 @@
-package net.silthus.art.api.config;
+package net.silthus.art.conf;
+
+import net.silthus.art.FieldNameFormatter;
 
 public enum FieldNameFormatters implements FieldNameFormatter {
     /**

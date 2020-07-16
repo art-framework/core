@@ -16,11 +16,6 @@
 
 package net.silthus.art;
 
-import net.silthus.art.ART;
-import net.silthus.art.Action;
-import net.silthus.art.Requirement;
-import net.silthus.art.Trigger;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

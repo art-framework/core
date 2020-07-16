@@ -17,10 +17,6 @@
 package net.silthus.art;
 
 import lombok.NonNull;
-import net.silthus.art.impl.ArtModuleDescription;
-import net.silthus.art.impl.DefaultRequirementContext;
-
-import java.util.function.Consumer;
 
 /**
  * A {@link Requirement} can be used to filter {@link Action}s, {@link Trigger}

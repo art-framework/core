@@ -16,7 +16,10 @@
 
 package net.silthus.art.conf;
 
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 import net.silthus.art.ConfigOption;
 
 import javax.annotation.concurrent.Immutable;

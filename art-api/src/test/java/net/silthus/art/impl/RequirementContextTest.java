@@ -18,7 +18,7 @@ package net.silthus.art.impl;
 
 import net.silthus.art.Requirement;
 import net.silthus.art.Storage;
-import net.silthus.art.api.storage.StorageConstants;
+import net.silthus.art.conf.Constants;
 import net.silthus.art.conf.RequirementConfig;
 import net.silthus.art.testing.IntegerTarget;
 import net.silthus.art.testing.StringTarget;
@@ -148,7 +148,7 @@ class RequirementContextTest {
                 StringTarget target = new StringTarget("foobar");
                 context.test(target);
 
-                assertThat(storage.get(context, target, StorageConstants.COUNT, Integer.class))
+                assertThat(storage.get(context, target, Constants.COUNT, Integer.class))
                         .get().isEqualTo(1);
             }
 
@@ -160,7 +160,7 @@ class RequirementContextTest {
 
                 StringTarget target = new StringTarget("foobar");
                 requirement.test(target);
-                assertThat(storage.get(requirement, target, StorageConstants.COUNT, Integer.class))
+                assertThat(storage.get(requirement, target, Constants.COUNT, Integer.class))
                         .isEmpty();
             }
 
@@ -170,11 +170,11 @@ class RequirementContextTest {
 
                 StringTarget target = new StringTarget("foo");
 
-                storage.data(context, target, StorageConstants.COUNT, 5);
+                storage.data(context, target, Constants.COUNT, 5);
 
                 context.test(target);
 
-                assertThat(storage.get(context, target, StorageConstants.COUNT, Integer.class))
+                assertThat(storage.get(context, target, Constants.COUNT, Integer.class))
                         .get().isEqualTo(6);
             }
 
@@ -194,7 +194,7 @@ class RequirementContextTest {
                 context.getOptions().setCount(3);
                 StringTarget target = new StringTarget("foo");
 
-                storage.data(context, target, StorageConstants.COUNT, 5);
+                storage.data(context, target, Constants.COUNT, 5);
 
                 assertThat(context.test(target)).isTrue();
             }
@@ -206,7 +206,7 @@ class RequirementContextTest {
                 context.getOptions().setCount(5);
                 StringTarget target = new StringTarget("foo");
 
-                storage.data(context, target, StorageConstants.COUNT, 4);
+                storage.data(context, target, Constants.COUNT, 4);
 
                 assertThat(context.test(target)).isTrue();
             }
@@ -218,7 +218,7 @@ class RequirementContextTest {
                 requirement.getOptions().setCount(2);
                 StringTarget target = new StringTarget("foo");
 
-                storage.data(requirement, target, StorageConstants.COUNT, 5);
+                storage.data(requirement, target, Constants.COUNT, 5);
 
                 assertThat(requirement.test(target)).isTrue();
             }
@@ -237,7 +237,7 @@ class RequirementContextTest {
                 StringTarget target = new StringTarget("foo");
                 context.test(target);
 
-                assertThat(storage.get(context, target, StorageConstants.CHECK_ONCE_RESULT, Boolean.class))
+                assertThat(storage.get(context, target, Constants.CHECK_ONCE_RESULT, Boolean.class))
                         .get().isEqualTo(true);
             }
 
@@ -249,7 +249,7 @@ class RequirementContextTest {
                 requirement.getOptions().setCheckOnce(true);
                 StringTarget target = new StringTarget("foo");
 
-                storage.data(requirement, target, StorageConstants.CHECK_ONCE_RESULT, true);
+                storage.data(requirement, target, Constants.CHECK_ONCE_RESULT, true);
 
                 assertThat(requirement.test(target)).isTrue();
             }
@@ -262,11 +262,11 @@ class RequirementContextTest {
                 requirement.getOptions().setCheckOnce(true);
                 StringTarget target = new StringTarget("foo");
 
-                storage.data(requirement, target, StorageConstants.CHECK_ONCE_RESULT, true);
+                storage.data(requirement, target, Constants.CHECK_ONCE_RESULT, true);
 
                 requirement.test(target);
 
-                assertThat(storage.get(requirement, target, StorageConstants.CHECK_ONCE_RESULT, Boolean.class))
+                assertThat(storage.get(requirement, target, Constants.CHECK_ONCE_RESULT, Boolean.class))
                         .get().isEqualTo(true);
             }
         }

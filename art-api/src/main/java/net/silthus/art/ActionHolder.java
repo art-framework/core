@@ -16,9 +16,6 @@
 
 package net.silthus.art;
 
-import net.silthus.art.ActionContext;
-import net.silthus.art.Target;
-
 import java.util.Collection;
 
 public interface ActionHolder {
@@ -28,10 +25,10 @@ public interface ActionHolder {
     Collection<ActionContext<?>> getActions();
 
     @SuppressWarnings("unchecked")
-    default <TTarget> void executeActions(Target<TTarget> target) {
+    default <TTarget> void executeActions(ExecutionContext<TTarget, ?> executionContext) {
         getActions().stream()
-                .filter(actionContext -> actionContext.isTargetType(target))
+                .filter(actionContext -> actionContext.isTargetType(executionContext.target()))
                 .map(actionContext -> (ActionContext<TTarget>) actionContext)
-                .forEach(actionContext -> actionContext.execute(target));
+                .forEach(executionContext::execute);
     }
 }

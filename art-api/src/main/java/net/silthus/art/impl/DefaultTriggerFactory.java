@@ -16,30 +16,33 @@
 
 package net.silthus.art.impl;
 
+import lombok.NonNull;
 import net.silthus.art.*;
-import net.silthus.art.conf.ActionConfig;
+import net.silthus.art.conf.TriggerConfig;
 
 import java.util.Map;
 
-public class DefaultActionFactory<TTarget> extends AbstractArtFactory<ActionContext<TTarget>, Action<TTarget>> implements ActionFactory<TTarget> {
+public class DefaultTriggerFactory extends AbstractArtFactory<TriggerContext, Trigger> implements TriggerFactory {
 
-    public DefaultActionFactory(Configuration configuration, ArtObjectInformation<Action<TTarget>> information) {
+    public DefaultTriggerFactory(
+            @NonNull Configuration configuration,
+            @NonNull ArtObjectInformation<Trigger> information
+    ) {
         super(configuration, information);
     }
 
     @Override
-    public ActionContext<TTarget> create(Map<ConfigMapType, ConfigMap> configMaps) {
+    public TriggerContext create(Map<ConfigMapType, ConfigMap> configMaps) {
 
-        ActionConfig actionConfig = new ActionConfig();
+        TriggerConfig config = new TriggerConfig();
         if (configMaps.containsKey(ConfigMapType.ART_CONFIG)) {
-            actionConfig = configMaps.get(ConfigMapType.ART_CONFIG).applyTo(actionConfig);
+            config = configMaps.get(ConfigMapType.ART_CONFIG).applyTo(config);
         }
 
-        return ActionContext.of(
+        return TriggerContext.of(
                 configuration(),
                 info(),
-                createArtObject(configMaps.get(ConfigMapType.ART_OBJECT_CONFIG)),
-                actionConfig
+                config
         );
     }
 }

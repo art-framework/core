@@ -17,7 +17,6 @@
 package net.silthus.art;
 
 import lombok.NonNull;
-import net.silthus.art.impl.ArtBuilder;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -118,7 +117,7 @@ public final class ART {
 
     // TODO: javadoc
     public static void trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> predicate, Target<?>... targets) {
-        configuration().triggers().trigger(identifier, predicate, targets);
+        configuration().trigger().trigger(identifier, predicate, targets);
     }
 
     /**

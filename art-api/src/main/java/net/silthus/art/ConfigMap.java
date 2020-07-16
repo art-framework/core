@@ -1,7 +1,6 @@
 package net.silthus.art;
 
 import lombok.NonNull;
-import net.silthus.art.api.config.ArtConfigException;
 import net.silthus.art.conf.ConfigFieldInformation;
 import net.silthus.art.conf.DefaultConfigMap;
 import net.silthus.art.conf.KeyValuePair;

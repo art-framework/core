@@ -19,7 +19,6 @@ package net.silthus.art;
 import com.google.inject.AbstractModule;
 import com.google.inject.Provides;
 import com.google.inject.Singleton;
-import net.silthus.art.api.config.ArtConfiguration;
 import net.silthus.art.storage.persistence.PersistenceStorage;
 import org.bukkit.plugin.java.JavaPlugin;
 

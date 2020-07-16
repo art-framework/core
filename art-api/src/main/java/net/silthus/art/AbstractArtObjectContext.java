@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-package net.silthus.art.api;
+package net.silthus.art;
 
-import lombok.Getter;
 import lombok.NonNull;
-import net.silthus.art.*;
-import net.silthus.art.AbstractScope;
 
 import java.util.Optional;
 
-public abstract class AbstractArtObjectContext extends AbstractScope implements ArtObjectContext {
+public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> extends AbstractScope implements ArtObjectContext<TArtObject> {
 
-    @Getter
-    private final Class<?> targetClass;
+    private final ArtObjectInformation<TArtObject> information;
 
-    public AbstractArtObjectContext(@NonNull Configuration configuration, @NonNull Class<?> targetClass) {
+    public AbstractArtObjectContext(@NonNull Configuration configuration, ArtObjectInformation<TArtObject> information) {
         super(configuration);
-        this.targetClass = targetClass;
+        this.information = information;
+    }
+
+    @Override
+    public @NonNull Class<?> getTargetClass() {
+        return info().getTargetClass();
+    }
+
+    @Override
+    public ArtObjectInformation<TArtObject> info() {
+        return information;
     }
 
     public boolean isTargetType(Object target) {

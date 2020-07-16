@@ -64,6 +64,7 @@ public class ArtObjectError {
         NO_IDENTIFIER,
         INVALID_CONSTRUCTOR,
         NO_ANNOTATION,
-        INVALID_CONFIG
+        INVALID_CONFIG,
+        INVALID_ART_OBJECT
     }
 }
