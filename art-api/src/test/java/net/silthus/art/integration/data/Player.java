@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.integration.data;
 
-import java.util.Map;
-import java.util.Optional;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-public interface ArtFactoryProvider<TFactory extends ArtFactory<?, ?>> extends Provider {
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class Player extends Entity {
 
-    Map<String, TFactory> getFactories();
+    private int health = 100;
 
-    Map<String, String> getAliasMappings();
-
-    boolean exists(String identifier);
-
-    Optional<TFactory> get(String identifier);
+    public Player(String name) {
+        super(name);
+    }
 }

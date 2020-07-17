@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.integration.data;
 
-import java.util.Map;
-import java.util.Optional;
+import lombok.Data;
 
-public interface ArtFactoryProvider<TFactory extends ArtFactory<?, ?>> extends Provider {
+import java.util.UUID;
 
-    Map<String, TFactory> getFactories();
+@Data
+public class Entity {
+    private final UUID uniqueId = UUID.randomUUID();
+    private String name;
 
-    Map<String, String> getAliasMappings();
-
-    boolean exists(String identifier);
-
-    Optional<TFactory> get(String identifier);
+    public Entity(String name) {
+        this.name = name;
+    }
 }

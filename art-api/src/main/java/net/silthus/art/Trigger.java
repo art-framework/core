@@ -27,7 +27,19 @@ public interface Trigger extends ArtObject {
     }
 
     default void trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> context, Object... targets) {
-        ART.trigger(identifier, context, Arrays.stream(targets)
+        trigger(identifier, context, Arrays.stream(targets)
+                .map(Target::of)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .toArray(Target[]::new));
+    }
+
+    default void trigger(String identifier, Target<?>... targets) {
+        ART.trigger(identifier, targets);
+    }
+
+    default void trigger(String identifier, Object... targets) {
+        trigger(identifier, Arrays.stream(targets)
                 .map(Target::of)
                 .filter(Optional::isPresent)
                 .map(Optional::get)

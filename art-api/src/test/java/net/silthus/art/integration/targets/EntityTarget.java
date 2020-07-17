@@ -14,18 +14,19 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.integration.targets;
 
-import java.util.Map;
-import java.util.Optional;
+import net.silthus.art.AbstractTarget;
+import net.silthus.art.integration.data.Entity;
 
-public interface ArtFactoryProvider<TFactory extends ArtFactory<?, ?>> extends Provider {
+public class EntityTarget extends AbstractTarget<Entity> {
 
-    Map<String, TFactory> getFactories();
+    public EntityTarget(Entity source) {
+        super(source);
+    }
 
-    Map<String, String> getAliasMappings();
-
-    boolean exists(String identifier);
-
-    Optional<TFactory> get(String identifier);
+    @Override
+    public String getUniqueId() {
+        return getSource().getUniqueId().toString();
+    }
 }
