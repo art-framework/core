@@ -49,6 +49,11 @@ public class DefaultTriggerProvider extends AbstractProvider implements TriggerP
     }
 
     @Override
+    public void trigger(String identifier, Target<?>... targets) {
+
+    }
+
+    @Override
     public <TTarget> void addListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
 
     }

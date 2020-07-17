@@ -93,6 +93,10 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext<?>>
      */
     Target<TTarget> target();
 
+    default TTarget getTarget() {
+        return target().getSource();
+    }
+
     @SuppressWarnings("unchecked")
     default Class<TTarget> getTargetClass() {
         return (Class<TTarget>) target().getSource().getClass();

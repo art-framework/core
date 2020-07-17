@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.integration.actions;
 
-import java.util.Map;
-import java.util.Optional;
+import lombok.NonNull;
+import net.silthus.art.Action;
+import net.silthus.art.ActionContext;
+import net.silthus.art.ConfigOption;
+import net.silthus.art.ExecutionContext;
+import net.silthus.art.integration.data.Player;
 
-public interface ArtFactoryProvider<TFactory extends ArtFactory<?, ?>> extends Provider {
+public class DamageAction implements Action<Player> {
 
-    Map<String, TFactory> getFactories();
+    @ConfigOption
+    private final int damage = 20;
 
-    Map<String, String> getAliasMappings();
-
-    boolean exists(String identifier);
-
-    Optional<TFactory> get(String identifier);
+    @Override
+    public void execute(@NonNull ExecutionContext<Player, ActionContext<Player>> context) {
+        Player player = context.getTarget();
+        player.setHealth(player.getHealth() - damage);
+    }
 }

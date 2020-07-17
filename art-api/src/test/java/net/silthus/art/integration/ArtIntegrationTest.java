@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.integration;
 
-import java.util.Map;
-import java.util.Optional;
+import net.silthus.art.ART;
+import net.silthus.art.integration.data.Entity;
+import net.silthus.art.integration.data.Player;
+import net.silthus.art.integration.targets.EntityTarget;
+import net.silthus.art.integration.targets.PlayerTarget;
 
-public interface ArtFactoryProvider<TFactory extends ArtFactory<?, ?>> extends Provider {
+public class ArtIntegrationTest {
 
-    Map<String, TFactory> getFactories();
-
-    Map<String, String> getAliasMappings();
-
-    boolean exists(String identifier);
-
-    Optional<TFactory> get(String identifier);
+    public void enable() {
+        ART.register()
+                .find().allAndRegister()
+                .and().targets()
+                    .add(Player.class, PlayerTarget::new)
+                    .add(Entity.class, EntityTarget::new);
+    }
 }

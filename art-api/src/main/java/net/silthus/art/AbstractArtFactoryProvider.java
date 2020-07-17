@@ -16,7 +16,6 @@
 
 package net.silthus.art;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -26,10 +25,10 @@ import java.util.Optional;
 public abstract class AbstractArtFactoryProvider<TFactory extends ArtFactory<?, ?>> implements ArtFactoryProvider<TFactory> {
 
     private final Configuration configuration;
-    @Getter(AccessLevel.PACKAGE)
-    private final Map<String, TFactory> factories = new HashMap<>();
-    @Getter(AccessLevel.PACKAGE)
-    private final Map<String, String> aliasMappings = new HashMap<>();
+    @Getter
+    final Map<String, TFactory> factories = new HashMap<>();
+    @Getter
+    final Map<String, String> aliasMappings = new HashMap<>();
 
     protected AbstractArtFactoryProvider(Configuration configuration) {
         this.configuration = configuration;

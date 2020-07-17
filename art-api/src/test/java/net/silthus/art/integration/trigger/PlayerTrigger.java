@@ -14,18 +14,16 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.integration.trigger;
 
-import java.util.Map;
-import java.util.Optional;
+import net.silthus.art.ArtOptions;
+import net.silthus.art.Trigger;
+import net.silthus.art.integration.data.Player;
 
-public interface ArtFactoryProvider<TFactory extends ArtFactory<?, ?>> extends Provider {
+public class PlayerTrigger implements Trigger {
 
-    Map<String, TFactory> getFactories();
-
-    Map<String, String> getAliasMappings();
-
-    boolean exists(String identifier);
-
-    Optional<TFactory> get(String identifier);
+    @ArtOptions("move")
+    public void onMove(Player player) {
+        trigger("move", player);
+    }
 }

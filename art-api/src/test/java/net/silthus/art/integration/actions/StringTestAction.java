@@ -14,18 +14,23 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.integration.actions;
 
-import java.util.Map;
-import java.util.Optional;
+import lombok.NonNull;
+import net.silthus.art.*;
 
-public interface ArtFactoryProvider<TFactory extends ArtFactory<?, ?>> extends Provider {
+@ArtOptions("str")
+public class StringTestAction implements Action<String> {
 
-    Map<String, TFactory> getFactories();
+    static int counter = 0;
+    static String lastTargetId;
 
-    Map<String, String> getAliasMappings();
+    @ConfigOption
+    private String newTarget;
 
-    boolean exists(String identifier);
-
-    Optional<TFactory> get(String identifier);
+    @Override
+    public void execute(@NonNull ExecutionContext<String, ActionContext<String>> context) {
+        counter++;
+        lastTargetId = context.target().getUniqueId();
+    }
 }

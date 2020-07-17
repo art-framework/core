@@ -122,6 +122,10 @@ public final class ART {
         configuration().trigger().trigger(identifier, predicate, targets);
     }
 
+    public static void trigger(String identifier, Target<?>... targets) {
+        configuration().trigger().trigger();
+    }
+
     /**
      * Tries to get a valid {@link Target} wrapper for the given object.
      * Delegates to {@link TargetProvider#get(Object)}.

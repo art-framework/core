@@ -35,6 +35,8 @@ public interface TriggerProvider extends ArtProvider {
     // TODO: javadoc
     void trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> predicate, Target<?>... targets);
 
+    void trigger(String identifier, Target<?>... targets);
+
     /**
      * Registers the given {@link TriggerListener} to listen for events
      * fired by this trigger.
