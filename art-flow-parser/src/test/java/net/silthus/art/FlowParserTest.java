@@ -20,6 +20,7 @@ import com.google.inject.Provider;
 import lombok.SneakyThrows;
 import net.silthus.art.conf.ArtObjectConfig;
 import net.silthus.art.impl.DefaultArtContext;
+import net.silthus.art.parser.flow.FlowParser;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

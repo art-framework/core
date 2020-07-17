@@ -14,57 +14,41 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.parser.flow;
 
-import com.google.inject.Inject;
 import com.google.inject.Provider;
+import net.silthus.art.Parser;
+import net.silthus.art.*;
 import net.silthus.art.parser.flow.parser.ArtTypeParser;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class FlowParser implements ArtParser {
+public class FlowParser implements Parser<List<String>> {
 
-    private final ArtManager artManager;
-    private final ArtResultFactory resultFactory;
-    private final Collection<Provider<ArtTypeParser<?, ?>>> parsers;
+    private final Configuration configuration;
 
-    @Inject
-    public FlowParser(ArtManager artManager, ArtResultFactory resultFactory, Collection<Provider<ArtTypeParser<?, ?>>> parsers) {
-        this.artManager = artManager;
-        this.resultFactory = resultFactory;
-        this.parsers = parsers;
+    public FlowParser(Configuration configuration) {
+        this.configuration = configuration;
     }
 
     @Override
-    public ArtContext parse(ArtConfig config) throws ArtParseException {
+    public ArtContext parse(List<String> input) throws ArtParseException {
 
-        Objects.requireNonNull(config);
+        Collection<ArtObjectContext<?>> contexts = new ArrayList<>();
 
-        Collection<AbstractArtObjectContext> contexts = new ArrayList<>();
-
-        List<String> art = config.getArt();
         List<? extends ArtTypeParser<?, ?>> parsers = this.parsers.stream().map(Provider::get).collect(Collectors.toList());
 
         int lineCount = 1;
-        for (String line : art) {
+        for (String line : input) {
             boolean matched = false;
             for (ArtTypeParser<?, ?> parser : parsers) {
                 try {
                     if (parser.accept(line)) {
                         matched = true;
-                        AbstractArtObjectContext context = parser.parse();
-                        if (context.getOptions() != null) {
-                            context.getOptions().setParent(config);
-                            // create a mostly unique hash code from the line string and line number
-                            int hashCode = new HashCodeBuilder(17, 31).append(line).append(lineCount).toHashCode();
-                            context.getOptions().setIdentifier(hashCode + "");
-                        }
-                        contexts.add(context);
+                        contexts.add(parser.parse());
                         break;
                     }
                 } catch (ArtParseException e) {
@@ -79,14 +63,14 @@ public class FlowParser implements ArtParser {
 
         contexts = sortAndCombineArtContexts(contexts);
 
-        return resultFactory.create(config, contexts, artManager.getGlobalFilters());
+        return ArtContext.of(configuration, contexts);
     }
 
     // rules for matching and combining actions, requirements and trigger
     // - requirements can neither have actions nor trigger
     // - actions can have requirements that are checked before execution and nested actions that are executed in sequence after the first action
     // - trigger can have requirements and execute actions
-    Collection<AbstractArtObjectContext> sortAndCombineArtContexts(Collection<AbstractArtObjectContext> contexts) {
+    Collection<ArtObjectContext<?>> sortAndCombineArtContexts(Collection<ArtObjectContext<?>> contexts) {
 
         return FlowLogicSorter.of(contexts).getResult();
     }

@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.parser.flow;
 
 import com.google.common.collect.ImmutableList;
-import net.silthus.art.conf.ArtObjectConfig;
-import net.silthus.art.impl.DefaultTriggerContext;
+import net.silthus.art.ActionContext;
+import net.silthus.art.ArtObjectContext;
+import net.silthus.art.RequirementContext;
+import net.silthus.art.TriggerContext;
 import net.silthus.art.impl.DefaultActionContext;
-import net.silthus.art.impl.DefaultRequirementContext;
 
 import java.util.*;
 
@@ -29,24 +30,24 @@ import static java.util.stream.Collectors.toList;
 
 public final class FlowLogicSorter {
 
-    public static FlowLogicSorter of(Collection<AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>> artWrappers) {
+    public static FlowLogicSorter of(Collection<ArtObjectContext<?>> artWrappers) {
         return new FlowLogicSorter(artWrappers);
     }
 
-    private final Iterator<AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>> iterator;
+    private final Iterator<ArtObjectContext<?>> iterator;
 
     private ActionContext<?> activeAction = null;
-    private DefaultTriggerContext<?> currentActiveTrigger = null;
-    private final List<DefaultTriggerContext<?>> activeTriggers = new ArrayList<>();
-    private final List<DefaultRequirementContext<?, ?>> requirements = new ArrayList<>();
+    private TriggerContext currentActiveTrigger = null;
+    private final List<TriggerContext> activeTriggers = new ArrayList<>();
+    private final List<RequirementContext<?>> requirements = new ArrayList<>();
 
-    private List<AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>> result = new ArrayList<>();
+    private List<ArtObjectContext<?>> result = new ArrayList<>();
 
-    private FlowLogicSorter(Collection<AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>> input) {
+    private FlowLogicSorter(Collection<ArtObjectContext<?>> input) {
         this.iterator = ImmutableList.copyOf(input).iterator();
     }
 
-    public Collection<AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>> getResult() {
+    public Collection<ArtObjectContext<?>> getResult() {
 
         process();
 
@@ -58,20 +59,20 @@ public final class FlowLogicSorter {
         if (!iterator.hasNext()) return;
 
         while (iterator.hasNext()) {
-            AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>> context = iterator.next();
+            ArtObjectContext<?> context = iterator.next();
 
-            if (context instanceof DefaultRequirementContext) {
-                handleRequirement((DefaultRequirementContext<?, ?>) context);
-            } else if (context instanceof DefaultActionContext) {
+            if (context instanceof RequirementContext) {
+                handleRequirement((RequirementContext<?>) context);
+            } else if (context instanceof ActionContext) {
                 handleAction((ActionContext<?>) context);
-            } else if (context instanceof DefaultTriggerContext) {
-                handleTrigger((DefaultTriggerContext<?>) context);
+            } else if (context instanceof TriggerContext) {
+                handleTrigger((TriggerContext) context);
             }
         }
 
         if (activeTriggers.size() > 0) {
             if (activeAction != null) {
-                for (DefaultTriggerContext<?> activeTrigger : activeTriggers) {
+                for (TriggerContext activeTrigger : activeTriggers) {
                     activeTrigger.addAction(activeAction);
                 }
                 activeAction = null;
@@ -89,7 +90,7 @@ public final class FlowLogicSorter {
         result = result.stream().filter(Objects::nonNull).collect(collectingAndThen(toList(), ImmutableList::copyOf));
     }
 
-    private void handleRequirement(DefaultRequirementContext<?, ?> requirement) {
+    private void handleRequirement(RequirementContext<?> requirement) {
 
         if (activeTriggers.isEmpty()) {
             // requirements only apply to sections below it
@@ -126,7 +127,7 @@ public final class FlowLogicSorter {
         }
     }
 
-    private void handleTrigger(DefaultTriggerContext<?> trigger) {
+    private void handleTrigger(TriggerContext trigger) {
         // this is the first trigger
         // add any actions before it into the result
         if (activeTriggers.isEmpty()) {
