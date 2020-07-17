@@ -33,7 +33,7 @@ import java.util.List;
  * <br>
  * Execute your actions by calling {@link #execute(Target)}.
  * <br>
- * It is created from any object by a {@link ArtParser} and holds all loaded {@link Action}s, {@link Requirement}s and {@link Trigger}.
+ * It is created from any object by a {@link Parser} and holds all loaded {@link Action}s, {@link Requirement}s and {@link Trigger}.
  * Create an {@link ArtContext} by parsing your config with {@link ART#load(List)}.
  * <br>
  * The {@link ArtContext} is immutable and accepts any input, including null without throwing an exception.

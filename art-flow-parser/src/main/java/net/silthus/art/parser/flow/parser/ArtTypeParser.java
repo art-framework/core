@@ -18,12 +18,11 @@ package net.silthus.art.parser.flow.parser;
 
 import com.google.common.base.Strings;
 import lombok.Getter;
-import net.silthus.art.AbstractArtObjectContext;
-import net.silthus.art.conf.ArtObjectConfig;
-import net.silthus.art.conf.ConfigFieldInformation;
+import net.silthus.art.ArtObjectContext;
 import net.silthus.art.ArtParseException;
-import net.silthus.art.api.parser.flow.Parser;
+import net.silthus.art.conf.ConfigFieldInformation;
 import net.silthus.art.parser.flow.ArtType;
+import net.silthus.art.parser.flow.Parser;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -31,7 +30,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-public abstract class ArtTypeParser<TContext extends AbstractArtObjectContext<?, ?, ? extends ArtObjectConfig<?>>, TConfig extends ArtObjectConfig<?>> extends Parser<TContext> {
+public abstract class ArtTypeParser extends Parser<ArtObjectContext<?>> {
 
     @Getter
     private final ArtType artType;
@@ -66,7 +65,7 @@ public abstract class ArtTypeParser<TContext extends AbstractArtObjectContext<?,
 
     @Override
     @SuppressWarnings({"unchecked"})
-    public TContext parse() throws ArtParseException {
+    public ArtObjectContext<?> parse() throws ArtParseException {
 
         String identifier = getIdentifier();
         Optional<ArtFactory<?, ?, ?, TConfig>> factoryOptional = getFactory(identifier);

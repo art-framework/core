@@ -18,13 +18,14 @@ package net.silthus.art.parser.flow.parser;
 
 import com.google.common.base.Strings;
 import lombok.Getter;
-import net.silthus.art.ConfigMap;
 import net.silthus.art.ArtConfigException;
 import net.silthus.art.ArtParseException;
-import net.silthus.art.api.parser.flow.Parser;
+import net.silthus.art.ConfigMap;
 import net.silthus.art.conf.KeyValuePair;
+import net.silthus.art.parser.flow.Parser;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

@@ -16,13 +16,14 @@
 
 package net.silthus.art;
 
-import net.silthus.art.conf.ArtObjectConfig;
-import net.silthus.art.impl.DefaultTriggerContext;
 import net.silthus.art.conf.ActionConfig;
+import net.silthus.art.conf.ArtObjectConfig;
 import net.silthus.art.conf.RequirementConfig;
 import net.silthus.art.conf.TriggerConfig;
 import net.silthus.art.impl.DefaultActionContext;
 import net.silthus.art.impl.DefaultRequirementContext;
+import net.silthus.art.impl.DefaultTriggerContext;
+import net.silthus.art.parser.flow.FlowLogicSorter;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
