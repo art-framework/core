@@ -22,6 +22,7 @@ import net.silthus.art.conf.ArtContextSettings;
 import net.silthus.art.impl.DefaultArtContext;
 
 import javax.annotation.concurrent.Immutable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -41,6 +42,10 @@ import java.util.List;
 @Immutable
 @ImplementedBy(DefaultArtContext.class)
 public interface ArtContext extends Context {
+
+    static ArtContext empty() {
+        return of(new ArrayList<>());
+    }
 
     static ArtContext of(Configuration configuration, ArtContextSettings settings, Collection<ArtObjectContext<?>> art) {
         return new DefaultArtContext(configuration, settings, art);
@@ -135,4 +140,14 @@ public interface ArtContext extends Context {
      * @param <TTarget> type of the target
      */
     <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> listener);
+
+    /**
+     * Combines this {@link ArtContext} with the given {@link ArtContext}.
+     * Both contexts will keep their order and {@link ArtObjectContext}s as they are.
+     * The difference is a parent {@link ArtContext} that holds both of those contexts.
+     *
+     * @param context The {@link ArtContext} that should be combined with this context
+     * @return the new combined {@link ArtContext}
+     */
+    ArtContext combine(ArtContext context);
 }

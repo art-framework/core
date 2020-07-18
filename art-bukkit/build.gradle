@@ -37,7 +37,6 @@ repositories {
 
 dependencies {
     api project(':art-api')
-    implementation project(':art-flow-parser')
     implementation project(':art-persistence')
 
     implementation "org.spigotmc:spigot-api:${mcVersion}-R0.1-SNAPSHOT"

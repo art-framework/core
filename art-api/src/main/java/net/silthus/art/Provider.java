@@ -21,14 +21,7 @@ package net.silthus.art;
  * that holds a {@link Configuration} and is used to compose the
  * other service provider.
  */
-public interface Provider {
-
-    /**
-     * Gets the {@link Configuration} associated with this {@link Provider}.
-     *
-     * @return the underlying {@link Configuration}
-     */
-    Configuration configuration();
+public interface Provider extends Scope {
 
     /**
      * This is just syntactic suggar to return to the {@link Configuration}

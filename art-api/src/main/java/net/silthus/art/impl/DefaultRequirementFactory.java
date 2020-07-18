@@ -19,6 +19,7 @@ package net.silthus.art.impl;
 import lombok.NonNull;
 import net.silthus.art.*;
 import net.silthus.art.conf.RequirementConfig;
+import net.silthus.art.parser.flow.ConfigMapType;
 
 import java.util.Map;
 
@@ -35,14 +36,14 @@ public class DefaultRequirementFactory<TTarget> extends AbstractArtFactory<Requi
     public RequirementContext<TTarget> create(Map<ConfigMapType, ConfigMap> configMaps) {
 
         RequirementConfig config = new RequirementConfig();
-        if (configMaps.containsKey(ConfigMapType.ART_CONFIG)) {
-            config = configMaps.get(ConfigMapType.ART_CONFIG).applyTo(config);
+        if (configMaps.containsKey(ConfigMapType.GENERAL_ART_CONFIG)) {
+            config = configMaps.get(ConfigMapType.GENERAL_ART_CONFIG).applyTo(config);
         }
 
         return RequirementContext.of(
                 configuration(),
                 info(),
-                createArtObject(configMaps.get(ConfigMapType.ART_OBJECT_CONFIG)),
+                createArtObject(configMaps.get(ConfigMapType.SPECIFIC_ART_CONFIG)),
                 config
         );
     }

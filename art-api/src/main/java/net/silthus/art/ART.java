@@ -47,7 +47,7 @@ public final class ART {
     /**
      * Gets the global {@link Configuration} configured for all static methods in this class.
      * You can use the {@link Configuration#derive()} method to clone the configuration
-     * and provide a local modified copy of it to the {@link ArtContextBuilder}
+     * and provide a local modified copy of it to the {@link ArtBuilder}
      * or any other object in the ART-Framework.
      *
      * @return the global {@link Configuration}
@@ -80,13 +80,13 @@ public final class ART {
     }
 
     // TODO: javadoc
-    public static ArtContextBuilder builder() {
+    public static ArtBuilder builder() {
         return builder(configuration());
     }
 
     // TODO: javadoc
-    public static ArtContextBuilder builder(Configuration configuration) {
-        return ArtContextBuilder.of(configuration);
+    public static ArtBuilder builder(Configuration configuration) {
+        return ArtBuilder.of(configuration);
     }
 
     /**
@@ -95,15 +95,15 @@ public final class ART {
      * You can then use the {@link ArtContext} to invoke {@link Action}s by calling
      * {@link ArtContext#execute(Target)} or to check for requirements by calling {@link ArtContext#test(Target)}.
      * <br>
-     * This is actually a shortcut to {@link ArtContextBuilder#load(List)}. You can also call the
+     * This is actually a shortcut to {@link ArtBuilderParser#load(Object)}. You can also call the
      * builder directly ({@link #builder()}) and fine tune how you want to load and parse your ART.
      *
-     * @param artLines a list of strings that contain the ART you want to load
+     * @param lines a list of strings that contain the ART you want to load
      * @return ArtContext containing the parsed art lines
-     * @see ArtContextBuilder
+     * @see ArtBuilder
      */
-    public static ArtContext load(List<String> artLines) {
-        return builder().load(artLines).build();
+    public static ArtContext load(List<String> lines) {
+        return builder().parser().load(lines).build();
     }
 
     /**

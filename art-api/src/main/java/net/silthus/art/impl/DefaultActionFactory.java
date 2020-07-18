@@ -18,6 +18,7 @@ package net.silthus.art.impl;
 
 import net.silthus.art.*;
 import net.silthus.art.conf.ActionConfig;
+import net.silthus.art.parser.flow.ConfigMapType;
 
 import java.util.Map;
 
@@ -31,14 +32,14 @@ public class DefaultActionFactory<TTarget> extends AbstractArtFactory<ActionCont
     public ActionContext<TTarget> create(Map<ConfigMapType, ConfigMap> configMaps) {
 
         ActionConfig actionConfig = new ActionConfig();
-        if (configMaps.containsKey(ConfigMapType.ART_CONFIG)) {
-            actionConfig = configMaps.get(ConfigMapType.ART_CONFIG).applyTo(actionConfig);
+        if (configMaps.containsKey(ConfigMapType.GENERAL_ART_CONFIG)) {
+            actionConfig = configMaps.get(ConfigMapType.GENERAL_ART_CONFIG).applyTo(actionConfig);
         }
 
         return ActionContext.of(
                 configuration(),
                 info(),
-                createArtObject(configMaps.get(ConfigMapType.ART_OBJECT_CONFIG)),
+                createArtObject(configMaps.get(ConfigMapType.SPECIFIC_ART_CONFIG)),
                 actionConfig
         );
     }

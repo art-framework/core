@@ -17,6 +17,7 @@
 package net.silthus.art;
 
 import lombok.NonNull;
+import net.silthus.art.parser.flow.ConfigMapType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ import java.util.Map;
  * @param <TContext>
  * @param <TArtObject>
  */
-public interface ArtFactory<TContext extends ArtObjectContext, TArtObject extends ArtObject> extends Provider {
+public interface ArtFactory<TContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> extends Scope {
 
     static <TTarget> ArtFactory<ActionContext<TTarget>, Action<TTarget>> ofAction(
             @NonNull Configuration configuration,

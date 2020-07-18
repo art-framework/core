@@ -21,8 +21,10 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import net.silthus.art.ArtConfigException;
+import net.silthus.art.ConfigMap;
 import net.silthus.art.ConfigOption;
 import net.silthus.art.Requirement;
+import net.silthus.art.parser.flow.ConfigMapType;
 import net.silthus.art.util.ConfigUtil;
 
 import javax.annotation.concurrent.Immutable;
@@ -43,6 +45,7 @@ public class RequirementConfig extends ArtObjectConfig {
     private static final long serialVersionUID = 2530536893768L;
 
     public static final Map<String, ConfigFieldInformation> CONFIG_FIELD_INFORMATION = new HashMap<>();
+    public static final ConfigMap CONFIG_MAP = ConfigMap.of(ConfigMapType.GENERAL_ART_CONFIG, CONFIG_FIELD_INFORMATION);
 
     static {
         try {
