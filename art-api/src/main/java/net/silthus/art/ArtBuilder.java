@@ -16,22 +16,22 @@
 
 package net.silthus.art;
 
-import lombok.NonNull;
+import net.silthus.art.impl.DefaultArtBuilder;
+import net.silthus.art.parser.flow.FlowParser;
 
-/**
- * Scope implementations provide access to a variety of objects that are
- * available from a given scope.
- * <p>
- * The scope of the various objects contained in this type (e.g.
- * {@link #configuration()}, {@link #settings()}, etc.) are implementation
- * dependent and will be specified by the concrete subtype of
- * <code>Scope</code>.
- */
-public interface Scope {
+import java.util.List;
 
-    /**
-     * The configuration of the current scope.
-     */
-    @NonNull
-    Configuration configuration();
+public interface ArtBuilder extends Scope {
+
+    ArtBuilder DEFAULT = of(ART.configuration());
+
+    static ArtBuilder of(Configuration configuration) {
+        return new DefaultArtBuilder(configuration);
+    }
+
+    <TParser extends Parser<TInput>, TInput> ArtBuilderParser<TParser, TInput> parser(TParser parser);
+
+    ArtBuilderParser<FlowParser, List<String>> parser();
+
+    ArtContext build();
 }

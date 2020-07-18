@@ -17,7 +17,6 @@
 rootProject.name = 'art'
 include 'art-api'
 include 'art-bukkit'
-include 'art-flow-parser'
 include 'art-persistence'
 include 'art-integration-test'
 

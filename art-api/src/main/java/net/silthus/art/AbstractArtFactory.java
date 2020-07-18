@@ -17,6 +17,7 @@
 package net.silthus.art;
 
 import lombok.NonNull;
+import net.silthus.art.parser.flow.ConfigMapType;
 
 import java.lang.reflect.InvocationTargetException;
 
@@ -44,7 +45,7 @@ public abstract class AbstractArtFactory<TContext extends ArtObjectContext<TArtO
     protected final TArtObject createArtObject(ConfigMap configMap) {
         TArtObject artObject = info().getProvider().create();
 
-        if (configMap == null || !configMap.isLoaded() || configMap.getType() != ConfigMapType.ART_OBJECT_CONFIG) {
+        if (configMap == null || !configMap.isLoaded() || configMap.getType() != ConfigMapType.SPECIFIC_ART_CONFIG) {
             return artObject;
         }
 
@@ -62,6 +63,8 @@ public abstract class AbstractArtFactory<TContext extends ArtObjectContext<TArtO
                         e.printStackTrace();
                     }
                 }
+            } else if (configClass.isInstance(artObject)) {
+                configMap.applyTo(artObject);
             }
         });
 

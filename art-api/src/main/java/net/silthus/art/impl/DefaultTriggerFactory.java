@@ -19,6 +19,7 @@ package net.silthus.art.impl;
 import lombok.NonNull;
 import net.silthus.art.*;
 import net.silthus.art.conf.TriggerConfig;
+import net.silthus.art.parser.flow.ConfigMapType;
 
 import java.util.Map;
 
@@ -35,8 +36,8 @@ public class DefaultTriggerFactory extends AbstractArtFactory<TriggerContext, Tr
     public TriggerContext create(Map<ConfigMapType, ConfigMap> configMaps) {
 
         TriggerConfig config = new TriggerConfig();
-        if (configMaps.containsKey(ConfigMapType.ART_CONFIG)) {
-            config = configMaps.get(ConfigMapType.ART_CONFIG).applyTo(config);
+        if (configMaps.containsKey(ConfigMapType.GENERAL_ART_CONFIG)) {
+            config = configMaps.get(ConfigMapType.GENERAL_ART_CONFIG).applyTo(config);
         }
 
         return TriggerContext.of(

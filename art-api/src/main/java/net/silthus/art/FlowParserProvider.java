@@ -16,22 +16,13 @@
 
 package net.silthus.art;
 
-import lombok.NonNull;
+import java.util.Collection;
 
-/**
- * Scope implementations provide access to a variety of objects that are
- * available from a given scope.
- * <p>
- * The scope of the various objects contained in this type (e.g.
- * {@link #configuration()}, {@link #settings()}, etc.) are implementation
- * dependent and will be specified by the concrete subtype of
- * <code>Scope</code>.
- */
-public interface Scope {
+public interface FlowParserProvider extends Provider {
 
-    /**
-     * The configuration of the current scope.
-     */
-    @NonNull
-    Configuration configuration();
+    Collection<FlowParser> all();
+
+    FlowParserProvider add(FlowParser parser);
+
+    FlowParserProvider remove(FlowParser parser);
 }

@@ -135,6 +135,14 @@ public interface Configuration extends Serializable, Cloneable {
     TargetProvider targets();
 
     /**
+     * Use the {@link FlowParserProvider} to register your custom {@link FlowParser}
+     * that will be used when parsing flow configurations.
+     *
+     * @return the implementing {@link FlowParserProvider}
+     */
+    FlowParserProvider parser();
+
+    /**
      * Adds a {@link TargetProvider} for the given {@link Target} type.
      * Will override any existing {@link TargetProvider} of the same target type.
      * <br>
@@ -239,6 +247,14 @@ public interface Configuration extends Serializable, Cloneable {
      * @return this {@link Configuration}
      */
     Configuration set(@NonNull EventProvider eventProvider);
+
+    /**
+     * Sets a new implementation for the {@link FlowParserProvider}.
+     *
+     * @param flowParserProvider {@link FlowParserProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration set(@NonNull FlowParserProvider flowParserProvider);
 
     /**
      * Creates a new {@link Configuration} derived from the current configuration.
