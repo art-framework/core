@@ -21,7 +21,7 @@ import lombok.NonNull;
 /**
  * Used to listen on events fired by {@link Trigger}s.
  * <p>
- * Make sure to register your listener either with the {@link ArtContext#onTrigger(Class, TriggerListener)}
+ * Make sure to register your listener either with the {@link ArtContext#registerListener(Class, TriggerListener)}
  * or {@link TriggerManager#addListener(String, Class, TriggerListener)} method.
  *
  * @param <TTarget> target type

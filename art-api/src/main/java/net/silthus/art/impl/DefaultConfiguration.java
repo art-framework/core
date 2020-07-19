@@ -43,6 +43,7 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     private transient TargetProvider targetProvider;
     private transient EventProvider eventProvider;
     private transient ArtContextSettings artContextSettings;
+    private transient FlowParserProvider flowParserProvider;
 
     public DefaultConfiguration() {
         this(Settings.DEFAULT,
@@ -55,7 +56,8 @@ public class DefaultConfiguration implements Configuration, Cloneable {
                 Storage.DEFAULT,
                 TargetProvider.DEFAULT,
                 EventProvider.DEFAULT,
-                ArtContextSettings.DEFAULT);
+                ArtContextSettings.DEFAULT,
+                FlowParserProvider.DEFAULT);
     }
 
     DefaultConfiguration(
@@ -69,7 +71,8 @@ public class DefaultConfiguration implements Configuration, Cloneable {
             @NonNull Storage storage,
             @NonNull TargetProvider targetProvider,
             @NonNull EventProvider eventProvider,
-            @NonNull ArtContextSettings artContextSettings
+            @NonNull ArtContextSettings artContextSettings,
+            @NonNull FlowParserProvider flowParserProvider
     ) {
         this.settings = settings;
         this.artProvider = artProvider;
@@ -82,6 +85,7 @@ public class DefaultConfiguration implements Configuration, Cloneable {
         this.targetProvider = targetProvider;
         this.eventProvider = eventProvider;
         this.artContextSettings = artContextSettings;
+        this.flowParserProvider = flowParserProvider;
     }
 
     @Override
@@ -137,6 +141,11 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     @Override
     public EventProvider events() {
         return eventProvider;
+    }
+
+    @Override
+    public FlowParserProvider parser() {
+        return flowParserProvider;
     }
 
     @Override
@@ -206,6 +215,12 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     }
 
     @Override
+    public Configuration set(@NonNull FlowParserProvider flowParserProvider) {
+        this.flowParserProvider = flowParserProvider;
+        return this;
+    }
+
+    @Override
     public Configuration derive() {
         return new DefaultConfiguration(
                 settings(),
@@ -218,7 +233,8 @@ public class DefaultConfiguration implements Configuration, Cloneable {
                 storage(),
                 targets(),
                 events(),
-                contextSettings()
+                contextSettings(),
+                parser()
         );
     }
 }

@@ -16,13 +16,19 @@
 
 package net.silthus.art;
 
+import net.silthus.art.impl.DefaultFlowParserProvider;
+
 import java.util.Collection;
 
 public interface FlowParserProvider extends Provider {
+
+    FlowParserProvider DEFAULT = new DefaultFlowParserProvider(ART.configuration());
 
     Collection<FlowParser> all();
 
     FlowParserProvider add(FlowParser parser);
 
     FlowParserProvider remove(FlowParser parser);
+
+    FlowParserProvider clear();
 }

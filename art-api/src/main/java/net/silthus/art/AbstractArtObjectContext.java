@@ -18,11 +18,14 @@ package net.silthus.art;
 
 import lombok.NonNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> extends AbstractScope implements ArtObjectContext<TArtObject> {
 
     private final ArtInformation<TArtObject> information;
+    private final Map<String, Object> data = new HashMap<>();
 
     public AbstractArtObjectContext(@NonNull Configuration configuration, ArtInformation<TArtObject> information) {
         super(configuration);
@@ -37,6 +40,11 @@ public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> ext
     @Override
     public ArtInformation<TArtObject> info() {
         return information;
+    }
+
+    @Override
+    public @NonNull Map<String, Object> data() {
+        return data;
     }
 
     public boolean isTargetType(Object target) {

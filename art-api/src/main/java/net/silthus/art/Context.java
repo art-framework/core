@@ -53,7 +53,24 @@ public interface Context extends Scope {
      *         was previously set for the given key or if the current data cannot be cast
      *         to the new data type.
      */
-    <TValue> Optional<TValue> data(@NonNull String key, @Nullable TValue value);
+    @SuppressWarnings("unchecked")
+    default <TValue> Optional<TValue> data(@NonNull String key, @Nullable TValue value) {
+        Object existingData;
+        if (value == null) {
+            existingData = data().remove(key);
+        } else {
+            existingData = data().put(key, value);
+        }
+
+        if (existingData != null && value != null) {
+            try {
+                return Optional.of((TValue) value.getClass().cast(existingData));
+            } catch (ClassCastException ignored) {
+            }
+        }
+
+        return Optional.empty();
+    }
 
     /**
      * Get some custom data from this <code>Scope</code>.
@@ -69,7 +86,12 @@ public interface Context extends Scope {
      * @return The custom data or <code>Optional.empty()</code> if no such data is contained
      *         in this <code>Scope</code>
      */
-    <TValue> Optional<TValue> data(String key, Class<TValue> valueClass);
+    default <TValue> Optional<TValue> data(String key, Class<TValue> valueClass) {
+        if (!data().containsKey(key)) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(valueClass.cast(data().get(key)));
+    }
 
     default <TValue> Optional<TValue> data(Target<?> target, String key, TValue value) {
         return data(target.getUniqueId() + "#" + key, value);

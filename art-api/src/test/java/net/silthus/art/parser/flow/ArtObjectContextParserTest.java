@@ -18,50 +18,51 @@ package net.silthus.art.parser.flow;
 
 import lombok.Data;
 import lombok.SneakyThrows;
-import net.silthus.art.ActionContext;
-import net.silthus.art.ArtParseException;
-import net.silthus.art.ConfigOption;
-import net.silthus.art.Storage;
+import net.silthus.art.*;
 import net.silthus.art.conf.ActionConfig;
-import net.silthus.art.impl.DefaultActionContext;
-import net.silthus.art.util.ConfigUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.ArgumentMatchers.any;
+import static org.assertj.core.api.InstanceOfAssertFactories.type;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings({"unchecked", "unused"})
-@DisplayName("ArtTypeParser")
-class FlowTypeParserTest {
+class ArtObjectContextParserTest {
 
+    private Configuration configuration;
     private ActionParser parser;
-    private ActionManager manager;
-    private ActionFactory<?, TestConfig> factory;
+    private ActionFactory<?> factory;
 
     @BeforeEach
     @SneakyThrows
     void beforeEach() {
-        this.factory = mock(ActionFactory.class);
-        this.manager = mock(ActionManager.class);
+        configuration = mock(Configuration.class);
+        factory = spy(ActionFactory.of(configuration, mock(ArtInformation.class)));
+        when(configuration.actions().get(anyString())).thenAnswer(invocation -> Optional.of(factory));
+        this.parser = new ActionParser(configuration);
+    }
 
-        when(manager.getFactory(anyString())).thenReturn(Optional.of(factory));
+    private TestConfig extractConfig() {
+        ArgumentCaptor<Map<ConfigMapType, ConfigMap>> argument = ArgumentCaptor.forClass(Map.class);
+        verify(factory).create(argument.capture());
 
-        when(factory.create(any())).thenAnswer(invocation -> new DefaultActionContext<>(Object.class, (o, context) -> {
-        }, invocation.getArgument(0), null, mock(Storage.class)));
-        when(factory.getConfigClass()).thenReturn(Optional.of(TestConfig.class));
-        when(factory.getConfigInformation()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
+        TestConfig config = new TestConfig();
 
-        this.parser = new ActionParser(manager);
+        assertThat(argument.getValue())
+                .containsKey(ConfigMapType.SPECIFIC_ART_CONFIG);
+
+        argument.getValue().get(ConfigMapType.SPECIFIC_ART_CONFIG).applyTo(config);
+
+        return config;
     }
 
     @Test
@@ -89,8 +90,9 @@ class FlowTypeParserTest {
 
             assertThat(parser.accept("!foobar[cooldown:5s, delay=10s]")).isTrue();
             assertThat(parser.parse())
-                    .extracting(actionContext -> actionContext.getOptions().getCooldown(), actionContext -> actionContext.getOptions().getDelay())
-                    .contains(5000L, 200L);
+                    .asInstanceOf(type(ActionContext.class))
+                    .extracting(actionContext -> actionContext.getConfig().getCooldown(), actionContext -> actionContext.getConfig().getDelay())
+                    .contains(5000L, 10000L);
         }
 
         @Test
@@ -100,8 +102,9 @@ class FlowTypeParserTest {
 
             assertThat(parser.accept("!foobar(delay=10s, cooldown:5s)")).isTrue();
             assertThat(parser.parse())
-                    .extracting(actionContext -> actionContext.getOptions().getCooldown(), actionContext -> actionContext.getOptions().getDelay())
-                    .contains(5000L, 200L);
+                    .asInstanceOf(type(ActionContext.class))
+                    .extracting(actionContext -> actionContext.getConfig().getCooldown(), actionContext -> actionContext.getConfig().getDelay())
+                    .contains(5000L, 10000L);
         }
 
         @Test
@@ -110,9 +113,13 @@ class FlowTypeParserTest {
         void shouldParseCustomConfig() {
 
             assertThat(parser.accept("!foobar foo number=2")).isTrue();
-            assertThat(parser.parse().getConfig())
-                    .isNotEmpty().get()
-                    .extracting("name", "number")
+
+            parser.parse();
+
+            TestConfig config = extractConfig();
+
+            assertThat(config)
+                    .extracting(TestConfig::getName, TestConfig::getNumber)
                     .contains("foo", 2);
         }
 
@@ -122,13 +129,15 @@ class FlowTypeParserTest {
         void shouldParseCustomConfigAndOptions() {
 
             assertThat(parser.accept("!foobar(delay=10) name=foo;number:2")).isTrue();
-            ActionContext<?> result = parser.parse();
-            assertThat(result.getOptions())
+
+            assertThat(parser.parse())
+                    .asInstanceOf(type(ActionContext.class))
+                    .extracting(ActionContext::getConfig)
                     .extracting(ActionConfig::getDelay)
                     .isEqualTo(10L);
-            assertThat(result.getConfig())
-                    .isNotEmpty().get()
-                    .extracting("name", "number")
+
+            assertThat(extractConfig())
+                    .extracting(TestConfig::getName, TestConfig::getNumber)
                     .contains("foo", 2);
         }
 
@@ -137,32 +146,12 @@ class FlowTypeParserTest {
         @DisplayName("should throw if no matching factory is found")
         void shouldThrowIfNoIdentifierMatches() {
 
-            when(manager.getFactory(anyString())).thenReturn(Optional.empty());
+            when(configuration.actions().get(anyString())).thenReturn(Optional.empty());
 
             assertThat(parser.accept("!foobar")).isTrue();
             assertThatExceptionOfType(ArtParseException.class)
                     .isThrownBy(() -> parser.parse())
                     .withMessageContaining("No action with identifier \"foobar\" found");
-        }
-
-        @Test
-        @SneakyThrows
-        @DisplayName("should throw if parameterless config constructor does not exist")
-        void shouldThrowIfConfigConstructorIsInvalid() {
-            ActionFactory<?, WrongConfigClass> factory = mock(ActionFactory.class);
-
-            when(manager.getFactory(anyString())).thenReturn(Optional.of(factory));
-
-            when(factory.create(any())).thenAnswer(invocation -> new DefaultActionContext<>(null, null, invocation.getArgument(0), null, mock(Storage.class)));
-            when(factory.getConfigClass()).thenReturn(Optional.of(WrongConfigClass.class));
-            when(factory.getConfigInformation()).thenReturn(new HashMap<>());
-
-            parser = new ActionParser(manager);
-
-            assertThat(parser.accept("!foobar")).isTrue();
-            assertThatExceptionOfType(ArtParseException.class)
-                    .isThrownBy(() -> parser.parse())
-                    .withMessageContaining("Unable to find a parameterless public constructor");
         }
     }
 
