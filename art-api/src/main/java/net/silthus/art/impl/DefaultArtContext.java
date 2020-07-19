@@ -28,13 +28,14 @@ import java.util.*;
 
 import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
 
-public final class DefaultArtContext extends AbstractScope implements ArtContext, TriggerListener<Object> {
+public class DefaultArtContext extends AbstractScope implements ArtContext, TriggerListener<Object> {
 
     private final ArtContextSettings settings;
 
     @Getter
     private final List<ArtObjectContext<?>> art;
     private final Map<Class<?>, List<TriggerListener<?>>> triggerListeners = new HashMap<>();
+    private final Map<String, Object> data = new HashMap<>();
 
     @Inject
     public DefaultArtContext(Configuration configuration, ArtContextSettings settings, @Assisted Collection<ArtObjectContext<?>> art) {
@@ -48,13 +49,18 @@ public final class DefaultArtContext extends AbstractScope implements ArtContext
         return settings;
     }
 
+    @Override
+    public @NonNull Map<String, Object> data() {
+        return data;
+    }
+
     private boolean isAutoTrigger() {
         return settings().isAutoTrigger() || triggerListeners.size() > 0;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <TTarget> boolean test(@NonNull Target<TTarget> target) {
+    public <TTarget> boolean test(@NonNull Target<TTarget> target) {
 
         ExecutionContext<TTarget, ?> executionContext = ExecutionContext.of(configuration(), this, target);
 
@@ -67,7 +73,7 @@ public final class DefaultArtContext extends AbstractScope implements ArtContext
 
     @Override
     @SuppressWarnings("unchecked")
-    public final <TTarget> void execute(@NonNull Target<TTarget> target) {
+    public <TTarget> void execute(@NonNull Target<TTarget> target) {
 
         ExecutionContext<TTarget, ?> executionContext = ExecutionContext.of(configuration(), this, target);
 
@@ -79,7 +85,7 @@ public final class DefaultArtContext extends AbstractScope implements ArtContext
     }
 
     @Override
-    public <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
+    public <TTarget> void registerListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
         if (!triggerListeners.containsKey(targetClass)) {
             triggerListeners.put(targetClass, new ArrayList<>());
         }
@@ -96,5 +102,10 @@ public final class DefaultArtContext extends AbstractScope implements ArtContext
                     .orElse(new ArrayList<>())
                     .forEach(triggerListener -> triggerListener.onTrigger(target));
         }
+    }
+
+    @Override
+    public ArtContext combine(ArtContext context) {
+        return new CombinedArtContext(this, context);
     }
 }

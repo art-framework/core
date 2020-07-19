@@ -16,75 +16,48 @@
 
 package net.silthus.art.parser.flow;
 
-import com.google.inject.Provider;
 import lombok.SneakyThrows;
-import net.silthus.art.AbstractArtObjectContext;
+import net.silthus.art.ArtObjectContext;
 import net.silthus.art.ArtParseException;
-import net.silthus.art.conf.ArtObjectConfig;
-import net.silthus.art.impl.DefaultArtContext;
+import net.silthus.art.Configuration;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
 @DisplayName("FlowParser")
-@SuppressWarnings({"unchecked", "rawtypes"})
 class FlowParserTest {
 
-    private ArtManager artManager;
     private FlowParser parser;
-    private ArtTypeParser artTypeParser;
-    private final Set<Provider<ArtTypeParser<?, ?>>> parsers = new HashSet<>();
+    private ArtObjectContextParser flowParser;
 
     @BeforeEach
     @SneakyThrows
     void beforeEach() {
-        artManager = mock(ArtManager.class);
-        when(artManager.getGlobalFilters()).thenReturn(new HashMap<>());
 
-        artTypeParser = mock(ArtTypeParser.class);
-        when(artTypeParser.getPattern()).thenReturn(Pattern.compile(".*"));
-        when(artTypeParser.getMatcher()).thenCallRealMethod();
-        when(artTypeParser.getInput()).thenCallRealMethod();
-        when(artTypeParser.accept(anyString())).thenCallRealMethod();
-        AbstractArtObjectContext artWrapper = mock(AbstractArtObjectContext.class);
-        when(artWrapper.getOptions()).thenReturn(new ArtObjectConfig());
-        when(artTypeParser.parse()).thenReturn(artWrapper);
+        Configuration configuration = mock(Configuration.class);
 
-        Provider<ArtTypeParser<?, ?>> actionParserProvider = mock(Provider.class);
-        when(actionParserProvider.get()).thenReturn(this.artTypeParser);
+        flowParser = mock(ArtObjectContextParser.class);
+        when(flowParser.accept(anyString())).thenReturn(true);
+        when(flowParser.parse()).thenReturn(mock(ArtObjectContext.class));
+        ArrayList<net.silthus.art.FlowParser> parsers = new ArrayList<>();
+        parsers.add(flowParser);
+        when(configuration.parser().all()).thenReturn(parsers);
 
-        parsers.add(actionParserProvider);
-
-        parser = spy(new FlowParser(artManager, DefaultArtContext::new, parsers));
+        parser = new FlowParser(configuration);
     }
 
     @Nested
     @DisplayName("parse(ArtConfig)")
     class parse {
-
-        private ArtConfig config;
-
-        @BeforeEach
-        @SneakyThrows
-        void beforeEach() {
-            config = new ArtConfig();
-        }
-
-        private void addLines(String... lines) {
-            config.getArt().addAll(Arrays.asList(lines));
-        }
 
         @Test
         @DisplayName("should throw if config object is null")
@@ -98,17 +71,15 @@ class FlowParserTest {
         @DisplayName("should call parser.parse() for every line")
         void shouldCallParseForEveryLine() {
 
-            addLines(
+            parser.parse(Arrays.asList(
                     "!foobar",
                     "!foo",
                     "?requirement",
                     "and more",
                     "foo",
                     "---"
-            );
-
-            parser.parse(config);
-            verify(artTypeParser, times(6)).parse();
+            ));
+            verify(flowParser, times(6)).parse();
         }
 
         @Test
@@ -118,18 +89,14 @@ class FlowParserTest {
 
             when(parser.sortAndCombineArtContexts(anyList())).then(invocation -> invocation.getArgument(0));
 
-            addLines(
+            assertThat(parser.parse(Arrays.asList(
                     "!foobar",
                     "!foo",
                     "?requirement",
                     "and more",
                     "foo",
                     "---"
-            );
-
-            assertThat(parser.parse(config))
-                    .extracting("art.size")
-                    .isEqualTo(6);
+            ))).extracting("art.size").isEqualTo(6);
         }
 
         @Test
@@ -138,24 +105,22 @@ class FlowParserTest {
         void shouldThrowIfParsingALineFails() {
 
             ArtParseException exception = new ArtParseException("TEST ERROR");
-            doAnswer((Answer<AbstractArtObjectContext<?, ?, ?>>) invocation -> {
-                ArtTypeParser<?, ?> parser = (ArtTypeParser<?, ?>) invocation.getMock();
+            doAnswer((Answer<ArtObjectContext<?>>) invocation -> {
+                ArtObjectContextParser parser = (ArtObjectContextParser) invocation.getMock();
                 if ("ERROR".equals(parser.getInput())) {
                     throw exception;
                 }
-                return mock(AbstractArtObjectContext.class);
-            }).when(artTypeParser).parse();
-
-            addLines(
-                    "!foobar",
-                    "?req",
-                    "ERROR",
-                    "!foo",
-                    "bar"
-            );
+                return mock(ArtObjectContext.class);
+            }).when(flowParser).parse();
 
             assertThatExceptionOfType(ArtParseException.class)
-                    .isThrownBy(() -> parser.parse(config))
+                    .isThrownBy(() -> parser.parse(Arrays.asList(
+                            "!foobar",
+                            "?req",
+                            "ERROR",
+                            "!foo",
+                            "bar"
+                    )))
                     .withMessage("TEST ERROR on ART line 3")
                     .withCause(exception);
         }
@@ -164,16 +129,14 @@ class FlowParserTest {
         @DisplayName("should throw if line matches no parser")
         void shouldThrowIfLineHasNoMatchingParser() {
 
-            doReturn(false).when(artTypeParser).accept("no-match");
-
-            addLines(
-                    "!foobar",
-                    "foo",
-                    "no-match"
-            );
+            doReturn(false).when(flowParser).accept("no-match");
 
             assertThatExceptionOfType(ArtParseException.class)
-                    .isThrownBy(() -> parser.parse(config))
+                    .isThrownBy(() -> parser.parse(Arrays.asList(
+                            "!foobar",
+                            "foo",
+                            "no-match"
+                    )))
                     .withMessage("Unable to find matching parser for \"no-match\" on line 3");
         }
     }

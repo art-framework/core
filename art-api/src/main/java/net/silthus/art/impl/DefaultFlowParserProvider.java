@@ -16,43 +16,45 @@
 
 package net.silthus.art.impl;
 
+import com.google.common.collect.ImmutableList;
 import lombok.NonNull;
 import net.silthus.art.AbstractProvider;
 import net.silthus.art.Configuration;
+import net.silthus.art.FlowParser;
 import net.silthus.art.FlowParserProvider;
-import net.silthus.art.Parser;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class DefaultFlowParserProvider extends AbstractProvider implements FlowParserProvider {
 
-    private final Map<Class<?>, Supplier<Parser<?>>> parsers = new HashMap<>();
+    private final List<FlowParser> flowParsers = new ArrayList<>();
 
     public DefaultFlowParserProvider(@NonNull Configuration configuration) {
         super(configuration);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <TInput> Optional<Parser<TInput>> get(Class<TInput> inputClass) {
-        return Optional.ofNullable(parsers.get(inputClass))
-                .map(Supplier::get)
-                .map(parser -> (Parser<TInput>) parser);
+    public Collection<FlowParser> all() {
+        return ImmutableList.copyOf(flowParsers);
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public <TInput> FlowParserProvider add(Class<TInput> inputType, Supplier<Parser<TInput>> parserSupplier) {
-        parsers.put(inputType, (Supplier) parserSupplier);
+    public FlowParserProvider add(FlowParser parser) {
+        flowParsers.add(parser);
         return this;
     }
 
     @Override
-    public FlowParserProvider remove(Class<?> inputType) {
-        parsers.remove(inputType);
+    public FlowParserProvider remove(FlowParser parser) {
+        flowParsers.remove(parser);
+        return this;
+    }
+
+    @Override
+    public FlowParserProvider clear() {
+        flowParsers.clear();
         return this;
     }
 }
