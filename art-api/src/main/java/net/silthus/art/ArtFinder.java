@@ -23,8 +23,8 @@ import java.util.function.Predicate;
 
 public interface ArtFinder extends ArtProvider {
 
-    static ArtFinder getDefault() {
-        return new DefaultArtFinder(ART.configuration());
+    static ArtFinder of(Configuration configuration) {
+        return new DefaultArtFinder(configuration);
     }
 
     default ArtProvider art() {

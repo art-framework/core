@@ -24,8 +24,8 @@ import java.util.function.Predicate;
 // TODO: javadoc
 public interface TriggerProvider extends ArtProvider {
 
-    static TriggerProvider getDefault() {
-        return new DefaultTriggerProvider(ART.configuration());
+    static TriggerProvider of(Configuration configuration) {
+        return new DefaultTriggerProvider(configuration);
     }
 
     TriggerProvider add(ArtInformation<Trigger> triggerInformation);

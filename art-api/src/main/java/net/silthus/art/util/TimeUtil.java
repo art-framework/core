@@ -37,44 +37,34 @@ public final class TimeUtil {
         return ((int) ((seconds / 60.0) * 100)) / 100.0;
     }
 
-    public static double ticksToMinutes(long ticks) {
-
-        return secondsToMinutes(ticksToSeconds(ticks));
-    }
-
     public static double millisToMinutes(long millis) {
 
         return secondsToMinutes(millisToSeconds(millis));
     }
 
-    public static long yearsToTicks(long years) {
+    public static long yearsToMillis(long years) {
 
-        return daysToTicks(years * 365L);
+        return daysToMillis(years * 365L);
     }
 
-    public static long weeksToTicks(long weeks) {
+    public static long weeksToMillis(long weeks) {
 
-        return daysToTicks(weeks * 7);
+        return daysToMillis(weeks * 7);
     }
 
-    public static long daysToTicks(long days) {
+    public static long daysToMillis(long days) {
 
-        return hoursToTicks(days * 24L);
+        return hoursToMillis(days * 24L);
     }
 
-    public static long hoursToTicks(long hours) {
+    public static long hoursToMillis(long hours) {
 
-        return minutesToTicks(hours * 60L);
+        return minutesToMillis(hours * 60L);
     }
 
-    public static long minutesToTicks(long minutes) {
+    public static long minutesToMillis(long minutes) {
 
-        return secondsToTicks(minutes * 60.0);
-    }
-
-    public static double ticksToSeconds(long ticks) {
-
-        return ((int) (((double) ticks / 20.0) * 100.0)) / 100.0;
+        return secondsToMillis(minutes * 60.0);
     }
 
     public static double millisToSeconds(long millis) {
@@ -82,24 +72,9 @@ public final class TimeUtil {
         return ((int) (((double) millis / 1000.0) * 100.0)) / 100.0;
     }
 
-    public static long secondsToTicks(double seconds) {
-
-        return Math.round(seconds * 20);
-    }
-
     public static long secondsToMillis(double seconds) {
 
         return (long) (seconds * 1000);
-    }
-
-    public static long ticksToMillis(long ticks) {
-
-        return secondsToMillis(ticksToSeconds(ticks));
-    }
-
-    public static long millisToTicks(long millis) {
-
-        return secondsToTicks(millisToSeconds(millis));
     }
 
     public static String getFormattedTime(double seconds) {
@@ -128,19 +103,19 @@ public final class TimeUtil {
         StringBuilder sb = new StringBuilder(64);
         if (days > 0) {
             sb.append(days);
-            sb.append(days > 1 ? " Tage " : " Tag ");
+            sb.append(days > 1 ? " days " : " day ");
         }
         if (hours > 0) {
             sb.append(hours);
-            sb.append(hours > 1 ? " Stunden " : " Stunde ");
+            sb.append(hours > 1 ? " hours " : " hour ");
         }
         if (minutes > 0) {
             sb.append(minutes);
-            sb.append(minutes > 1 ? " Minuten " : " Minute ");
+            sb.append(minutes > 1 ? " minutes " : " minute ");
         }
         if (seconds > 0) {
             sb.append(seconds);
-            sb.append(seconds > 1 ? " Sekunden " : " Sekunde ");
+            sb.append(seconds > 1 ? " seconds " : " second ");
         }
 
         return (sb.toString());
@@ -182,7 +157,7 @@ public final class TimeUtil {
     }
 
     // regexr.com/577cp
-    private static final Pattern TIME_PATTERN = Pattern.compile("^((?<years>\\d+)y)?((?<months>\\d+)m)?((?<weeks>\\d+)w)?((?<days>\\d+)d)?((?<hours>\\d+)h)?((?<minutes>\\d+)m)?((?<seconds>\\d+)s)?(?<ticks>\\d+)?$");
+    private static final Pattern TIME_PATTERN = Pattern.compile("^((?<years>\\d+)y)?((?<months>\\d+)m)?((?<weeks>\\d+)w)?((?<days>\\d+)d)?((?<hours>\\d+)h)?((?<minutes>\\d+)m)?((?<seconds>\\d+)s)?(?<milliseconds>\\d+)?$");
 
     /**
      * Parses a given input string to ticks.
@@ -191,7 +166,7 @@ public final class TimeUtil {
      * @param input to parse
      * @return ticks
      */
-    public static long parseTimeAsTicks(String input) {
+    public static long parseTimeAsMilliseconds(String input) {
 
         if (Objects.isNull(input)) return 0;
         Matcher matcher = TIME_PATTERN.matcher(input);
@@ -199,40 +174,36 @@ public final class TimeUtil {
         long result = 0;
         String years = matcher.group("years");
         if (!Strings.isNullOrEmpty(years)) {
-            result += yearsToTicks(Long.parseLong(years));
+            result += yearsToMillis(Long.parseLong(years));
         }
         String weeks = matcher.group("weeks");
         if (!Strings.isNullOrEmpty(weeks)) {
-            result += weeksToTicks(Long.parseLong(weeks));
+            result += weeksToMillis(Long.parseLong(weeks));
         }
         String days = matcher.group("days");
         if (!Strings.isNullOrEmpty(days)) {
-            result += daysToTicks(Long.parseLong(days));
+            result += daysToMillis(Long.parseLong(days));
         }
         String hours = matcher.group("hours");
         if (!Strings.isNullOrEmpty(hours)) {
-            result += hoursToTicks(Long.parseLong(hours));
+            result += hoursToMillis(Long.parseLong(hours));
         }
         String minutes = matcher.group("minutes");
         if (!Strings.isNullOrEmpty(minutes)) {
-            result += minutesToTicks(Long.parseLong(minutes));
+            result += minutesToMillis(Long.parseLong(minutes));
         }
         String seconds = matcher.group("seconds");
         if (!Strings.isNullOrEmpty(seconds)) {
-            result += secondsToTicks(Long.parseLong(seconds));
+            result += secondsToMillis(Long.parseLong(seconds));
         }
-        String ticks = matcher.group("ticks");
-        if (!Objects.isNull(ticks)) {
-            result += Long.parseLong(ticks);
+        String milliseconds = matcher.group("milliseconds");
+        if (!Objects.isNull(milliseconds)) {
+            result += Long.parseLong(milliseconds);
         }
         return result;
     }
 
-    public static long parseTimeAsMillis(String input) {
-        return ticksToMillis(parseTimeAsTicks(input));
-    }
-
     public static double parseTimeAsSeconds(String input) {
-        return ticksToSeconds(parseTimeAsTicks(input));
+        return millisToSeconds(parseTimeAsMilliseconds(input));
     }
 }

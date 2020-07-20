@@ -36,6 +36,6 @@ public class ActionParser extends ArtObjectContextParser<ActionFactory<?>> {
 
     @Override
     protected ConfigMap getGeneralConfigMap() {
-        return ActionConfig.CONFIG_MAP;
+        return ActionConfig.getConfigMap();
     }
 }

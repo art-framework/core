@@ -259,7 +259,7 @@ public interface Configuration extends Serializable, Cloneable {
     Configuration set(@NonNull FlowParserProvider flowParserProvider);
 
     /**
-     * Creates a new {@link Configuration} derived from the current configuration.
+     * Creates a new {@link Configuration} derived from this configuration.
      * This is actually just a shortcut to {@link #clone()}.
      * You can then use the configuration to modify locally scoped properties
      * and use it to load and create your ART with {@link ART#builder(Configuration)}.
@@ -267,4 +267,113 @@ public interface Configuration extends Serializable, Cloneable {
      * @return this cloned {@link Configuration}
      */
     Configuration derive();
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link ArtProvider}.
+     *
+     * @param artProvider art provider implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration derive(@NonNull ArtProvider artProvider);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link Scheduler}.
+     *
+     * @param scheduler scheduler implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration derive(Scheduler scheduler);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link Storage}.
+     *
+     * @param storage storage implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration derive(@NonNull Storage storage);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new set of settings to use in this context.
+     *
+     * @param settings settings to use
+     * @return this {@link Configuration}
+     */
+    Configuration derive(@NonNull Settings settings);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and provides new {@link ArtContextSettings} that will be used
+     * in the creation of all {@link ArtContext} objects.
+     *
+     * @param settings new default {@link ArtContextSettings}
+     * @return this {@link Configuration}
+     */
+    Configuration derive(@NonNull ArtContextSettings settings);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link TargetProvider}.
+     *
+     * @param targetProvider target provider implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration derive(@NonNull TargetProvider targetProvider);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link ActionProvider}.
+     *
+     * @param actionProvider {@link ActionProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration derive(@NonNull ActionProvider actionProvider);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link RequirementProvider}.
+     *
+     * @param requirementProvider {@link RequirementProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration derive(@NonNull RequirementProvider requirementProvider);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link TriggerProvider}.
+     *
+     * @param triggerProvider trigger provider implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration derive(@NonNull TriggerProvider triggerProvider);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link ArtFinder}.
+     *
+     * @param artFinder {@link ArtFinder} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration derive(@NonNull ArtFinder artFinder);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link EventProvider}.
+     *
+     * @param eventProvider {@link EventProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration derive(@NonNull EventProvider eventProvider);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link FlowParserProvider}.
+     *
+     * @param flowParserProvider {@link FlowParserProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration derive(@NonNull FlowParserProvider flowParserProvider);
 }

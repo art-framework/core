@@ -33,8 +33,8 @@ import java.util.function.Function;
  */
 public interface TargetProvider extends Provider {
 
-    static TargetProvider getDefault() {
-        return new DefaultTargetProvider(ART.configuration());
+    static TargetProvider of(Configuration configuration) {
+        return new DefaultTargetProvider(configuration);
     }
 
     /**

@@ -60,7 +60,7 @@ public class TriggerConfig extends ArtObjectConfig {
      * @return delay in ticks
      */
     public long getDelay() {
-        return TimeUtil.parseTimeAsTicks(delay);
+        return TimeUtil.parseTimeAsMilliseconds(delay);
     }
 
     /**
@@ -69,6 +69,6 @@ public class TriggerConfig extends ArtObjectConfig {
      * @return cooldown in milliseconds
      */
     public long getCooldown() {
-        return TimeUtil.parseTimeAsMillis(cooldown);
+        return TimeUtil.parseTimeAsMilliseconds(cooldown);
     }
 }

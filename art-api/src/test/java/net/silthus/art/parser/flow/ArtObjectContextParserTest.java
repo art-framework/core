@@ -30,9 +30,7 @@ import org.mockito.ArgumentCaptor;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.InstanceOfAssertFactories.type;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -53,21 +51,20 @@ class ArtObjectContextParserTest {
         factory = mock(ActionFactory.class);
         artInformation = mock(ArtInformation.class);
         when(factory.info()).thenReturn(artInformation);
+        when(factory.create(anyMap())).thenReturn(mock(ActionContext.class));
         when(artInformation.getConfigMap()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
         when(actionProvider.get(anyString())).thenAnswer(invocation -> Optional.of(factory));
         this.parser = new ActionParser(configuration);
     }
 
-    private TestConfig extractConfig() {
+    private <TConfig> TConfig extractConfig(ConfigMapType type, TConfig config) {
         ArgumentCaptor<Map<ConfigMapType, ConfigMap>> argument = ArgumentCaptor.forClass(Map.class);
         verify(factory).create(argument.capture());
 
-        TestConfig config = new TestConfig();
-
         assertThat(argument.getValue())
-                .containsKey(ConfigMapType.SPECIFIC_ART_CONFIG);
+                .containsKey(type);
 
-        argument.getValue().get(ConfigMapType.SPECIFIC_ART_CONFIG).applyTo(config);
+        argument.getValue().get(type).applyTo(config);
 
         return config;
     }
@@ -96,9 +93,11 @@ class ArtObjectContextParserTest {
         void shouldParseActionConfig() {
 
             assertThat(parser.accept("!foobar[cooldown:5s, delay=10s]")).isTrue();
-            assertThat(parser.parse())
-                    .asInstanceOf(type(ActionContext.class))
-                    .extracting(actionContext -> actionContext.getConfig().getCooldown(), actionContext -> actionContext.getConfig().getDelay())
+
+            assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
+
+            assertThat(extractConfig(ConfigMapType.GENERAL_ART_CONFIG, new ActionConfig()))
+                    .extracting(ActionConfig::getCooldown, ActionConfig::getDelay)
                     .contains(5000L, 10000L);
         }
 
@@ -108,9 +107,11 @@ class ArtObjectContextParserTest {
         void shouldParseActionConfigInBrackets() {
 
             assertThat(parser.accept("!foobar(delay=10s, cooldown:5s)")).isTrue();
-            assertThat(parser.parse())
-                    .asInstanceOf(type(ActionContext.class))
-                    .extracting(actionContext -> actionContext.getConfig().getCooldown(), actionContext -> actionContext.getConfig().getDelay())
+
+            assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
+
+            assertThat(extractConfig(ConfigMapType.GENERAL_ART_CONFIG, new ActionConfig()))
+                    .extracting(ActionConfig::getCooldown, ActionConfig::getDelay)
                     .contains(5000L, 10000L);
         }
 
@@ -121,9 +122,9 @@ class ArtObjectContextParserTest {
 
             assertThat(parser.accept("!foobar foo number=2")).isTrue();
 
-            parser.parse();
+            assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            TestConfig config = extractConfig();
+            TestConfig config = extractConfig(ConfigMapType.SPECIFIC_ART_CONFIG, new TestConfig());
 
             assertThat(config)
                     .extracting(TestConfig::getName, TestConfig::getNumber)
@@ -137,13 +138,14 @@ class ArtObjectContextParserTest {
 
             assertThat(parser.accept("!foobar(delay=10) name=foo;number:2")).isTrue();
 
-            assertThat(parser.parse())
-                    .asInstanceOf(type(ActionContext.class))
-                    .extracting(ActionContext::getConfig)
+
+            assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
+
+            assertThat(extractConfig(ConfigMapType.GENERAL_ART_CONFIG, new ActionConfig()))
                     .extracting(ActionConfig::getDelay)
                     .isEqualTo(10L);
 
-            assertThat(extractConfig())
+            assertThat(extractConfig(ConfigMapType.SPECIFIC_ART_CONFIG, new TestConfig()))
                     .extracting(TestConfig::getName, TestConfig::getNumber)
                     .contains("foo", 2);
         }

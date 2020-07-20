@@ -37,6 +37,6 @@ public class RequirementParser extends ArtObjectContextParser<RequirementFactory
 
     @Override
     protected ConfigMap getGeneralConfigMap() {
-        return RequirementConfig.CONFIG_MAP;
+        return RequirementConfig.getConfigMap();
     }
 }

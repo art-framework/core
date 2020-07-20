@@ -22,6 +22,8 @@ import net.silthus.art.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class FlowParser implements Parser<List<String>> {
 
@@ -65,7 +67,7 @@ public class FlowParser implements Parser<List<String>> {
             lineCount++;
         }
 
-        contexts = sortAndCombineArtContexts(contexts);
+        contexts = sortAndCombineArtContexts(contexts.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 
         return ArtContext.of(configuration, configuration.contextSettings(), contexts);
     }

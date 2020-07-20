@@ -20,8 +20,8 @@ import net.silthus.art.impl.DefaultActionProvider;
 
 public interface ActionProvider extends ArtProvider, ArtFactoryProvider<ActionFactory<?>> {
 
-    static ActionProvider getDefault() {
-        return new DefaultActionProvider(ART.configuration());
+    static ActionProvider of(Configuration configuration) {
+        return new DefaultActionProvider(configuration);
     }
 
     ActionProvider add(ArtInformation<Action<?>> actionInformation);
