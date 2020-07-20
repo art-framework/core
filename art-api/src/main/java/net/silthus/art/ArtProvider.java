@@ -34,7 +34,9 @@ import java.util.Collection;
  */
 public interface ArtProvider extends Provider {
 
-    ArtProvider DEFAULT = new DefaultArtProvider(ART.configuration());
+    static ArtProvider getDefault() {
+        return new DefaultArtProvider(ART.configuration());
+    }
 
     /**
      * Gets the {@link ArtFinder} to find {@link ArtObject}s inside your

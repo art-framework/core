@@ -17,9 +17,7 @@
 package net.silthus.art.parser.flow;
 
 import lombok.SneakyThrows;
-import net.silthus.art.Configuration;
-import net.silthus.art.RequirementContext;
-import net.silthus.art.RequirementFactory;
+import net.silthus.art.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -38,18 +36,21 @@ import static org.mockito.Mockito.*;
 @DisplayName("RequirementParser")
 class RequirementParserTest {
 
-    private ActionParser parser;
+    private RequirementParser parser;
     private RequirementFactory<?> requirementFactory;
 
     @BeforeEach
     void beforeEach() {
         Configuration configuration = mock(Configuration.class);
         requirementFactory = mock(RequirementFactory.class);
+        when(requirementFactory.info()).thenReturn(mock(ArtInformation.class));
 
-        when(configuration.requirements().get(anyString())).thenReturn(Optional.of(requirementFactory));
+        RequirementProvider requirementProvider = mock(RequirementProvider.class);
+        when(configuration.requirements()).thenReturn(requirementProvider);
+        when(requirementProvider.get(anyString())).thenReturn(Optional.of(requirementFactory));
         when(requirementFactory.create(anyMap())).thenReturn(mock(RequirementContext.class));
 
-        this.parser = new ActionParser(configuration);
+        this.parser = new RequirementParser(configuration);
     }
 
     @Nested
@@ -58,7 +59,7 @@ class RequirementParserTest {
 
         @Test
         @SneakyThrows
-        @DisplayName("should match action identifier '?'")
+        @DisplayName("should match requirement identifier '?'")
         void shouldMatchActionIdentifier() {
 
             assertThat(parser.accept("?foobar")).isTrue();

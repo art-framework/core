@@ -29,7 +29,9 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = false)
 public class Settings extends SettingsBase implements Serializable, Cloneable {
 
-    public static final Settings DEFAULT = new Settings();
+    public static Settings getDefault() {
+        return new Settings();
+    }
 
     public static Settings of(Settings settings) {
         return new Settings(settings);

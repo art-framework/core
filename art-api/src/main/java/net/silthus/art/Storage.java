@@ -40,9 +40,11 @@ import java.util.Optional;
  *     </pre>
  * </p>
  */
-public interface Storage {
+public interface Storage extends Scope {
 
-    Storage DEFAULT = new DefaultMapStorage();
+    static Storage getDefault() {
+        return new DefaultMapStorage(ART.configuration());
+    }
 
     /**
      * Stores a value in the persistent metadata store and returns any value

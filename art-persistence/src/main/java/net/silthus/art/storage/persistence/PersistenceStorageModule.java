@@ -16,18 +16,17 @@
 
 package net.silthus.art.storage.persistence;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
-import com.google.inject.name.Named;
-import io.ebean.EbeanServer;
-import io.ebean.EbeanServerFactory;
-import io.ebean.config.ServerConfig;
+import io.ebean.Database;
+import io.ebean.DatabaseFactory;
 import io.ebean.datasource.DataSourceConfig;
+import net.silthus.art.Configurable;
+import net.silthus.art.Configuration;
+import net.silthus.art.Storage;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class EbeanServerProvider implements Provider<EbeanServer> {
+public class PersistenceStorageModule implements Configurable<DatabaseConfig> {
 
     private static final Map<String, String> DRIVER_MAP = new HashMap<>();
 
@@ -39,39 +38,52 @@ public class EbeanServerProvider implements Provider<EbeanServer> {
         DRIVER_MAP.put("sqlserver", "com.microsoft.sqlserver.jdbc.SQLServerDriver");
     }
 
-    @Inject(optional = true)
-    private ArtConfiguration config;
-    @Inject
-    @Named("SPIGOT_CLASSLOADER")
-    private ClassLoader spigotClassLoader;
+    private DatabaseConfig databaseConfig;
+    private Database database;
+
+    public void onEnable(Configuration configuration) {
+        if (databaseConfig == null) return;
+
+        database = createDatabase(databaseConfig);
+        configuration.set(new PersistenceStorage(configuration, database));
+    }
+
+    public void onDisable(Configuration configuration) {
+        configuration.set(Storage.getDefault());
+        database = null;
+    }
 
     @Override
-    public EbeanServer get() {
+    public void load(DatabaseConfig databaseConfig) {
+        this.databaseConfig = databaseConfig;
+    }
+
+    private Database createDatabase(DatabaseConfig config) {
 
         ClassLoader originalContextClassLoader = Thread.currentThread().getContextClassLoader();
-        Thread.currentThread().setContextClassLoader(spigotClassLoader);
+        Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
-        ServerConfig serverConfig = new ServerConfig();
+        io.ebean.config.DatabaseConfig serverConfig = new io.ebean.config.DatabaseConfig();
         serverConfig.setName("art");
         // load configuration from ebean.properties
         serverConfig.loadFromProperties();
         serverConfig.setDefaultServer(true);
         serverConfig.setRegister(true);
 
-        if (config != null && DRIVER_MAP.get(config.getDatabase().getPlatform()) != null) {
+        if (config != null && DRIVER_MAP.get(config.getPlatform()) != null) {
             DataSourceConfig dataSourceConfig = new DataSourceConfig();
-            dataSourceConfig.setUsername(config.getDatabase().getUsername());
-            dataSourceConfig.setPassword(config.getDatabase().getPassword());
-            dataSourceConfig.setUrl(config.getDatabase().getUrl());
-            dataSourceConfig.setDriver(DRIVER_MAP.get(config.getDatabase().getPlatform()));
+            dataSourceConfig.setUsername(config.getUsername());
+            dataSourceConfig.setPassword(config.getPassword());
+            dataSourceConfig.setUrl(config.getUrl());
+            dataSourceConfig.setDriver(DRIVER_MAP.get(config.getPlatform()));
 
             serverConfig.setDataSourceConfig(dataSourceConfig);
         }
 
-        EbeanServer ebeanServer = EbeanServerFactory.create(serverConfig);
+        Database database = DatabaseFactory.create(serverConfig);
 
         Thread.currentThread().setContextClassLoader(originalContextClassLoader);
 
-        return ebeanServer;
+        return database;
     }
 }

@@ -20,6 +20,7 @@ import lombok.Data;
 import lombok.SneakyThrows;
 import net.silthus.art.*;
 import net.silthus.art.conf.ActionConfig;
+import net.silthus.art.util.ConfigUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -41,13 +42,19 @@ class ArtObjectContextParserTest {
     private Configuration configuration;
     private ActionParser parser;
     private ActionFactory<?> factory;
+    private ArtInformation artInformation;
 
     @BeforeEach
     @SneakyThrows
     void beforeEach() {
         configuration = mock(Configuration.class);
-        factory = spy(ActionFactory.of(configuration, mock(ArtInformation.class)));
-        when(configuration.actions().get(anyString())).thenAnswer(invocation -> Optional.of(factory));
+        ActionProvider actionProvider = mock(ActionProvider.class);
+        when(configuration.actions()).thenReturn(actionProvider);
+        factory = mock(ActionFactory.class);
+        artInformation = mock(ArtInformation.class);
+        when(factory.info()).thenReturn(artInformation);
+        when(artInformation.getConfigMap()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
+        when(actionProvider.get(anyString())).thenAnswer(invocation -> Optional.of(factory));
         this.parser = new ActionParser(configuration);
     }
 

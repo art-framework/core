@@ -33,7 +33,9 @@ import java.util.function.Function;
  */
 public interface Configuration extends Serializable, Cloneable {
 
-    Configuration DEFAULT = new DefaultConfiguration();
+    static Configuration getDefault() {
+        return new DefaultConfiguration();
+    }
 
     /**
      * Use the {@link ArtProvider} and its sub provider to register your ART.

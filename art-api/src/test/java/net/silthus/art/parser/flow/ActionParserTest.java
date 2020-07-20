@@ -17,9 +17,7 @@
 package net.silthus.art.parser.flow;
 
 import lombok.SneakyThrows;
-import net.silthus.art.ActionContext;
-import net.silthus.art.ActionFactory;
-import net.silthus.art.Configuration;
+import net.silthus.art.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -45,8 +43,11 @@ class ActionParserTest {
     void beforeEach() {
         Configuration configuration = mock(Configuration.class);
         actionFactory = mock(ActionFactory.class);
+        when(actionFactory.info()).thenReturn(mock(ArtInformation.class));
 
-        when(configuration.actions().get(anyString())).thenReturn(Optional.of(actionFactory));
+        ActionProvider actionProvider = mock(ActionProvider.class);
+        when(configuration.actions()).thenReturn(actionProvider);
+        when(actionProvider.get(anyString())).thenReturn(Optional.of(actionFactory));
         when(actionFactory.create(anyMap())).thenReturn(mock(ActionContext.class));
 
         this.parser = new ActionParser(configuration);
