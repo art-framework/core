@@ -27,9 +27,6 @@ import net.silthus.art.parser.flow.ConfigMapType;
 import net.silthus.art.util.ConfigUtil;
 import net.silthus.art.util.TimeUtil;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * The {@link ActionConfig} holds general information about the execution
  * properties of the action. Like delay, cooldown, etc.
@@ -41,15 +38,17 @@ public final class ActionConfig extends ArtObjectConfig {
 
     private static final long serialVersionUID = 94782492952L;
 
-    public static final Map<String, ConfigFieldInformation> CONFIG_FIELD_INFORMATION = new HashMap<>();
-    public static final ConfigMap CONFIG_MAP = ConfigMap.of(ConfigMapType.GENERAL_ART_CONFIG, CONFIG_FIELD_INFORMATION);
+    private static ConfigMap configMap;
 
-    static {
-        try {
-            CONFIG_FIELD_INFORMATION.putAll(ConfigUtil.getConfigFields(ActionConfig.class));
-        } catch (ArtConfigException e) {
-            e.printStackTrace();
+    public static ConfigMap getConfigMap() {
+        if (configMap == null) {
+            try {
+                configMap = ConfigMap.of(ConfigMapType.GENERAL_ART_CONFIG, ConfigUtil.getConfigFields(ActionConfig.class));
+            } catch (ArtConfigException e) {
+                e.printStackTrace();
+            }
         }
+        return configMap;
     }
 
     @ConfigOption(description = {
@@ -73,7 +72,7 @@ public final class ActionConfig extends ArtObjectConfig {
      * @return delay in milliseconds
      */
     public long getDelay() {
-        return TimeUtil.parseTimeAsMillis(delay);
+        return TimeUtil.parseTimeAsMilliseconds(delay);
     }
 
     /**
@@ -82,6 +81,6 @@ public final class ActionConfig extends ArtObjectConfig {
      * @return cooldown in milliseconds
      */
     public long getCooldown() {
-        return TimeUtil.parseTimeAsMillis(cooldown);
+        return TimeUtil.parseTimeAsMilliseconds(cooldown);
     }
 }

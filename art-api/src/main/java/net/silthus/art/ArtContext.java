@@ -76,6 +76,13 @@ public interface ArtContext extends Context {
     ArtContextSettings settings();
 
     /**
+     * Gets an immutable list of the art object contexts contained within this art context.
+     *
+     * @return list of all contexts within this context
+     */
+    Collection<ArtObjectContext<?>> getArtContexts();
+
+    /**
      * Tests if all requirements for the given target pass.
      * Will return false if any requirement or global filter fail.
      * Will return true if requirements are empty after filtering for the target type.
@@ -107,7 +114,7 @@ public interface ArtContext extends Context {
      * Executes all {@link Action}s and child actions of actions against the given target.
      * Will do nothing if the target type does not match the target type of the action.
      * <br>
-     * Any {@link Filter} and {@link Requirement}s will be checked before executing
+     * Any {@link Requirement}s will be checked before executing
      * the actions. No action will be executed if any filter or requirement fails.
      *
      * @param target    target to execute actions against. Can be null.

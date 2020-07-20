@@ -42,8 +42,8 @@ import java.util.Optional;
  */
 public interface Storage extends Scope {
 
-    static Storage getDefault() {
-        return new DefaultMapStorage(ART.configuration());
+    static Storage of(Configuration configuration) {
+        return new DefaultMapStorage(configuration);
     }
 
     /**

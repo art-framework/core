@@ -33,15 +33,15 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     private final ArtContextSettings settings;
 
     @Getter
-    private final List<ArtObjectContext<?>> art;
+    private final List<ArtObjectContext<?>> artContexts;
     private final Map<Class<?>, List<TriggerListener<?>>> triggerListeners = new HashMap<>();
     private final Map<String, Object> data = new HashMap<>();
 
     @Inject
-    public DefaultArtContext(Configuration configuration, ArtContextSettings settings, @Assisted Collection<ArtObjectContext<?>> art) {
+    public DefaultArtContext(Configuration configuration, ArtContextSettings settings, @Assisted Collection<ArtObjectContext<?>> artContexts) {
         super(configuration);
         this.settings = settings;
-        this.art = ImmutableList.copyOf(art);
+        this.artContexts = ImmutableList.copyOf(artContexts);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
 
         ExecutionContext<TTarget, ?> executionContext = ExecutionContext.of(configuration(), this, target);
 
-        return getArt().stream()
+        return getArtContexts().stream()
                 .filter(context -> context.isTargetType(target))
                 .filter(requirement -> requirement instanceof RequirementContext)
                 .map(requirement -> (RequirementContext<TTarget>) requirement)
@@ -77,7 +77,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
 
         ExecutionContext<TTarget, ?> executionContext = ExecutionContext.of(configuration(), this, target);
 
-        getArt().stream()
+        getArtContexts().stream()
                 .filter(context -> context.isTargetType(target))
                 .filter(action -> action instanceof ActionContext)
                 .map(action -> (ActionContext<TTarget>) action)

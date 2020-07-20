@@ -46,18 +46,17 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     private transient FlowParserProvider flowParserProvider;
 
     public DefaultConfiguration() {
-        this(Settings.getDefault(),
-                ArtProvider.getDefault(),
-                ActionProvider.getDefault(),
-                RequirementProvider.getDefault(),
-                TriggerProvider.getDefault(),
-                ArtFinder.getDefault(),
-                null,
-                Storage.getDefault(),
-                TargetProvider.getDefault(),
-                EventProvider.getDefault(),
-                ArtContextSettings.getDefault(),
-                FlowParserProvider.getDefault());
+        set(Settings.getDefault());
+        set(ArtProvider.of(this));
+        set(ActionProvider.of(this));
+        set(RequirementProvider.of(this));
+        set(TriggerProvider.of(this));
+        set(ArtFinder.of(this));
+        set(Storage.of(this));
+        set(TargetProvider.of(this));
+        set(EventProvider.of(this));
+        set(ArtContextSettings.getDefault());
+        set(FlowParserProvider.of(this));
     }
 
     DefaultConfiguration(
@@ -235,6 +234,222 @@ public class DefaultConfiguration implements Configuration, Cloneable {
                 events(),
                 contextSettings(),
                 parser()
+        );
+    }
+
+    @Override
+    public Configuration derive(@NonNull ArtProvider artProvider) {
+        return new DefaultConfiguration(
+                settings(),
+                artProvider,
+                actions(),
+                requirements(),
+                trigger(),
+                findArt(),
+                scheduler,
+                storage(),
+                targets(),
+                events(),
+                contextSettings(),
+                parser()
+        );
+    }
+
+    @Override
+    public Configuration derive(Scheduler scheduler) {
+        return new DefaultConfiguration(
+                settings(),
+                art(),
+                actions(),
+                requirements(),
+                trigger(),
+                findArt(),
+                scheduler,
+                storage(),
+                targets(),
+                events(),
+                contextSettings(),
+                parser()
+        );
+    }
+
+    @Override
+    public Configuration derive(@NonNull Storage storage) {
+        return new DefaultConfiguration(
+                settings(),
+                art(),
+                actions(),
+                requirements(),
+                trigger(),
+                findArt(),
+                scheduler,
+                storage,
+                targets(),
+                events(),
+                contextSettings(),
+                parser()
+        );
+    }
+
+    @Override
+    public Configuration derive(@NonNull Settings settings) {
+        return new DefaultConfiguration(
+                settings,
+                art(),
+                actions(),
+                requirements(),
+                trigger(),
+                findArt(),
+                scheduler,
+                storage(),
+                targets(),
+                events(),
+                contextSettings(),
+                parser()
+        );
+    }
+
+    @Override
+    public Configuration derive(@NonNull ArtContextSettings settings) {
+        return new DefaultConfiguration(
+                settings(),
+                art(),
+                actions(),
+                requirements(),
+                trigger(),
+                findArt(),
+                scheduler,
+                storage(),
+                targets(),
+                events(),
+                settings,
+                parser()
+        );
+    }
+
+    @Override
+    public Configuration derive(@NonNull TargetProvider targetProvider) {
+        return new DefaultConfiguration(
+                settings(),
+                art(),
+                actions(),
+                requirements(),
+                trigger(),
+                findArt(),
+                scheduler,
+                storage(),
+                targetProvider,
+                events(),
+                contextSettings(),
+                parser()
+        );
+    }
+
+    @Override
+    public Configuration derive(@NonNull ActionProvider actionProvider) {
+        return new DefaultConfiguration(
+                settings(),
+                art(),
+                actionProvider,
+                requirements(),
+                trigger(),
+                findArt(),
+                scheduler,
+                storage(),
+                targets(),
+                events(),
+                contextSettings(),
+                parser()
+        );
+    }
+
+    @Override
+    public Configuration derive(@NonNull RequirementProvider requirementProvider) {
+        return new DefaultConfiguration(
+                settings(),
+                art(),
+                actions(),
+                requirementProvider,
+                trigger(),
+                findArt(),
+                scheduler,
+                storage(),
+                targets(),
+                events(),
+                contextSettings(),
+                parser()
+        );
+    }
+
+    @Override
+    public Configuration derive(@NonNull TriggerProvider triggerProvider) {
+        return new DefaultConfiguration(
+                settings(),
+                art(),
+                actions(),
+                requirements(),
+                triggerProvider,
+                findArt(),
+                scheduler,
+                storage(),
+                targets(),
+                events(),
+                contextSettings(),
+                parser()
+        );
+    }
+
+    @Override
+    public Configuration derive(@NonNull ArtFinder artFinder) {
+        return new DefaultConfiguration(
+                settings(),
+                art(),
+                actions(),
+                requirements(),
+                trigger(),
+                artFinder,
+                scheduler,
+                storage(),
+                targets(),
+                events(),
+                contextSettings(),
+                parser()
+        );
+    }
+
+    @Override
+    public Configuration derive(@NonNull EventProvider eventProvider) {
+        return new DefaultConfiguration(
+                settings(),
+                art(),
+                actions(),
+                requirements(),
+                trigger(),
+                findArt(),
+                scheduler,
+                storage(),
+                targets(),
+                eventProvider,
+                contextSettings(),
+                parser()
+        );
+    }
+
+    @Override
+    public Configuration derive(@NonNull FlowParserProvider flowParserProvider) {
+        return new DefaultConfiguration(
+                settings(),
+                art(),
+                actions(),
+                requirements(),
+                trigger(),
+                findArt(),
+                scheduler,
+                storage(),
+                targets(),
+                events(),
+                contextSettings(),
+                flowParserProvider
         );
     }
 }

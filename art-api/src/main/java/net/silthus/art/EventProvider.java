@@ -27,10 +27,6 @@ import net.silthus.art.impl.DefaultEventProvider;
  */
 public interface EventProvider extends Provider {
 
-    static EventProvider getDefault() {
-        return of(ART.configuration());
-    }
-
     static EventProvider of(Configuration configuration) {
         return new DefaultEventProvider(configuration);
     }

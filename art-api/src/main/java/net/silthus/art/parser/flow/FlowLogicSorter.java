@@ -67,6 +67,8 @@ public final class FlowLogicSorter {
                 handleAction((ActionContext<?>) context);
             } else if (context instanceof TriggerContext) {
                 handleTrigger((TriggerContext) context);
+            } else {
+                result.add(context);
             }
         }
 

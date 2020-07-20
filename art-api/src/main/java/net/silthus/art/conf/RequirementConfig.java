@@ -28,8 +28,6 @@ import net.silthus.art.parser.flow.ConfigMapType;
 import net.silthus.art.util.ConfigUtil;
 
 import javax.annotation.concurrent.Immutable;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The {@link RequirementConfig} holds general information about the execution
@@ -44,15 +42,17 @@ public class RequirementConfig extends ArtObjectConfig {
 
     private static final long serialVersionUID = 2530536893768L;
 
-    public static final Map<String, ConfigFieldInformation> CONFIG_FIELD_INFORMATION = new HashMap<>();
-    public static final ConfigMap CONFIG_MAP = ConfigMap.of(ConfigMapType.GENERAL_ART_CONFIG, CONFIG_FIELD_INFORMATION);
+    private static ConfigMap configMap;
 
-    static {
-        try {
-            CONFIG_FIELD_INFORMATION.putAll(ConfigUtil.getConfigFields(RequirementConfig.class));
-        } catch (ArtConfigException e) {
-            e.printStackTrace();
+    public static ConfigMap getConfigMap() {
+        if (configMap == null) {
+            try {
+                configMap = ConfigMap.of(ConfigMapType.GENERAL_ART_CONFIG, ConfigUtil.getConfigFields(RequirementConfig.class));
+            } catch (ArtConfigException e) {
+                e.printStackTrace();
+            }
         }
+        return configMap;
     }
 
     @ConfigOption(description = {

@@ -17,10 +17,8 @@
 package net.silthus.art.parser.flow;
 
 import lombok.SneakyThrows;
-import net.silthus.art.ArtObjectContext;
-import net.silthus.art.ArtParseException;
-import net.silthus.art.Configuration;
-import net.silthus.art.FlowParserProvider;
+import net.silthus.art.*;
+import net.silthus.art.conf.ActionConfig;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -29,6 +27,8 @@ import org.mockito.stubbing.Answer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 class FlowParserTest {
 
     private FlowParser parser;
-    private ArtObjectContextParser flowParser;
+    private ArtObjectContextParser<?> flowParser;
 
     @BeforeEach
     @SneakyThrows
@@ -46,11 +46,27 @@ class FlowParserTest {
 
         Configuration configuration = mock(Configuration.class);
 
-        flowParser = mock(ArtObjectContextParser.class);
-        when(flowParser.accept(anyString())).thenReturn(true);
-        when(flowParser.parse()).thenReturn(mock(ArtObjectContext.class));
+        flowParser = spy(new ArtObjectContextParser<ArtFactory<?, ?>>(configuration, new FlowType("test", ".")) {
+            @Override
+            protected Optional<ArtFactory<?, ?>> getFactory(String identifier) {
+                ArtFactory<ArtObjectContext<?>, ?> artFactory = mock(ArtFactory.class);
+                ArtInformation artInformation = mock(ArtInformation.class);
+                when(artInformation.getConfigMap()).thenReturn(new HashMap());
+                when(artFactory.info()).thenReturn(artInformation);
+                ArtObjectContext context = mock(ArtObjectContext.class);
+                when(artFactory.create(anyMap())).thenReturn(context);
+                return Optional.of(artFactory);
+            }
+
+            @Override
+            protected ConfigMap getGeneralConfigMap() {
+                return ActionConfig.getConfigMap();
+            }
+        });
+
         ArrayList<net.silthus.art.FlowParser> parsers = new ArrayList<>();
         parsers.add(flowParser);
+
         FlowParserProvider parserProvider = mock(FlowParserProvider.class);
         when(configuration.parser()).thenReturn(parserProvider);
         when(parserProvider.all()).thenReturn(parsers);
@@ -97,7 +113,8 @@ class FlowParserTest {
                     "and more",
                     "foo",
                     "---"
-            ))).extracting("art.size").isEqualTo(6);
+            ))).extracting(ArtContext::getArtContexts)
+                    .asList().hasSize(6);
         }
 
         @Test
@@ -107,7 +124,7 @@ class FlowParserTest {
 
             ArtParseException exception = new ArtParseException("TEST ERROR");
             doAnswer((Answer<ArtObjectContext<?>>) invocation -> {
-                ArtObjectContextParser parser = (ArtObjectContextParser) invocation.getMock();
+                ArtObjectContextParser<?> parser = (ArtObjectContextParser<?>) invocation.getMock();
                 if ("ERROR".equals(parser.getInput())) {
                     throw exception;
                 }

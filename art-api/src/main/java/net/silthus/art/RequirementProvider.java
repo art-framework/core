@@ -20,8 +20,8 @@ import net.silthus.art.impl.DefaultRequirementProvider;
 
 public interface RequirementProvider extends ArtProvider, ArtFactoryProvider<RequirementFactory<?>> {
 
-    static RequirementProvider getDefault() {
-        return new DefaultRequirementProvider(ART.configuration());
+    static RequirementProvider of(Configuration configuration) {
+        return new DefaultRequirementProvider(configuration);
     }
 
     RequirementProvider add(ArtInformation<Requirement<?>> information);

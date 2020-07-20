@@ -29,5 +29,5 @@ public interface ArtFactoryProvider<TFactory extends ArtFactory<?, ?>> extends P
 
     boolean exists(@NonNull String identifier);
 
-    Optional<TFactory> get(@NonNull String identifier);
+    Optional<TFactory> get(String identifier);
 }

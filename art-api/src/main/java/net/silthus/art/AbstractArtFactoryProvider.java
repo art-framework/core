@@ -16,6 +16,7 @@
 
 package net.silthus.art;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import lombok.NonNull;
 
@@ -55,7 +56,9 @@ public abstract class AbstractArtFactoryProvider<TFactory extends ArtFactory<?, 
     }
 
     @Override
-    public Optional<TFactory> get(@NonNull String identifier) {
+    public Optional<TFactory> get(String identifier) {
+
+        if (Strings.isNullOrEmpty(identifier)) return Optional.empty();
 
         identifier = identifier.toLowerCase();
 
