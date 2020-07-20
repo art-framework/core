@@ -54,6 +54,8 @@ public final class DefaultConfigMap implements ConfigMap {
     @Override
     public ConfigMap loadValues(@NonNull List<KeyValuePair> keyValuePairs) throws ArtConfigException {
 
+        if (getConfigFields().isEmpty()) return this;
+
         Map<ConfigFieldInformation, Object> fieldValueMap = new HashMap<>();
         Set<ConfigFieldInformation> mappedFields = new HashSet<>();
 

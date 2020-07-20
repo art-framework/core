@@ -22,7 +22,9 @@ import java.util.Collection;
 
 public interface FlowParserProvider extends Provider {
 
-    FlowParserProvider DEFAULT = new DefaultFlowParserProvider(ART.configuration());
+    static FlowParserProvider getDefault() {
+        return new DefaultFlowParserProvider(ART.configuration());
+    }
 
     Collection<FlowParser> all();
 

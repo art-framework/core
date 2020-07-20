@@ -17,6 +17,8 @@
 package net.silthus.art.impl;
 
 import lombok.NonNull;
+import net.silthus.art.AbstractScope;
+import net.silthus.art.Configuration;
 import net.silthus.art.Storage;
 
 import javax.inject.Singleton;
@@ -25,9 +27,13 @@ import java.util.Map;
 import java.util.Optional;
 
 @Singleton
-public class DefaultMapStorage implements Storage {
+public class DefaultMapStorage extends AbstractScope implements Storage {
 
     private final Map<String, Object> storage = new HashMap<>();
+
+    public DefaultMapStorage(Configuration configuration) {
+        super(configuration);
+    }
 
     @Override
     @SuppressWarnings("unchecked")

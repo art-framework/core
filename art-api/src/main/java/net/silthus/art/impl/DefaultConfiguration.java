@@ -46,18 +46,18 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     private transient FlowParserProvider flowParserProvider;
 
     public DefaultConfiguration() {
-        this(Settings.DEFAULT,
-                ArtProvider.DEFAULT,
-                ActionProvider.DEFAULT,
-                RequirementProvider.DEFAULT,
-                TriggerProvider.DEFAULT,
-                ArtFinder.DEFAULT,
+        this(Settings.getDefault(),
+                ArtProvider.getDefault(),
+                ActionProvider.getDefault(),
+                RequirementProvider.getDefault(),
+                TriggerProvider.getDefault(),
+                ArtFinder.getDefault(),
                 null,
-                Storage.DEFAULT,
-                TargetProvider.DEFAULT,
-                EventProvider.DEFAULT,
-                ArtContextSettings.DEFAULT,
-                FlowParserProvider.DEFAULT);
+                Storage.getDefault(),
+                TargetProvider.getDefault(),
+                EventProvider.getDefault(),
+                ArtContextSettings.getDefault(),
+                FlowParserProvider.getDefault());
     }
 
     DefaultConfiguration(

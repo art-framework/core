@@ -18,7 +18,7 @@ package net.silthus.art.storage.persistence;
 
 import io.ebean.DB;
 import net.silthus.art.AbstractTarget;
-import net.silthus.art.storage.persistence.entities.MetadataKey;
+import net.silthus.art.Configuration;
 import net.silthus.art.storage.persistence.entities.MetadataStore;
 import net.silthus.art.storage.persistence.entities.query.QMetadataStore;
 import org.junit.jupiter.api.AfterEach;
@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.Mockito.mock;
 
 @DisplayName("PersistenceStorage")
 class PersistenceStorageTest {
@@ -36,7 +37,7 @@ class PersistenceStorageTest {
 
     @BeforeEach
     void beforeEach() {
-        storageProvider = new PersistenceStorage(DB.getDefault());
+        storageProvider = new PersistenceStorage(mock(Configuration.class), DB.getDefault());
     }
 
     @AfterEach
@@ -48,7 +49,7 @@ class PersistenceStorageTest {
     @DisplayName("should store data")
     void shouldStoreData() {
 
-        storageProvider.data(new StringTarget("foobar"), "foo", "test");
+        storageProvider.set(new StringTarget("foobar"), "foo", "test");
 
         assertThat(new QMetadataStore().findCount()).isEqualTo(1);
     }
@@ -57,8 +58,8 @@ class PersistenceStorageTest {
     @DisplayName("should store different entry for different target")
     void shouldStoreMultipleEntriesForDifferentEntities() {
 
-        storageProvider.data(new StringTarget("foo"), "key", "test");
-        storageProvider.data(new StringTarget("bar"), "key", "test");
+        storageProvider.set(new StringTarget("foo"), "key", "test");
+        storageProvider.set(new StringTarget("bar"), "key", "test");
 
         assertThat(new QMetadataStore().findCount()).isEqualTo(2);
     }
@@ -67,9 +68,9 @@ class PersistenceStorageTest {
     @DisplayName("should store multiple entries for the same target")
     void shouldStoreMultipleEntriesForTheSameTarget() {
 
-        storageProvider.data(new StringTarget("foo"), "key1", 2);
-        storageProvider.data(new StringTarget("foo"), "key2", true);
-        storageProvider.data(new StringTarget("foo"), "key3", "foo");
+        storageProvider.set(new StringTarget("foo"), "key1", 2);
+        storageProvider.set(new StringTarget("foo"), "key2", true);
+        storageProvider.set(new StringTarget("foo"), "key3", "foo");
 
         assertThat(new QMetadataStore().findCount()).isEqualTo(3);
     }
@@ -78,13 +79,13 @@ class PersistenceStorageTest {
     @DisplayName("should update existing entry")
     void shouldUpdateExistingEntry() {
 
-        storageProvider.data(new StringTarget("foo"), "key1", 2);
-        assertThat(new QMetadataStore().metadataKey.equalTo(new MetadataKey("foo", "key1")).findOne())
+        storageProvider.set(new StringTarget("foo"), "key1", 2);
+        assertThat(MetadataStore.find.byId("foo#key1"))
                 .extracting(MetadataStore::getValue)
                 .isEqualTo("2");
 
-        storageProvider.data(new StringTarget("foo"), "key1", "foo");
-        assertThat(new QMetadataStore().metadataKey.equalTo(new MetadataKey("foo", "key1")).findOne())
+        storageProvider.set(new StringTarget("foo"), "key1", "foo");
+        assertThat(MetadataStore.find.byId("foo#key1"))
                 .extracting(MetadataStore::getValue)
                 .isEqualTo("\"foo\"");
     }
@@ -101,7 +102,7 @@ class PersistenceStorageTest {
     @DisplayName("should return empty optional if types do not match")
     void shouldReturnEmptyOptionalIfTargetTypeDoesNotMatch() {
 
-        storageProvider.data(new StringTarget("foo"), "test", new StringTarget("foobar"));
+        storageProvider.set(new StringTarget("foo"), "test", new StringTarget("foobar"));
 
         assertThatCode(() -> assertThat(storageProvider.get(new StringTarget("foo"), "test", String.class)).isEmpty())
                 .doesNotThrowAnyException();
@@ -111,7 +112,7 @@ class PersistenceStorageTest {
     @DisplayName("should return stored primitive values")
     void shouldReturnStoredPrimitiveValue() {
 
-        storageProvider.data(new StringTarget("foo"), "test", "foobar");
+        storageProvider.set(new StringTarget("foo"), "test", "foobar");
 
         assertThat(storageProvider.get(new StringTarget("foo"), "test", String.class))
                 .isNotEmpty().get()
@@ -123,7 +124,7 @@ class PersistenceStorageTest {
     void shouldReturnObject() {
 
         StringTarget storageValue = new StringTarget("stored-foo");
-        storageProvider.data(new StringTarget("foo"), "test", storageValue);
+        storageProvider.set(new StringTarget("foo"), "test", storageValue);
 
         assertThat(storageProvider.get(new StringTarget("foo"), "test", StringTarget.class))
                 .isNotEmpty().get()

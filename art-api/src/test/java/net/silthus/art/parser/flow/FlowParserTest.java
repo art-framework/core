@@ -20,6 +20,7 @@ import lombok.SneakyThrows;
 import net.silthus.art.ArtObjectContext;
 import net.silthus.art.ArtParseException;
 import net.silthus.art.Configuration;
+import net.silthus.art.FlowParserProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -50,7 +51,9 @@ class FlowParserTest {
         when(flowParser.parse()).thenReturn(mock(ArtObjectContext.class));
         ArrayList<net.silthus.art.FlowParser> parsers = new ArrayList<>();
         parsers.add(flowParser);
-        when(configuration.parser().all()).thenReturn(parsers);
+        FlowParserProvider parserProvider = mock(FlowParserProvider.class);
+        when(configuration.parser()).thenReturn(parserProvider);
+        when(parserProvider.all()).thenReturn(parsers);
 
         parser = new FlowParser(configuration);
     }
@@ -86,8 +89,6 @@ class FlowParserTest {
         @SneakyThrows
         @DisplayName("should return all parsed contexts in the result")
         void shouldAddAllParsedContextsToTheResult() {
-
-            when(parser.sortAndCombineArtContexts(anyList())).then(invocation -> invocation.getArgument(0));
 
             assertThat(parser.parse(Arrays.asList(
                     "!foobar",

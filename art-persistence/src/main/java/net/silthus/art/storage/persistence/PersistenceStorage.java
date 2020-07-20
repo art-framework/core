@@ -22,12 +22,14 @@ import com.google.inject.Inject;
 import io.ebean.Database;
 import lombok.Getter;
 import lombok.NonNull;
+import net.silthus.art.AbstractScope;
+import net.silthus.art.Configuration;
 import net.silthus.art.Storage;
 import net.silthus.art.storage.persistence.entities.MetadataStore;
 
 import java.util.Optional;
 
-public class PersistenceStorage implements Storage {
+public class PersistenceStorage extends AbstractScope implements Storage {
 
     public static final String STORAGE_TYPE = "ebean";
 
@@ -35,7 +37,8 @@ public class PersistenceStorage implements Storage {
     private final Database database;
 
     @Inject
-    public PersistenceStorage(Database database) {
+    public PersistenceStorage(Configuration configuration, Database database) {
+        super(configuration);
         this.database = database;
     }
 

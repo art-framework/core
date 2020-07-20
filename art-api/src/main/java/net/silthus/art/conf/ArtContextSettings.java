@@ -27,7 +27,9 @@ import net.silthus.art.TriggerListener;
 @EqualsAndHashCode(callSuper = true)
 public class ArtContextSettings extends SettingsBase {
 
-    public static final ArtContextSettings DEFAULT = new ArtContextSettings();
+    public static ArtContextSettings getDefault() {
+        return new ArtContextSettings();
+    }
 
     public static ArtContextSettings of(ArtContextSettings settings) {
         return new ArtContextSettings(settings);

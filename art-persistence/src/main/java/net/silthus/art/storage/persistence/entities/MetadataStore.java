@@ -16,6 +16,7 @@
 
 package net.silthus.art.storage.persistence.entities;
 
+import io.ebean.Finder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -28,6 +29,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "art_metadata_store")
 public class MetadataStore {
+
+    public static final Finder<String, MetadataStore> find = new Finder<>(MetadataStore.class);
 
     @Id
     private String key;

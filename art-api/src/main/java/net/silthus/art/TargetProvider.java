@@ -33,7 +33,9 @@ import java.util.function.Function;
  */
 public interface TargetProvider extends Provider {
 
-    TargetProvider DEFAULT = new DefaultTargetProvider(ART.configuration());
+    static TargetProvider getDefault() {
+        return new DefaultTargetProvider(ART.configuration());
+    }
 
     /**
      * Tries to wrap the given target source into a {@link Target}.

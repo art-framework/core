@@ -16,7 +16,8 @@
 
 package net.silthus.art;
 
-import lombok.Getter;
+import com.google.common.collect.ImmutableMap;
+import lombok.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,9 +26,7 @@ import java.util.Optional;
 public abstract class AbstractArtFactoryProvider<TFactory extends ArtFactory<?, ?>> implements ArtFactoryProvider<TFactory> {
 
     private final Configuration configuration;
-    @Getter
     final Map<String, TFactory> factories = new HashMap<>();
-    @Getter
     final Map<String, String> aliasMappings = new HashMap<>();
 
     protected AbstractArtFactoryProvider(Configuration configuration) {
@@ -39,12 +38,26 @@ public abstract class AbstractArtFactoryProvider<TFactory extends ArtFactory<?, 
         return configuration;
     }
 
-    public boolean exists(String identifier) {
-        return factories.containsKey(identifier);
+    public boolean exists(@NonNull String identifier) {
+        identifier = identifier.toLowerCase();
+
+        return factories.containsKey(identifier) || aliasMappings.containsKey(identifier.toLowerCase());
     }
 
     @Override
-    public Optional<TFactory> get(String identifier) {
+    public Map<String, TFactory> getFactories() {
+        return ImmutableMap.copyOf(factories);
+    }
+
+    @Override
+    public Map<String, String> getAliasMappings() {
+        return ImmutableMap.copyOf(aliasMappings);
+    }
+
+    @Override
+    public Optional<TFactory> get(@NonNull String identifier) {
+
+        identifier = identifier.toLowerCase();
 
         if (!factories.containsKey(identifier) && aliasMappings.containsKey(identifier)) {
             identifier = aliasMappings.get(identifier);
@@ -53,7 +66,7 @@ public abstract class AbstractArtFactoryProvider<TFactory extends ArtFactory<?, 
         return Optional.ofNullable(factories.get(identifier));
     }
 
-    protected void addFactory(TFactory factory) {
-
+    protected void addFactory(@NonNull TFactory factory) {
+        factories.put(factory.info().getIdentifier().toLowerCase(), factory);
     }
 }

@@ -16,6 +16,8 @@
 
 package net.silthus.art;
 
+import lombok.NonNull;
+
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,7 +27,7 @@ public interface ArtFactoryProvider<TFactory extends ArtFactory<?, ?>> extends P
 
     Map<String, String> getAliasMappings();
 
-    boolean exists(String identifier);
+    boolean exists(@NonNull String identifier);
 
-    Optional<TFactory> get(String identifier);
+    Optional<TFactory> get(@NonNull String identifier);
 }

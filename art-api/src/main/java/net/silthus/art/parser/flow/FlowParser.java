@@ -67,7 +67,7 @@ public class FlowParser implements Parser<List<String>> {
 
         contexts = sortAndCombineArtContexts(contexts);
 
-        return ArtContext.of(configuration, contexts);
+        return ArtContext.of(configuration, configuration.contextSettings(), contexts);
     }
 
     // rules for matching and combining actions, requirements and trigger

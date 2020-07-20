@@ -30,7 +30,7 @@ public final class ART {
 
     private ART() {}
 
-    private static Configuration configuration = Configuration.DEFAULT;
+    private static Configuration configuration = Configuration.getDefault();
 
     /**
      * Sets the global {@link Configuration} that should be used by all static
@@ -52,7 +52,6 @@ public final class ART {
      *
      * @return the global {@link Configuration}
      */
-    @NonNull
     public static Configuration configuration() {
         return configuration;
     }
