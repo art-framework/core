@@ -30,7 +30,7 @@ public class DefaultArtBuilder implements ArtBuilder {
     }
 
     @Override
-    public Configuration configuration() {
+    public Configuration getConfiguration() {
         return configuration;
     }
 
@@ -41,11 +41,11 @@ public class DefaultArtBuilder implements ArtBuilder {
 
     @Override
     public ArtBuilderParser<FlowParser, List<String>> parser() {
-        return new DefaultArtBuilderParser<>(configuration(), new FlowParser(configuration()));
+        return new DefaultArtBuilderParser<>(getConfiguration(), new FlowParser(getConfiguration()));
     }
 
     @Override
-    public ArtContext build() {
+    public ART build() {
         return null;
     }
 }

@@ -200,11 +200,12 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
             String identifier = tryGetIdentifier(methods);
             String[] description = tryGetDescription(methods);
             String[] alias = tryGetAlias(methods);
+            Class<?> targetClass = tryGetTargetClass();
             Class<?> configClass = findConfigClass(methods);
             Map<String, ConfigFieldInformation> configMap = tryGetConfigInformation();
             ArtObjectProvider<TArtObject> provider = tryGetArtObjectProvider();
 
-            if (Strings.isNullOrEmpty(getIdentifier())) {
+            if (Strings.isNullOrEmpty(identifier)) {
                 throw new ArtObjectInformationException(ArtObjectError.of(
                         getArtObjectClass().getCanonicalName() + " has no defined name. Use the @ArtOptions annotation on the class or a method.",
                         ArtObjectError.Reason.NO_IDENTIFIER,

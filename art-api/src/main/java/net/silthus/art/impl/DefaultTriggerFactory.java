@@ -41,7 +41,7 @@ public class DefaultTriggerFactory extends AbstractArtFactory<TriggerContext, Tr
         }
 
         return TriggerContext.of(
-                configuration(),
+                getConfiguration(),
                 info(),
                 config
         );

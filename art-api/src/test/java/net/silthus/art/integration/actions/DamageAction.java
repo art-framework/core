@@ -17,12 +17,14 @@
 package net.silthus.art.integration.actions;
 
 import lombok.NonNull;
-import net.silthus.art.Action;
-import net.silthus.art.ActionContext;
-import net.silthus.art.ConfigOption;
-import net.silthus.art.ExecutionContext;
+import net.silthus.art.*;
 import net.silthus.art.integration.data.Player;
 
+@ArtOptions(
+        value = "damage",
+        alias = {"hit", "dmg"},
+        description = "Damages the player for the given amount of health."
+)
 public class DamageAction implements Action<Player> {
 
     @ConfigOption

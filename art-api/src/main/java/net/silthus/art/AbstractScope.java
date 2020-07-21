@@ -27,7 +27,7 @@ public abstract class AbstractScope implements Scope {
     }
 
     @Override
-    public @NonNull Configuration configuration() {
+    public @NonNull Configuration getConfiguration() {
         return configuration;
     }
 }

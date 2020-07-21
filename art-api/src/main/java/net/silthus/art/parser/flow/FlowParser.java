@@ -34,16 +34,16 @@ public class FlowParser implements Parser<List<String>> {
     }
 
     @Override
-    public @NonNull Configuration configuration() {
+    public @NonNull Configuration getConfiguration() {
         return configuration;
     }
 
     @Override
-    public ArtContext parse(List<String> input) throws ArtParseException {
+    public ART parse(List<String> input) throws ArtParseException {
 
         Collection<ArtObjectContext<?>> contexts = new ArrayList<>();
 
-        Collection<net.silthus.art.FlowParser> parsers = configuration().parser().all();
+        Collection<net.silthus.art.FlowParser> parsers = getConfiguration().parser().all();
 
         int lineCount = 1;
         for (String line : input) {
@@ -69,7 +69,7 @@ public class FlowParser implements Parser<List<String>> {
 
         contexts = sortAndCombineArtContexts(contexts.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 
-        return ArtContext.of(configuration, configuration.contextSettings(), contexts);
+        return ART.of(configuration, configuration.contextSettings(), contexts);
     }
 
     // rules for matching and combining actions, requirements and trigger

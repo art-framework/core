@@ -107,8 +107,8 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
         long delay = getConfig().getDelay();
 
-        if (configuration().scheduler().isPresent() && delay > 0) {
-            configuration().scheduler().get().runTaskLater(runnable, delay);
+        if (getConfiguration().scheduler().isPresent() && delay > 0) {
+            getConfiguration().scheduler().get().runTaskLater(runnable, delay);
         } else {
             runnable.run();
         }

@@ -18,7 +18,7 @@ package net.silthus.art.impl;
 
 import lombok.NonNull;
 import net.silthus.art.*;
-import net.silthus.art.conf.ArtContextSettings;
+import net.silthus.art.conf.ArtSettings;
 import net.silthus.art.conf.Settings;
 
 import javax.annotation.Nullable;
@@ -42,7 +42,7 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     private transient Storage storage;
     private transient TargetProvider targetProvider;
     private transient EventProvider eventProvider;
-    private transient ArtContextSettings artContextSettings;
+    private transient ArtSettings artSettings;
     private transient FlowParserProvider flowParserProvider;
 
     public DefaultConfiguration() {
@@ -55,7 +55,7 @@ public class DefaultConfiguration implements Configuration, Cloneable {
         set(Storage.of(this));
         set(TargetProvider.of(this));
         set(EventProvider.of(this));
-        set(ArtContextSettings.getDefault());
+        set(ArtSettings.getDefault());
         set(FlowParserProvider.of(this));
     }
 
@@ -70,7 +70,7 @@ public class DefaultConfiguration implements Configuration, Cloneable {
             @NonNull Storage storage,
             @NonNull TargetProvider targetProvider,
             @NonNull EventProvider eventProvider,
-            @NonNull ArtContextSettings artContextSettings,
+            @NonNull ArtSettings artSettings,
             @NonNull FlowParserProvider flowParserProvider
     ) {
         this.settings = settings;
@@ -83,7 +83,7 @@ public class DefaultConfiguration implements Configuration, Cloneable {
         this.storage = storage;
         this.targetProvider = targetProvider;
         this.eventProvider = eventProvider;
-        this.artContextSettings = artContextSettings;
+        this.artSettings = artSettings;
         this.flowParserProvider = flowParserProvider;
     }
 
@@ -133,8 +133,8 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     }
 
     @Override
-    public ArtContextSettings contextSettings() {
-        return artContextSettings;
+    public ArtSettings contextSettings() {
+        return artSettings;
     }
 
     @Override
@@ -196,8 +196,8 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     }
 
     @Override
-    public Configuration set(@NonNull ArtContextSettings settings) {
-        this.artContextSettings = settings;
+    public Configuration set(@NonNull ArtSettings settings) {
+        this.artSettings = settings;
         return this;
     }
 
@@ -310,7 +310,7 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     }
 
     @Override
-    public Configuration derive(@NonNull ArtContextSettings settings) {
+    public Configuration derive(@NonNull ArtSettings settings) {
         return new DefaultConfiguration(
                 settings(),
                 art(),

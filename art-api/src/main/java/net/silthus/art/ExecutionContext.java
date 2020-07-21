@@ -26,7 +26,7 @@ import java.util.Optional;
 /**
  * The <pre>ExecutionContext</pre> holds a hierarchical order of execution
  * for all {@link Action}s, {@link Requirement}s and {@link Trigger} that were
- * involved in the execution chain of the root {@link ArtContext}.
+ * involved in the execution chain of the root {@link ART}.
  * <br>
  * The <pre>ExecutionContext</pre> is disposed once the last {@link ArtObject}
  * was executed or tested. You can use the {@link #data()} map to store data that is
@@ -59,9 +59,9 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext<?>>
      * or test of this {@link ArtObject}.
      * The root context may not exist since {@link ArtObjectContext} objects
      * can be constructed any time and executed any time. It will exist if
-     * this execution tree was initialized by an {@link ArtContext}.
+     * this execution tree was initialized by an {@link ART}.
      *
-     * @return the {@link ArtContext} that initialized the execution tree.
+     * @return the {@link ART} that initialized the execution tree.
      *          This may be empty if the execution was manually invoked.
      */
     Optional<Context> root();
@@ -91,6 +91,7 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext<?>>
      *
      * @return target of this context
      */
+    // TODO: multiple targets
     Target<TTarget> target();
 
     default TTarget getTarget() {

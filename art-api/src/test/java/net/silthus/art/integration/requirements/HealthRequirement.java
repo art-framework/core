@@ -17,16 +17,14 @@
 package net.silthus.art.integration.requirements;
 
 import lombok.NonNull;
-import net.silthus.art.ConfigOption;
-import net.silthus.art.ExecutionContext;
-import net.silthus.art.Requirement;
-import net.silthus.art.RequirementContext;
+import net.silthus.art.*;
 import net.silthus.art.integration.data.Player;
 import org.assertj.core.util.Strings;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@ArtOptions("health")
 public class HealthRequirement implements Requirement<Player> {
 
     private final Pattern pattern = Pattern.compile("^(?<modifier>[><=]+)?(?<amount>\\d+)$");

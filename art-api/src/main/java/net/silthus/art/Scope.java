@@ -21,12 +21,12 @@ package net.silthus.art;
  * available from a given scope.
  * <p>
  * The scope of the various objects contained in this type (e.g.
- * {@link #configuration()} is implementation dependent and will be specified by the concrete subtype of <code>Scope</code>.
+ * {@link #getConfiguration()} is implementation dependent and will be specified by the concrete subtype of <code>Scope</code>.
  */
 public interface Scope {
 
     /**
      * The configuration of the current scope.
      */
-    Configuration configuration();
+    Configuration getConfiguration();
 }

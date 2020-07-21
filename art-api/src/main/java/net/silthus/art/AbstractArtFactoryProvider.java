@@ -35,7 +35,7 @@ public abstract class AbstractArtFactoryProvider<TFactory extends ArtFactory<?, 
     }
 
     @Override
-    public Configuration configuration() {
+    public Configuration getConfiguration() {
         return configuration;
     }
 

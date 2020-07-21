@@ -94,5 +94,5 @@ public interface TargetProvider extends Provider {
      *
      * @return this {@link TargetProvider}
      */
-    TargetProvider removeAll();
+    TargetProvider clear();
 }

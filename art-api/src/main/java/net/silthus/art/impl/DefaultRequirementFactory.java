@@ -41,7 +41,7 @@ public class DefaultRequirementFactory<TTarget> extends AbstractArtFactory<Requi
         }
 
         return RequirementContext.of(
-                configuration(),
+                getConfiguration(),
                 info(),
                 createArtObject(configMaps.get(ConfigMapType.SPECIFIC_ART_CONFIG)),
                 config

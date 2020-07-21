@@ -37,7 +37,7 @@ public class DefaultActionFactory<TTarget> extends AbstractArtFactory<ActionCont
         }
 
         return ActionContext.of(
-                configuration(),
+                getConfiguration(),
                 info(),
                 createArtObject(configMaps.get(ConfigMapType.SPECIFIC_ART_CONFIG)),
                 actionConfig
