@@ -46,7 +46,7 @@ public interface ArtProvider extends Provider {
      * @return The {@link ArtFinder} to find {@link ArtObject}s in your filesystem and classpath.
      */
     default ArtFinder find() {
-        return configuration().findArt();
+        return getConfiguration().findArt();
     }
 
     /**
@@ -60,14 +60,18 @@ public interface ArtProvider extends Provider {
     ArtProvider addAll(Collection<ArtInformation<?>> artObjects);
 
     default ActionProvider actions() {
-        return configuration().actions();
+        return getConfiguration().actions();
     }
 
     default RequirementProvider requirements() {
-        return configuration().requirements();
+        return getConfiguration().requirements();
     }
 
     default TriggerProvider trigger() {
-        return configuration().trigger();
+        return getConfiguration().trigger();
+    }
+
+    default TargetProvider targets() {
+        return getConfiguration().targets();
     }
 }

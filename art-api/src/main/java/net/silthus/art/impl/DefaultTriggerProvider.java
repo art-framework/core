@@ -29,6 +29,11 @@ public class DefaultTriggerProvider extends AbstractProvider implements TriggerP
     }
 
     @Override
+    public boolean exists(String identifier) {
+        return false;
+    }
+
+    @Override
     public TriggerProvider add(ArtInformation<Trigger> triggerInformation) {
         return null;
     }
@@ -39,7 +44,7 @@ public class DefaultTriggerProvider extends AbstractProvider implements TriggerP
     }
 
     @Override
-    public <TTrigger extends Trigger> TriggerProvider add(Class<? extends TTrigger> triggerClass, ArtObjectProvider<TTrigger> trigger) {
+    public TriggerProvider add(Trigger trigger) {
         return null;
     }
 
@@ -65,6 +70,6 @@ public class DefaultTriggerProvider extends AbstractProvider implements TriggerP
 
     @Override
     public ArtProvider addAll(Collection<ArtInformation<?>> artObjects) {
-        return configuration().art().addAll(artObjects);
+        return getConfiguration().art().addAll(artObjects);
     }
 }

@@ -18,26 +18,90 @@ package net.silthus.art;
 
 import net.silthus.art.impl.DefaultTriggerProvider;
 
+import javax.annotation.Nullable;
 import java.util.Set;
 import java.util.function.Predicate;
 
 // TODO: javadoc
 public interface TriggerProvider extends ArtProvider {
 
+    /**
+     * Creates a new default implementation of this trigger provider using the given configuration.
+     *
+     * @param configuration the configuration to use
+     * @return a new default trigger provider using the given configuration
+     */
     static TriggerProvider of(Configuration configuration) {
         return new DefaultTriggerProvider(configuration);
     }
 
+    /**
+     * Checks if a trigger with the given identifier exists.
+     * <p>
+     * You don't need to do this before calling {@link #trigger(String, Target[])}
+     * or adding additional trigger.
+     *
+     * @param identifier the identifier or alias of the trigger. can be null or empty.
+     * @return true if a trigger with the identifier or alias exists, false otherwise
+     */
+    boolean exists(@Nullable String identifier);
+
+    /**
+     * Registers a new trigger using the provided information.
+     * <p>
+     * This will call {@link ArtInformation#initialize()} if the information is not initialized and will fail
+     * silently if there are any exceptions.
+     * Using {@link #add(Class)} or {@link #add(Trigger)} is preferred since it will handle all the dirty work for you.
+     *
+     * @param triggerInformation the information of the trigger you want to register
+     * @return this trigger provider
+     */
     TriggerProvider add(ArtInformation<Trigger> triggerInformation);
 
+    /**
+     * Registers a new trigger extracting the needed information from the given class.
+     * <p>
+     * This will scan the given class for any {@link ArtOptions} annotations and uses that
+     * information to register the trigger contained within that class.
+     * All methods that are not annotated will be ignored.
+     * You can also annotate the class if you only have one trigger method.
+     * <p>
+     * It will not try instantiate the class or setup any listening for the trigger defined inside it.
+     * <p>
+     * You can also use the {@link #add(Trigger)} method as an alternative to this.
+     *
+     * @param triggerClass the trigger class that should be used to extract the required information
+     * @return this trigger provider
+     */
     TriggerProvider add(Class<? extends Trigger> triggerClass);
 
-    <TTrigger extends Trigger> TriggerProvider add(Class<? extends TTrigger> triggerClass, ArtObjectProvider<TTrigger> trigger);
+    /**
+     * Registers a new trigger extracting the needed information from the given trigger instance.
+     * <p>
+     * This will scan the trigger object for any {@link ArtOptions} annotations and uses that
+     * information to register the trigger contained within that class.
+     * All methods that are not annotated will be ignored.
+     * You can also annotate the class if you only have one trigger method.
+     * <p>
+     * You can also use the {@link #add(Class)} method as an alternative to this.
+     *
+     * @param trigger the trigger object that should be used to extract the required information
+     * @return this trigger provider
+     */
+    TriggerProvider add(Trigger trigger);
+
+    /**
+     * Triggers the trigger that matches the given identifier or has an alias that matches it.
+     * <p>
+     * This will return an empty result if there are not registered trigger with the given identifier or alias.
+     * @param identifier
+     * @param targets
+     * @return
+     */
+    TriggerResult trigger(String identifier, Target<?>... targets);
 
     // TODO: javadoc
-    void trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> predicate, Target<?>... targets);
-
-    void trigger(String identifier, Target<?>... targets);
+    TriggerResult trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> predicate, Target<?>... targets);
 
     /**
      * Registers the given {@link TriggerListener} to listen for events

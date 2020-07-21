@@ -37,7 +37,7 @@ public abstract class AbstractArtFactory<TContext extends ArtObjectContext<TArtO
     }
 
     @Override
-    public Configuration configuration() {
+    public Configuration getConfiguration() {
         return configuration;
     }
 

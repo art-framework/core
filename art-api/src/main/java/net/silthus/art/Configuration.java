@@ -17,7 +17,7 @@
 package net.silthus.art;
 
 import lombok.NonNull;
-import net.silthus.art.conf.ArtContextSettings;
+import net.silthus.art.conf.ArtSettings;
 import net.silthus.art.conf.Settings;
 import net.silthus.art.events.ArtEventListener;
 import net.silthus.art.impl.DefaultConfiguration;
@@ -25,7 +25,6 @@ import net.silthus.art.impl.DefaultConfiguration;
 import java.io.File;
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * Use the Configuration to retrieve and replace all elements of the ART-Framework.
@@ -33,7 +32,7 @@ import java.util.function.Function;
  */
 public interface Configuration extends Serializable, Cloneable {
 
-    static Configuration getDefault() {
+    static Configuration create() {
         return new DefaultConfiguration();
     }
 
@@ -121,12 +120,12 @@ public interface Configuration extends Serializable, Cloneable {
     Settings settings();
 
     /**
-     * Gets the {@link ArtContextSettings} that will be used by default
-     * when creating a new {@link ArtContext}.
+     * Gets the {@link ArtSettings} that will be used by default
+     * when creating a new {@link ART}.
      *
-     * @return default {@link ArtContextSettings} used in an {@link ArtContext}
+     * @return default {@link ArtSettings} used in an {@link ART}
      */
-    ArtContextSettings contextSettings();
+    ArtSettings contextSettings();
 
     /**
      * Use the {@link TargetProvider} to register new {@link Target} source types
@@ -143,23 +142,6 @@ public interface Configuration extends Serializable, Cloneable {
      * @return the implementing {@link FlowParserProvider}
      */
     FlowParserProvider parser();
-
-    /**
-     * Adds a {@link TargetProvider} for the given {@link Target} type.
-     * Will override any existing {@link TargetProvider} of the same target type.
-     * <br>
-     * This is just a convenience method and delegates to {@link TargetProvider#add(Class, Function)}.
-     *
-     * @param targetClass class of the target you want to add
-     * @param targetProvider {@link TargetProvider} that creates the {@link Target} for the given type
-     * @param <TTarget> type of the target
-     * @return this {@link Configuration}
-     * @see TargetProvider#add(Class, Function)
-     */
-    default <TTarget> Configuration target(Class<TTarget> targetClass, Function<TTarget, Target<TTarget>> targetProvider) {
-        targets().add(targetClass, targetProvider);
-        return this;
-    }
 
     /**
      * Sets a new implementation for the {@link ArtProvider}.
@@ -194,13 +176,13 @@ public interface Configuration extends Serializable, Cloneable {
     Configuration set(@NonNull Settings settings);
 
     /**
-     * Provides new {@link ArtContextSettings} that will be used
-     * in the creation of all {@link ArtContext} objects.
+     * Provides new {@link ArtSettings} that will be used
+     * in the creation of all {@link ART} objects.
      *
-     * @param settings new default {@link ArtContextSettings}
+     * @param settings new default {@link ArtSettings}
      * @return this {@link Configuration}
      */
-    Configuration set(@NonNull ArtContextSettings settings);
+    Configuration set(@NonNull ArtSettings settings);
 
     /**
      * Sets a new implementation for the {@link TargetProvider}.
@@ -306,13 +288,13 @@ public interface Configuration extends Serializable, Cloneable {
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
-     * and provides new {@link ArtContextSettings} that will be used
-     * in the creation of all {@link ArtContext} objects.
+     * and provides new {@link ArtSettings} that will be used
+     * in the creation of all {@link ART} objects.
      *
-     * @param settings new default {@link ArtContextSettings}
+     * @param settings new default {@link ArtSettings}
      * @return this {@link Configuration}
      */
-    Configuration derive(@NonNull ArtContextSettings settings);
+    Configuration derive(@NonNull ArtSettings settings);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration

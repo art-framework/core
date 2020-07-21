@@ -22,15 +22,15 @@ import com.google.inject.assistedinject.Assisted;
 import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.*;
-import net.silthus.art.conf.ArtContextSettings;
+import net.silthus.art.conf.ArtSettings;
 
 import java.util.*;
 
 import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
 
-public class DefaultArtContext extends AbstractScope implements ArtContext, TriggerListener<Object> {
+public class DefaultArtContext extends AbstractScope implements ART, TriggerListener<Object> {
 
-    private final ArtContextSettings settings;
+    private final ArtSettings settings;
 
     @Getter
     private final List<ArtObjectContext<?>> artContexts;
@@ -38,14 +38,14 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     private final Map<String, Object> data = new HashMap<>();
 
     @Inject
-    public DefaultArtContext(Configuration configuration, ArtContextSettings settings, @Assisted Collection<ArtObjectContext<?>> artContexts) {
+    public DefaultArtContext(Configuration configuration, ArtSettings settings, @Assisted Collection<ArtObjectContext<?>> artContexts) {
         super(configuration);
         this.settings = settings;
         this.artContexts = ImmutableList.copyOf(artContexts);
     }
 
     @Override
-    public ArtContextSettings settings() {
+    public ArtSettings settings() {
         return settings;
     }
 
@@ -62,7 +62,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     @SuppressWarnings("unchecked")
     public <TTarget> boolean test(@NonNull Target<TTarget> target) {
 
-        ExecutionContext<TTarget, ?> executionContext = ExecutionContext.of(configuration(), this, target);
+        ExecutionContext<TTarget, ?> executionContext = ExecutionContext.of(getConfiguration(), this, target);
 
         return getArtContexts().stream()
                 .filter(context -> context.isTargetType(target))
@@ -75,7 +75,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     @SuppressWarnings("unchecked")
     public <TTarget> void execute(@NonNull Target<TTarget> target) {
 
-        ExecutionContext<TTarget, ?> executionContext = ExecutionContext.of(configuration(), this, target);
+        ExecutionContext<TTarget, ?> executionContext = ExecutionContext.of(getConfiguration(), this, target);
 
         getArtContexts().stream()
                 .filter(context -> context.isTargetType(target))
@@ -105,7 +105,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     }
 
     @Override
-    public ArtContext combine(ArtContext context) {
+    public ART combine(ART context) {
         return new CombinedArtContext(this, context);
     }
 }

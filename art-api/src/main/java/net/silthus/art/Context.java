@@ -24,10 +24,6 @@ import java.util.Optional;
 
 public interface Context extends Scope {
 
-    default <TTarget> Optional<Target<TTarget>> target(TTarget source) {
-        return configuration().targets().get(source);
-    }
-
     /**
      * Get all custom data from this <code>Scope</code>.
      * <p>All data set like this is non persistent and only exists for the lifetime of this {@link Scope}.

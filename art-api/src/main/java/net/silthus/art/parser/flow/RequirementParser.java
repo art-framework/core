@@ -32,7 +32,7 @@ public class RequirementParser extends ArtObjectContextParser<RequirementFactory
 
     @Override
     protected Optional<RequirementFactory<?>> getFactory(String identifier) {
-        return configuration().requirements().get(identifier);
+        return this.getConfiguration().requirements().get(identifier);
     }
 
     @Override

@@ -21,39 +21,52 @@ import net.silthus.art.AbstractProvider;
 import net.silthus.art.Configuration;
 import net.silthus.art.Target;
 import net.silthus.art.TargetProvider;
+import net.silthus.art.util.ReflectionUtil;
 
 import javax.annotation.Nullable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class DefaultTargetProvider extends AbstractProvider implements TargetProvider {
 
+    @SuppressWarnings("rawtypes")
+    private final Map<Class<?>, Function> targetProviders = new HashMap<>();
+
     public DefaultTargetProvider(@NonNull Configuration configuration) {
         super(configuration);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public <TTarget> Optional<Target<TTarget>> get(@Nullable TTarget source) {
-        return Optional.empty();
+        if (source == null) return Optional.empty();
+
+        return ReflectionUtil.getEntryForTarget(source, targetProviders)
+                .map(targetFunction -> (Target<TTarget>) targetFunction.apply(source));
     }
 
     @Override
     public <TTarget> boolean exists(@Nullable TTarget source) {
-        return false;
+        return get(source).isPresent();
     }
 
     @Override
     public <TTarget> TargetProvider add(@NonNull Class<TTarget> sourceClass, @NonNull Function<TTarget, Target<TTarget>> targetProvider) {
-        return null;
+        targetProviders.put(sourceClass, targetProvider);
+        return this;
     }
 
     @Override
     public <TTarget> TargetProvider remove(@NonNull Class<TTarget> sourceClass) {
-        return null;
+        targetProviders.remove(sourceClass);
+        return this;
     }
 
     @Override
-    public TargetProvider removeAll() {
-        return null;
+    public TargetProvider clear() {
+        targetProviders.clear();
+        return this;
     }
 }

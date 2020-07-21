@@ -28,7 +28,7 @@ public interface ArtFinder extends ArtProvider {
     }
 
     default ArtProvider art() {
-        return configuration().art();
+        return getConfiguration().art();
     }
 
     ArtFinderResult all();

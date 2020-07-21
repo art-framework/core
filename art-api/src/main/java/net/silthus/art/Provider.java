@@ -30,6 +30,6 @@ public interface Provider extends Scope {
      * @return the root {@link Configuration}
      */
     default Configuration and() {
-        return configuration();
+        return getConfiguration();
     }
 }
