@@ -22,7 +22,7 @@ import lombok.NonNull;
  * A {@link Requirement} can be used to filter {@link Action}s, {@link Trigger}
  * or be used inside other plugins for filtering.
  * <br>
- * Register your requirements by calling {@link ArtContext#register()}.
+ * Register your requirements by calling {@link ART#register()}.
  * This will wrap the {@link Requirement} into a {@link RequirementContext} and bundle it with the configured options.
  * <br>
  * A requirement will only be used for filtering if the target type matches with the object that is being filtered.
@@ -43,8 +43,25 @@ public interface Requirement<TTarget> extends ArtObject {
      * Return true for the check to pass and not to filter out the action.
      * Return false if the check fails and the actions should be filtered.
      *
-     * @param context {@link Context} that holds the config and context of the check
+     * @param target the target that is checked in this requirement
+     * @param context the context that holds the config and context of the check
      * @return false if the check fails and the filter should be applied or true if all checks pass and no filtering should be applied.
      */
-    boolean test(@NonNull ExecutionContext<TTarget, RequirementContext<TTarget>> context);
+    TestResult test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context);
+
+    default TestResult resultOf(boolean result, String... reasons) {
+        return result ? success() : failure(reasons);
+    }
+
+    default TestResult success() {
+        return TestResult.success();
+    }
+
+    default TestResult failure(String... reasons) {
+        return TestResult.failure();
+    }
+
+    default TestResult error(ErrorCode errorCode, String... messages) {
+        return TestResult.error(errorCode, messages);
+    }
 }

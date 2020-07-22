@@ -19,7 +19,7 @@ package net.silthus.art;
 import lombok.NonNull;
 import net.silthus.art.impl.DefaultTriggerProvider;
 
-import java.util.function.Predicate;
+import java.util.Arrays;
 
 // TODO: javadoc
 public interface TriggerProvider extends ArtProvider, ArtFactoryProvider<TriggerFactory> {
@@ -80,14 +80,38 @@ public interface TriggerProvider extends ArtProvider, ArtFactoryProvider<Trigger
 
     /**
      * Triggers the trigger that matches the given identifier or has an alias that matches it.
+     * Will wrap all {@link Target}s into a {@link TriggerTarget} before calling the listeners.
      * <p>
-     * This will return an empty result if there are not registered trigger with the given identifier or alias.
-     * @param identifier
-     * @param targets
-     * @return
+     * Will return a {@link TriggerResult} that contains all information about the execution
+     * of the {@link Trigger} and all of its child executions and checks.
+     * This may be in the future since trigger execution may be delayed.
+     * <p>
+     * The result will never be null even if there are not trigger with the given identifier.
+     * A result that had no trigger will be empty instead. Use {@link TriggerResult#isEmpty()} to check that.
+     *
+     * @param identifier the identifier or alias of the trigger
+     * @param targets the targets that triggered the given trigger
+     * @return the result that contains the outcome of the trigger
      */
-    TriggerResult trigger(String identifier, Target<?>... targets);
+    default TriggerResult trigger(String identifier, Target<?>... targets) {
+        return trigger(identifier, Arrays.stream(targets)
+                .map(TriggerTarget::new)
+                .toArray(TriggerTarget[]::new));
+    }
 
-    // TODO: javadoc
-    TriggerResult trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> predicate, Target<?>... targets);
+    /**
+     * Triggers the trigger that matches the given identifier or has an alias that matches it.
+     * <p>
+     * Will return a {@link TriggerResult} that contains all information about the execution
+     * of the {@link Trigger} and all of its child executions and checks.
+     * This may be in the future since trigger execution may be delayed.
+     * <p>
+     * The result will never be null even if there are not trigger with the given identifier.
+     * A result that had no trigger will be empty instead. Use {@link TriggerResult#isEmpty()} to check that.
+     *
+     * @param identifier the identifier or alias of the trigger
+     * @param targets the trigger targets that wrap a predicate
+     * @return the result that contains the outcome of the trigger
+     */
+    TriggerResult trigger(String identifier, TriggerTarget<?>... targets);
 }

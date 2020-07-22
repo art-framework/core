@@ -16,22 +16,15 @@
 
 package net.silthus.art;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 public interface Trigger extends ArtObject {
 
-    default void trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> context, Target<?>... targets) {
-        ART.trigger(identifier, context, targets);
-    }
+    default void trigger(String identifier, TriggerTarget<?>... targets) {
 
-    default void trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> context, Object... targets) {
-        trigger(identifier, context, Arrays.stream(targets)
-                .map(Target::of)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .toArray(Target[]::new));
     }
 
     default void trigger(String identifier, Target<?>... targets) {
@@ -45,4 +38,27 @@ public interface Trigger extends ArtObject {
                 .map(Optional::get)
                 .toArray(Target[]::new));
     }
+
+    default <TTarget> TriggerTarget<TTarget> of(Target<TTarget> target) {
+        return new TriggerTarget<>(target);
+    }
+
+    @Nullable
+    default <TTarget> TriggerTarget<TTarget> of(TTarget target) {
+        return Target.of(target)
+                .map(TriggerTarget::new)
+                .orElse(null);
+    }
+
+    default <TTarget> TriggerTarget<TTarget> of(Target<TTarget> target, BiPredicate<Target<TTarget>, ExecutionContext<TriggerContext>> predicate) {
+        return new TriggerTarget<>(target, predicate);
+    }
+
+    @Nullable
+    default <TTarget> TriggerTarget<TTarget> of(TTarget target, BiPredicate<Target<TTarget>, ExecutionContext<TriggerContext>> predicate) {
+        return Target.of(target)
+                .map(targetTarget -> new TriggerTarget<>(targetTarget, predicate))
+                .orElse(null);
+    }
+
 }

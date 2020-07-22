@@ -18,29 +18,17 @@ package net.silthus.art.events;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import net.silthus.art.ExecutionContext;
-import net.silthus.art.Target;
-import net.silthus.art.TriggerContext;
-
-import java.util.function.Predicate;
+import net.silthus.art.TriggerTarget;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class TriggerEvent extends Event {
 
     private final String identifier;
-    private final Predicate<ExecutionContext<?, TriggerContext>> predicate;
-    private final Target<?>[] targets;
+    private final TriggerTarget<?>[] targets;
 
-    public TriggerEvent(String identifier, Predicate<ExecutionContext<?, TriggerContext>> predicate, Target<?>... targets) {
+    public TriggerEvent(String identifier, TriggerTarget<?>... targets) {
         this.identifier = identifier;
-        this.predicate = predicate;
-        this.targets = targets;
-    }
-
-    public TriggerEvent(String identifier, Target<?>... targets) {
-        this.identifier = identifier;
-        this.predicate = triggerContextExecutionContext -> true;
         this.targets = targets;
     }
 

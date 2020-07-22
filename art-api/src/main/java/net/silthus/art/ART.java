@@ -22,7 +22,6 @@ import net.silthus.art.events.EventManager;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
 
 public final class ART {
 
@@ -102,13 +101,33 @@ public final class ART {
         return load(artLines);
     }
 
-    // TODO: javadoc
-    public static void trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> predicate, Target<?>... targets) {
-        configuration().trigger().trigger(identifier, predicate, targets);
+    /**
+     * Executes the trigger with the given identifier sourced to the given targets
+     * checking their predicates before executing the trigger.
+     * <p>
+     * This is just a convenience method delegating to {@link TriggerProvider#trigger(String, TriggerTarget[])}.
+     *
+     * @param identifier the identifier or alias of the trigger
+     * @param targets the targets that executed the trigger
+     * @return the trigger result
+     * @see TriggerProvider#trigger(String, TriggerTarget[])
+     */
+    public static TriggerResult trigger(String identifier, TriggerTarget<?>... targets) {
+        return configuration().trigger().trigger(identifier, targets);
     }
 
-    public static void trigger(String identifier, Target<?>... targets) {
-        configuration().trigger().trigger();
+    /**
+     * Executes the trigger with the given identifier sourced to the given targets.
+     * <p>
+     * This is just a convenience method delegating to {@link TriggerProvider#trigger(String, Target[])}.
+     *
+     * @param identifier the identifier or alias of the trigger
+     * @param targets the targets that executed the trigger
+     * @return the trigger result
+     * @see TriggerProvider#trigger(String, Target[])
+     */
+    public static TriggerResult trigger(String identifier, Target<?>... targets) {
+        return configuration().trigger().trigger(identifier, targets);
     }
 
     /**
@@ -120,7 +139,7 @@ public final class ART {
      * @return wrapped {@link Target} or an empty {@link Optional} if the source was null or no target is found
      * @see TargetProvider#get(Object)
      */
-    public static <TTarget> Optional<Target<TTarget>> target(@Nullable TTarget target) {
+    public static <TTarget> Optional<Target<TTarget>> getTarget(@Nullable TTarget target) {
         return configuration().targets().get(target);
     }
 

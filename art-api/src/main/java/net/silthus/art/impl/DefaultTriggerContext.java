@@ -27,7 +27,6 @@ import net.silthus.art.events.EventPriority;
 import net.silthus.art.events.TriggerEvent;
 
 import java.util.*;
-import java.util.function.Predicate;
 
 public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> implements TriggerContext, ArtEventListener {
 
@@ -46,6 +45,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     ) {
         super(configuration, information);
         this.config = config;
+
         getConfiguration().events().register(this);
     }
 
@@ -68,26 +68,31 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     public void onTriggerEvent(TriggerEvent event) {
         if (!event.getIdentifier().equalsIgnoreCase(info().getIdentifier())) return;
 
-        trigger(ExecutionContext.of(getConfiguration(), null, event.getTargets()[0]), event.getPredicate());
+        ExecutionContext<?> executionContext = ExecutionContext.of(
+                getConfiguration(),
+                this,
+                Arrays.stream(event.getTargets()).map(TriggerTarget::getTarget).toArray(Target[]::new)
+        );
+
+        trigger(event.getTargets(), executionContext.next(this));
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public <TTarget> void trigger(ExecutionContext<TTarget, TriggerContext> context, Predicate<ExecutionContext<TTarget, TriggerContext>> predicate) {
-
-        Target<TTarget> target = context.target();
-
-        if (cannotExecute(target)) return;
+    public void trigger(final TriggerTarget<?>[] targets, final ExecutionContext<TriggerContext> context) {
 
         Runnable runnable = () -> {
-            if (predicate.test(context) && testRequirements(context)) {
+            for (TriggerTarget<?> target : targets) {
+                if (cannotExecute(target.getTarget())) continue;
 
-                store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
+                if (target.test(context) && testRequirements(context)) {
 
-                if (getConfig().isExecuteActions()) executeActions(context);
+                    store(target.getTarget(), Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
-                callListeners(context);
+                    if (getConfig().isExecuteActions()) executeActions(context);
+                }
             }
+
+            callListeners(context);
         };
 
         long delay = getConfig().getDelay();
@@ -99,12 +104,14 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     }
 
     @SuppressWarnings("unchecked")
-    private <TTarget> void callListeners(ExecutionContext<TTarget, TriggerContext> executionContext) {
+    private <TTarget> void callListeners(ExecutionContext<TriggerContext> executionContext) {
         for (Map.Entry<Class<?>, Set<TriggerListener<?>>> entry : listeners.entrySet()) {
-            if (entry.getKey().isAssignableFrom(executionContext.getTargetClass())) {
-                entry.getValue().stream()
-                        .map(listener -> (TriggerListener<TTarget>) listener)
-                        .forEach(listener -> listener.onTrigger(executionContext));
+            for (Target<?> target : executionContext.getTargets()) {
+                if (entry.getKey().isAssignableFrom(target.getSource().getClass())) {
+                    entry.getValue().stream()
+                            .map(listener -> (TriggerListener<TTarget>) listener)
+                            .forEach(listener -> listener.onTrigger((Target<TTarget>) target, executionContext));
+                }
             }
         }
     }

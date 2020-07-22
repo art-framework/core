@@ -33,28 +33,32 @@ public class HealthRequirement implements Requirement<Player> {
     private final String health = ">0";
 
     @Override
-    public boolean test(@NonNull ExecutionContext<Player, RequirementContext<Player>> context) {
+    public TestResult test(@NonNull Target<Player> target, @NonNull ExecutionContext<RequirementContext<Player>> context) {
 
         Matcher matcher = pattern.matcher(health);
 
-        if (!matcher.matches()) return true;
+        if (!matcher.matches()) {
+            return error(ErrorCode.INVALID_CONFIG,
+                    "Health modifier '" + health + "' is invalid.",
+                    "Use one of the following >, <, >=, <=, = modifier.");
+        }
 
         String modifier = matcher.group("modifier");
         double amount = Double.parseDouble(matcher.group("amount"));
-        int health = context.getTarget().getHealth();
+        int health = target.getSource().getHealth();
 
-        if (Strings.isNullOrEmpty(modifier)) {
-            return health == amount;
+        if (Strings.isNullOrEmpty(modifier) || modifier.equals("=")) {
+            return resultOf(health == amount);
         } else if (modifier.equals(">")) {
-            return health > amount;
+            return resultOf(health > amount);
         } else if (modifier.equals("<")) {
-            return health < amount;
+            return resultOf(health < amount);
         } else if (modifier.equals(">=") || modifier.equals("=>")) {
-            return health >= amount;
+            return resultOf(health >= amount);
         } else if (modifier.equals("<=") || modifier.equals("=<")) {
-            return health <= amount;
+            return resultOf(health <= amount);
         }
 
-        return false;
+        return failure();
     }
 }

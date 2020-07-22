@@ -16,8 +16,6 @@
 
 package net.silthus.art;
 
-import net.silthus.art.impl.DefaultRequirementContext;
-
 import java.util.Collection;
 
 public interface RequirementHolder {
@@ -27,10 +25,20 @@ public interface RequirementHolder {
     Collection<RequirementContext<?>> getRequirements();
 
     @SuppressWarnings("unchecked")
-    default <TTarget> boolean testRequirements(ExecutionContext<TTarget, ?> context) {
-        return getRequirements().stream()
-                .filter(requirementContext -> requirementContext.isTargetType(context.target()))
-                .map(requirementContext -> (DefaultRequirementContext<TTarget>) requirementContext)
-                .allMatch(context::test);
+    default <TTarget> TestResult testRequirements(ExecutionContext<?> executionContext) {
+        TestResult testResult = TestResult.success();
+
+        for (Target<?> target : executionContext.getTargets()) {
+            testResult = testResult.combine(getRequirements().stream()
+                    .filter(requirementContext -> requirementContext.isTargetType(target))
+                    .map(requirementContext -> (RequirementContext<TTarget>) requirementContext)
+                    .map(executionContext::next)
+                    .map(context -> context.current().test((Target<TTarget>) target, context))
+                    .map(result -> result.combine(target))
+                    .reduce(TestResult::combine)
+                    .orElse(testResult));
+        }
+
+        return testResult;
     }
 }

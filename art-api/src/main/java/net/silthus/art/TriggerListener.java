@@ -34,7 +34,8 @@ public interface TriggerListener<TTarget> {
      * non changing identifier of the trigger target that can be used
      * to cache or reference the target.
      *
+     * @param target the target that triggered the trigger
      * @param context the context of the trigger execution
      */
-    void onTrigger(ExecutionContext<TTarget, TriggerContext> context);
+    void onTrigger(Target<TTarget> target, ExecutionContext<TriggerContext> context);
 }

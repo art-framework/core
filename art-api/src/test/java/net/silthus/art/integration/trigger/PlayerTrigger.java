@@ -25,5 +25,12 @@ public class PlayerTrigger implements Trigger {
     @ArtOptions("move")
     public void onMove(Player player) {
         trigger("move", player);
+
+        trigger("move", of(player, context -> true));
+    }
+
+    @ArtOptions("damage")
+    public void onDamage(Player player) {
+        trigger("damage", player);
     }
 }

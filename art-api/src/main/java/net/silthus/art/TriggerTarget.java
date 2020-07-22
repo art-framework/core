@@ -16,23 +16,27 @@
 
 package net.silthus.art;
 
-/**
- * The trigger result is returned after a trigger was executed and contains
- * information and data about the listeners that were listening to the trigger.
- */
-public interface TriggerResult extends ArtResult {
+import lombok.Data;
 
-    static TriggerResult success() {
-        return null;
+import java.util.function.BiPredicate;
+
+@Data
+public final class TriggerTarget<TTarget> {
+
+    private final Target<TTarget> target;
+    private final BiPredicate<Target<TTarget>, ExecutionContext<TriggerContext>> predicate;
+
+    TriggerTarget(Target<TTarget> target) {
+        this.target = target;
+        this.predicate = (t, c) -> true;
     }
 
-    static TriggerResult failure() {
-        return null;
+    TriggerTarget(Target<TTarget> target, BiPredicate<Target<TTarget>, ExecutionContext<TriggerContext>> predicate) {
+        this.target = target;
+        this.predicate = predicate;
     }
 
-    static TriggerResult failure(ErrorCode errorCode) {
-        return null;
+    public boolean test(ExecutionContext<TriggerContext> executionContext) {
+        return predicate.test(target, executionContext);
     }
-
-    boolean isEmpty();
 }
