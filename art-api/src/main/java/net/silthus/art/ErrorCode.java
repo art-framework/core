@@ -18,5 +18,7 @@ package net.silthus.art;
 
 public enum ErrorCode {
 
-    NON_EXISTANT
+    IDENTIFIER_NOT_FOUND,
+    INVALID_CONFIG,
+    UNDEFINED
 }

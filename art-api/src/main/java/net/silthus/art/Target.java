@@ -59,7 +59,7 @@ public interface Target<TTarget> {
      * @see TargetProvider#get(Object)
      */
     static <TTarget> Optional<Target<TTarget>> of(@NonNull TTarget target) {
-        return ART.target(target);
+        return ART.getTarget(target);
     }
 
     /**
@@ -81,4 +81,8 @@ public interface Target<TTarget> {
      * @return The underlying target source. This is never null.
      */
     TTarget getSource();
+
+    default boolean isTargetType(Class<?> targetClass) {
+        return targetClass.isInstance(getSource());
+    }
 }

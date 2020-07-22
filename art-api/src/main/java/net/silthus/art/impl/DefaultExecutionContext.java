@@ -16,6 +16,7 @@
 
 package net.silthus.art.impl;
 
+import lombok.Getter;
 import lombok.NonNull;
 import net.silthus.art.*;
 
@@ -25,40 +26,41 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Stack;
 
-public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext<?>> extends AbstractScope implements ExecutionContext<TTarget, TContext> {
+public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> extends AbstractScope implements ExecutionContext<TContext> {
 
-    private final Context rootContext;
-    private final Target<TTarget> target;
+    private final Context root;
+    @Getter
+    private final Target<?>[] targets;
     private final Container container;
     private final TContext currentContext;
 
     public DefaultExecutionContext(
             @NonNull Configuration configuration,
-            @Nullable Context rootContext,
-            @NonNull Target<TTarget> target
+            @Nullable Context root,
+            @NonNull Target<?>... targets
     ) {
         super(configuration);
-        this.rootContext = rootContext;
-        this.target = target;
+        this.root = root;
+        this.targets = targets;
         this.container = new Container();
         this.currentContext = null;
     }
 
-    DefaultExecutionContext(Configuration configuration, Context rootContext, Target<TTarget> target, Container container, TContext currentContext) {
+    DefaultExecutionContext(Configuration configuration, Context root, Target<?>[] targets, Container container, TContext currentContext) {
         super(configuration);
-        this.rootContext = rootContext;
-        this.target = target;
+        this.root = root;
+        this.targets = targets;
         this.container = container;
         this.currentContext = currentContext;
     }
 
     @Override
-    public Optional<Context> root() {
-        return Optional.ofNullable(rootContext);
+    public Optional<Context> getRoot() {
+        return Optional.ofNullable(root);
     }
 
     @Override
-    public Optional<ArtObjectContext<?>> parent() {
+    public Optional<ArtObjectContext<?>> getParent() {
         if (container.history.empty()) {
             return Optional.empty();
         }
@@ -66,7 +68,7 @@ public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext<
     }
 
     @Override
-    public ArtObjectContext<?>[] history() {
+    public ArtObjectContext<?>[] getHistory() {
         return container.history.toArray(new ArtObjectContext[0]);
     }
 
@@ -76,22 +78,17 @@ public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext<
     }
 
     @Override
-    public Target<TTarget> target() {
-        return target;
-    }
-
-    @Override
-    public <TValue> Optional<TValue> store(@NonNull String key, @NonNull TValue value) {
+    public <TValue> Optional<TValue> store(@NonNull Target<?> target, @NonNull String key, @NonNull TValue value) {
         if (current() != null) {
-            return current().store(target(), key, value);
+            return current().store(target, key, value);
         }
         return Optional.empty();
     }
 
     @Override
-    public <TValue> Optional<TValue> store(@NonNull String key, @NonNull Class<TValue> valueClass) {
+    public <TValue> Optional<TValue> store(@NonNull Target<?> target, @NonNull String key, @NonNull Class<TValue> valueClass) {
         if (current() != null) {
-            return current().store(target(), key, valueClass);
+            return current().store(target, key, valueClass);
         }
         return Optional.empty();
     }
@@ -102,29 +99,9 @@ public class DefaultExecutionContext<TTarget, TContext extends ArtObjectContext<
     }
 
     @Override
-    public <TNextContext extends ArtObjectContext<?>> ExecutionContext<TTarget, TNextContext> next(TNextContext nextContext) {
+    public <TNextContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> ExecutionContext<TNextContext> next(TNextContext nextContext) {
         if (current() != null) container.history.push(current());
-        return new DefaultExecutionContext<>(getConfiguration(), rootContext, target, container, nextContext);
-    }
-
-    @Override
-    public <TNextContext extends ActionContext<TTarget>> void execute(TNextContext nextContext) {
-        execute(nextContext, nextContext);
-    }
-
-    @Override
-    public <TNextContext extends ActionContext<TTarget>> void execute(TNextContext nextContext, Action<TTarget> action) {
-        action.execute(next(nextContext));
-    }
-
-    @Override
-    public <TNextContext extends RequirementContext<TTarget>> boolean test(TNextContext nextContext) {
-        return test(nextContext, nextContext);
-    }
-
-    @Override
-    public <TNextContext extends RequirementContext<TTarget>> boolean test(TNextContext nextContext, Requirement<TTarget> requirement) {
-        return requirement.test(next(nextContext));
+        return new DefaultExecutionContext<>(getConfiguration(), root, targets, container, nextContext);
     }
 
     static class Container {

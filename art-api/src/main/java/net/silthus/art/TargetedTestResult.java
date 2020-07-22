@@ -16,23 +16,21 @@
 
 package net.silthus.art;
 
-/**
- * The trigger result is returned after a trigger was executed and contains
- * information and data about the listeners that were listening to the trigger.
- */
-public interface TriggerResult extends ArtResult {
+import net.silthus.art.events.DefaultTargetedTestResult;
 
-    static TriggerResult success() {
-        return null;
+import java.util.Optional;
+
+public interface TargetedTestResult<TTarget> extends TestResult {
+
+    static <TTarget> TargetedTestResult<TTarget> of(Target<TTarget> target, Result result) {
+        return new DefaultTargetedTestResult<>(result, target);
     }
 
-    static TriggerResult failure() {
-        return null;
+    static <TTarget> TargetedTestResult<TTarget> of(Class<TTarget> targetClass, Result result) {
+        return new DefaultTargetedTestResult<>(result, targetClass);
     }
 
-    static TriggerResult failure(ErrorCode errorCode) {
-        return null;
-    }
+    Optional<Target<TTarget>> getTarget();
 
-    boolean isEmpty();
+    Class<TTarget> getTargetClass();
 }

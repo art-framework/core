@@ -21,7 +21,6 @@ import net.silthus.art.conf.TriggerConfig;
 import net.silthus.art.impl.DefaultTriggerContext;
 
 import java.util.Set;
-import java.util.function.Predicate;
 
 public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder, RequirementHolder, AutoCloseable {
 
@@ -44,11 +43,10 @@ public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder,
      * Fires this trigger and informs all listeners about its executing
      * if the given predicate and target type matches.
      *
-     * @param context   the {@link ExecutionContext} of this trigger
-     * @param predicate predicate to check before informing all listeners
-     * @param <TTarget> target type
+     * @param targets the targets that triggered this trigger
+     * @param context the execution context of this trigger
      */
-    <TTarget> void trigger(ExecutionContext<TTarget, TriggerContext> context, Predicate<ExecutionContext<TTarget, TriggerContext>> predicate);
+    void trigger(final TriggerTarget<?>[] targets, final ExecutionContext<TriggerContext> context);
 
     /**
      * Registers the given {@link TriggerListener} to listen for events

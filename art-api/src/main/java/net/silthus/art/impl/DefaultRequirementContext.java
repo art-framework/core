@@ -53,23 +53,21 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
     }
 
     @Override
-    public boolean test(ExecutionContext<TTarget, RequirementContext<TTarget>> context) {
+    public TestResult test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context) {
 
-        Target<TTarget> target = context.target();
-
-        if (!isTargetType(target.getSource())) return true;
+        if (!isTargetType(target.getSource())) return success();
 
         if (getConfig().isCheckOnce()) {
             Optional<Boolean> result = store(target, Constants.Storage.CHECK_ONCE_RESULT, Boolean.class);
             if (result.isPresent()) {
-                return result.get();
+                return resultOf(result.get());
             }
         }
 
-        boolean result = context.test(this, requirement);
+        TestResult result = requirement.test(target, context);
 
         int currentCount = store(target, Constants.Storage.COUNT, Integer.class).orElse(0);
-        if (result) {
+        if (result.isSuccessful()) {
             store(target, Constants.Storage.COUNT, ++currentCount);
         }
 
@@ -78,11 +76,19 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
         }
 
         if (getConfig().getCount() > 0) {
-            result = currentCount >= getConfig().getCount();
+            result = resultOf(currentCount >= getConfig().getCount());
         }
 
         if (getConfig().isNegated()) {
-            return !result;
+            switch (result.getResult()) {
+                case FAILURE:
+                    return success();
+                case SUCCESS:
+                    return failure();
+                default:
+                case ERROR:
+                    return result;
+            }
         } else {
             return result;
         }

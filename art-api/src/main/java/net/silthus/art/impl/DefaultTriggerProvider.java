@@ -57,7 +57,7 @@ public class DefaultTriggerProvider extends AbstractArtFactoryProvider<TriggerFa
 
     @Override
     public TriggerResult trigger(String identifier, Target<?>... targets) {
-        if (!exists(identifier)) return TriggerResult.failure(ErrorCode.NON_EXISTANT);
+        if (!exists(identifier)) return TriggerResult.failure(ErrorCode.IDENTIFIER_NOT_FOUND);
         return null;
     }
 

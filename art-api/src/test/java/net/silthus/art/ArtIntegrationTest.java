@@ -125,12 +125,11 @@ public class ArtIntegrationTest {
 
                 ART.trigger().add(PlayerTrigger.class);
 
-//                assertThat(ART.trigger().("move"))
-//                        .isNotEmpty().get()
-//                        .extracting(ArtFactory::info)
-//                        .extracting(ArtInformation::getIdentifier, ArtInformation::getAlias, ArtInformation::getArtObjectClass)
-//                        .contains("health", new String[]{"hit", "dmg"}, HealthRequirement.class);
+                assertThat(ART.trigger().get("move"))
+                        .isNotEmpty();
 
+                assertThat(ART.trigger().get("damage"))
+                        .isNotEmpty();
             }
         }
     }

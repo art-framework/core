@@ -35,23 +35,22 @@ import java.util.Optional;
  *
  * @param <TContext> type of the context that is currently executing
  */
-public interface ExecutionContext<TTarget, TContext extends ArtObjectContext<?>> extends Context {
+public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends Context {
 
     /**
      * Creates a new {@link DefaultConfiguration} from the given parameters.
      *
      * @param configuration configuration of the context
-     * @param rootContext The root {@link Context} that initiated the execution. This can be null.
-     * @param target The {@link Target} of this {@link ExecutionContext}
-     * @param <TTarget> type of the target
+     * @param rootContext The root context that initiated the execution. This can be null.
+     * @param targets the targets that are used by this execution context
      * @return a new {@link ExecutionContext} for executing the ART
      */
-    static <TTarget> ExecutionContext<TTarget, ?> of(
+    static ExecutionContext<?> of(
             @NonNull Configuration configuration,
             @Nullable Context rootContext,
-            @NonNull Target<TTarget> target
+            @NonNull Target<?>... targets
     ) {
-        return new DefaultExecutionContext<>(configuration, rootContext, target);
+        return new DefaultExecutionContext<>(configuration, rootContext, targets);
     }
 
     /**
@@ -64,7 +63,7 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext<?>>
      * @return the {@link ArtContext} that initialized the execution tree.
      *          This may be empty if the execution was manually invoked.
      */
-    Optional<Context> root();
+    Optional<Context> getRoot();
 
     /**
      * Gets the parent of this {@link ExecutionContext} that
@@ -73,35 +72,27 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext<?>>
      * @return the parent that was executed before this context.
      *          May be empty if no parent exists.
      */
-    Optional<ArtObjectContext<?>> parent();
+    Optional<ArtObjectContext<?>> getParent();
 
     /**
      * Gets the full history of this {@link ExecutionContext} ordered
      * from newest to oldest {@link ArtObjectContext}.
-     * This means the first item in the array (index 0) is the {@link #parent()}
+     * This means the first item in the array (index 0) is the {@link #getParent()}
      * of the {@link #current()} context.
      *
      * @return Execution history in a stack sorted format. From newest to oldest.
      */
-    ArtObjectContext<?>[] history();
+    ArtObjectContext<?>[] getHistory();
 
     /**
-     * Gets the {@link Target} that is attached to this context.
-     * All actions of this context chain will be executed against the given target.
+     * Gets all targets that are linked to this execution context.
+     * <p>
+     * The execution context will check each target type against the next
+     * executable context and use it if they match.
      *
-     * @return target of this context
+     * @return a list of targets in this execution context
      */
-    // TODO: multiple targets
-    Target<TTarget> target();
-
-    default TTarget getTarget() {
-        return target().getSource();
-    }
-
-    @SuppressWarnings("unchecked")
-    default Class<TTarget> getTargetClass() {
-        return (Class<TTarget>) target().getSource().getClass();
-    }
+    Target<?>[] getTargets();
 
     /**
      * Gets the context that is currently being executed.
@@ -122,13 +113,14 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext<?>>
      * Use the {@link #data()} methods to store data that is only available in this scope
      * and not persisted to the database.
      *
+     * @param target the target to store the value for
      * @param key      storage key
      * @param value    value to store
      * @param <TValue> type of the value
      * @return an {@link Optional} containing the existing value
      * @see Storage#set(String, Object)
      */
-    <TValue> Optional<TValue> store(@NonNull String key, @NonNull TValue value);
+    <TValue> Optional<TValue> store(@NonNull Target<?> target, @NonNull String key, @NonNull TValue value);
 
     /**
      * Retrieves a persistently stored value from the {@link Storage} and returns
@@ -141,12 +133,13 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext<?>>
      * Use the {@link #data()} methods to store data that is only available in this scope
      * and not persisted to the database.
      *
+     * @param target the target to get the value for
      * @param key      storage key
      * @param valueClass class of the value type you expect in return
      * @param <TValue> type of the value
      * @return the stored value or an empty {@link Optional} if the value type cannot be cast or does not exist
      */
-    <TValue> Optional<TValue> store(@NonNull String key, @NonNull Class<TValue> valueClass);
+    <TValue> Optional<TValue> store(@NonNull Target<?> target, @NonNull String key, @NonNull Class<TValue> valueClass);
 
     /**
      * Uses this {@link ExecutionContext} as a parent for the next {@link ArtObjectContext}
@@ -156,13 +149,5 @@ public interface ExecutionContext<TTarget, TContext extends ArtObjectContext<?>>
      * @param <TNextContext> type of the next context
      * @return the next execution context containing the properties of this context
      */
-    <TNextContext extends ArtObjectContext<?>> ExecutionContext<TTarget, TNextContext> next(TNextContext nextContext);
-
-    <TNextContext extends ActionContext<TTarget>> void execute(TNextContext nextContext);
-
-    <TNextContext extends ActionContext<TTarget>> void execute(TNextContext nextContext, Action<TTarget> action);
-
-    <TNextContext extends RequirementContext<TTarget>> boolean test(TNextContext nextContext);
-
-    <TNextContext extends RequirementContext<TTarget>> boolean test(TNextContext nextContext, Requirement<TTarget> requirement);
+    <TNextContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> ExecutionContext<TNextContext> next(TNextContext nextContext);
 }
