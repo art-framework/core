@@ -16,13 +16,11 @@
 
 package net.silthus.art;
 
-import lombok.NonNull;
-
 /**
  * Used to listen on events fired by {@link Trigger}s.
  * <p>
- * Make sure to register your listener either with the {@link ART#registerListener(Class, TriggerListener)}
- * or {@link TriggerProvider#addListener(Class, TriggerListener)} method.
+ * Make sure to register your listener either with the {@link ArtContext#registerListener(Class, TriggerListener)}
+ * or {@link TriggerProvider#registerListener(TriggerContext)} method.
  *
  * @param <TTarget> target type
  */
@@ -36,7 +34,7 @@ public interface TriggerListener<TTarget> {
      * non changing identifier of the trigger target that can be used
      * to cache or reference the target.
      *
-     * @param target wrapped {@link Target} of the trigger
+     * @param context the context of the trigger execution
      */
-    void onTrigger(@NonNull Target<TTarget> target);
+    void onTrigger(ExecutionContext<TTarget, TriggerContext> context);
 }

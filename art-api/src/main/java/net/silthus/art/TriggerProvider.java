@@ -16,14 +16,13 @@
 
 package net.silthus.art;
 
+import lombok.NonNull;
 import net.silthus.art.impl.DefaultTriggerProvider;
 
-import javax.annotation.Nullable;
-import java.util.Set;
 import java.util.function.Predicate;
 
 // TODO: javadoc
-public interface TriggerProvider extends ArtProvider {
+public interface TriggerProvider extends ArtProvider, ArtFactoryProvider<TriggerFactory> {
 
     /**
      * Creates a new default implementation of this trigger provider using the given configuration.
@@ -36,17 +35,6 @@ public interface TriggerProvider extends ArtProvider {
     }
 
     /**
-     * Checks if a trigger with the given identifier exists.
-     * <p>
-     * You don't need to do this before calling {@link #trigger(String, Target[])}
-     * or adding additional trigger.
-     *
-     * @param identifier the identifier or alias of the trigger. can be null or empty.
-     * @return true if a trigger with the identifier or alias exists, false otherwise
-     */
-    boolean exists(@Nullable String identifier);
-
-    /**
      * Registers a new trigger using the provided information.
      * <p>
      * This will call {@link ArtInformation#initialize()} if the information is not initialized and will fail
@@ -56,7 +44,7 @@ public interface TriggerProvider extends ArtProvider {
      * @param triggerInformation the information of the trigger you want to register
      * @return this trigger provider
      */
-    TriggerProvider add(ArtInformation<Trigger> triggerInformation);
+    TriggerProvider add(@NonNull ArtInformation<Trigger> triggerInformation);
 
     /**
      * Registers a new trigger extracting the needed information from the given class.
@@ -102,20 +90,4 @@ public interface TriggerProvider extends ArtProvider {
 
     // TODO: javadoc
     TriggerResult trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> predicate, Target<?>... targets);
-
-    /**
-     * Registers the given {@link TriggerListener} to listen for events
-     * fired by this trigger.
-     *
-     * @param listener trigger listener to register
-     * @see Set#add(Object)
-     */
-    <TTarget> void addListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener);
-
-    /**
-     * Unregisters the given listener from listening to this trigger.
-     *
-     * @param listener trigger listener to unregister
-     */
-    <TTarget> void removeListener(TriggerListener<TTarget> listener);
 }

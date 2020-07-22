@@ -17,7 +17,6 @@
 package net.silthus.art.impl;
 
 import com.google.common.collect.ImmutableList;
-import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import lombok.Getter;
 import lombok.NonNull;
@@ -28,7 +27,7 @@ import java.util.*;
 
 import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
 
-public class DefaultArtContext extends AbstractScope implements ART, TriggerListener<Object> {
+public class DefaultArtContext extends AbstractScope implements ArtContext, TriggerListener<Object> {
 
     private final ArtSettings settings;
 
@@ -37,11 +36,12 @@ public class DefaultArtContext extends AbstractScope implements ART, TriggerList
     private final Map<Class<?>, List<TriggerListener<?>>> triggerListeners = new HashMap<>();
     private final Map<String, Object> data = new HashMap<>();
 
-    @Inject
     public DefaultArtContext(Configuration configuration, ArtSettings settings, @Assisted Collection<ArtObjectContext<?>> artContexts) {
         super(configuration);
         this.settings = settings;
         this.artContexts = ImmutableList.copyOf(artContexts);
+
+        registerListeners();
     }
 
     @Override
@@ -59,26 +59,31 @@ public class DefaultArtContext extends AbstractScope implements ART, TriggerList
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <TTarget> boolean test(@NonNull Target<TTarget> target) {
 
-        ExecutionContext<TTarget, ?> executionContext = ExecutionContext.of(getConfiguration(), this, target);
+        return test(ExecutionContext.of(getConfiguration(), this, target));
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TTarget> boolean test(ExecutionContext<TTarget, ?> executionContext) {
 
         return getArtContexts().stream()
-                .filter(context -> context.isTargetType(target))
+                .filter(context -> context.isTargetType(executionContext.target()))
                 .filter(requirement -> requirement instanceof RequirementContext)
                 .map(requirement -> (RequirementContext<TTarget>) requirement)
                 .allMatch(executionContext::test);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <TTarget> void execute(@NonNull Target<TTarget> target) {
 
-        ExecutionContext<TTarget, ?> executionContext = ExecutionContext.of(getConfiguration(), this, target);
+        execute(ExecutionContext.of(getConfiguration(), this, target));
+    }
 
+    @SuppressWarnings("unchecked")
+    private <TTarget> void execute(ExecutionContext<TTarget, ?> executionContext) {
         getArtContexts().stream()
-                .filter(context -> context.isTargetType(target))
+                .filter(context -> context.isTargetType(executionContext.target()))
                 .filter(action -> action instanceof ActionContext)
                 .map(action -> (ActionContext<TTarget>) action)
                 .forEach(executionContext::execute);
@@ -93,19 +98,44 @@ public class DefaultArtContext extends AbstractScope implements ART, TriggerList
     }
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    public void onTrigger(@NonNull Target target) {
-        if (isAutoTrigger() && test(target)) {
-            if (settings().isExecuteActions()) execute(target);
+    public void onTrigger(ExecutionContext<Object, TriggerContext> context) {
+        if (isAutoTrigger() && test(context)) {
+            if (settings().isExecuteActions()) execute(context);
 
-            getEntryForTarget(target.getSource(), triggerListeners)
-                    .orElse(new ArrayList<>())
-                    .forEach(triggerListener -> triggerListener.onTrigger(target));
+            callListeners(context);
         }
     }
 
+    @SuppressWarnings("unchecked")
+    private <TTarget> void callListeners(ExecutionContext<TTarget, TriggerContext> context) {
+        getEntryForTarget(context.getTarget(), triggerListeners)
+                .orElse(new ArrayList<>())
+                .stream()
+                .map(listener -> (TriggerListener<TTarget>) listener)
+                .forEach(triggerListener -> triggerListener.onTrigger(context));
+    }
+
     @Override
-    public ART combine(ART context) {
+    public ArtContext combine(ArtContext context) {
         return new CombinedArtContext(this, context);
+    }
+
+    @Override
+    public void close() {
+        unregisterListeners();
+    }
+
+    private void registerListeners() {
+        getArtContexts().stream()
+                .filter(artObjectContext -> artObjectContext instanceof TriggerContext)
+                .map(artObjectContext -> (TriggerContext) artObjectContext)
+                .forEach(context -> context.addListener(this));
+    }
+
+    private void unregisterListeners() {
+        getArtContexts().stream()
+                .filter(artObjectContext -> artObjectContext instanceof TriggerContext)
+                .map(artObjectContext -> (TriggerContext) artObjectContext)
+                .forEach(context -> context.removeListener(this));
     }
 }

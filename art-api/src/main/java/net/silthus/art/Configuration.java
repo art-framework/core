@@ -121,9 +121,9 @@ public interface Configuration extends Serializable, Cloneable {
 
     /**
      * Gets the {@link ArtSettings} that will be used by default
-     * when creating a new {@link ART}.
+     * when creating a new {@link ArtContext}.
      *
-     * @return default {@link ArtSettings} used in an {@link ART}
+     * @return default {@link ArtSettings} used in an {@link ArtContext}
      */
     ArtSettings contextSettings();
 
@@ -177,7 +177,7 @@ public interface Configuration extends Serializable, Cloneable {
 
     /**
      * Provides new {@link ArtSettings} that will be used
-     * in the creation of all {@link ART} objects.
+     * in the creation of all {@link ArtContext} objects.
      *
      * @param settings new default {@link ArtSettings}
      * @return this {@link Configuration}
@@ -244,7 +244,7 @@ public interface Configuration extends Serializable, Cloneable {
      * Creates a new {@link Configuration} derived from this configuration.
      * This is actually just a shortcut to {@link #clone()}.
      * You can then use the configuration to modify locally scoped properties
-     * and use it to load and create your ART with {@link ART#builder(Configuration)}.
+     * and use it to load and create your ART with {@link ArtContext#builder(Configuration)}.
      *
      * @return this cloned {@link Configuration}
      */
@@ -289,7 +289,7 @@ public interface Configuration extends Serializable, Cloneable {
     /**
      * Creates a new {@link Configuration} derived from this configuration
      * and provides new {@link ArtSettings} that will be used
-     * in the creation of all {@link ART} objects.
+     * in the creation of all {@link ArtContext} objects.
      *
      * @param settings new default {@link ArtSettings}
      * @return this {@link Configuration}

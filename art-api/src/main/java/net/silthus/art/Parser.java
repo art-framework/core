@@ -18,5 +18,5 @@ package net.silthus.art;
 
 public interface Parser<TInput> extends Scope {
 
-    ART parse(TInput input) throws ArtParseException;
+    ArtContext parse(TInput input) throws ArtParseException;
 }

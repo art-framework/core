@@ -33,7 +33,7 @@ public @interface ArtOptions {
      * A name for your actions, requirements and trigger is always needed.
      * Use this annotation to provide a unique name.
      * <br>
-     * Use the methods provided in {@link ART} to register
+     * Use the methods provided in {@link ArtContext} to register
      * your function directly without a name annotation.
      * <br>
      * Otherwise this is required and should be prefixed with your plugin name.

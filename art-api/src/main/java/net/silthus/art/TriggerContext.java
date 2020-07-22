@@ -23,7 +23,7 @@ import net.silthus.art.impl.DefaultTriggerContext;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder, RequirementHolder {
+public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder, RequirementHolder, AutoCloseable {
 
     static TriggerContext of(
             @NonNull Configuration configuration,
@@ -58,6 +58,8 @@ public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder,
      * @see Set#add(Object)
      */
     <TTarget> void addListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener);
+
+    void addListener(TriggerListener<Object> listener);
 
     /**
      * Unregisters the given listener from listening to this trigger.

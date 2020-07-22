@@ -16,21 +16,7 @@
 
 package net.silthus.art;
 
-/**
- * The trigger result is returned after a trigger was executed and contains
- * information and data about the listeners that were listening to the trigger.
- */
-public interface TriggerResult extends ArtResult {
+public enum ErrorCode {
 
-    static TriggerResult success() {
-        return null;
-    }
-
-    static TriggerResult failure() {
-        return null;
-    }
-
-    static TriggerResult failure(ErrorCode errorCode) {
-        return null;
-    }
+    NON_EXISTANT
 }
