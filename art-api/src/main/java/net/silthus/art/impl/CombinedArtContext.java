@@ -17,17 +17,17 @@
 package net.silthus.art.impl;
 
 import lombok.NonNull;
-import net.silthus.art.ART;
+import net.silthus.art.ArtContext;
 import net.silthus.art.Target;
 
 import java.util.*;
 
-public final class CombinedArtContext extends DefaultArtContext implements ART {
+public final class CombinedArtContext extends DefaultArtContext implements ArtContext {
 
-    private final Set<ART> contextSet = new HashSet<>();
+    private final Set<ArtContext> contextSet = new HashSet<>();
     private final Map<String, Object> data = new HashMap<>();
 
-    CombinedArtContext(ART context1, ART context2) {
+    CombinedArtContext(ArtContext context1, ArtContext context2) {
         super(context1.getConfiguration(), context1.settings(), new ArrayList<>());
         this.data.putAll(context1.data());
         this.contextSet.add(context1);
@@ -51,7 +51,7 @@ public final class CombinedArtContext extends DefaultArtContext implements ART {
     }
 
     @Override
-    public ART combine(ART context) {
+    public ArtContext combine(ArtContext context) {
 
         if (contextSet.contains(context)) return this;
 
@@ -59,5 +59,10 @@ public final class CombinedArtContext extends DefaultArtContext implements ART {
         this.data.putAll(context.data());
 
         return this;
+    }
+
+    @Override
+    public void close() {
+        contextSet.forEach(ArtContext::close);
     }
 }

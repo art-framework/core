@@ -32,6 +32,10 @@ public interface ArtInformation<TArtObject extends ArtObject> {
         return new DefaultArtInformation<>(artObjectClass).initialize();
     }
 
+    static <TArtObject extends ArtObject> ArtInformation<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, Method... methods) throws ArtObjectInformationException {
+        return new DefaultArtInformation<>(artObjectClass, methods).initialize();
+    }
+
     static <TArtObject extends ArtObject> ArtInformation<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider) throws ArtObjectInformationException {
         return new DefaultArtInformation<>(artObjectClass, provider).initialize();
     }

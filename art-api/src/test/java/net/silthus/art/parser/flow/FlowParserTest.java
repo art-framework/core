@@ -113,7 +113,7 @@ class FlowParserTest {
                     "and more",
                     "foo",
                     "---"
-            ))).extracting(ART::getArtContexts)
+            ))).extracting(ArtContext::getArtContexts)
                     .asList().hasSize(6);
         }
 

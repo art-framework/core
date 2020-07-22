@@ -18,8 +18,8 @@ package net.silthus.art.conf;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import net.silthus.art.ART;
 import net.silthus.art.Action;
+import net.silthus.art.ArtContext;
 import net.silthus.art.Trigger;
 import net.silthus.art.TriggerListener;
 
@@ -45,12 +45,12 @@ public class ArtSettings extends SettingsBase {
 
     /**
      * Set to true if you automatically want to trigger the {@link Action}s
-     * defined in this {@link ART} event if there are no listeners
+     * defined in this {@link ArtContext} event if there are no listeners
      * subscribed to this result.
      * Defaults to true.
      * <br>
-     * As an alternative you can subscribe to this {@link ART} by using the
-     * {@link ART#registerListener(Class, TriggerListener)} method. Then all actions defined in the
+     * As an alternative you can subscribe to this {@link ArtContext} by using the
+     * {@link ArtContext#registerListener(Class, TriggerListener)} method. Then all actions defined in the
      * config will be executed, unless {@link #isExecuteActions()} is false.
      *
      * @see #isExecuteActions()
@@ -58,13 +58,13 @@ public class ArtSettings extends SettingsBase {
     private boolean autoTrigger = true;
 
     /**
-     * Set to false if you want to prevent the {@link ART} from executing
+     * Set to false if you want to prevent the {@link ArtContext} from executing
      * any {@link Action}s. This only affects actions that would be automatically
      * executed when a {@link Trigger} fires and a {@link TriggerListener} is attached
      * or {@link #isAutoTrigger()} is set to true.
      * Defaults to true.
      * <br>
-     * You can always bypass this by directly calling one of the {@link ART} methods.
+     * You can always bypass this by directly calling one of the {@link ArtContext} methods.
      */
     private boolean executeActions = true;
 }

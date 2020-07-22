@@ -39,7 +39,7 @@ public class FlowParser implements Parser<List<String>> {
     }
 
     @Override
-    public ART parse(List<String> input) throws ArtParseException {
+    public ArtContext parse(List<String> input) throws ArtParseException {
 
         Collection<ArtObjectContext<?>> contexts = new ArrayList<>();
 
@@ -69,7 +69,7 @@ public class FlowParser implements Parser<List<String>> {
 
         contexts = sortAndCombineArtContexts(contexts.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 
-        return ART.of(configuration, configuration.contextSettings(), contexts);
+        return ArtContext.of(configuration, configuration.contextSettings(), contexts);
     }
 
     // rules for matching and combining actions, requirements and trigger

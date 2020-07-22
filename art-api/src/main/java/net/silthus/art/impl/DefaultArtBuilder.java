@@ -45,7 +45,7 @@ public class DefaultArtBuilder implements ArtBuilder {
     }
 
     @Override
-    public ART build() {
+    public ArtContext build() {
         return null;
     }
 }

@@ -39,7 +39,7 @@ public class DefaultArtBuilderParser<TParser extends Parser<TInput>, TInput> ext
     }
 
     @Override
-    public ART build() {
+    public ArtContext build() {
 
         return inputs.stream()
                 .map(input -> {
@@ -51,7 +51,7 @@ public class DefaultArtBuilderParser<TParser extends Parser<TInput>, TInput> ext
                     }
                 })
                 .filter(Objects::nonNull)
-                .reduce(ART::combine)
-                .orElse(ART.empty());
+                .reduce(ArtContext::combine)
+                .orElse(ArtContext.empty());
     }
 }

@@ -22,7 +22,7 @@ import lombok.NonNull;
  * A {@link Requirement} can be used to filter {@link Action}s, {@link Trigger}
  * or be used inside other plugins for filtering.
  * <br>
- * Register your requirements by calling {@link ART#register()}.
+ * Register your requirements by calling {@link ArtContext#register()}.
  * This will wrap the {@link Requirement} into a {@link RequirementContext} and bundle it with the configured options.
  * <br>
  * A requirement will only be used for filtering if the target type matches with the object that is being filtered.

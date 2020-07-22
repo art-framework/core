@@ -93,6 +93,10 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
         this.initialized = false;
     }
 
+    public DefaultArtInformation(@NonNull Class<TArtObject> artObjectClass, Method... methods) {
+        this(artObjectClass, null, methods);
+    }
+
     public DefaultArtInformation(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> artObjectProvider) {
         this(artObjectClass, artObjectProvider, artObjectClass.getDeclaredMethods());
     }

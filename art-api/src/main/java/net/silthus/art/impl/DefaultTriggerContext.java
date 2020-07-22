@@ -21,13 +21,15 @@ import lombok.NonNull;
 import net.silthus.art.*;
 import net.silthus.art.conf.Constants;
 import net.silthus.art.conf.TriggerConfig;
+import net.silthus.art.events.ArtEventHandler;
+import net.silthus.art.events.ArtEventListener;
+import net.silthus.art.events.EventPriority;
+import net.silthus.art.events.TriggerEvent;
 
 import java.util.*;
 import java.util.function.Predicate;
 
-import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
-
-public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> implements TriggerContext {
+public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> implements TriggerContext, ArtEventListener {
 
     @Getter
     private final List<ActionContext<?>> actions = new ArrayList<>();
@@ -44,6 +46,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     ) {
         super(configuration, information);
         this.config = config;
+        getConfiguration().events().register(this);
     }
 
     @Override
@@ -61,6 +64,13 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
         this.requirements.add(requirement);
     }
 
+    @ArtEventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onTriggerEvent(TriggerEvent event) {
+        if (!event.getIdentifier().equalsIgnoreCase(info().getIdentifier())) return;
+
+        trigger(ExecutionContext.of(getConfiguration(), null, event.getTargets()[0]), event.getPredicate());
+    }
+
     @Override
     @SuppressWarnings("unchecked")
     public <TTarget> void trigger(ExecutionContext<TTarget, TriggerContext> context, Predicate<ExecutionContext<TTarget, TriggerContext>> predicate) {
@@ -76,9 +86,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
                 if (getConfig().isExecuteActions()) executeActions(context);
 
-                getEntryForTarget(target.getSource(), listeners).orElse(new HashSet<>()).stream()
-                        .map(triggerListener -> (TriggerListener<TTarget>) triggerListener)
-                        .forEach(listener -> listener.onTrigger(target));
+                callListeners(context);
             }
         };
 
@@ -90,8 +98,15 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
         }
     }
 
-    private <TTarget> boolean cannotExecute(Target<TTarget> target) {
-        return wasExecutedOnce(target) || isOnCooldown(target);
+    @SuppressWarnings("unchecked")
+    private <TTarget> void callListeners(ExecutionContext<TTarget, TriggerContext> executionContext) {
+        for (Map.Entry<Class<?>, Set<TriggerListener<?>>> entry : listeners.entrySet()) {
+            if (entry.getKey().isAssignableFrom(executionContext.getTargetClass())) {
+                entry.getValue().stream()
+                        .map(listener -> (TriggerListener<TTarget>) listener)
+                        .forEach(listener -> listener.onTrigger(executionContext));
+            }
+        }
     }
 
     @Override
@@ -103,8 +118,22 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     }
 
     @Override
+    public void addListener(TriggerListener<Object> listener) {
+        addListener(Object.class, listener);
+    }
+
+    @Override
     public <TTarget> void removeListener(TriggerListener<TTarget> listener) {
         listeners.values().forEach(triggerListeners -> triggerListeners.remove(listener));
+    }
+
+    @Override
+    public void close() {
+        getConfiguration().events().unregister(this);
+    }
+
+    private <TTarget> boolean cannotExecute(Target<TTarget> target) {
+        return wasExecutedOnce(target) || isOnCooldown(target);
     }
 
     /**

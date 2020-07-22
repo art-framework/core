@@ -33,5 +33,5 @@ public interface ArtBuilder extends Scope {
 
     ArtBuilderParser<FlowParser, List<String>> parser();
 
-    ART build();
+    ArtContext build();
 }
