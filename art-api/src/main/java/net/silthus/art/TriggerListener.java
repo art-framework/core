@@ -19,8 +19,7 @@ package net.silthus.art;
 /**
  * Used to listen on events fired by {@link Trigger}s.
  * <p>
- * Make sure to register your listener either with the {@link ArtContext#registerListener(Class, TriggerListener)}
- * or {@link TriggerProvider#registerListener(TriggerContext)} method.
+ * Make sure to register your listener either with the {@link ArtContext#registerListener(Class, TriggerListener)}.
  *
  * @param <TTarget> target type
  */
@@ -34,8 +33,8 @@ public interface TriggerListener<TTarget> {
      * non changing identifier of the trigger target that can be used
      * to cache or reference the target.
      *
-     * @param target the target that triggered the trigger
+     * @param targets the targets that triggered the trigger
      * @param context the context of the trigger execution
      */
-    void onTrigger(Target<TTarget> target, ExecutionContext<TriggerContext> context);
+    void onTrigger(Target<TTarget>[] targets, ExecutionContext<TriggerContext> context);
 }

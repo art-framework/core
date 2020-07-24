@@ -67,18 +67,24 @@ public final class ConfigUtil {
                 String identifier = basePath + configOption.map(ConfigOption::value)
                         .filter(s -> !Strings.isNullOrEmpty(s))
                         .orElse(formatter.apply(field.getName()));
-                ConfigFieldInformation configInformation = new ConfigFieldInformation(identifier, field.getName(), field.getType());
 
                 if (field.getType().isPrimitive() || field.getType().equals(String.class)) {
 
-                    configInformation.setDescription(configOption.map(ConfigOption::description).orElse(configInformation.getDescription()));
-                    configInformation.setRequired(configOption.map(ConfigOption::required).orElse(configInformation.isRequired()));
-                    configInformation.setPosition(configOption.map(ConfigOption::position).orElse(configInformation.getPosition()));
+                    String[] description = configOption.map(ConfigOption::description).orElse(new String[0]);
+                    Boolean required = configOption.map(ConfigOption::required).orElse(false);
+                    Integer position = configOption.map(ConfigOption::position).orElse(-1);
 
                     field.setAccessible(true);
-                    configInformation.setDefaultValue(field.get(configInstance));
 
-                    fields.put(identifier, configInformation);
+                    fields.put(identifier, new ConfigFieldInformation(
+                            identifier,
+                            field.getName(),
+                            field.getType(),
+                            position,
+                            description,
+                            required,
+                            field.get(configInstance)
+                    ));
                 } else {
                     fields.putAll(getConfigFields(identifier + ".", field.getType(), field.getType().getConstructor().newInstance(), formatter));
                 }

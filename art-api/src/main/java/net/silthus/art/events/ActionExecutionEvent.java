@@ -31,7 +31,7 @@ public class ActionExecutionEvent<TTarget> extends ExecutionContextEvent<Action<
 
     private boolean cancelled;
 
-    public ActionExecutionEvent(ArtObject artObject, ExecutionContext<TTarget, ActionContext<TTarget>> executionContext) {
+    public ActionExecutionEvent(ArtObject artObject, ExecutionContext<ActionContext<TTarget>> executionContext) {
         super(artObject, executionContext);
     }
 

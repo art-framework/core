@@ -18,6 +18,7 @@ package net.silthus.art.events;
 
 import lombok.Data;
 import lombok.NonNull;
+import net.silthus.art.ResultStatus;
 import net.silthus.art.Target;
 import net.silthus.art.TargetedTestResult;
 import net.silthus.art.TestResult;
@@ -28,39 +29,39 @@ import java.util.*;
 @Data
 public class DefaultTestResult implements TestResult {
 
-    private final Result result;
+    private final ResultStatus result;
     private final Set<String> failureReasons = new HashSet<>();
     private final Set<String> errorReasons = new HashSet<>();
-    private final Map<Target<?>, Result> results = new HashMap<>();
+    private final Map<Target<?>, ResultStatus> results = new HashMap<>();
 
-    public DefaultTestResult(@NonNull Result result) {
+    public DefaultTestResult(@NonNull ResultStatus result) {
         this(result, new String[0], new String[0]);
     }
 
-    public DefaultTestResult(@NonNull Result result, @NonNull Target<?> target) {
+    public DefaultTestResult(@NonNull ResultStatus result, @NonNull Target<?> target) {
         this(result);
         results.put(target, result);
     }
 
-    public DefaultTestResult(@NonNull Result result, @Nullable String[] failureReasons, @Nullable String[] errorReasons) {
+    public DefaultTestResult(@NonNull ResultStatus result, @Nullable String[] failureReasons, @Nullable String[] errorReasons) {
         this.result = result;
         if (failureReasons != null) this.failureReasons.addAll(Arrays.asList(failureReasons));
         if (errorReasons != null) this.errorReasons.addAll(Arrays.asList(errorReasons));
     }
 
-    public DefaultTestResult(@NonNull Result result, @NonNull Target<?> target, @Nullable String[] failureReasons, @Nullable String[] errorReasons) {
+    public DefaultTestResult(@NonNull ResultStatus result, @NonNull Target<?> target, @Nullable String[] failureReasons, @Nullable String[] errorReasons) {
         this(result, failureReasons, errorReasons);
         results.put(target, result);
     }
 
     @Override
     public boolean isSuccessful() {
-        return getResult() == Result.SUCCESS;
+        return getResult() == ResultStatus.SUCCESS || getResult() == ResultStatus.EMPTY;
     }
 
     @Override
     public boolean hasError() {
-        return getResult() == Result.ERROR;
+        return getResult() == ResultStatus.ERROR;
     }
 
     @Override
@@ -74,7 +75,7 @@ public class DefaultTestResult implements TestResult {
         return getResults().entrySet().stream()
                 .filter(targetResultEntry -> targetResultEntry.getKey().isTargetType(targetClass))
                 .map(Map.Entry::getValue)
-                .reduce(Result::combine)
+                .reduce(ResultStatus::combine)
                 .map(result -> TargetedTestResult.of(targetClass, result));
     }
 
@@ -93,7 +94,7 @@ public class DefaultTestResult implements TestResult {
     }
 
     @Override
-    public <TTarget> TargetedTestResult<TTarget> combine(@NonNull Target<TTarget> target) {
+    public <TTarget> TargetedTestResult<TTarget> addTarget(@NonNull Target<TTarget> target) {
 
         TargetedTestResult<TTarget> testResult = TargetedTestResult.of(
                 target,

@@ -14,8 +14,15 @@
  * limitations under the License.
  */
 
-package net.silthus.art;
+package net.silthus.art.impl;
 
-public interface ArtResult {
+import lombok.Value;
+import net.silthus.art.Result;
+import net.silthus.art.ResultStatus;
 
+@Value
+public class DefaultResult implements Result {
+
+    ResultStatus status;
+    String[] messages;
 }

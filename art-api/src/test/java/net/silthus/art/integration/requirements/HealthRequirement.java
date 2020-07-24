@@ -33,13 +33,12 @@ public class HealthRequirement implements Requirement<Player> {
     private final String health = ">0";
 
     @Override
-    public TestResult test(@NonNull Target<Player> target, @NonNull ExecutionContext<RequirementContext<Player>> context) {
+    public Result test(@NonNull Target<Player> target, @NonNull ExecutionContext<RequirementContext<Player>> context) {
 
         Matcher matcher = pattern.matcher(health);
 
         if (!matcher.matches()) {
-            return error(ErrorCode.INVALID_CONFIG,
-                    "Health modifier '" + health + "' is invalid.",
+            return error("Health modifier '" + health + "' is invalid.",
                     "Use one of the following >, <, >=, <=, = modifier.");
         }
 
@@ -48,15 +47,15 @@ public class HealthRequirement implements Requirement<Player> {
         int health = target.getSource().getHealth();
 
         if (Strings.isNullOrEmpty(modifier) || modifier.equals("=")) {
-            return resultOf(health == amount);
+            return of(health == amount);
         } else if (modifier.equals(">")) {
-            return resultOf(health > amount);
+            return of(health > amount);
         } else if (modifier.equals("<")) {
-            return resultOf(health < amount);
+            return of(health < amount);
         } else if (modifier.equals(">=") || modifier.equals("=>")) {
-            return resultOf(health >= amount);
+            return of(health >= amount);
         } else if (modifier.equals("<=") || modifier.equals("=<")) {
-            return resultOf(health <= amount);
+            return of(health <= amount);
         }
 
         return failure();

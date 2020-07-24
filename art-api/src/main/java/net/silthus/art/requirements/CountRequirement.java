@@ -16,6 +16,7 @@
 
 package net.silthus.art.requirements;
 
+import lombok.NonNull;
 import net.silthus.art.*;
 
 @ArtOptions(
@@ -30,14 +31,13 @@ public class CountRequirement implements GenericRequirement {
     private static final String COUNTER_KEY = "count";
 
     @ConfigOption(description = "Set how often this requirement must be checked before it is successful.")
-    private int count = 0;
+    private final int count = 0;
 
     @Override
-    public boolean test(ExecutionContext<Object, RequirementContext<Object>> context) {
+    public Result test(@NonNull Target<Object> target, @NonNull ExecutionContext<RequirementContext<Object>> context) {
+        final int currentCount = context.store(target, COUNTER_KEY, Integer.class).orElse(0) + 1;
+        context.store(target, COUNTER_KEY, currentCount);
 
-        final int currentCount = context.store(COUNTER_KEY, Integer.class).orElse(0) + 1;
-        context.store(COUNTER_KEY, currentCount);
-
-        return count <= currentCount;
+        return of(count <= currentCount);
     }
 }

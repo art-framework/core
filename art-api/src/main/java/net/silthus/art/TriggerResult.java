@@ -20,7 +20,7 @@ package net.silthus.art;
  * The trigger result is returned after a trigger was executed and contains
  * information and data about the listeners that were listening to the trigger.
  */
-public interface TriggerResult extends ArtResult {
+public interface TriggerResult {
 
     static TriggerResult success() {
         return null;

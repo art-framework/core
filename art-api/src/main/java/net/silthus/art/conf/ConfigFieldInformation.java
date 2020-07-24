@@ -16,35 +16,27 @@
 
 package net.silthus.art.conf;
 
-import lombok.Data;
+import lombok.Value;
+import lombok.With;
 
-@Data
-public final class ConfigFieldInformation implements Comparable<ConfigFieldInformation> {
+@Value
+public class ConfigFieldInformation implements Comparable<ConfigFieldInformation> {
 
     /**
      * The identifier of the config object.
      * Uses a dotted annotation for nested objects.
      */
-    private final String identifier;
+    @With
+    String identifier;
     /**
      * The name of the actual field inside the class.
      */
-    private final String name;
-    private final Class<?> type;
-    private int position = -1;
-    private String[] description = new String[0];
-    private Object defaultValue;
-    private boolean required = false;
-
-    public ConfigFieldInformation copyOf(String identifier) {
-        ConfigFieldInformation newInformation = new ConfigFieldInformation(identifier, getName(), getType());
-        newInformation.setPosition(getPosition());
-        newInformation.setDescription(getDescription());
-        newInformation.setDefaultValue(getDefaultValue());
-        newInformation.setRequired(isRequired());
-
-        return newInformation;
-    }
+    String name;
+    Class<?> type;
+    int position;
+    String[] description;
+    boolean required;
+    Object defaultValue;
 
     @Override
     public int compareTo(ConfigFieldInformation o) {

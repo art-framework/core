@@ -25,10 +25,11 @@ public interface ActionHolder {
     Collection<ActionContext<?>> getActions();
 
     @SuppressWarnings("unchecked")
-    default <TTarget> void executeActions(ExecutionContext<TTarget, ?> executionContext) {
+    default <TTarget> void executeActions(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> executionContext) {
         getActions().stream()
-                .filter(actionContext -> actionContext.isTargetType(executionContext.target()))
+                .filter(actionContext -> actionContext.isTargetType(target))
                 .map(actionContext -> (ActionContext<TTarget>) actionContext)
-                .forEach(executionContext::execute);
+                .forEach(action -> action.execute(target, executionContext.next(action)));
+
     }
 }

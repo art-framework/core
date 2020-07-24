@@ -31,7 +31,7 @@ public class PreActionExecutionEvent<TTarget> extends ExecutionContextEvent<Acti
 
     private boolean cancelled;
 
-    public PreActionExecutionEvent(ArtObject artObject, ExecutionContext<TTarget, ActionContext<TTarget>> executionContext) {
+    public PreActionExecutionEvent(ArtObject artObject, ExecutionContext<ActionContext<TTarget>> executionContext) {
         super(artObject, executionContext);
     }
 

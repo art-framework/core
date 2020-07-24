@@ -47,21 +47,5 @@ public interface Requirement<TTarget> extends ArtObject {
      * @param context the context that holds the config and context of the check
      * @return false if the check fails and the filter should be applied or true if all checks pass and no filtering should be applied.
      */
-    TestResult test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context);
-
-    default TestResult resultOf(boolean result, String... reasons) {
-        return result ? success() : failure(reasons);
-    }
-
-    default TestResult success() {
-        return TestResult.success();
-    }
-
-    default TestResult failure(String... reasons) {
-        return TestResult.failure();
-    }
-
-    default TestResult error(ErrorCode errorCode, String... messages) {
-        return TestResult.error(errorCode, messages);
-    }
+    Result test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context);
 }
