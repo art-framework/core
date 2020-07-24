@@ -23,31 +23,35 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
 
-public interface TestResult extends ArtResult {
+public interface TestResult {
 
-    static <TTarget> TargetedTestResult<TTarget> of(Target<TTarget> target, Result result) {
+    static <TTarget> TargetedTestResult<TTarget> of(Target<TTarget> target, ResultStatus result) {
         return TargetedTestResult.of(target, result);
     }
 
-    static TestResult of(Result result) {
+    static TestResult of(ResultStatus result) {
         return new DefaultTestResult(result);
     }
 
     static TestResult success() {
-        return of(Result.SUCCESS);
+        return of(ResultStatus.SUCCESS);
+    }
+
+    static TestResult empty() {
+        return of(ResultStatus.EMPTY);
     }
 
     static TestResult failure(String... reasons) {
-        return new DefaultTestResult(Result.FAILURE, reasons, null);
+        return new DefaultTestResult(ResultStatus.FAILURE, reasons, null);
     }
 
     static TestResult error(ErrorCode errorCode, String... reasons) {
-        return new DefaultTestResult(Result.ERROR, null, reasons);
+        return new DefaultTestResult(ResultStatus.ERROR, null, reasons);
     }
 
-    Result getResult();
+    ResultStatus getResult();
 
-    Map<Target<?>, Result> getResults();
+    Map<Target<?>, ResultStatus> getResults();
 
     boolean isSuccessful();
 
@@ -69,43 +73,6 @@ public interface TestResult extends ArtResult {
      */
     TestResult combine(@NonNull TestResult result);
 
-    <TTarget> TestResult combine(@NonNull Target<TTarget> target);
+    <TTarget> TestResult addTarget(@NonNull Target<TTarget> target);
 
-    enum Result {
-        /**
-         * The requirement(s) were all successfully checked.
-         * This will only be the case if all underlying requirements AND target checks are successful.
-         */
-        SUCCESS,
-        /**
-         * One of the requirements was not successfully checked.
-         * <p>
-         * As soon as anyone of the underlying requirement checks fails, the whole TestResult fails.
-         * You can get the failure reasons with {@link #getFailureReasons()}.
-         * <p>
-         * You can still get the individual results for each target by calling {@link #forTarget(Target)#getResult()}
-         * and the result for all underlying requirements by calling {@link #getResults()}.
-         */
-        FAILURE,
-        /**
-         * Any of the requirement checks had an error.
-         * <p>
-         * When any of the checks for any requirement and any target errors the whole TestResult will be in an error state.
-         * You can get the error reasons with {@link #getErrorReasons()}.
-         * <p>
-         * You can still check the outcome for each target by calling {@link #forTarget(Target)}.
-         */
-        ERROR;
-
-        public Result combine(Result result) {
-
-            if (this == ERROR || result == ERROR) {
-                return ERROR;
-            } else if (this == FAILURE || result == FAILURE) {
-                return FAILURE;
-            }
-
-            return SUCCESS;
-        }
-    }
 }

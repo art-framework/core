@@ -19,6 +19,7 @@ package net.silthus.art.events;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import net.silthus.art.ResultStatus;
 import net.silthus.art.Target;
 import net.silthus.art.TargetedTestResult;
 
@@ -32,22 +33,22 @@ public class DefaultTargetedTestResult<TTarget> extends DefaultTestResult implem
     private final Target<TTarget> target;
     private final Class<TTarget> targetClass;
 
-    public DefaultTargetedTestResult(@NonNull Result result, Target<TTarget> target) {
+    public DefaultTargetedTestResult(@NonNull ResultStatus result, Target<TTarget> target) {
         this(result, target, null, null);
     }
 
     @SuppressWarnings("unchecked")
-    public DefaultTargetedTestResult(@NonNull Result result, Target<TTarget> target, @Nullable String[] failureReasons, @Nullable String[] errorReasons) {
+    public DefaultTargetedTestResult(@NonNull ResultStatus result, Target<TTarget> target, @Nullable String[] failureReasons, @Nullable String[] errorReasons) {
         super(result, target, failureReasons, errorReasons);
         this.target = target;
         this.targetClass = (Class<TTarget>) target.getSource().getClass();
     }
 
-    public DefaultTargetedTestResult(@NonNull Result result, Class<TTarget> targetClass) {
+    public DefaultTargetedTestResult(@NonNull ResultStatus result, Class<TTarget> targetClass) {
         this(result, targetClass, null, null);
     }
 
-    public DefaultTargetedTestResult(@NonNull Result result, Class<TTarget> targetClass, @Nullable String[] failureReasons, @Nullable String[] errorReasons) {
+    public DefaultTargetedTestResult(@NonNull ResultStatus result, Class<TTarget> targetClass, @Nullable String[] failureReasons, @Nullable String[] errorReasons) {
         super(result, failureReasons, errorReasons);
         this.target = null;
         this.targetClass = targetClass;

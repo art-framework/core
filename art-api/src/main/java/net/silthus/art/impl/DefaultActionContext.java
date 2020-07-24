@@ -75,17 +75,15 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
     @Override
     @SuppressWarnings("unchecked")
-    public void execute(ExecutionContext<TTarget, ActionContext<TTarget>> context) {
+    public Result execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
 
         if (ART.callEvent(new PreActionExecutionEvent<>(getAction(), context)).isCancelled()) {
             return;
         }
 
-        Target<TTarget> target = context.target();
-
         if (!isTargetType(target)) return;
         if (cannotExecute(target)) return;
-        if (!testRequirements(context)) return;
+        if (!testRequirements(context).isSuccessful()) return;
 
         Runnable runnable = () -> {
 
@@ -93,7 +91,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
                 return;
             }
 
-            context.execute(this, getAction());
+            getAction().execute(target, context);
 
             ART.callEvent(new ActionExecutedEvent<>(getAction(), context));
 
@@ -102,7 +100,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
             getActions().stream()
                     .filter(actionContext -> actionContext.isTargetType(target))
                     .map(actionContext -> (ActionContext<TTarget>) actionContext)
-                    .forEach(context::execute);
+                    .forEach(action -> action.execute(target, context.next(action)));
         };
 
         long delay = getConfig().getDelay();

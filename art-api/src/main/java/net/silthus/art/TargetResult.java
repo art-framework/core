@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package net.silthus.art.events;
+package net.silthus.art;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import net.silthus.art.ArtObject;
-import net.silthus.art.ArtObjectContext;
-import net.silthus.art.ExecutionContext;
+/**
+ * The ArtResult holds several other results and combines them into a single result.
+ */
+public interface TargetResult<TTarget, TArtObject extends ArtObject> extends Result {
 
-@Getter
-@EqualsAndHashCode(callSuper = true)
-public abstract class ExecutionContextEvent<TArtObject extends ArtObject, TContext extends ArtObjectContext<TArtObject>> extends ArtObjectEvent<ArtObject> {
+    Target<TTarget> getTarget();
 
-    private final ExecutionContext<TContext> executionContext;
-
-    public ExecutionContextEvent(ArtObject artObject, ExecutionContext<TContext> executionContext) {
-        super(artObject);
-        this.executionContext = executionContext;
-    }
-
+    ArtInformation<TArtObject> getArtInformation();
 }

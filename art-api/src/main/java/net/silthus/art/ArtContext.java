@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 // TODO: javadoc
-public interface ArtContext extends Context, AutoCloseable {
+public interface ArtContext extends Context, AutoCloseable, ResultCreator {
 
     ///
     /// ART instance related methods
@@ -82,7 +82,7 @@ public interface ArtContext extends Context, AutoCloseable {
      * @return true if all requirement checks and filter pass or if the list of requirements is empty (after filtering the target type).
      * false if any filter or requirement check fails.
      */
-    <TTarget> boolean test(@NonNull Target<TTarget> target);
+    <TTarget> CombinedResult test(@NonNull Target<TTarget> target);
 
     /**
      * Wraps the given target into a {@link Target} and then calls {@link #test(Target)}.
@@ -93,8 +93,10 @@ public interface ArtContext extends Context, AutoCloseable {
      * @return result of {@link #test(Target)} or false if no {@link Target} wrapper exists
      * @see #test(Target)
      */
-    default <TTarget> boolean test(@NonNull TTarget target) {
-        return Target.of(target).map(this::test).orElse(false);
+    default <TTarget> CombinedResult test(@NonNull TTarget target) {
+        return Target.of(target)
+                .map(this::test)
+                .orElse(CombinedResult.of(empty("Target of type " + target.getClass().getSimpleName() + " not found.")));
     }
 
     /**
@@ -107,7 +109,7 @@ public interface ArtContext extends Context, AutoCloseable {
      * @param target    target to execute actions against. Can be null.
      * @param <TTarget> type of the target
      */
-    <TTarget> void execute(@NonNull Target<TTarget> target);
+    <TTarget> CombinedResult execute(@NonNull Target<TTarget> target);
 
     /**
      * Wraps the given target into a {@link Target} and then calls {@link #execute(Target)}.
@@ -116,8 +118,10 @@ public interface ArtContext extends Context, AutoCloseable {
      * @param target    target to execute actions for
      * @param <TTarget> type of the target
      */
-    default <TTarget> void execute(@NonNull TTarget target) {
-        Target.of(target).ifPresent(this::execute);
+    default <TTarget> CombinedResult execute(@NonNull TTarget target) {
+        return Target.of(target)
+                .map(this::execute)
+                .orElse(CombinedResult.of(empty("Target of type " + target.getClass().getSimpleName() + " not found.")));
     }
     /**
      * Listens on all {@link Trigger}s in the {@link ArtContext} for the given target type.

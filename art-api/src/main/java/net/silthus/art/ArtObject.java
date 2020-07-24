@@ -16,6 +16,5 @@
 
 package net.silthus.art;
 
-public interface ArtObject {
-
+public interface ArtObject extends ResultCreator {
 }

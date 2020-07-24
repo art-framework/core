@@ -25,20 +25,20 @@ public interface RequirementHolder {
     Collection<RequirementContext<?>> getRequirements();
 
     @SuppressWarnings("unchecked")
-    default <TTarget> TestResult testRequirements(ExecutionContext<?> executionContext) {
-        TestResult testResult = TestResult.success();
+    default <TTarget> CombinedResult testRequirements(ExecutionContext<?> executionContext) {
+        CombinedResult result = CombinedResult.empty();
 
         for (Target<?> target : executionContext.getTargets()) {
-            testResult = testResult.combine(getRequirements().stream()
+            result = result.combine(getRequirements().stream()
                     .filter(requirementContext -> requirementContext.isTargetType(target))
                     .map(requirementContext -> (RequirementContext<TTarget>) requirementContext)
                     .map(executionContext::next)
                     .map(context -> context.current().test((Target<TTarget>) target, context))
-                    .map(result -> result.combine(target))
-                    .reduce(TestResult::combine)
-                    .orElse(testResult));
+                    .map(CombinedResult::of)
+                    .reduce(CombinedResult::combine)
+                    .orElse(CombinedResult.of(Result.empty())));
         }
 
-        return testResult;
+        return result;
     }
 }

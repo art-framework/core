@@ -24,6 +24,7 @@ import net.silthus.art.*;
 import net.silthus.art.conf.ArtSettings;
 
 import java.util.*;
+import java.util.function.Function;
 
 import static net.silthus.art.util.ReflectionUtil.getEntryForTarget;
 
@@ -59,34 +60,32 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     }
 
     @Override
-    public <TTarget> boolean test(@NonNull Target<TTarget> target) {
+    public <TTarget> CombinedResult test(@NonNull Target<TTarget> target) {
 
         return test(ExecutionContext.of(getConfiguration(), this, target));
     }
 
     @SuppressWarnings("unchecked")
-    private <TTarget> boolean test(ExecutionContext<TTarget, ?> executionContext) {
+    private <TTarget> CombinedResult test(Target<TTarget> target, ExecutionContext<?> executionContext) {
 
-        return getArtContexts().stream()
-                .filter(context -> context.isTargetType(executionContext.target()))
-                .filter(requirement -> requirement instanceof RequirementContext)
-                .map(requirement -> (RequirementContext<TTarget>) requirement)
-                .allMatch(executionContext::test);
+        return executeContext(target, RequirementContext.class, requirementContext ->
+                requirementContext.test(target, executionContext.next(requirementContext)),
+                getArtContexts()
+        );
     }
 
     @Override
-    public <TTarget> void execute(@NonNull Target<TTarget> target) {
+    public <TTarget> CombinedResult execute(@NonNull Target<TTarget> target) {
 
-        execute(ExecutionContext.of(getConfiguration(), this, target));
+        return execute(ExecutionContext.of(getConfiguration(), this, target));
     }
 
     @SuppressWarnings("unchecked")
-    private <TTarget> void execute(ExecutionContext<TTarget, ?> executionContext) {
-        getArtContexts().stream()
-                .filter(context -> context.isTargetType(executionContext.target()))
-                .filter(action -> action instanceof ActionContext)
-                .map(action -> (ActionContext<TTarget>) action)
-                .forEach(executionContext::execute);
+    private <TTarget> CombinedResult execute(Target<TTarget> target, ExecutionContext<?> executionContext) {
+        return executeContext(target, ActionContext.class, actionContext ->
+                actionContext.execute(target, executionContext.next(actionContext)),
+                getArtContexts()
+        );
     }
 
     @Override
@@ -98,21 +97,39 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     }
 
     @Override
-    public void onTrigger(ExecutionContext<Object, TriggerContext> context) {
-        if (isAutoTrigger() && test(context)) {
-            if (settings().isExecuteActions()) execute(context);
+    public void onTrigger(Target<Object>[] targets, ExecutionContext<TriggerContext> context) {
+        if (!isAutoTrigger()) return;
 
-            callListeners(context);
+        List<Target<?>> successfulTargets = new ArrayList<>();
+
+        for (Target<Object> target : targets) {
+            if (test(target, context).isSuccess()) {
+                if (settings.isExecuteActions()) execute(target, context);
+
+                successfulTargets.add(target);
+            }
         }
+
+        callListeners(successfulTargets, context);
+
     }
 
     @SuppressWarnings("unchecked")
-    private <TTarget> void callListeners(ExecutionContext<TTarget, TriggerContext> context) {
-        getEntryForTarget(context.getTarget(), triggerListeners)
+    private void callListeners(List<Target<?>> targets, ExecutionContext<TriggerContext> context) {
+
+        // TODO: gather same targets and callTargetListeners
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TTarget> void callTargetListeners(List<Target<TTarget>> targets, ExecutionContext<TriggerContext> context) {
+
+        if (targets.isEmpty()) return;
+
+        getEntryForTarget(targets.get(0), triggerListeners)
                 .orElse(new ArrayList<>())
                 .stream()
                 .map(listener -> (TriggerListener<TTarget>) listener)
-                .forEach(triggerListener -> triggerListener.onTrigger(context));
+                .forEach(triggerListener -> triggerListener.onTrigger(targets.toArray(new Target[0]), context));
     }
 
     @Override
@@ -137,5 +154,22 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
                 .filter(artObjectContext -> artObjectContext instanceof TriggerContext)
                 .map(artObjectContext -> (TriggerContext) artObjectContext)
                 .forEach(context -> context.removeListener(this));
+    }
+
+    @SuppressWarnings("unchecked")
+    protected final <TTarget, TContext> CombinedResult executeContext(
+            Target<TTarget> target,
+            Class<TContext> contextClass,
+            Function<TContext, Result> function,
+            Collection<ArtObjectContext<?>> contexts)
+    {
+        return contexts.stream()
+                .filter(contextClass::isInstance)
+                .filter(artObjectContext -> artObjectContext.isTargetType(target))
+                .map(artObjectContext -> (TContext) artObjectContext)
+                .map(function)
+                .map(CombinedResult::of)
+                .reduce(CombinedResult::combine)
+                .orElse(CombinedResult.of(empty()));
     }
 }

@@ -62,7 +62,7 @@ public class DefaultTriggerProvider extends AbstractArtFactoryProvider<TriggerFa
     }
 
     @Override
-    public TriggerResult trigger(String identifier, Predicate<ExecutionContext<?, TriggerContext>> predicate, Target<?>... targets) {
+    public TriggerResult trigger(String identifier, Predicate<ExecutionContext<TriggerContext>> predicate, Target<?>... targets) {
         return null;
     }
 

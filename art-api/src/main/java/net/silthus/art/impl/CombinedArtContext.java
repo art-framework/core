@@ -18,6 +18,7 @@ package net.silthus.art.impl;
 
 import lombok.NonNull;
 import net.silthus.art.ArtContext;
+import net.silthus.art.CombinedResult;
 import net.silthus.art.Target;
 
 import java.util.*;
@@ -41,13 +42,19 @@ public final class CombinedArtContext extends DefaultArtContext implements ArtCo
     }
 
     @Override
-    public final <TTarget> boolean test(@NonNull Target<TTarget> target) {
-        return contextSet.stream().allMatch(artContext -> artContext.test(target));
+    public final <TTarget> CombinedResult test(@NonNull Target<TTarget> target) {
+        return contextSet.stream()
+                .map(artContext -> artContext.test(target))
+                .reduce(CombinedResult::combine)
+                .orElse(CombinedResult.of(empty()));
     }
 
     @Override
-    public final <TTarget> void execute(@NonNull Target<TTarget> target) {
-        contextSet.forEach(artContext -> artContext.execute(target));
+    public final <TTarget> CombinedResult execute(@NonNull Target<TTarget> target) {
+        return contextSet.stream()
+                .map(artContext -> artContext.execute(target))
+                .reduce(CombinedResult::combine)
+                .orElse(CombinedResult.of(empty()));
     }
 
     @Override

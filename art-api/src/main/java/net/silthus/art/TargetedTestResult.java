@@ -22,11 +22,11 @@ import java.util.Optional;
 
 public interface TargetedTestResult<TTarget> extends TestResult {
 
-    static <TTarget> TargetedTestResult<TTarget> of(Target<TTarget> target, Result result) {
+    static <TTarget> TargetedTestResult<TTarget> of(Target<TTarget> target, ResultStatus result) {
         return new DefaultTargetedTestResult<>(result, target);
     }
 
-    static <TTarget> TargetedTestResult<TTarget> of(Class<TTarget> targetClass, Result result) {
+    static <TTarget> TargetedTestResult<TTarget> of(Class<TTarget> targetClass, ResultStatus result) {
         return new DefaultTargetedTestResult<>(result, targetClass);
     }
 

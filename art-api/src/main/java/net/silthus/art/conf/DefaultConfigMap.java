@@ -122,7 +122,7 @@ public final class DefaultConfigMap implements ConfigMap {
                 Field parentField = config.getClass().getDeclaredField(nestedIdentifier);
                 parentField.setAccessible(true);
                 Object nestedConfigObject = parentField.get(config);
-                setConfigField(nestedConfigObject, fieldInformation.copyOf(nestedIdentifier), value);
+                setConfigField(nestedConfigObject, fieldInformation.withIdentifier(nestedIdentifier), value);
             } else {
                 Field field = config.getClass().getDeclaredField(fieldInformation.getName());
                 field.setAccessible(true);

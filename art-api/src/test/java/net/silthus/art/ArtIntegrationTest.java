@@ -131,6 +131,13 @@ public class ArtIntegrationTest {
                 assertThat(ART.trigger().get("damage"))
                         .isNotEmpty();
             }
+
+            @Test
+            void name() {
+
+                ArtContext context = ArtBuilder.DEFAULT.build();
+
+            }
         }
     }
 }

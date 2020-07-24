@@ -29,7 +29,7 @@ import net.silthus.art.ExecutionContext;
 @EqualsAndHashCode(callSuper = true)
 public class ActionExecutedEvent<TTarget> extends ExecutionContextEvent<Action<TTarget>, ActionContext<TTarget>> {
 
-    public ActionExecutedEvent(ArtObject artObject, ExecutionContext<TTarget, ActionContext<TTarget>> executionContext) {
+    public ActionExecutedEvent(ArtObject artObject, ExecutionContext<ActionContext<TTarget>> executionContext) {
         super(artObject, executionContext);
     }
 
