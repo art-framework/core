@@ -23,16 +23,16 @@ import java.util.function.BiPredicate;
 
 public interface Trigger extends ArtObject {
 
-    default void trigger(String identifier, TriggerTarget<?>... targets) {
-
+    default CombinedResult trigger(String identifier, TriggerTarget<?>... targets) {
+        return ART.trigger(identifier, targets);
     }
 
-    default void trigger(String identifier, Target<?>... targets) {
-        ART.trigger(identifier, targets);
+    default CombinedResult trigger(String identifier, Target<?>... targets) {
+        return ART.trigger(identifier, targets);
     }
 
-    default void trigger(String identifier, Object... targets) {
-        trigger(identifier, Arrays.stream(targets)
+    default CombinedResult trigger(String identifier, Object... targets) {
+        return trigger(identifier, Arrays.stream(targets)
                 .map(Target::of)
                 .filter(Optional::isPresent)
                 .map(Optional::get)

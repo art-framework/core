@@ -18,12 +18,12 @@ package net.silthus.art.impl;
 
 import lombok.NonNull;
 import net.silthus.art.*;
+import net.silthus.art.events.TriggerEvent;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
-import java.util.function.Predicate;
 
-public class DefaultTriggerProvider extends AbstractArtFactoryProvider<TriggerFactory> implements TriggerProvider {
+public class DefaultTriggerProvider extends AbstractArtFactoryProvider<TriggerFactory> implements TriggerProvider, CombinedResultCreator {
 
     public DefaultTriggerProvider(Configuration configuration) {
         super(configuration);
@@ -56,18 +56,23 @@ public class DefaultTriggerProvider extends AbstractArtFactoryProvider<TriggerFa
     }
 
     @Override
-    public TriggerResult trigger(String identifier, Target<?>... targets) {
-        if (!exists(identifier)) return TriggerResult.failure(ErrorCode.IDENTIFIER_NOT_FOUND);
-        return null;
+    public CombinedResult trigger(String identifier, TriggerTarget<?>... targets) {
+        if (!exists(identifier)) return error("Trigger with identifier '" + identifier + "' does not exist.");
+
+        TriggerEvent triggerEvent = ART.callEvent(new TriggerEvent(identifier, targets));
+
+        if (triggerEvent.isCancelled()) return cancelled();
+
+        return success();
     }
 
     @Override
-    public TriggerResult trigger(String identifier, Predicate<ExecutionContext<TriggerContext>> predicate, Target<?>... targets) {
-        return null;
-    }
-
-    @Override
+    @SuppressWarnings("unchecked")
     public ArtProvider addAll(Collection<ArtInformation<?>> artObjects) {
-        return null;
+        artObjects.stream()
+                .filter(artInformation -> Trigger.class.isAssignableFrom(artInformation.getArtObjectClass()))
+                .map(artInformation -> (ArtInformation<Trigger>) artInformation)
+                .forEach(this::add);
+        return this;
     }
 }

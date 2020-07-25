@@ -26,7 +26,7 @@ import net.silthus.art.impl.DefaultActionContext;
  *
  * @param <TTarget> type of the target
  */
-public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContext<Action<TTarget>>, RequirementHolder, ActionHolder {
+public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContext<Action<TTarget>>, RequirementHolder, ActionHolder, FutureResultCreator {
 
     static <TTarget> ActionContext<TTarget> of(
             @NonNull Configuration configuration,
@@ -43,4 +43,11 @@ public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContex
      * @return config of this context
      */
     ActionConfig getConfig();
+
+    @Override
+    FutureResult execute(@NonNull Target<TTarget> target, @NonNull ExecutionContext<ActionContext<TTarget>> context);
+
+    default FutureResult of(CombinedResult result) {
+        return FutureResult.of(result);
+    }
 }

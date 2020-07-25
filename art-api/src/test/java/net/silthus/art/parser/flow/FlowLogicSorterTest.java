@@ -31,8 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.*;
 
 class FlowLogicSorterTest {
 
@@ -52,7 +51,9 @@ class FlowLogicSorterTest {
     }
 
     private TriggerContext trigger() {
-        return spy(TriggerContext.of(mock(Configuration.class), mock(ArtInformation.class), mock(TriggerConfig.class)));
+        Configuration configuration = mock(Configuration.class);
+        when(configuration.events()).thenReturn(mock(EventProvider.class));
+        return spy(TriggerContext.of(configuration, mock(ArtInformation.class), mock(TriggerConfig.class)));
     }
 
     @Nested

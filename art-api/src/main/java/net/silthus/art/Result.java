@@ -49,7 +49,7 @@ public interface Result {
      * @param messages additional messages of the result
      * @return the created result
      */
-    static Result of(@NonNull boolean result, @NonNull String... messages) {
+    static Result of(boolean result, @NonNull String... messages) {
         return of(result ? ResultStatus.SUCCESS : ResultStatus.FAILURE, messages);
     }
 
@@ -98,6 +98,19 @@ public interface Result {
     }
 
     /**
+     * Creates a new cancelled result.
+     * A result may be cancelled by events or user actions.
+     * <p>
+     * You can optionally pass some messages you want to send to the user.
+     *
+     * @param messages additional messages of the result
+     * @return the created result
+     */
+    static Result cancelled(String... messages) {
+        return of(ResultStatus.CANCELLED, messages);
+    }
+
+    /**
      * Creates a result that has an error from an exception.
      * The message of the exception will automatically be included in the messages of the result.
      * <p>
@@ -130,6 +143,17 @@ public interface Result {
      */
     default boolean isSuccess() {
         return getStatus().isSuccess();
+    }
+
+    /**
+     * Returns true if the result is a failure.
+     * <p>
+     * This is the direct opposite to {@link #isSuccess()}.
+     *
+     * @return true if the result is a failure
+     */
+    default boolean isFailure() {
+        return !getStatus().isSuccess();
     }
 
     /**

@@ -23,15 +23,15 @@ import java.util.Collection;
 
 public interface CombinedResult extends Result {
 
-    static CombinedResult empty() {
-        return new DefaultCombinedResult();
+    static CombinedResult empty(String... messages) {
+        return of(Result.empty(messages));
     }
 
     static CombinedResult of(Result... results) {
         return new DefaultCombinedResult(Arrays.asList(results));
     }
 
-    Collection<TargetResult<?, ?>> getResults();
+    Collection<Result> getResults();
 
     <TTarget> Collection<TargetResult<TTarget, ?>> getTargetResults(Target<TTarget> target);
 

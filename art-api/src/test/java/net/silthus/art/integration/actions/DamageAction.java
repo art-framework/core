@@ -31,8 +31,11 @@ public class DamageAction implements Action<Player> {
     private final int damage = 20;
 
     @Override
-    public void execute(@NonNull ExecutionContext<Player, ActionContext<Player>> context) {
-        Player player = context.getTarget();
+    public Result execute(@NonNull Target<Player> target, @NonNull ExecutionContext<ActionContext<Player>> context) {
+        Player player = target.getSource();
+
         player.setHealth(player.getHealth() - damage);
+
+        return success();
     }
 }
