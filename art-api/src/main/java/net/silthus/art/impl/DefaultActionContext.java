@@ -25,6 +25,7 @@ import net.silthus.art.conf.Constants;
 import net.silthus.art.events.ActionExecutedEvent;
 import net.silthus.art.events.ActionExecutionEvent;
 import net.silthus.art.events.PreActionExecutionEvent;
+import net.silthus.art.util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,19 +76,24 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
     @Override
     @SuppressWarnings("unchecked")
-    public Result execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
+    public FutureResult execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
 
         if (ART.callEvent(new PreActionExecutionEvent<>(getAction(), context)).isCancelled()) {
-            return;
+            return cancelled();
         }
 
-        if (!isTargetType(target)) return;
-        if (cannotExecute(target)) return;
-        if (!testRequirements(context).isSuccessful()) return;
+        if (!isTargetType(target)) return empty();
+        FutureResult executionTest = testExecution(target);
+        if (executionTest.isFailure()) return executionTest;
+        CombinedResult requirementTest = testRequirements(context);
+        if (requirementTest.isFailure()) return of(requirementTest);
+
+        final FutureResult result = empty();
 
         Runnable runnable = () -> {
 
             if (ART.callEvent(new ActionExecutionEvent<>(getAction(), context)).isCancelled()) {
+                result.complete(cancelled());
                 return;
             }
 
@@ -97,10 +103,14 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
             store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
-            getActions().stream()
+            FutureResult futureResult = getActions().stream()
                     .filter(actionContext -> actionContext.isTargetType(target))
                     .map(actionContext -> (ActionContext<TTarget>) actionContext)
-                    .forEach(action -> action.execute(target, context.next(action)));
+                    .map(action -> action.execute(target, context.next(action)))
+                    .reduce(FutureResult::combine)
+                    .orElse(result);
+
+            result.complete(futureResult);
         };
 
         long delay = getConfig().getDelay();
@@ -110,6 +120,8 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
         } else {
             runnable.run();
         }
+
+        return result;
     }
 
     /**
@@ -119,9 +131,15 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
      * @param target target to check
      * @return true if action was already executed and should only execute once
      */
-    public boolean wasExecutedOnce(Target<TTarget> target) {
+    public FutureResult testExecutedOnce(Target<TTarget> target) {
 
-        return getConfig().isExecuteOnce() && getLastExecution(target) > 0;
+        if (!getConfig().isExecuteOnce()) return empty();
+
+        if (getLastExecution(target) > 0) {
+            return failure("Action can only be executed once and was already executed.");
+        } else {
+            return success();
+        }
     }
 
     /**
@@ -129,21 +147,28 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
      * Will always return false if no cooldown is defined (set to zero).
      *
      * @param target target to check
-     * @return true if action is on cooldown
+     * @return a successful result if the action is not on cooldown a failure otherwise
      */
-    public boolean isOnCooldown(Target<TTarget> target) {
+    public FutureResult testCooldown(Target<TTarget> target) {
         long cooldown = getConfig().getCooldown();
-        if (cooldown < 1) return false;
+        if (cooldown < 1) return empty();
 
         long lastExecution = getLastExecution(target);
 
-        if (lastExecution < 1) return false;
+        if (lastExecution < 1) return success();
 
-        return System.currentTimeMillis() < lastExecution + cooldown;
+        long remainingCooldown = (lastExecution + cooldown) - System.currentTimeMillis();
+
+        if (remainingCooldown > 0) {
+            return failure("Action is still on cooldown. "
+                    + TimeUtil.getAccurrateShortFormatedTime(remainingCooldown) + " are remaining.");
+        } else {
+            return success();
+        }
     }
 
-    private boolean cannotExecute(Target<TTarget> target) {
-        return wasExecutedOnce(target) || isOnCooldown(target);
+    private FutureResult testExecution(Target<TTarget> target) {
+        return testExecutedOnce(target).combine(testCooldown(target));
     }
 
     private long getLastExecution(Target<TTarget> target) {

@@ -25,6 +25,13 @@ public enum ResultStatus {
      */
     EMPTY,
     /**
+     * The check or execution was cancelled.
+     * <p>
+     * This most likely happened thru an event that was cancelled by a user.
+     * Cancelled results will be considered a <code>FAILURE</code> but only if all results are cancelled.
+     */
+    CANCELLED,
+    /**
      * The requirement(s) were all successfully checked.
      * This will only be the case if all underlying requirements AND target checks are successful.
      */
@@ -32,20 +39,13 @@ public enum ResultStatus {
     /**
      * One of the requirements was not successfully checked.
      * <p>
-     * As soon as anyone of the underlying requirement checks fails, the whole TestResult fails.
-     * You can get the failure reasons with {@link #getFailureReasons()}.
-     * <p>
-     * You can still get the individual results for each target by calling {@link #forTarget(Target)#getResult()}
-     * and the result for all underlying requirements by calling {@link #getResults()}.
+     * As soon as anyone of the underlying requirement checks fails, the whole result fails.
      */
     FAILURE,
     /**
      * Any of the requirement checks had an error.
      * <p>
-     * When any of the checks for any requirement and any target errors the whole TestResult will be in an error state.
-     * You can get the error reasons with {@link #getErrorReasons()}.
-     * <p>
-     * You can still check the outcome for each target by calling {@link #forTarget(Target)}.
+     * When any of the checks for any requirement and any target errors the whole result will be in an error state.
      */
     ERROR;
 
@@ -57,6 +57,8 @@ public enum ResultStatus {
             return FAILURE;
         } else if (this == EMPTY && result == EMPTY) {
             return EMPTY;
+        } else if (this == CANCELLED && result == CANCELLED) {
+            return CANCELLED;
         }
 
         return SUCCESS;

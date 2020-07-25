@@ -30,7 +30,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
-class RequirementHolderTest {
+class RequirementHolderTest implements CombinedResultCreator {
 
     private RequirementHolder requirementHolder;
     private Collection<RequirementContext<?>> requirements;
@@ -45,7 +45,7 @@ class RequirementHolderTest {
                 .when(requirementHolder).addRequirement(any());
     }
 
-    private <TTarget> RequirementContext<TTarget> requirement(Class<TTarget> targetClass, TestResult result) {
+    private <TTarget> RequirementContext<TTarget> requirement(Class<TTarget> targetClass, CombinedResult result) {
         RequirementContext<TTarget> context = mock(RequirementContext.class);
         when(context.isTargetType(any())).thenAnswer(invocation -> targetClass.isInstance(invocation.getArgument(0)));
         when(context.getTargetClass()).thenReturn((Class) targetClass);
@@ -79,15 +79,17 @@ class RequirementHolderTest {
     @DisplayName("should filter out requirements that do not match the target")
     void shouldFilterOutRequirementsThatDoNotMatchTheTarget() {
 
-        requirements.add(requirement(String.class, TestResult.success()));
-        requirements.add(requirement(Integer.class, TestResult.failure()));
+        requirements.add(requirement(String.class, success()));
+        requirements.add(requirement(Integer.class, failure()));
 
         Target<String> target = target(String.class);
-        TestResult result = requirementHolder.testRequirements(executionContext(target));
+        CombinedResult result = requirementHolder.testRequirements(executionContext(target));
 
-        assertThat(result.getResult()).isEqualTo(ResultStatus.SUCCESS);
-        assertThat(result.getResults())
-                .extractingByKey(target)
-                .isEqualTo(ResultStatus.SUCCESS);
+        assertThat(result)
+                .extracting(Result::getStatus, Result::isSuccess)
+                .contains(ResultStatus.SUCCESS, true);
+        assertThat(result.getTargetResults(target))
+                .extracting(Result::getStatus)
+                .contains(ResultStatus.SUCCESS);
     }
 }

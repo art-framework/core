@@ -18,14 +18,17 @@ package net.silthus.art.events;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import net.silthus.art.TriggerTarget;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class TriggerEvent extends Event {
+public class TriggerEvent extends Event implements Cancellable {
 
     private final String identifier;
     private final TriggerTarget<?>[] targets;
+    @Setter
+    private boolean cancelled;
 
     public TriggerEvent(String identifier, TriggerTarget<?>... targets) {
         this.identifier = identifier;

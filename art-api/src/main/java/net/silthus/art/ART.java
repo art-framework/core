@@ -112,7 +112,7 @@ public final class ART {
      * @return the trigger result
      * @see TriggerProvider#trigger(String, TriggerTarget[])
      */
-    public static TriggerResult trigger(String identifier, TriggerTarget<?>... targets) {
+    public static CombinedResult trigger(String identifier, TriggerTarget<?>... targets) {
         return configuration().trigger().trigger(identifier, targets);
     }
 
@@ -126,7 +126,7 @@ public final class ART {
      * @return the trigger result
      * @see TriggerProvider#trigger(String, Target[])
      */
-    public static TriggerResult trigger(String identifier, Target<?>... targets) {
+    public static CombinedResult trigger(String identifier, Target<?>... targets) {
         return configuration().trigger().trigger(identifier, targets);
     }
 

@@ -93,7 +93,7 @@ public interface TriggerProvider extends ArtProvider, ArtFactoryProvider<Trigger
      * @param targets the targets that triggered the given trigger
      * @return the result that contains the outcome of the trigger
      */
-    default TriggerResult trigger(String identifier, Target<?>... targets) {
+    default CombinedResult trigger(String identifier, Target<?>... targets) {
         return trigger(identifier, Arrays.stream(targets)
                 .map(TriggerTarget::new)
                 .toArray(TriggerTarget[]::new));
@@ -113,5 +113,5 @@ public interface TriggerProvider extends ArtProvider, ArtFactoryProvider<Trigger
      * @param targets the trigger targets that wrap a predicate
      * @return the result that contains the outcome of the trigger
      */
-    TriggerResult trigger(String identifier, TriggerTarget<?>... targets);
+    CombinedResult trigger(String identifier, TriggerTarget<?>... targets);
 }

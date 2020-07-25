@@ -50,5 +50,5 @@ public interface RequirementContext<TTarget> extends Requirement<TTarget>, ArtOb
     }
 
     @Override
-    TargetResult<TTarget, Requirement<TTarget>> test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context);
+    CombinedResult test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context);
 }

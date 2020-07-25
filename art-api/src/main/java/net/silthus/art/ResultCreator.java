@@ -41,7 +41,7 @@ public interface ResultCreator {
      * @return the created result
      * @see Result#of(boolean, String...)
      */
-    default Result of(@NonNull boolean result, @NonNull String... messages) {
+    default Result of(boolean result, @NonNull String... messages) {
         return Result.of(result ? ResultStatus.SUCCESS : ResultStatus.FAILURE, messages);
     }
 
@@ -106,5 +106,19 @@ public interface ResultCreator {
      */
     default Result error(Exception exception, String... messages) {
         return Result.error(exception, messages);
+    }
+
+    /**
+     * Creates a new cancelled result.
+     * A result may be cancelled by events or user actions.
+     * <p>
+     * You can optionally pass some messages you want to send to the user.
+     *
+     * @param messages additional messages of the result
+     * @return the created result
+     * @see Result#cancelled(String...)
+     */
+    default Result cancelled(String... messages) {
+        return Result.cancelled(messages);
     }
 }

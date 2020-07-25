@@ -115,7 +115,7 @@ public class ArtIntegrationTest {
                         .isNotEmpty().get()
                         .extracting(ArtFactory::info)
                         .extracting(ArtInformation::getIdentifier, ArtInformation::getAlias, ArtInformation::getArtObjectClass)
-                        .contains("health", new String[]{"hit", "dmg"}, HealthRequirement.class);
+                        .contains("health", new String[0], HealthRequirement.class);
 
             }
 

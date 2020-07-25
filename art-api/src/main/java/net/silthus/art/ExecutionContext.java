@@ -63,7 +63,7 @@ public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends 
      * @return the {@link ArtContext} that initialized the execution tree.
      *          This may be empty if the execution was manually invoked.
      */
-    Optional<Context> getRoot();
+    Optional<Context> root();
 
     /**
      * Gets the parent of this {@link ExecutionContext} that
@@ -72,17 +72,17 @@ public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends 
      * @return the parent that was executed before this context.
      *          May be empty if no parent exists.
      */
-    Optional<ArtObjectContext<?>> getParent();
+    Optional<ArtObjectContext<?>> parent();
 
     /**
      * Gets the full history of this {@link ExecutionContext} ordered
      * from newest to oldest {@link ArtObjectContext}.
-     * This means the first item in the array (index 0) is the {@link #getParent()}
+     * This means the first item in the array (index 0) is the {@link #parent()}
      * of the {@link #current()} context.
      *
      * @return Execution history in a stack sorted format. From newest to oldest.
      */
-    ArtObjectContext<?>[] getHistory();
+    ArtObjectContext<?>[] history();
 
     /**
      * Gets all targets that are linked to this execution context.

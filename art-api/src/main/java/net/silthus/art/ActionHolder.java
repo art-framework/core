@@ -25,7 +25,7 @@ public interface ActionHolder {
     Collection<ActionContext<?>> getActions();
 
     @SuppressWarnings("unchecked")
-    default <TTarget> void executeActions(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> executionContext) {
+    default <TTarget> void executeActions(Target<TTarget> target, ExecutionContext<?> executionContext) {
         getActions().stream()
                 .filter(actionContext -> actionContext.isTargetType(target))
                 .map(actionContext -> (ActionContext<TTarget>) actionContext)

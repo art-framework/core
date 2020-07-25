@@ -16,22 +16,22 @@
 
 package net.silthus.art;
 
-import lombok.Data;
+import lombok.Value;
 
 import java.util.function.BiPredicate;
 
-@Data
-public final class TriggerTarget<TTarget> {
+@Value
+public class TriggerTarget<TTarget> {
 
-    private final Target<TTarget> target;
-    private final BiPredicate<Target<TTarget>, ExecutionContext<TriggerContext>> predicate;
+    Target<TTarget> target;
+    BiPredicate<Target<TTarget>, ExecutionContext<TriggerContext>> predicate;
 
-    TriggerTarget(Target<TTarget> target) {
+    public TriggerTarget(Target<TTarget> target) {
         this.target = target;
         this.predicate = (t, c) -> true;
     }
 
-    TriggerTarget(Target<TTarget> target, BiPredicate<Target<TTarget>, ExecutionContext<TriggerContext>> predicate) {
+    public TriggerTarget(Target<TTarget> target, BiPredicate<Target<TTarget>, ExecutionContext<TriggerContext>> predicate) {
         this.target = target;
         this.predicate = predicate;
     }

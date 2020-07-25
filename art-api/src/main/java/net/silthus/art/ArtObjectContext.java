@@ -27,7 +27,7 @@ import java.util.Optional;
  * a way to access the {@link Configuration} and defines a unique id that will be used
  * to store data for the {@link ArtObject}.
  */
-public interface ArtObjectContext<TArtObject extends ArtObject> extends Context {
+public interface ArtObjectContext<TArtObject extends ArtObject> extends Context, CombinedResultCreator {
 
     /**
      * Gets the unique id of this {@link ArtObject} context.

@@ -53,21 +53,21 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
     }
 
     @Override
-    public TestResult test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context) {
+    public CombinedResult test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context) {
 
-        if (!isTargetType(target.getSource())) return success();
+        if (!isTargetType(target.getSource())) return empty();
 
         if (getConfig().isCheckOnce()) {
             Optional<Boolean> result = store(target, Constants.Storage.CHECK_ONCE_RESULT, Boolean.class);
             if (result.isPresent()) {
-                return resultOf(result.get());
+                return of(result.get());
             }
         }
 
-        TestResult result = requirement.test(target, context);
+        CombinedResult result = of(requirement.test(target, context));
 
         int currentCount = store(target, Constants.Storage.COUNT, Integer.class).orElse(0);
-        if (result.isSuccessful()) {
+        if (result.isSuccess()) {
             store(target, Constants.Storage.COUNT, ++currentCount);
         }
 
@@ -76,11 +76,11 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
         }
 
         if (getConfig().getCount() > 0) {
-            result = resultOf(currentCount >= getConfig().getCount());
+            result = of(currentCount >= getConfig().getCount()).combine(result);
         }
 
         if (getConfig().isNegated()) {
-            switch (result.getResult()) {
+            switch (result.getStatus()) {
                 case FAILURE:
                     return success();
                 case SUCCESS:

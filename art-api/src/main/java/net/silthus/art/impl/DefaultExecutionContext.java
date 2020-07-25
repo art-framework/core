@@ -55,12 +55,12 @@ public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> exten
     }
 
     @Override
-    public Optional<Context> getRoot() {
+    public Optional<Context> root() {
         return Optional.ofNullable(root);
     }
 
     @Override
-    public Optional<ArtObjectContext<?>> getParent() {
+    public Optional<ArtObjectContext<?>> parent() {
         if (container.history.empty()) {
             return Optional.empty();
         }
@@ -68,7 +68,7 @@ public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> exten
     }
 
     @Override
-    public ArtObjectContext<?>[] getHistory() {
+    public ArtObjectContext<?>[] history() {
         return container.history.toArray(new ArtObjectContext[0]);
     }
 

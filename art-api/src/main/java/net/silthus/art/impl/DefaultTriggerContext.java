@@ -84,11 +84,11 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
             for (TriggerTarget<?> target : targets) {
                 if (cannotExecute(target.getTarget())) continue;
 
-                if (target.test(context) && testRequirements(context)) {
+                if (target.test(context) && testRequirements(context).isSuccess()) {
 
                     store(target.getTarget(), Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
-                    if (getConfig().isExecuteActions()) executeActions(context);
+                    if (getConfig().isExecuteActions()) executeActions(target.getTarget(), context);
                 }
             }
 
@@ -106,13 +106,13 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     @SuppressWarnings("unchecked")
     private <TTarget> void callListeners(ExecutionContext<TriggerContext> executionContext) {
         for (Map.Entry<Class<?>, Set<TriggerListener<?>>> entry : listeners.entrySet()) {
-            for (Target<?> target : executionContext.getTargets()) {
-                if (entry.getKey().isAssignableFrom(target.getSource().getClass())) {
-                    entry.getValue().stream()
-                            .map(listener -> (TriggerListener<TTarget>) listener)
-                            .forEach(listener -> listener.onTrigger((Target<TTarget>) target, executionContext));
-                }
-            }
+            Target<TTarget>[] targets = Arrays.stream(executionContext.getTargets())
+                    .filter(target -> entry.getKey().isInstance(target.getSource()))
+                    .toArray(Target[]::new);
+
+            entry.getValue().stream()
+                    .map(listener -> (TriggerListener<TTarget>) listener)
+                    .forEach(listener -> listener.onTrigger(targets, executionContext));
         }
     }
 
