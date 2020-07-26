@@ -47,7 +47,7 @@ public interface ArtObjectContext<TArtObject extends ArtObject> extends Context,
     @NonNull
     Class<?> getTargetClass();
 
-    ArtInformation<TArtObject> info();
+    Options<TArtObject> info();
 
     /**
      * Checks if the target type matches the given object.

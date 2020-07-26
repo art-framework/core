@@ -23,7 +23,7 @@ public interface TriggerFactory extends ArtFactory<TriggerContext, Trigger>
 {
     static TriggerFactory of(
             @NonNull Configuration configuration,
-            @NonNull ArtInformation<Trigger> information
+            @NonNull Options<Trigger> information
     ) {
         return new DefaultTriggerFactory(configuration, information);
     }

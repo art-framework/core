@@ -23,7 +23,7 @@ public interface RequirementFactory<TTarget> extends ArtFactory<RequirementConte
 {
     static <TTarget> RequirementFactory<TTarget> of(
             @NonNull Configuration configuration,
-            @NonNull ArtInformation<Requirement<TTarget>> information
+            @NonNull Options<Requirement<TTarget>> information
     ) {
         return new DefaultRequirementFactory<>(configuration, information);
     }

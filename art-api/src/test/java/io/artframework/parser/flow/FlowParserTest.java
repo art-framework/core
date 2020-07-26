@@ -50,9 +50,9 @@ class FlowParserTest {
             @Override
             protected Optional<ArtFactory<?, ?>> getFactory(String identifier) {
                 ArtFactory<ArtObjectContext<?>, ?> artFactory = mock(ArtFactory.class);
-                ArtInformation artInformation = mock(ArtInformation.class);
-                when(artInformation.getConfigMap()).thenReturn(new HashMap());
-                when(artFactory.options()).thenReturn(artInformation);
+                Options options = mock(Options.class);
+                when(options.configMap()).thenReturn(new HashMap());
+                when(artFactory.options()).thenReturn(options);
                 ArtObjectContext context = mock(ArtObjectContext.class);
                 when(artFactory.create(anyMap())).thenReturn(context);
                 return Optional.of(artFactory);

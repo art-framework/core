@@ -23,5 +23,5 @@ public interface TargetResult<TTarget, TArtObject extends ArtObject> extends Res
 
     Target<TTarget> getTarget();
 
-    ArtInformation<TArtObject> getArtInformation();
+    Options<TArtObject> getOptions();
 }

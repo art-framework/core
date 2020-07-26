@@ -25,6 +25,7 @@ import io.artframework.util.ReflectionUtil;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 
 import javax.annotation.Nullable;
 import javax.annotation.concurrent.Immutable;
@@ -39,8 +40,9 @@ import java.util.Map;
 import java.util.Optional;
 
 @Immutable
+@Accessors(fluent = true)
 @EqualsAndHashCode
-public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtInformation<TArtObject> {
+public class DefaultOptions<TArtObject extends ArtObject> implements Options<TArtObject> {
 
     @Getter
     private final Class<TArtObject> artObjectClass;
@@ -57,7 +59,7 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
 
     private Method[] methods;
 
-    private DefaultArtInformation(
+    private DefaultOptions(
             @NonNull Class<TArtObject> artObjectClass,
             @NonNull String identifier,
             @NonNull String[] description,
@@ -79,7 +81,7 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
         this.initialized = true;
     }
 
-    public DefaultArtInformation(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) {
+    public DefaultOptions(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) {
         this.artObjectClass = artObjectClass;
         this.location = artObjectClass.getProtectionDomain().getCodeSource().getLocation();
         this.artObjectProvider = provider;
@@ -95,20 +97,20 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
         this.initialized = false;
     }
 
-    public DefaultArtInformation(@NonNull Class<TArtObject> artObjectClass, Method... methods) {
+    public DefaultOptions(@NonNull Class<TArtObject> artObjectClass, Method... methods) {
         this(artObjectClass, null, methods);
     }
 
-    public DefaultArtInformation(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> artObjectProvider) {
+    public DefaultOptions(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> artObjectProvider) {
         this(artObjectClass, artObjectProvider, artObjectClass.getDeclaredMethods());
     }
 
-    public DefaultArtInformation(@NonNull Class<TArtObject> artObjectClass) {
+    public DefaultOptions(@NonNull Class<TArtObject> artObjectClass) {
         this(artObjectClass, null, artObjectClass.getDeclaredMethods());
     }
 
     @SuppressWarnings("unchecked")
-    public DefaultArtInformation(@NonNull String identifier, @NonNull Class<?> targetClass, @NonNull TArtObject artObject) {
+    public DefaultOptions(@NonNull String identifier, @NonNull Class<?> targetClass, @NonNull TArtObject artObject) {
         this.artObjectClass = (Class<TArtObject>) artObject.getClass();
         this.location = artObjectClass.getProtectionDomain().getCodeSource().getLocation();
         this.artObjectProvider = () -> artObject;
@@ -125,15 +127,15 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
 
     @Override
     public String identifier() {
-        if (!isInitialized()) {
+        if (!this.initialized()) {
             throw new UnsupportedOperationException("You must initialize() the ArtObjectInformation object before you can use it!");
         }
         return identifier;
     }
 
     @Override
-    public String[] getDescription() {
-        if (!isInitialized()) {
+    public String[] description() {
+        if (!this.initialized()) {
             throw new UnsupportedOperationException("You must initialize() the ArtObjectInformation object before you can use it!");
         }
         return description;
@@ -141,47 +143,47 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
 
     @Override
     public String[] alias() {
-        if (!isInitialized()) {
+        if (!this.initialized()) {
             throw new UnsupportedOperationException("You must initialize() the ArtObjectInformation object before you can use it!");
         }
         return alias;
     }
 
     @Override
-    public Optional<Class<?>> getConfigClass() {
-        if (!isInitialized()) {
+    public Optional<Class<?>> configClass() {
+        if (!this.initialized()) {
             throw new UnsupportedOperationException("You must initialize() the ArtObjectInformation object before you can use it!");
         }
         return Optional.ofNullable(configClass);
     }
 
     @Override
-    public Class<?> getTargetClass() {
-        if (!isInitialized()) {
+    public Class<?> targetClass() {
+        if (!this.initialized()) {
             throw new UnsupportedOperationException("You must initialize() the ArtObjectInformation object before you can use it!");
         }
         return targetClass;
     }
 
     @Override
-    public Map<String, ConfigFieldInformation> getConfigMap() {
-        if (!isInitialized()) {
+    public Map<String, ConfigFieldInformation> configMap() {
+        if (!this.initialized()) {
             throw new UnsupportedOperationException("You must initialize() the ArtObjectInformation object before you can use it!");
         }
         return configMap;
     }
 
     @Override
-    public ArtObjectProvider<TArtObject> getProvider() {
-        if (!isInitialized()) {
+    public ArtObjectProvider<TArtObject> provider() {
+        if (!this.initialized()) {
             throw new UnsupportedOperationException("You must initialize() the ArtObjectInformation object before you can use it!");
         }
         return artObjectProvider;
     }
 
     @Override
-    public URL getLocation() {
-        if (!isInitialized()) {
+    public URL location() {
+        if (!this.initialized()) {
             throw new UnsupportedOperationException("You must initialize() the ArtObjectInformation object before you can use it!");
         }
         return location;
@@ -189,9 +191,9 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
 
     @Override
     @SuppressWarnings("unchecked")
-    public <TObject extends ArtObject> ArtInformation<TObject> get() {
+    public <TObject extends ArtObject> Options<TObject> get() {
         try {
-            return (ArtInformation<TObject>) this;
+            return (Options<TObject>) this;
         } catch (ClassCastException e) {
             e.printStackTrace();
             return null;
@@ -199,8 +201,8 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
     }
 
     @Override
-    public ArtInformation<TArtObject> initialize() throws ArtObjectInformationException {
-        if (isInitialized()) return this;
+    public Options<TArtObject> initialize() throws OptionsInitializationException {
+        if (this.initialized()) return this;
 
         try {
             String identifier = tryGetIdentifier(methods);
@@ -212,16 +214,16 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
             ArtObjectProvider<TArtObject> provider = tryGetArtObjectProvider();
 
             if (Strings.isNullOrEmpty(identifier)) {
-                throw new ArtObjectInformationException(ArtObjectError.of(
-                        getArtObjectClass().getCanonicalName() + " has no defined name. Use the @ArtOptions annotation on the class or a method.",
+                throw new OptionsInitializationException(ArtObjectError.of(
+                        artObjectClass().getCanonicalName() + " has no defined name. Use the @ArtOptions annotation on the class or a method.",
                         ArtObjectError.Reason.NO_IDENTIFIER,
-                        getArtObjectClass()
+                        artObjectClass()
                 ));
             }
 
-            return new DefaultArtInformation<>(artObjectClass, identifier, description, alias, configClass, targetClass, configMap, provider);
+            return new DefaultOptions<>(artObjectClass, identifier, description, alias, configClass, targetClass, configMap, provider);
         } catch (ArtConfigException e) {
-            throw new ArtObjectInformationException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONFIG, getArtObjectClass()), e);
+            throw new OptionsInitializationException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONFIG, artObjectClass()), e);
         }
     }
 
@@ -238,17 +240,19 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private Class<?> findConfigClass(Method... methods) throws ArtObjectInformationException {
+    private Class<?> findConfigClass(Method... methods) throws OptionsInitializationException {
         Class configClass = getAnnotation(Config.class, methods).map(Config::value)
                 .orElse((Class) ReflectionUtil.getInterfaceTypeArgument(artObjectClass, Configurable.class, 0)
                         .orElse(artObjectClass));
 
         // lets make sure the config has a public parameterless constructor
-        if (!configClass.equals(getArtObjectClass())) {
+        if (!configClass.equals(artObjectClass())) {
             try {
-                configClass.getConstructor().newInstance();
+                Constructor constructor = configClass.getConstructor();
+                constructor.setAccessible(true);
+                constructor.newInstance();
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new ArtObjectInformationException(ArtObjectError.of(
+                throw new OptionsInitializationException(ArtObjectError.of(
                         "Unable to create a new instance of the config class " + configClass.getCanonicalName() + ": " + e.getMessage(),
                         ArtObjectError.Reason.INVALID_CONFIG,
                         artObjectClass
@@ -259,11 +263,11 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
         return configClass;
     }
 
-    private Class<?> tryGetTargetClass() throws ArtObjectInformationException {
+    private Class<?> tryGetTargetClass() throws OptionsInitializationException {
         if (targetClass != null) return targetClass;
         if (Trigger.class.isAssignableFrom(artObjectClass)) return Object.class;
         if (ReflectionUtil.isLambda(artObjectClass)) {
-            throw new ArtObjectInformationException(ArtObjectError.of(
+            throw new OptionsInitializationException(ArtObjectError.of(
                     "Unable to infer target type from a lambda expression." +
                             "Please use the correct add(String, Class<Target>, Lambda) method to register your ArtObject.",
                             ArtObjectError.Reason.INVALID_ART_OBJECT,
@@ -271,30 +275,30 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
             ));
         }
 
-        ArtObjectInformationException exception = new ArtObjectInformationException(ArtObjectError.of(
+        OptionsInitializationException exception = new OptionsInitializationException(ArtObjectError.of(
                 "Unable to find a valid target type for the class " + artObjectClass.getCanonicalName(),
                 ArtObjectError.Reason.INVALID_ART_OBJECT,
                 artObjectClass
         ));
 
 
-        if (Action.class.isAssignableFrom(getArtObjectClass())) {
-            return ReflectionUtil.getInterfaceTypeArgument(getArtObjectClass(), Action.class, 0).orElseThrow(() -> exception);
-        } else if (Requirement.class.isAssignableFrom(getArtObjectClass())) {
-            return ReflectionUtil.getInterfaceTypeArgument(getArtObjectClass(), Requirement.class, 0).orElseThrow(() -> exception);
+        if (Action.class.isAssignableFrom(artObjectClass())) {
+            return ReflectionUtil.getInterfaceTypeArgument(artObjectClass(), Action.class, 0).orElseThrow(() -> exception);
+        } else if (Requirement.class.isAssignableFrom(artObjectClass())) {
+            return ReflectionUtil.getInterfaceTypeArgument(artObjectClass(), Requirement.class, 0).orElseThrow(() -> exception);
         }
 
-        return ReflectionUtil.getInterfaceTypeArgument(getClass(), ArtInformation.class, 0)
-                .flatMap(aClass -> ReflectionUtil.getInterfaceTypeArgument(getArtObjectClass(), aClass, 0))
+        return ReflectionUtil.getInterfaceTypeArgument(getClass(), Options.class, 0)
+                .flatMap(aClass -> ReflectionUtil.getInterfaceTypeArgument(artObjectClass(), aClass, 0))
                 .orElseThrow(() -> exception);
     }
 
-    private ArtObjectProvider<TArtObject> tryGetArtObjectProvider() throws ArtObjectInformationException {
+    private ArtObjectProvider<TArtObject> tryGetArtObjectProvider() throws OptionsInitializationException {
 
         if (artObjectProvider != null) return artObjectProvider;
 
         try {
-            Constructor<TArtObject> constructor = getArtObjectClass().getDeclaredConstructor();
+            Constructor<TArtObject> constructor = artObjectClass().getDeclaredConstructor();
             constructor.newInstance();
             return () -> {
                 try {
@@ -305,7 +309,7 @@ public class DefaultArtInformation<TArtObject extends ArtObject> implements ArtI
                 }
             };
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
-            throw new ArtObjectInformationException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONSTRUCTOR, getArtObjectClass()), e);
+            throw new OptionsInitializationException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONSTRUCTOR, artObjectClass()), e);
         }
     }
 

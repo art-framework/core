@@ -43,7 +43,7 @@ class RequirementParserTest {
     void beforeEach() {
         Configuration configuration = mock(Configuration.class);
         requirementFactory = mock(RequirementFactory.class);
-        when(requirementFactory.options()).thenReturn(mock(ArtInformation.class));
+        when(requirementFactory.options()).thenReturn(mock(Options.class));
 
         RequirementProvider requirementProvider = mock(RequirementProvider.class);
         when(configuration.requirements()).thenReturn(requirementProvider);
