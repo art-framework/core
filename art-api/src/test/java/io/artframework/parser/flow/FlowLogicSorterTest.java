@@ -43,17 +43,17 @@ class FlowLogicSorterTest {
     }
 
     private ActionContext<?> action() {
-        return spy(ActionContext.of(mock(Configuration.class), mock(ArtInformation.class), mock(Action.class), mock(ActionConfig.class)));
+        return spy(ActionContext.of(mock(Configuration.class), mock(Options.class), mock(Action.class), mock(ActionConfig.class)));
     }
 
     private RequirementContext<?> requirement() {
-        return spy(RequirementContext.of(mock(Configuration.class), mock(ArtInformation.class), mock(Requirement.class), mock(RequirementConfig.class)));
+        return spy(RequirementContext.of(mock(Configuration.class), mock(Options.class), mock(Requirement.class), mock(RequirementConfig.class)));
     }
 
     private TriggerContext trigger() {
         Configuration configuration = mock(Configuration.class);
         when(configuration.events()).thenReturn(mock(EventProvider.class));
-        return spy(TriggerContext.of(configuration, mock(ArtInformation.class), mock(TriggerConfig.class)));
+        return spy(TriggerContext.of(configuration, mock(Options.class), mock(TriggerConfig.class)));
     }
 
     @Nested

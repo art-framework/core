@@ -25,5 +25,5 @@ public class DefaultTargetResult<TTarget, TArtObject extends ArtObject> implemen
     ResultStatus status;
     String[] messages;
     Target<TTarget> target;
-    ArtInformation<TArtObject> artInformation;
+    Options<TArtObject> options;
 }

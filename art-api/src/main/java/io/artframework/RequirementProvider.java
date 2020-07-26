@@ -24,7 +24,7 @@ public interface RequirementProvider extends ArtProvider, ArtFactoryProvider<Req
         return new DefaultRequirementProvider(configuration);
     }
 
-    RequirementProvider add(ArtInformation<Requirement<?>> information);
+    RequirementProvider add(Options<Requirement<?>> information);
 
     RequirementProvider add(Class<? extends Requirement<?>> requirementClass);
 

@@ -30,7 +30,7 @@ public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContex
 
     static <TTarget> ActionContext<TTarget> of(
             @NonNull Configuration configuration,
-            @NonNull ArtInformation<Action<TTarget>> information,
+            @NonNull Options<Action<TTarget>> information,
             @NonNull Action<TTarget> action,
             @NonNull ActionConfig config
     ) {

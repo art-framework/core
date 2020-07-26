@@ -29,7 +29,7 @@ import java.util.stream.Stream;
  * Classes that don't have an @{@link ART} annotation
  * or public parameterless constructor can be found in the
  */
-public interface ArtFinderResult extends Iterable<ArtInformation> {
+public interface ArtFinderResult extends Iterable<Options> {
 
     /**
      * @return the {@link ArtFinder} that created this result
@@ -47,9 +47,9 @@ public interface ArtFinderResult extends Iterable<ArtInformation> {
         return finder();
     }
 
-    ArtFinderResult filter(Predicate<ArtInformation<?>> predicate);
+    ArtFinderResult filter(Predicate<Options<?>> predicate);
 
-    Stream<ArtInformation<?>> stream();
+    Stream<Options<?>> stream();
 
     /**
      * Returns a list of all classes excluding any classes that had errors.
@@ -58,7 +58,7 @@ public interface ArtFinderResult extends Iterable<ArtInformation> {
      *
      * @return a list of all classes found by the {@link ArtFinder}
      */
-    Collection<ArtInformation<?>> getAll();
+    Collection<Options<?>> getAll();
 
     /**
      * Gives the option to handle the errors in a fluent syntax style.

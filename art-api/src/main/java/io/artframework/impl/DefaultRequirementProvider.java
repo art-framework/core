@@ -29,25 +29,25 @@ public class DefaultRequirementProvider extends AbstractArtFactoryProvider<Requi
     }
 
     @Override
-    public RequirementProvider add(@NonNull ArtInformation<Requirement<?>> information) {
+    public RequirementProvider add(@NonNull Options<Requirement<?>> information) {
         addFactory(RequirementFactory.of(getConfiguration(), information.get()));
         return this;
     }
 
     @Override
     public RequirementProvider add(@NonNull String identifier, @NonNull GenericRequirement action) {
-        return add(ArtInformation.of(identifier, Object.class, action));
+        return add(Options.of(identifier, Object.class, action));
     }
 
     @Override
     public <TTarget> RequirementProvider add(String identifier, Class<TTarget> targetClass, Requirement<TTarget> action) {
-        return add(ArtInformation.of(identifier, targetClass, action));
+        return add(Options.of(identifier, targetClass, action));
     }
 
     public RequirementProvider add(@NonNull Class<? extends Requirement<?>> aClass) {
         try {
-            return add(Objects.requireNonNull(ArtInformation.of(aClass).get()));
-        } catch (ArtObjectInformationException e) {
+            return add(Objects.requireNonNull(Options.of(aClass).get()));
+        } catch (OptionsInitializationException e) {
             // TODO: error handling
             e.printStackTrace();
         }
@@ -56,16 +56,16 @@ public class DefaultRequirementProvider extends AbstractArtFactoryProvider<Requi
 
     public <TRequirement extends Requirement<TTarget>, TTarget> RequirementProvider add(Class<TRequirement> aClass, ArtObjectProvider<TRequirement> artObjectProvider) {
         try {
-            return add(Objects.requireNonNull(ArtInformation.of(aClass, artObjectProvider).get()));
-        } catch (ArtObjectInformationException e) {
+            return add(Objects.requireNonNull(Options.of(aClass, artObjectProvider).get()));
+        } catch (OptionsInitializationException e) {
             // TODO: error handling
             e.printStackTrace();
         }
         return this;
     }
 
-    public RequirementProvider addAll(Collection<ArtInformation<?>> artObjects) {
-        for (ArtInformation<?> artObject : artObjects) {
+    public RequirementProvider addAll(Collection<Options<?>> artObjects) {
+        for (Options<?> artObject : artObjects) {
             add(Objects.requireNonNull(artObject.get()));
         }
         return this;

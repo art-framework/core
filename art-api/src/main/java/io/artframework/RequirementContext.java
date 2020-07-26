@@ -31,7 +31,7 @@ public interface RequirementContext<TTarget> extends Requirement<TTarget>, ArtOb
 
     static <TTarget> RequirementContext<TTarget> of(
             @NonNull Configuration configuration,
-            @NonNull ArtInformation<Requirement<TTarget>> information,
+            @NonNull Options<Requirement<TTarget>> information,
             @NonNull Requirement<TTarget> requirement,
             @NonNull RequirementConfig config
     ) {

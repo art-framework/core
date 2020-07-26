@@ -23,7 +23,7 @@ public interface ActionFactory<TTarget> extends ArtFactory<ActionContext<TTarget
 {
     static <TTarget> ActionFactory<TTarget> of(
             @NonNull Configuration configuration,
-            @NonNull ArtInformation<Action<TTarget>> information
+            @NonNull Options<Action<TTarget>> information
     ) {
         return new DefaultActionFactory<>(configuration, information);
     }

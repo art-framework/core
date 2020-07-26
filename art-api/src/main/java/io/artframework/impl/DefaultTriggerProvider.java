@@ -31,7 +31,7 @@ public class DefaultTriggerProvider extends AbstractArtFactoryProvider<TriggerFa
     }
 
     @Override
-    public TriggerProvider add(@NonNull ArtInformation<Trigger> triggerInformation) {
+    public TriggerProvider add(@NonNull Options<Trigger> triggerInformation) {
         addFactory(TriggerFactory.of(getConfiguration(), triggerInformation));
         return this;
     }
@@ -42,8 +42,8 @@ public class DefaultTriggerProvider extends AbstractArtFactoryProvider<TriggerFa
         for (Method method : triggerClass.getDeclaredMethods()) {
             if (method.isAnnotationPresent(ART.class)) {
                 try {
-                    add((ArtInformation<Trigger>) ArtInformation.of(triggerClass, method));
-                } catch (ArtObjectInformationException e) {
+                    add((Options<Trigger>) Options.of(triggerClass, method));
+                } catch (OptionsInitializationException e) {
                     e.printStackTrace();
                 }
             }
@@ -69,10 +69,10 @@ public class DefaultTriggerProvider extends AbstractArtFactoryProvider<TriggerFa
 
     @Override
     @SuppressWarnings("unchecked")
-    public ArtProvider addAll(Collection<ArtInformation<?>> artObjects) {
+    public ArtProvider addAll(Collection<Options<?>> artObjects) {
         artObjects.stream()
-                .filter(artInformation -> Trigger.class.isAssignableFrom(artInformation.getArtObjectClass()))
-                .map(artInformation -> (ArtInformation<Trigger>) artInformation)
+                .filter(artInformation -> Trigger.class.isAssignableFrom(artInformation.artObjectClass()))
+                .map(artInformation -> (Options<Trigger>) artInformation)
                 .forEach(this::add);
         return this;
     }

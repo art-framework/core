@@ -24,7 +24,7 @@ public interface ActionProvider extends ArtProvider, ArtFactoryProvider<ActionFa
         return new DefaultActionProvider(configuration);
     }
 
-    ActionProvider add(ArtInformation<Action<?>> actionInformation);
+    ActionProvider add(Options<Action<?>> actionInformation);
 
     ActionProvider add(Class<? extends Action<?>> actionClass);
 

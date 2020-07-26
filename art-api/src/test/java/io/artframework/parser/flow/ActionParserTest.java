@@ -43,7 +43,7 @@ class ActionParserTest {
     void beforeEach() {
         Configuration configuration = mock(Configuration.class);
         actionFactory = mock(ActionFactory.class);
-        when(actionFactory.options()).thenReturn(mock(ArtInformation.class));
+        when(actionFactory.options()).thenReturn(mock(Options.class));
 
         ActionProvider actionProvider = mock(ActionProvider.class);
         when(configuration.actions()).thenReturn(actionProvider);

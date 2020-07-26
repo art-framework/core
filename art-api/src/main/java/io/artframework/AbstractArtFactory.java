@@ -24,15 +24,15 @@ import java.lang.reflect.InvocationTargetException;
 public abstract class AbstractArtFactory<TContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> implements ArtFactory<TContext, TArtObject> {
 
     private final Configuration configuration;
-    private final ArtInformation<TArtObject> information;
+    private final Options<TArtObject> information;
 
-    protected AbstractArtFactory(@NonNull Configuration configuration, @NonNull ArtInformation<TArtObject> information) {
+    protected AbstractArtFactory(@NonNull Configuration configuration, @NonNull Options<TArtObject> information) {
         this.configuration = configuration;
         this.information = information;
     }
 
     @Override
-    public ArtInformation<TArtObject> options() {
+    public Options<TArtObject> options() {
         return information;
     }
 
@@ -43,13 +43,13 @@ public abstract class AbstractArtFactory<TContext extends ArtObjectContext<TArtO
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     protected final TArtObject createArtObject(ConfigMap configMap) {
-        TArtObject artObject = options().getProvider().create();
+        TArtObject artObject = options().provider().create();
 
         if (configMap == null || !configMap.isLoaded() || configMap.getType() != ConfigMapType.SPECIFIC_ART_CONFIG) {
             return artObject;
         }
 
-        options().getConfigClass().ifPresent(configClass -> {
+        options().configClass().ifPresent(configClass -> {
             if (artObject instanceof Configurable) {
                 if (configClass.isInstance(artObject)) {
                     configMap.applyTo(artObject);
