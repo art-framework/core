@@ -62,7 +62,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     @Override
     public <TTarget> CombinedResult test(@NonNull Target<TTarget> target) {
 
-        return test(ExecutionContext.of(getConfiguration(), this, target));
+        return test(ExecutionContext.of(configuration(), this, target));
     }
 
     @SuppressWarnings("unchecked")
@@ -75,17 +75,17 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     }
 
     @Override
-    public <TTarget> CombinedResult execute(@NonNull Target<TTarget> target) {
+    public <TTarget> FutureResult execute(@NonNull Target<TTarget> target) {
 
-        return execute(ExecutionContext.of(getConfiguration(), this, target));
+        return execute(ExecutionContext.of(configuration(), this, target));
     }
 
     @SuppressWarnings("unchecked")
-    private <TTarget> CombinedResult execute(Target<TTarget> target, ExecutionContext<?> executionContext) {
+    private <TTarget> FutureResult execute(Target<TTarget> target, ExecutionContext<?> executionContext) {
         return executeContext(target, ActionContext.class, actionContext ->
                 actionContext.execute(target, executionContext.next(actionContext)),
                 getArtContexts()
-        );
+        ).future();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
         List<Target<?>> successfulTargets = new ArrayList<>();
 
         for (Target<Object> target : targets) {
-            if (test(target, context).isSuccess()) {
+            if (test(target, context).success()) {
                 if (settings.isExecuteActions()) execute(target, context);
 
                 successfulTargets.add(target);

@@ -19,7 +19,7 @@ package io.artframework.impl;
 import io.artframework.*;
 import io.artframework.parser.flow.FlowParser;
 
-import java.util.List;
+import java.util.Collection;
 
 public class DefaultArtBuilder implements ArtBuilder {
 
@@ -30,7 +30,7 @@ public class DefaultArtBuilder implements ArtBuilder {
     }
 
     @Override
-    public Configuration getConfiguration() {
+    public Configuration configuration() {
         return configuration;
     }
 
@@ -40,8 +40,8 @@ public class DefaultArtBuilder implements ArtBuilder {
     }
 
     @Override
-    public ArtBuilderParser<FlowParser, List<String>> parser() {
-        return new DefaultArtBuilderParser<>(getConfiguration(), new FlowParser(getConfiguration()));
+    public ArtBuilderParser<FlowParser, Collection<String>> parser() {
+        return new DefaultArtBuilderParser<>(configuration(), new FlowParser(configuration()));
     }
 
     @Override

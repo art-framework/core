@@ -30,7 +30,7 @@ public class DefaultRequirementProvider extends AbstractArtFactoryProvider<Requi
 
     @Override
     public RequirementProvider add(@NonNull Options<Requirement<?>> information) {
-        addFactory(RequirementFactory.of(getConfiguration(), information.get()));
+        addFactory(RequirementFactory.of(configuration(), information.get()));
         return this;
     }
 

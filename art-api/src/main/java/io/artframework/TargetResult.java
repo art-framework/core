@@ -16,12 +16,23 @@
 
 package io.artframework;
 
+import io.artframework.impl.DefaultTargetResult;
+
 /**
  * The ArtResult holds several other results and combines them into a single result.
  */
-public interface TargetResult<TTarget, TArtObject extends ArtObject> extends Result {
+public interface TargetResult<TTarget, TArtObject extends ArtObject, TContext extends ArtObjectContext<TArtObject>> extends Result {
 
-    Target<TTarget> getTarget();
+    static <TTarget, TArtObject extends ArtObject, TContext extends ArtObjectContext<TArtObject>> TargetResult<TTarget, TArtObject, TContext>
+    of(Result result, Target<TTarget> target, TContext context) {
+        return new DefaultTargetResult<>(result.status(), result.messages(), target, context);
+    }
 
-    Options<TArtObject> getOptions();
+    Target<TTarget> target();
+
+    default Options<TArtObject> options() {
+        return context().options();
+    }
+
+    TContext context();
 }

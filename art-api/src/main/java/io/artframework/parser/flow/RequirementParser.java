@@ -25,14 +25,13 @@ import java.util.Optional;
 
 public class RequirementParser extends ArtObjectContextParser<RequirementFactory<?>> {
 
-
-    protected RequirementParser(Configuration configuration) {
+    public RequirementParser(Configuration configuration) {
         super(configuration, new FlowType("requirement", "\\?"));
     }
 
     @Override
     protected Optional<RequirementFactory<?>> getFactory(String identifier) {
-        return this.getConfiguration().requirements().get(identifier);
+        return this.configuration().requirements().get(identifier);
     }
 
     @Override

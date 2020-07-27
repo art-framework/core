@@ -45,11 +45,11 @@ public class PersistenceStorageModule implements Configurable<DatabaseConfig> {
         if (databaseConfig == null) return;
 
         database = createDatabase(databaseConfig);
-        configuration.set(new PersistenceStorage(configuration, database));
+        configuration.storage(new PersistenceStorage(configuration, database));
     }
 
     public void onDisable(Configuration configuration) {
-        configuration.set(Storage.of(configuration));
+        configuration.storage(Storage.of(configuration));
         database = null;
     }
 

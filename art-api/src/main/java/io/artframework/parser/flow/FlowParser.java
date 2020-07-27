@@ -21,11 +21,10 @@ import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class FlowParser implements Parser<List<String>> {
+public class FlowParser implements Parser<Collection<String>> {
 
     private final Configuration configuration;
 
@@ -34,16 +33,16 @@ public class FlowParser implements Parser<List<String>> {
     }
 
     @Override
-    public @NonNull Configuration getConfiguration() {
+    public @NonNull Configuration configuration() {
         return configuration;
     }
 
     @Override
-    public ArtContext parse(List<String> input) throws ArtParseException {
+    public ArtContext parse(Collection<String> input) throws ArtParseException {
 
         Collection<ArtObjectContext<?>> contexts = new ArrayList<>();
 
-        Collection<io.artframework.FlowParser> parsers = getConfiguration().parser().all();
+        Collection<io.artframework.FlowParser> parsers = configuration().parser().all();
 
         int lineCount = 1;
         for (String line : input) {
@@ -56,12 +55,12 @@ public class FlowParser implements Parser<List<String>> {
                         break;
                     }
                 } catch (ArtParseException e) {
-                    throw new ArtParseException(e.getMessage() + " on ART line " + lineCount, e);
+                    throw new ArtParseException(e.getMessage() + " on ART line " + lineCount + "/" + input.size(), e);
                 }
             }
 
             if (!matched) {
-                throw new ArtParseException("Unable to find matching parser for \"" + line + "\" on line " + lineCount);
+                throw new ArtParseException("Unable to find matching FlowParser for \"" + line + "\" on line " + lineCount + "/" + input.size());
             }
 
             lineCount++;
@@ -69,7 +68,7 @@ public class FlowParser implements Parser<List<String>> {
 
         contexts = sortAndCombineArtContexts(contexts.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 
-        return ArtContext.of(configuration, configuration.contextSettings(), contexts);
+        return ArtContext.of(configuration, configuration.artSettings(), contexts);
     }
 
     // rules for matching and combining actions, requirements and trigger

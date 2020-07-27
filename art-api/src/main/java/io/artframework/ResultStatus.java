@@ -21,7 +21,7 @@ public enum ResultStatus {
      * There were no requirements to check.
      * <p>
      * This can be the case if all requirements target a different target type or are filtered out.
-     * The <code>EMPTY</code> result is equivalent to a <code>SUCCESS</code> and will return true in {@link Result#isSuccess()}.
+     * The <code>EMPTY</code> result is equivalent to a <code>SUCCESS</code> and will return true in {@link Result#success()}.
      */
     EMPTY,
     /**

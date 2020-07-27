@@ -48,7 +48,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
         super(configuration, information);
         this.config = config;
 
-        getConfiguration().events().register(this);
+        configuration().events().register(this);
     }
 
     @Override
@@ -71,7 +71,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
         if (!event.getIdentifier().equalsIgnoreCase(options().identifier())) return;
 
         ExecutionContext<?> executionContext = ExecutionContext.of(
-                getConfiguration(),
+                configuration(),
                 this,
                 Arrays.stream(event.getTargets()).map(TriggerTarget::getTarget).toArray(Target[]::new)
         );
@@ -86,7 +86,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
             for (TriggerTarget<?> target : targets) {
                 if (cannotExecute(target.getTarget())) continue;
 
-                if (target.test(context) && testRequirements(context).isSuccess()) {
+                if (target.test(context) && testRequirements(context).success()) {
 
                     store(target.getTarget(), Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
@@ -98,8 +98,8 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
         };
 
         long delay = this.config().delay();
-        if (getConfiguration().scheduler().isPresent() && delay > 0) {
-            getConfiguration().scheduler().get().runTaskLater(runnable, delay);
+        if (configuration().scheduler().isPresent() && delay > 0) {
+            configuration().scheduler().get().runTaskLater(runnable, delay);
         } else {
             runnable.run();
         }
@@ -138,7 +138,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
     @Override
     public void close() {
-        getConfiguration().events().unregister(this);
+        configuration().events().unregister(this);
     }
 
     private <TTarget> boolean cannotExecute(Target<TTarget> target) {

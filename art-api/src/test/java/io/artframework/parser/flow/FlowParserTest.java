@@ -139,7 +139,7 @@ class FlowParserTest {
                             "!foo",
                             "bar"
                     )))
-                    .withMessage("TEST ERROR on ART line 3")
+                    .withMessage("TEST ERROR on ART line 3/5")
                     .withCause(exception);
         }
 
@@ -155,7 +155,7 @@ class FlowParserTest {
                             "foo",
                             "no-match"
                     )))
-                    .withMessage("Unable to find matching parser for \"no-match\" on line 3");
+                    .withMessage("Unable to find matching FlowParser for \"no-match\" on line 3/3");
         }
     }
 }

@@ -49,7 +49,7 @@ public final class ActionConfig extends ArtObjectConfig {
     public static ConfigMap configMap() {
         if (configMap == null) {
             try {
-                configMap = ConfigMap.of(ConfigMapType.ACTION, ConfigUtil.getConfigFields(ActionConfig.class));
+                configMap = ConfigMap.of(ConfigMapType.ACTION, ConfigUtil.getConfigFields(ActionConfig.class, ActionConfig.builder().build()));
             } catch (ArtConfigException e) {
                 e.printStackTrace();
             }
@@ -58,9 +58,13 @@ public final class ActionConfig extends ArtObjectConfig {
     }
 
     public static ActionConfig of(@Nullable ConfigMap configMap) {
-        if (configMap == null || configMap.getType() != ConfigMapType.ACTION) return ActionConfig.builder().build();
+        ActionConfig config = ActionConfig.builder().build();
 
-        return configMap.applyTo(ActionConfig.builder().build());
+        if (configMap == null || configMap.getType() != ConfigMapType.ACTION) {
+            return config;
+        }
+
+        return configMap.applyTo(config);
     }
 
     @ConfigOption(description = {

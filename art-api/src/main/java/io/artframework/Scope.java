@@ -21,12 +21,12 @@ package io.artframework;
  * available from a given scope.
  * <p>
  * The scope of the various objects contained in this type (e.g.
- * {@link #getConfiguration()} is implementation dependent and will be specified by the concrete subtype of <code>Scope</code>.
+ * {@link #configuration()} is implementation dependent and will be specified by the concrete subtype of <code>Scope</code>.
  */
 public interface Scope {
 
     /**
      * The configuration of the current scope.
      */
-    Configuration getConfiguration();
+    Configuration configuration();
 }

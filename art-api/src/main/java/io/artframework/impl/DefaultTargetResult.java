@@ -18,12 +18,14 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import lombok.Value;
+import lombok.experimental.Accessors;
 
 @Value
-public class DefaultTargetResult<TTarget, TArtObject extends ArtObject> implements TargetResult<TTarget, TArtObject> {
+@Accessors(fluent = true)
+public class DefaultTargetResult<TTarget, TArtObject extends ArtObject, TContext extends ArtObjectContext<TArtObject>> implements TargetResult<TTarget, TArtObject, TContext> {
 
     ResultStatus status;
     String[] messages;
     Target<TTarget> target;
-    Options<TArtObject> options;
+    TContext context;
 }

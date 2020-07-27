@@ -73,16 +73,16 @@ public abstract class ArtObjectContextParser<TFactory extends ArtFactory<?, ?>> 
         Optional<String> config = getConfig();
         if (config.isPresent()) {
             ConfigMap configMap = getGeneralConfigMap();
-            ConfigParser configParser = ConfigParser.of(this.getConfiguration(), configMap);
+            ConfigParser configParser = ConfigParser.of(this.configuration(), configMap);
             if (configParser.accept(config.get())) {
                 configMaps.put(configMap.getType(), configParser.parse());
             }
         }
 
 
-        ConfigParser configParser = ConfigParser.of(this.getConfiguration(), ConfigMap.of(ConfigMapType.SPECIFIC_ART_CONFIG, factory.options().configMap()));
+        ConfigParser configParser = ConfigParser.of(this.configuration(), ConfigMap.of(ConfigMapType.ART_CONFIG, factory.options().configMap()));
         if (configParser.accept(getUserConfig())) {
-            configMaps.put(ConfigMapType.SPECIFIC_ART_CONFIG, configParser.parse());
+            configMaps.put(ConfigMapType.ART_CONFIG, configParser.parse());
         }
 
         return factory.create(configMaps);

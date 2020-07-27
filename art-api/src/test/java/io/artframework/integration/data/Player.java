@@ -18,6 +18,7 @@ package io.artframework.integration.data;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.apache.commons.lang3.RandomStringUtils;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -27,5 +28,9 @@ public class Player extends Entity {
 
     public Player(String name) {
         super(name);
+    }
+
+    public Player() {
+        super(RandomStringUtils.randomAlphanumeric(10));
     }
 }

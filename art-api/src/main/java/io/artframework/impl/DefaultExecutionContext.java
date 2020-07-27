@@ -101,7 +101,7 @@ public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> exten
     @Override
     public <TNextContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> ExecutionContext<TNextContext> next(TNextContext nextContext) {
         if (current() != null) container.history.push(current());
-        return new DefaultExecutionContext<>(getConfiguration(), root, targets, container, nextContext);
+        return new DefaultExecutionContext<>(configuration(), root, targets, container, nextContext);
     }
 
     static class Container {

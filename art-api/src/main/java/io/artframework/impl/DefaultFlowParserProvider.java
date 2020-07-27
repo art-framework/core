@@ -24,6 +24,7 @@ import io.artframework.FlowParserProvider;
 import lombok.NonNull;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,6 +34,8 @@ public class DefaultFlowParserProvider extends AbstractProvider implements FlowP
 
     public DefaultFlowParserProvider(@NonNull Configuration configuration) {
         super(configuration);
+        Arrays.stream(FlowParser.defaults(configuration))
+                .forEach(this::add);
     }
 
     @Override

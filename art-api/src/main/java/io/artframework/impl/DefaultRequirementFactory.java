@@ -35,16 +35,11 @@ public class DefaultRequirementFactory<TTarget> extends AbstractArtFactory<Requi
     @Override
     public RequirementContext<TTarget> create(Map<ConfigMapType, ConfigMap> configMaps) {
 
-        RequirementConfig config = RequirementConfig.builder().build();
-        if (configMaps.containsKey(ConfigMapType.GENERAL_ART_CONFIG)) {
-            config = configMaps.get(ConfigMapType.GENERAL_ART_CONFIG).applyTo(config);
-        }
-
         return RequirementContext.of(
-                getConfiguration(),
+                configuration(),
                 options(),
-                createArtObject(configMaps.get(ConfigMapType.SPECIFIC_ART_CONFIG)),
-                config
+                createArtObject(configMaps.get(ConfigMapType.ART_CONFIG)),
+                RequirementConfig.of(configMaps.get(ConfigMapType.REQUIREMENT))
         );
     }
 }

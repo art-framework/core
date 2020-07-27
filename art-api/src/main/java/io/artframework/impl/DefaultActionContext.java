@@ -73,24 +73,24 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
     @Override
     @SuppressWarnings("unchecked")
-    public FutureResult execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
+    public Result execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
 
         if (ART.callEvent(new PreActionExecutionEvent<>(action(), context)).isCancelled()) {
-            return cancelled();
+            return cancelled().with(target, this);
         }
 
         if (!isTargetType(target)) return empty();
         FutureResult executionTest = testExecution(target);
-        if (executionTest.isFailure()) return executionTest;
+        if (executionTest.failure()) return executionTest;
         CombinedResult requirementTest = testRequirements(context);
-        if (requirementTest.isFailure()) return of(requirementTest);
+        if (requirementTest.failure()) return of(requirementTest);
 
         final FutureResult result = empty();
 
         Runnable runnable = () -> {
 
             if (ART.callEvent(new ActionExecutionEvent<>(action(), context)).isCancelled()) {
-                result.complete(cancelled());
+                result.complete(cancelled().with(target, this));
                 return;
             }
 
@@ -104,16 +104,17 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
                     .filter(actionContext -> actionContext.isTargetType(target))
                     .map(actionContext -> (ActionContext<TTarget>) actionContext)
                     .map(action -> action.execute(target, context.next(action)))
-                    .reduce(FutureResult::combine)
-                    .orElse(result);
+                    .reduce(Result::combine)
+                    .orElse(result)
+                    .future();
 
             result.complete(futureResult);
         };
 
         long delay = this.config().delay();
 
-        if (getConfiguration().scheduler().isPresent() && delay > 0) {
-            getConfiguration().scheduler().get().runTaskLater(runnable, delay);
+        if (configuration().scheduler().isPresent() && delay > 0) {
+            configuration().scheduler().get().runTaskLater(runnable, delay);
         } else {
             runnable.run();
         }

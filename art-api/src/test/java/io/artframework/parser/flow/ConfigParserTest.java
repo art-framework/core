@@ -44,7 +44,7 @@ class ConfigParserTest {
 
     @SneakyThrows
     private ConfigParser parser(Class<?> configClass) {
-        return new ConfigParser(mock(Configuration.class), ConfigMap.of(ConfigMapType.SPECIFIC_ART_CONFIG, ConfigUtil.getConfigFields(configClass)));
+        return new ConfigParser(mock(Configuration.class), ConfigMap.of(ConfigMapType.ART_CONFIG, ConfigUtil.getConfigFields(configClass)));
     }
 
     @Nested

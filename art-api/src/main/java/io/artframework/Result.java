@@ -135,39 +135,39 @@ public interface Result {
      * An <code>EMPTY</code> result status will also be a success.
      * A non success (<code>false</code>) does not automatically mean that there was an error.
      * A requirement for example can return a failure if a check failed or an error if a exception or some kind of error occurred.
-     * Use the {@link #isError()} method to check if there were actually any errors.
+     * Use the {@link #error()} method to check if there were actually any errors.
      * <p>
      * This is the same as {@link ResultStatus#isSuccess()}.
      *
      * @return true if the result is a success
      */
-    default boolean isSuccess() {
-        return getStatus().isSuccess();
+    default boolean success() {
+        return status().isSuccess();
     }
 
     /**
      * Returns true if the result is a failure.
      * <p>
-     * This is the direct opposite to {@link #isSuccess()}.
+     * This is the direct opposite to {@link #success()}.
      *
      * @return true if the result is a failure
      */
-    default boolean isFailure() {
-        return !getStatus().isSuccess();
+    default boolean failure() {
+        return !status().isSuccess();
     }
 
     /**
      * Returns true if the result is in an error state.
      * <p>
      * This means that one of the called checks thru an exception or encountered some other kind of error.
-     * {@link #isSuccess()} will always be false if there were any errors.
+     * {@link #success()} will always be false if there were any errors.
      * <p>
      * This is the same as {@link ResultStatus#isError()}.
      *
      * @return true if an error occured
      */
-    default boolean isError() {
-        return getStatus().isError();
+    default boolean error() {
+        return status().isError();
     }
 
     /**
@@ -177,7 +177,7 @@ public interface Result {
      * @see ResultStatus for more details on the result status codes
      * @return the status of this result that is never null
      */
-    ResultStatus getStatus();
+    ResultStatus status();
 
     /**
      * Gets all additional messages of this result.
@@ -186,5 +186,46 @@ public interface Result {
      *
      * @return a list of messages that is never null but may be empty
      */
-    String[] getMessages();
+    String[] messages();
+
+    /**
+     * Creates a new targeted result from this result with the given target and context.
+     *
+     * @param target the target of the result
+     * @param context the context of the result
+     * @param <TTarget> the target type
+     * @param <TArtObject> the art object type of the context
+     * @return a new target result based of this result with the given target and context
+     */
+    default <TTarget, TArtObject extends ArtObject, TContext extends ArtObjectContext<TArtObject>> TargetResult<TTarget, TArtObject, TContext>
+    with(@NonNull Target<TTarget> target, @NonNull TContext context) {
+        return TargetResult.of(this, target, context);
+    }
+
+    /**
+     * Combines this result with the given result returning a new combined result.
+     * <p>
+     * This will use the {@link ResultStatus#combine(ResultStatus)} method to combine the two result statuses
+     * and then merge the messages. Duplicate messages will be omitted.
+     *
+     * @param result the result to combine with this result
+     * @return the new combined result
+     */
+    default CombinedResult combine(Result result) {
+        return CombinedResult.of(result);
+    }
+
+    default FutureResult future() {
+        if (this instanceof FutureResult) {
+            return (FutureResult) this;
+        }
+        return FutureResult.of(this);
+    }
+
+    default CombinedResult combine() {
+        if (this instanceof CombinedResult) {
+            return (CombinedResult) this;
+        }
+        return CombinedResult.of(this);
+    }
 }

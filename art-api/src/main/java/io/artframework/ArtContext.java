@@ -39,7 +39,7 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator {
     }
 
     static ArtContext of(Configuration configuration, Collection<ArtObjectContext<?>> art) {
-        return of(configuration, ART.configuration().contextSettings(), art);
+        return of(configuration, ART.configuration().artSettings(), art);
     }
 
     static ArtContext of(ArtSettings settings, Collection<ArtObjectContext<?>> art) {
@@ -55,7 +55,7 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator {
      * Use these settings to fine tune the executing and testing
      * of {@link ArtObject}s in this {@link ArtContext}.
      * <br>
-     * By default the {@link Configuration#contextSettings()} will be used
+     * By default the {@link Configuration#artSettings()} will be used
      * you can override those settings by updating the underlying object.
      *
      * @return settings that control the behaviour of this {@link ArtContext}
@@ -94,7 +94,7 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator {
      * @see #test(Target)
      */
     default <TTarget> CombinedResult test(@NonNull TTarget target) {
-        return Target.of(target)
+        return configuration().targets().get(target)
                 .map(this::test)
                 .orElse(CombinedResult.of(empty("Target of type " + target.getClass().getSimpleName() + " not found.")));
     }
@@ -109,7 +109,7 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator {
      * @param target    target to execute actions against. Can be null.
      * @param <TTarget> type of the target
      */
-    <TTarget> CombinedResult execute(@NonNull Target<TTarget> target);
+    <TTarget> FutureResult execute(@NonNull Target<TTarget> target);
 
     /**
      * Wraps the given target into a {@link Target} and then calls {@link #execute(Target)}.
@@ -118,10 +118,10 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator {
      * @param target    target to execute actions for
      * @param <TTarget> type of the target
      */
-    default <TTarget> CombinedResult execute(@NonNull TTarget target) {
-        return Target.of(target)
+    default <TTarget> FutureResult execute(@NonNull TTarget target) {
+        return configuration().targets().get(target)
                 .map(this::execute)
-                .orElse(CombinedResult.of(empty("Target of type " + target.getClass().getSimpleName() + " not found.")));
+                .orElse(FutureResult.of(failure("Target of type " + target.getClass().getSimpleName() + " not found.")));
     }
     /**
      * Listens on all {@link Trigger}s in the {@link ArtContext} for the given target type.

@@ -44,12 +44,12 @@ public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> ext
 
     @Override
     public <TValue> Optional<TValue> store(@NonNull Target<?> target, @NonNull String key, @NonNull TValue value) {
-        return getConfiguration().storage().set(getStorageKey(target, key), value);
+        return configuration().storage().set(getStorageKey(target, key), value);
     }
 
     @Override
     public <TValue> Optional<TValue> store(@NonNull Target<?> target, @NonNull String key, @NonNull Class<TValue> valueClass) {
-        return getConfiguration().storage().get(getStorageKey(target, key), valueClass);
+        return configuration().storage().get(getStorageKey(target, key), valueClass);
     }
 
     private String getStorageKey(Target<?> target, String key) {

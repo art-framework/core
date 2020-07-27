@@ -59,7 +59,7 @@ public interface Target<TTarget> {
      * @see TargetProvider#get(Object)
      */
     static <TTarget> Optional<Target<TTarget>> of(@NonNull TTarget target) {
-        return ART.getTarget(target);
+        return ART.target(target);
     }
 
     /**

@@ -28,6 +28,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
+import static io.artframework.Result.success;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("ALL")
@@ -139,11 +142,59 @@ public class ArtIntegrationTest {
             }
 
             @Test
-            void name() {
+            @DisplayName("should register lambda action")
+            void shouldRegisterLambda() {
 
-                ArtContext context = ArtBuilder.DEFAULT.build();
+                ART.actions().add("kill", Player.class, (target, context) -> {
+                    target.getSource().setHealth(0);
+                    return success();
+                });
+
+                assertThat(ART.actions().get("kill"))
+                        .isNotEmpty();
+            }
+        }
+    }
+
+    @Nested
+    @DisplayName("ART creation")
+    class ArtCreation {
+
+        @Nested
+        @DisplayName("with FlowParser")
+        class FlowParser {
+
+            @Test
+            @DisplayName("should create list of nested actions")
+            void shouldCreateListOfActions() {
+
+                ART.actions()
+                        .add(DamageAction.class)
+                    .targets()
+                        .add(Player.class, PlayerTarget::new);
+
+                ArtContext context = ART.builder().load(Arrays.asList(
+                        "!damage 20",
+                        "!dmg 50",
+                        "!hit 10"
+                )).build();
+
+                Player player = new Player();
+                player.setHealth(100);
+
+                CombinedResult result = context.execute(player);
+
+                assertThat(result.success()).isTrue();
+                assertThat(player.getHealth()).isEqualTo(20);
+
+                assertThat(result.ofTarget(player))
+                        .hasSize(3)
+                        .extracting(TargetResult::options)
+                        .extracting(Options::identifier)
+                        .contains("damage", "damage", "damage");
 
             }
+
         }
     }
 }

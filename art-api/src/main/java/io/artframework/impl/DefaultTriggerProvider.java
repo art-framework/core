@@ -32,7 +32,7 @@ public class DefaultTriggerProvider extends AbstractArtFactoryProvider<TriggerFa
 
     @Override
     public TriggerProvider add(@NonNull Options<Trigger> triggerInformation) {
-        addFactory(TriggerFactory.of(getConfiguration(), triggerInformation));
+        addFactory(TriggerFactory.of(configuration(), triggerInformation));
         return this;
     }
 

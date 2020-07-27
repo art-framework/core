@@ -30,7 +30,7 @@ public class DefaultActionProvider extends AbstractArtFactoryProvider<ActionFact
 
     @Override
     public ActionProvider add(@NonNull Options<Action<?>> actionInformation) {
-        addFactory(ActionFactory.of(getConfiguration(), actionInformation.get()));
+        addFactory(ActionFactory.of(configuration(), actionInformation.get()));
         return this;
     }
 

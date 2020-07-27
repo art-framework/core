@@ -19,8 +19,10 @@ package io.artframework.impl;
 import io.artframework.Result;
 import io.artframework.ResultStatus;
 import lombok.Value;
+import lombok.experimental.Accessors;
 
 @Value
+@Accessors(fluent = true)
 public class DefaultResult implements Result {
 
     ResultStatus status;

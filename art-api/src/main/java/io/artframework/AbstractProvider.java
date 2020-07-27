@@ -27,7 +27,7 @@ public abstract class AbstractProvider implements Provider {
     }
 
     @Override
-    public Configuration getConfiguration() {
+    public Configuration configuration() {
         return configuration;
     }
 }

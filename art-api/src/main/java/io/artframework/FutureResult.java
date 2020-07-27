@@ -54,6 +54,14 @@ public interface FutureResult extends CombinedResult {
         return new DefaultFutureResult(result);
     }
 
+    static FutureResult of(Result result) {
+        if (result instanceof CombinedResult) {
+            return of((CombinedResult) result);
+        } else {
+            return of(CombinedResult.of(result));
+        }
+    }
+
     /**
      * Checks if this future result is complete.
      * This means that {@link #onCompletion(Consumer)} has been called and the execution is finished.
@@ -71,12 +79,21 @@ public interface FutureResult extends CombinedResult {
     void onCompletion(Consumer<CombinedResult> result);
 
     /**
+     * Completes this future result without combining it with another result.
+     * <p>
+     * Use the alternate {@link #complete(Result)} method to complete this result with another result.
+     *
+     * @return the completed result
+     */
+    CombinedResult complete();
+
+    /**
      * Completes this future result and combines the current result with the results from the future.
      *
      * @param futureResult the future result that should be combined with this result and returned to the callback.
      * @return the combined result from the future and present
      */
-    CombinedResult complete(CombinedResult futureResult);
+    CombinedResult complete(Result futureResult);
 
     /**
      * Gets a list of all subscribed callbacks of this future result.
@@ -84,7 +101,7 @@ public interface FutureResult extends CombinedResult {
      *
      * @return an immutable list of all callbacks
      */
-    Collection<Consumer<CombinedResult>> getConsumers();
+    Collection<Consumer<CombinedResult>> consumers();
 
     /**
      * Combines this future result with the given result.
