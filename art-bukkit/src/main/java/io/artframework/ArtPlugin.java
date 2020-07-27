@@ -36,7 +36,7 @@ public class ArtPlugin extends BasePlugin {
     public void enable() {
 
         ART.configuration()
-                .set(new BukkitScheduler(this, Bukkit.getScheduler()))
+                .scheduler(new BukkitScheduler(this, Bukkit.getScheduler()))
                 .targets()
                     .add(Entity.class, EntityTarget::new)
                     .add(Player.class, PlayerTarget::new)

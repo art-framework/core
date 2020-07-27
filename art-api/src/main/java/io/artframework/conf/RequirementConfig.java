@@ -26,6 +26,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import javax.annotation.Nullable;
+
 /**
  * The requirement config holds general information about the execution
  * properties of the requirement.
@@ -46,12 +48,22 @@ public class RequirementConfig extends ArtObjectConfig {
     public static ConfigMap getConfigMap() {
         if (configMap == null) {
             try {
-                configMap = ConfigMap.of(ConfigMapType.GENERAL_ART_CONFIG, ConfigUtil.getConfigFields(RequirementConfig.class));
+                configMap = ConfigMap.of(ConfigMapType.REQUIREMENT, ConfigUtil.getConfigFields(RequirementConfig.class, RequirementConfig.builder().build()));
             } catch (ArtConfigException e) {
                 e.printStackTrace();
             }
         }
         return configMap;
+    }
+
+    public static RequirementConfig of(@Nullable ConfigMap configMap) {
+        RequirementConfig config = RequirementConfig.builder().build();
+
+        if (configMap == null || configMap.getType() != ConfigMapType.REQUIREMENT) {
+            return config;
+        }
+
+        return configMap.applyTo(config);
     }
 
     @ConfigOption(description = {

@@ -14,22 +14,12 @@
  * limitations under the License.
  */
 
-package io.artframework;
+package io.artframework.integration.data;
 
-/**
- * The {@link Provider} is just a generic super interface
- * that holds a {@link Configuration} and is used to compose the
- * other service provider.
- */
-public interface Provider extends Scope {
+import lombok.Value;
 
-    /**
-     * This is just syntactic suggar to return to the {@link Configuration}
-     * in a fluent style.
-     *
-     * @return the root {@link Configuration}
-     */
-    default Configuration and() {
-        return configuration();
-    }
+@Value
+public class Block {
+
+    Location location;
 }

@@ -39,7 +39,7 @@ public abstract class LineParser<TResult> implements Scope {
     private String input;
 
     @Override
-    public @NonNull Configuration getConfiguration() {
+    public @NonNull Configuration configuration() {
         return configuration;
     }
 

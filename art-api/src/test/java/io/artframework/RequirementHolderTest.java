@@ -16,6 +16,9 @@
 
 package io.artframework;
 
+import io.artframework.integration.data.Block;
+import io.artframework.integration.data.Player;
+import io.artframework.integration.targets.PlayerTarget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -47,9 +50,9 @@ class RequirementHolderTest implements CombinedResultCreator {
 
     private <TTarget> RequirementContext<TTarget> requirement(Class<TTarget> targetClass, CombinedResult result) {
         RequirementContext<TTarget> context = mock(RequirementContext.class);
-        when(context.isTargetType(any())).thenAnswer(invocation -> targetClass.isInstance(invocation.getArgument(0)));
+        when(context.isTargetType(any())).thenCallRealMethod();
         when(context.targetClass()).thenReturn((Class) targetClass);
-        when(context.test(any(), any())).thenReturn(result);
+        when(context.test(any(), any())).thenAnswer(invocation -> result.with(invocation.getArgument(0), context));
         return context;
     }
 
@@ -79,17 +82,17 @@ class RequirementHolderTest implements CombinedResultCreator {
     @DisplayName("should filter out requirements that do not match the target")
     void shouldFilterOutRequirementsThatDoNotMatchTheTarget() {
 
-        requirements.add(requirement(String.class, success()));
-        requirements.add(requirement(Integer.class, failure()));
+        requirements.add(requirement(Player.class, success()));
+        requirements.add(requirement(Block.class, failure()));
 
-        Target<String> target = target(String.class);
+        Target<Player> target = new PlayerTarget(new Player());
         CombinedResult result = requirementHolder.testRequirements(executionContext(target));
 
         assertThat(result)
-                .extracting(Result::getStatus, Result::isSuccess)
+                .extracting(Result::status, Result::success)
                 .contains(ResultStatus.SUCCESS, true);
-        assertThat(result.getTargetResults(target))
-                .extracting(Result::getStatus)
+        assertThat(result.ofTarget(target))
+                .extracting(Result::status)
                 .contains(ResultStatus.SUCCESS);
     }
 }

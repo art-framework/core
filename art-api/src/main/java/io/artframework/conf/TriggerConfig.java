@@ -16,18 +16,47 @@
 
 package io.artframework.conf;
 
+import io.artframework.ArtConfigException;
+import io.artframework.ConfigMap;
 import io.artframework.annotations.ConfigOption;
+import io.artframework.parser.flow.ConfigMapType;
+import io.artframework.util.ConfigUtil;
 import io.artframework.util.TimeUtil;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import javax.annotation.Nullable;
+
 @Data
 @Builder
 @Accessors(fluent = true)
 @EqualsAndHashCode(callSuper = true)
 public class TriggerConfig extends ArtObjectConfig {
+
+    private static ConfigMap configMap;
+
+    public static ConfigMap configMap() {
+        if (configMap == null) {
+            try {
+                configMap = ConfigMap.of(ConfigMapType.TRIGGER, ConfigUtil.getConfigFields(TriggerConfig.class, TriggerConfig.builder().build()));
+            } catch (ArtConfigException e) {
+                e.printStackTrace();
+            }
+        }
+        return configMap;
+    }
+
+    public static TriggerConfig of(@Nullable ConfigMap configMap) {
+        TriggerConfig config = TriggerConfig.builder().build();
+
+        if (configMap == null || configMap.getType() != ConfigMapType.TRIGGER) {
+            return config;
+        }
+
+        return configMap.applyTo(config);
+    }
 
     @ConfigOption(description = {
             "Delay of the trigger,",

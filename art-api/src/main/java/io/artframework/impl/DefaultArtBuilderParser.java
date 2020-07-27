@@ -33,7 +33,7 @@ public class DefaultArtBuilderParser<TParser extends Parser<TInput>, TInput> ext
     }
 
     @Override
-    public ArtBuilderParser<TParser, TInput> load(TInput input) {
+    public ArtBuilderParser<TParser, TInput> parse(TInput input) {
         inputs.add(input);
         return this;
     }

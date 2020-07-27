@@ -37,6 +37,18 @@ public interface Configuration extends Serializable, Cloneable {
     }
 
     /**
+     * Creates a new ArtBuilder from this configuration.
+     * <p>
+     * Use the {@link ArtBuilder} to load and create your ART from config files
+     * with a parser.
+     *
+     * @return new art builder from this configuration.
+     */
+    default ArtBuilder builder() {
+        return ArtBuilder.of(this);
+    }
+
+    /**
      * Use the {@link ArtProvider} and its sub provider to register your ART.
      * Sub providers are:
      * <ul>
@@ -82,7 +94,7 @@ public interface Configuration extends Serializable, Cloneable {
      *
      * @return the configured {@link ArtFinder} implementation
      */
-    ArtFinder findArt();
+    ArtFinder finder();
 
     /**
      * Use the {@link EventProvider} to register your {@link ArtEventListener}s.
@@ -93,7 +105,7 @@ public interface Configuration extends Serializable, Cloneable {
 
     /**
      * Gets the configured {@link Scheduler} implementation.
-     * You can provide your own by calling {@link #set(Scheduler)}
+     * You can provide your own by calling {@link #scheduler(Scheduler)}
      * which will replace the service you get from this method
      * with your own implementation.
      *
@@ -103,7 +115,7 @@ public interface Configuration extends Serializable, Cloneable {
 
     /**
      * Gets the configured {@link Storage} implementation.
-     * You can provide your own by calling {@link #set(Storage)}
+     * You can provide your own by calling {@link #storage(Storage)}
      * which will replace the service you get from this method
      * with your own implementation.
      *
@@ -113,7 +125,7 @@ public interface Configuration extends Serializable, Cloneable {
 
     /**
      * Gets the configured {@link Settings} of this configuration.
-     * You can provide your own settings by calling {@link #set(Settings)}.
+     * You can provide your own settings by calling {@link #settings(Settings)}.
      *
      * @return the {@link Settings} of this {@link Configuration}
      */
@@ -125,7 +137,7 @@ public interface Configuration extends Serializable, Cloneable {
      *
      * @return default {@link ArtSettings} used in an {@link ArtContext}
      */
-    ArtSettings contextSettings();
+    ArtSettings artSettings();
 
     /**
      * Use the {@link TargetProvider} to register new {@link Target} source types
@@ -149,7 +161,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param artProvider art provider implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(@NonNull ArtProvider artProvider);
+    Configuration art(@NonNull ArtProvider artProvider);
 
     /**
      * Sets a new implementation for the {@link Scheduler}.
@@ -157,7 +169,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param scheduler scheduler implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(Scheduler scheduler);
+    Configuration scheduler(Scheduler scheduler);
 
     /**
      * Sets a new implementation for the {@link Storage}.
@@ -165,7 +177,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param storage storage implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(@NonNull Storage storage);
+    Configuration storage(@NonNull Storage storage);
 
     /**
      * Provides a new set of settings to use in this context.
@@ -173,7 +185,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param settings settings to use
      * @return this {@link Configuration}
      */
-    Configuration set(@NonNull Settings settings);
+    Configuration settings(@NonNull Settings settings);
 
     /**
      * Provides new {@link ArtSettings} that will be used
@@ -182,7 +194,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param settings new default {@link ArtSettings}
      * @return this {@link Configuration}
      */
-    Configuration set(@NonNull ArtSettings settings);
+    Configuration artSettings(@NonNull ArtSettings settings);
 
     /**
      * Sets a new implementation for the {@link TargetProvider}.
@@ -190,7 +202,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param targetProvider target provider implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(@NonNull TargetProvider targetProvider);
+    Configuration targets(@NonNull TargetProvider targetProvider);
 
     /**
      * Sets a new implementation for the {@link ActionProvider}.
@@ -198,7 +210,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param actionProvider {@link ActionProvider} implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(@NonNull ActionProvider actionProvider);
+    Configuration actions(@NonNull ActionProvider actionProvider);
 
     /**
      * Sets a new implementation for the {@link RequirementProvider}.
@@ -206,7 +218,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param requirementProvider {@link RequirementProvider} implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(@NonNull RequirementProvider requirementProvider);
+    Configuration requirements(@NonNull RequirementProvider requirementProvider);
 
     /**
      * Sets a new implementation for the {@link TriggerProvider}.
@@ -214,7 +226,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param triggerProvider trigger provider implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(@NonNull TriggerProvider triggerProvider);
+    Configuration trigger(@NonNull TriggerProvider triggerProvider);
 
     /**
      * Sets a new implementation for the {@link ArtFinder}.
@@ -222,7 +234,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param artFinder {@link ArtFinder} implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(@NonNull ArtFinder artFinder);
+    Configuration finder(@NonNull ArtFinder artFinder);
 
     /**
      * Sets a new implementation for the {@link EventProvider}.
@@ -230,7 +242,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param eventProvider {@link EventProvider} implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(@NonNull EventProvider eventProvider);
+    Configuration events(@NonNull EventProvider eventProvider);
 
     /**
      * Sets a new implementation for the {@link FlowParserProvider}.
@@ -238,13 +250,13 @@ public interface Configuration extends Serializable, Cloneable {
      * @param flowParserProvider {@link FlowParserProvider} implementation to use
      * @return this {@link Configuration}
      */
-    Configuration set(@NonNull FlowParserProvider flowParserProvider);
+    Configuration parser(@NonNull FlowParserProvider flowParserProvider);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration.
      * This is actually just a shortcut to {@link #clone()}.
      * You can then use the configuration to modify locally scoped properties
-     * and use it to load and create your ART with {@link ArtContext#builder(Configuration)}.
+     * and use it to load and create your ART with {@link ART#builder(Configuration)}.
      *
      * @return this cloned {@link Configuration}
      */
@@ -257,7 +269,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param artProvider art provider implementation to use
      * @return this {@link Configuration}
      */
-    Configuration derive(@NonNull ArtProvider artProvider);
+    Configuration withArt(@NonNull ArtProvider artProvider);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
@@ -266,7 +278,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param scheduler scheduler implementation to use
      * @return this {@link Configuration}
      */
-    Configuration derive(Scheduler scheduler);
+    Configuration withScheduler(Scheduler scheduler);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
@@ -275,7 +287,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param storage storage implementation to use
      * @return this {@link Configuration}
      */
-    Configuration derive(@NonNull Storage storage);
+    Configuration withStorage(@NonNull Storage storage);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
@@ -284,7 +296,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param settings settings to use
      * @return this {@link Configuration}
      */
-    Configuration derive(@NonNull Settings settings);
+    Configuration withSettings(@NonNull Settings settings);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
@@ -294,7 +306,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param settings new default {@link ArtSettings}
      * @return this {@link Configuration}
      */
-    Configuration derive(@NonNull ArtSettings settings);
+    Configuration withArtSettings(@NonNull ArtSettings settings);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
@@ -303,7 +315,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param targetProvider target provider implementation to use
      * @return this {@link Configuration}
      */
-    Configuration derive(@NonNull TargetProvider targetProvider);
+    Configuration withTargets(@NonNull TargetProvider targetProvider);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
@@ -312,7 +324,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param actionProvider {@link ActionProvider} implementation to use
      * @return this {@link Configuration}
      */
-    Configuration derive(@NonNull ActionProvider actionProvider);
+    Configuration withActions(@NonNull ActionProvider actionProvider);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
@@ -321,7 +333,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param requirementProvider {@link RequirementProvider} implementation to use
      * @return this {@link Configuration}
      */
-    Configuration derive(@NonNull RequirementProvider requirementProvider);
+    Configuration withRequirements(@NonNull RequirementProvider requirementProvider);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
@@ -330,7 +342,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param triggerProvider trigger provider implementation to use
      * @return this {@link Configuration}
      */
-    Configuration derive(@NonNull TriggerProvider triggerProvider);
+    Configuration withTrigger(@NonNull TriggerProvider triggerProvider);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
@@ -339,7 +351,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param artFinder {@link ArtFinder} implementation to use
      * @return this {@link Configuration}
      */
-    Configuration derive(@NonNull ArtFinder artFinder);
+    Configuration withFinder(@NonNull ArtFinder artFinder);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
@@ -348,7 +360,7 @@ public interface Configuration extends Serializable, Cloneable {
      * @param eventProvider {@link EventProvider} implementation to use
      * @return this {@link Configuration}
      */
-    Configuration derive(@NonNull EventProvider eventProvider);
+    Configuration withEvents(@NonNull EventProvider eventProvider);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
@@ -357,5 +369,5 @@ public interface Configuration extends Serializable, Cloneable {
      * @param flowParserProvider {@link FlowParserProvider} implementation to use
      * @return this {@link Configuration}
      */
-    Configuration derive(@NonNull FlowParserProvider flowParserProvider);
+    Configuration withParser(@NonNull FlowParserProvider flowParserProvider);
 }

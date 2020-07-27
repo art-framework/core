@@ -18,6 +18,7 @@ package io.artframework;
 
 import io.artframework.impl.DefaultCombinedResult;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -31,20 +32,13 @@ public interface CombinedResult extends Result {
         return new DefaultCombinedResult(Arrays.asList(results));
     }
 
-    Collection<Result> getResults();
+    Collection<Result> results();
 
-    <TTarget> Collection<TargetResult<TTarget, ?>> getTargetResults(Target<TTarget> target);
+    default <TTarget> Collection<TargetResult<TTarget, ?, ?>> ofTarget(TTarget target) {
+        return Target.of(target).map(this::ofTarget).orElse(new ArrayList<>());
+    }
 
-    <TTarget> Collection<TargetResult<TTarget, ?>> getTargetResults(Class<TTarget> targetClass);
+    <TTarget> Collection<TargetResult<TTarget, ?, ?>> ofTarget(Target<TTarget> target);
 
-    /**
-     * Combines this result with the given result returning a new combined result.
-     * <p>
-     * This will use the {@link ResultStatus#combine(ResultStatus)} method to combine the two result statuses
-     * and then merge the messages. Duplicate messages will be omitted.
-     *
-     * @param result the result to combine with this result
-     * @return the new combined result
-     */
-    CombinedResult combine(Result result);
+    <TTarget> Collection<TargetResult<TTarget, ?, ?>> ofTarget(Class<TTarget> targetClass);
 }

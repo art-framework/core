@@ -16,7 +16,6 @@
 
 package io.artframework.parser.flow;
 
-import io.artframework.ArtObject;
 import io.artframework.conf.ActionConfig;
 import io.artframework.conf.RequirementConfig;
 import io.artframework.conf.TriggerConfig;
@@ -24,18 +23,22 @@ import io.artframework.conf.TriggerConfig;
 public enum ConfigMapType {
 
     /**
-     * The config that every ART object of the same type owns.
-     * Examples for this are {@link ActionConfig}, {@link RequirementConfig} and {@link TriggerConfig}.
+     * A config that every art object implements differently and depends on the user input.
+     * The config is scoped to the specific art object implementation and often
+     * resides as fields inside the actual art object.
      */
-    GENERAL_ART_CONFIG,
+    ART_CONFIG,
     /**
-     * A config that every {@link ArtObject} implements differently.
-     * The config is coped to the specific art object implementation and often
-     * resides as fields inside the actual {@link ArtObject} class.
+     * Config with fields mapped to the {@link ActionConfig}.
      */
-    SPECIFIC_ART_CONFIG,
     ACTION,
+    /**
+     * Config with fields mapped to the {@link RequirementConfig}.
+     */
     REQUIREMENT,
+    /**
+     * Config with fields mapped to the {@link TriggerConfig}.
+     */
     TRIGGER,
     /**
      * A custom config placeholder that can be used to use the {@link ConfigParser}

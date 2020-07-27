@@ -37,7 +37,7 @@ public abstract class AbstractArtFactory<TContext extends ArtObjectContext<TArtO
     }
 
     @Override
-    public Configuration getConfiguration() {
+    public Configuration configuration() {
         return configuration;
     }
 
@@ -45,7 +45,7 @@ public abstract class AbstractArtFactory<TContext extends ArtObjectContext<TArtO
     protected final TArtObject createArtObject(ConfigMap configMap) {
         TArtObject artObject = options().provider().create();
 
-        if (configMap == null || !configMap.isLoaded() || configMap.getType() != ConfigMapType.SPECIFIC_ART_CONFIG) {
+        if (configMap == null || !configMap.isLoaded() || configMap.getType() != ConfigMapType.ART_CONFIG) {
             return artObject;
         }
 

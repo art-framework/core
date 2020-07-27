@@ -19,7 +19,7 @@ package io.artframework;
 import io.artframework.impl.DefaultArtBuilder;
 import io.artframework.parser.flow.FlowParser;
 
-import java.util.List;
+import java.util.Collection;
 
 public interface ArtBuilder extends Scope {
 
@@ -31,7 +31,11 @@ public interface ArtBuilder extends Scope {
 
     <TParser extends Parser<TInput>, TInput> ArtBuilderParser<TParser, TInput> parser(TParser parser);
 
-    ArtBuilderParser<FlowParser, List<String>> parser();
+    ArtBuilderParser<FlowParser, Collection<String>> parser();
+
+    default ArtBuilderParser<FlowParser, Collection<String>> load(Collection<String> strings) {
+        return parser().parse(strings);
+    }
 
     ArtContext build();
 }

@@ -97,7 +97,7 @@ class ArtObjectContextParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            assertThat(extractConfig(ConfigMapType.GENERAL_ART_CONFIG, ActionConfig.builder().build()))
+            assertThat(extractConfig(ConfigMapType.ACTION, ActionConfig.builder().build()))
                     .extracting(ActionConfig::cooldown, ActionConfig::delay)
                     .contains(5000L, 10000L);
         }
@@ -111,7 +111,7 @@ class ArtObjectContextParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            assertThat(extractConfig(ConfigMapType.GENERAL_ART_CONFIG, ActionConfig.builder().build()))
+            assertThat(extractConfig(ConfigMapType.ACTION, ActionConfig.builder().build()))
                     .extracting(ActionConfig::cooldown, ActionConfig::delay)
                     .contains(5000L, 10000L);
         }
@@ -125,7 +125,7 @@ class ArtObjectContextParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            TestConfig config = extractConfig(ConfigMapType.SPECIFIC_ART_CONFIG, new TestConfig());
+            TestConfig config = extractConfig(ConfigMapType.ART_CONFIG, new TestConfig());
 
             assertThat(config)
                     .extracting(TestConfig::getName, TestConfig::getNumber)
@@ -142,11 +142,11 @@ class ArtObjectContextParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            assertThat(extractConfig(ConfigMapType.GENERAL_ART_CONFIG, ActionConfig.builder().build()))
+            assertThat(extractConfig(ConfigMapType.ACTION, ActionConfig.builder().build()))
                     .extracting(ActionConfig::delay)
                     .isEqualTo(10L);
 
-            assertThat(extractConfig(ConfigMapType.SPECIFIC_ART_CONFIG, new TestConfig()))
+            assertThat(extractConfig(ConfigMapType.ART_CONFIG, new TestConfig()))
                     .extracting(TestConfig::getName, TestConfig::getNumber)
                     .contains("foo", 2);
         }

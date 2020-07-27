@@ -61,8 +61,8 @@ public class ConfigParser extends LineParser<ConfigMap> {
         ArrayList<KeyValuePair> pairs = new ArrayList<>();
 
         String quotedValue = matcher.group("quotedValue");
-        String unqotedValue = matcher.group("value");
-        String value = Strings.isNullOrEmpty(unqotedValue) ? quotedValue : unqotedValue;
+        String unquotedValue = matcher.group("value");
+        String value = Strings.isNullOrEmpty(unquotedValue) ? quotedValue : unquotedValue;
 
         pairs.add(new KeyValuePair(matcher.group("key"), value));
 

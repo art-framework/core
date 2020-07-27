@@ -55,21 +55,21 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
     }
 
     @Override
-    public CombinedResult test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context) {
+    public TargetResult<TTarget, Requirement<TTarget>, RequirementContext<TTarget>> test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context) {
 
-        if (!isTargetType(target.getSource())) return empty();
+        if (!isTargetType(target.getSource())) return empty().with(target, this);
 
         if (config().checkOnce()) {
             Optional<Boolean> result = store(target, Constants.Storage.CHECK_ONCE_RESULT, Boolean.class);
             if (result.isPresent()) {
-                return of(result.get());
+                return of(result.get()).with(target, this);
             }
         }
 
-        CombinedResult result = of(requirement.test(target, context));
+        Result result = of(requirement.test(target, context));
 
         int currentCount = store(target, Constants.Storage.COUNT, Integer.class).orElse(0);
-        if (result.isSuccess()) {
+        if (result.success()) {
             store(target, Constants.Storage.COUNT, ++currentCount);
         }
 
@@ -82,17 +82,17 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
         }
 
         if (config().negated()) {
-            switch (result.getStatus()) {
+            switch (result.status()) {
                 case FAILURE:
-                    return success();
+                    return success().with(target, this);
                 case SUCCESS:
-                    return failure();
+                    return failure().with(target, this);
                 default:
                 case ERROR:
-                    return result;
+                    return result.with(target, this);
             }
         } else {
-            return result;
+            return result.with(target, this);
         }
     }
 }

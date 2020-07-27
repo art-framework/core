@@ -43,9 +43,9 @@ public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContex
      * @return config of this context
      */
     ActionConfig config();
-
-    @Override
-    FutureResult execute(@NonNull Target<TTarget> target, @NonNull ExecutionContext<ActionContext<TTarget>> context);
+//
+//    @Override
+//    FutureResult execute(@NonNull Target<TTarget> target, @NonNull ExecutionContext<ActionContext<TTarget>> context);
 
     default FutureResult of(CombinedResult result) {
         return FutureResult.of(result);

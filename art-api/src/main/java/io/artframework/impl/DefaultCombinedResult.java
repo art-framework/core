@@ -18,14 +18,17 @@ package io.artframework.impl;
 
 import com.google.common.collect.ImmutableList;
 import io.artframework.*;
+import io.artframework.util.ReflectionUtil;
 import lombok.Getter;
 import lombok.Singular;
 import lombok.Value;
+import lombok.experimental.Accessors;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Value
+@Accessors(fluent = true)
 public class DefaultCombinedResult implements CombinedResult {
 
     @Getter(lazy = true)
@@ -40,39 +43,51 @@ public class DefaultCombinedResult implements CombinedResult {
     }
 
     public DefaultCombinedResult(List<Result> results) {
-        this.results = ImmutableList.copyOf(results);
+        this.results = ImmutableList.copyOf(flatten(results));
+    }
+
+    private Collection<Result> flatten(Collection<Result> results) {
+        ArrayList<Result> flatResults = new ArrayList<>();
+        for (Result result : results) {
+            if (result instanceof CombinedResult) {
+                flatResults.addAll(flatten(((CombinedResult) result).results()));
+            } else {
+                flatResults.add(result);
+            }
+        }
+        return flatResults;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <TTarget> Collection<TargetResult<TTarget, ?>> getTargetResults(Target<TTarget> target) {
-        return getResults().stream()
+    public <TTarget> Collection<TargetResult<TTarget, ?, ?>> ofTarget(Target<TTarget> target) {
+        return results().stream()
                 .filter(result -> result instanceof TargetResult)
-                .filter(targetResult -> ((TargetResult<?, ?>) targetResult).getTarget().equals(target))
-                .map(targetResult -> (TargetResult<TTarget, ?>) targetResult)
+                .filter(targetResult -> ((TargetResult<?, ?, ?>) targetResult).target().equals(target))
+                .map(targetResult -> (TargetResult<TTarget, ?, ?>) targetResult)
                 .collect(Collectors.toList());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <TTarget> Collection<TargetResult<TTarget, ?>> getTargetResults(Class<TTarget> targetClass) {
-        return getResults().stream()
+    public <TTarget> Collection<TargetResult<TTarget, ?, ?>> ofTarget(Class<TTarget> targetClass) {
+        return results().stream()
                 .filter(result -> result instanceof TargetResult)
-                .filter(targetResult -> targetClass.isInstance(((TargetResult<?, ?>) targetResult).getTarget().getSource()))
-                .map(targetResult -> (TargetResult<TTarget, ?>) targetResult)
+                .filter(targetResult -> ReflectionUtil.isTargetType(targetClass, ((TargetResult<?, ?, ?>) targetResult).target()))
+                .map(targetResult -> (TargetResult<TTarget, ?, ?>) targetResult)
                 .collect(Collectors.toList());
     }
 
     @Override
     public CombinedResult combine(Result result) {
-        ArrayList<Result> results = new ArrayList<>(getResults());
+        ArrayList<Result> results = new ArrayList<>(results());
         results.add(result);
         return new DefaultCombinedResult(results);
     }
 
     private String[] combineMessages() {
-        return getResults().stream()
-                .map(Result::getMessages)
+        return results().stream()
+                .map(Result::messages)
                 .reduce((list1, list2) -> {
                     HashSet<String> messages = new HashSet<>();
                     messages.addAll(Arrays.asList(list1));
@@ -82,8 +97,8 @@ public class DefaultCombinedResult implements CombinedResult {
     }
 
     private ResultStatus combineStatus() {
-        return getResults().stream()
-                .map(Result::getStatus)
+        return results().stream()
+                .map(Result::status)
                 .reduce(ResultStatus::combine)
                 .orElse(ResultStatus.EMPTY);
     }

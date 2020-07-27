@@ -53,6 +53,14 @@ public final class ConfigUtil {
         return getConfigFields(configClass, FieldNameFormatters.LOWER_UNDERSCORE);
     }
 
+    public static <TConfig> Map<String, ConfigFieldInformation> getConfigFields(Class<TConfig> configClass, TConfig config) throws ArtConfigException {
+        return getConfigFields(configClass, config, FieldNameFormatters.LOWER_UNDERSCORE);
+    }
+
+    public static <TConfig> Map<String, ConfigFieldInformation> getConfigFields(Class<TConfig> configClass, TConfig config, FieldNameFormatter formatter) throws ArtConfigException {
+        return getConfigFields("", configClass, config, formatter);
+    }
+
     private static Map<String, ConfigFieldInformation> getConfigFields(String basePath, Class<?> configClass, Object configInstance, FieldNameFormatter formatter) throws ArtConfigException {
         Map<String, ConfigFieldInformation> fields = new HashMap<>();
 

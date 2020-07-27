@@ -18,6 +18,7 @@ package io.artframework.impl;
 
 import io.artframework.ArtContext;
 import io.artframework.CombinedResult;
+import io.artframework.FutureResult;
 import io.artframework.Target;
 import lombok.NonNull;
 
@@ -29,7 +30,7 @@ public final class CombinedArtContext extends DefaultArtContext implements ArtCo
     private final Map<String, Object> data = new HashMap<>();
 
     CombinedArtContext(ArtContext context1, ArtContext context2) {
-        super(context1.getConfiguration(), context1.settings(), new ArrayList<>());
+        super(context1.configuration(), context1.settings(), new ArrayList<>());
         this.data.putAll(context1.data());
         this.contextSet.add(context1);
 
@@ -50,11 +51,11 @@ public final class CombinedArtContext extends DefaultArtContext implements ArtCo
     }
 
     @Override
-    public final <TTarget> CombinedResult execute(@NonNull Target<TTarget> target) {
+    public final <TTarget> FutureResult execute(@NonNull Target<TTarget> target) {
         return contextSet.stream()
                 .map(artContext -> artContext.execute(target))
-                .reduce(CombinedResult::combine)
-                .orElse(CombinedResult.of(empty()));
+                .reduce(FutureResult::combine)
+                .orElse(FutureResult.of(empty()));
     }
 
     @Override

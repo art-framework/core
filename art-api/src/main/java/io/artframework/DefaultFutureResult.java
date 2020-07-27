@@ -21,19 +21,20 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
+@Accessors(fluent = true)
 public final class DefaultFutureResult implements FutureResult {
 
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
     private CombinedResult result;
     @Getter
-    @Setter(AccessLevel.PRIVATE)
     private boolean complete;
 
     private final List<Consumer<CombinedResult>> consumers;
@@ -52,64 +53,77 @@ public final class DefaultFutureResult implements FutureResult {
     }
 
     @Override
+    public boolean isComplete() {
+        return complete;
+    }
+
+    @Override
     public void onCompletion(Consumer<CombinedResult> callback) {
         if (isComplete()) {
-            getConsumers().forEach(consumer -> consumer.accept(getResult()));
+            consumers().forEach(consumer -> consumer.accept(result()));
         } else {
             consumers.add(callback);
         }
     }
 
     @Override
-    public CombinedResult complete(CombinedResult futureResult) {
-        if (isComplete()) return getResult();
+    public CombinedResult complete() {
+        if (isComplete()) return result();
 
-        setResult(combine(futureResult));
-        getConsumers().forEach(consumer -> consumer.accept(getResult()));
-        setComplete(true);
+        consumers().forEach(consumer -> consumer.accept(result()));
+        complete = true;
 
-        return getResult();
+        return result();
+    }
+
+    @Override
+    public CombinedResult complete(Result futureResult) {
+        if (isComplete()) return result();
+
+        result(combine(futureResult));
+
+        return complete();
     }
 
     @Override
     public FutureResult combine(Result result) {
         if (isComplete()) throw new UnsupportedOperationException("Cannot combine a completed FutureResult.");
 
-        ArrayList<Consumer<CombinedResult>> consumers = new ArrayList<>(getConsumers());
+        ArrayList<Consumer<CombinedResult>> consumers = new ArrayList<>(consumers());
         if (result instanceof FutureResult) {
-            consumers.addAll(((FutureResult) result).getConsumers());
+            consumers.addAll(((FutureResult) result).consumers());
         }
 
-        return new DefaultFutureResult(getResult().combine(result), consumers);
+        return new DefaultFutureResult(result().combine(result), consumers);
     }
 
     @Override
-    public Collection<Consumer<CombinedResult>> getConsumers() {
+    public Collection<Consumer<CombinedResult>> consumers() {
         return ImmutableList.copyOf(consumers);
     }
 
     @Override
-    public Collection<Result> getResults() {
-        return getResult().getResults();
+    public Collection<Result> results() {
+        return result().results();
     }
 
     @Override
-    public <TTarget> Collection<TargetResult<TTarget, ?>> getTargetResults(Target<TTarget> target) {
-        return getResult().getTargetResults(target);
+    public <TTarget> Collection<TargetResult<TTarget, ?, ?>> ofTarget(Target<TTarget> target) {
+        return result().ofTarget(target);
     }
 
     @Override
-    public <TTarget> Collection<TargetResult<TTarget, ?>> getTargetResults(Class<TTarget> targetClass) {
-        return getResult().getTargetResults(targetClass);
+    public <TTarget> Collection<TargetResult<TTarget, ?, ?>> ofTarget(Class<TTarget> targetClass) {
+        return result().ofTarget(targetClass);
     }
 
     @Override
-    public ResultStatus getStatus() {
-        return getResult().getStatus();
+    public ResultStatus status() {
+        return result().status();
     }
 
     @Override
-    public String[] getMessages() {
-        return getResult().getMessages();
+    public String[] messages() {
+        return result().messages();
     }
 }
