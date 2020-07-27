@@ -18,13 +18,14 @@ package io.artframework.conf;
 
 import io.artframework.annotations.ConfigOption;
 import io.artframework.util.TimeUtil;
-import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.experimental.Accessors;
 
-@Getter
-@Setter(AccessLevel.PACKAGE)
+@Data
+@Builder
+@Accessors(fluent = true)
 @EqualsAndHashCode(callSuper = true)
 public class TriggerConfig extends ArtObjectConfig {
 
@@ -59,7 +60,7 @@ public class TriggerConfig extends ArtObjectConfig {
      *
      * @return delay in ticks
      */
-    public long getDelay() {
+    public long delay() {
         return TimeUtil.parseTimeAsMilliseconds(delay);
     }
 
@@ -68,7 +69,7 @@ public class TriggerConfig extends ArtObjectConfig {
      *
      * @return cooldown in milliseconds
      */
-    public long getCooldown() {
+    public long cooldown() {
         return TimeUtil.parseTimeAsMilliseconds(cooldown);
     }
 }

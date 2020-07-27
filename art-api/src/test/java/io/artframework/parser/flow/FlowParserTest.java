@@ -60,7 +60,7 @@ class FlowParserTest {
 
             @Override
             protected ConfigMap getGeneralConfigMap() {
-                return ActionConfig.getConfigMap();
+                return ActionConfig.configMap();
             }
         });
 

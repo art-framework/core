@@ -22,14 +22,14 @@ public interface RequirementHolder {
 
     void addRequirement(RequirementContext<?> requirement);
 
-    Collection<RequirementContext<?>> getRequirements();
+    Collection<RequirementContext<?>> requirements();
 
     @SuppressWarnings("unchecked")
     default <TTarget> CombinedResult testRequirements(ExecutionContext<?> executionContext) {
         CombinedResult result = CombinedResult.empty();
 
         for (Target<?> target : executionContext.getTargets()) {
-            result = result.combine(getRequirements().stream()
+            result = result.combine(requirements().stream()
                     .filter(requirementContext -> requirementContext.isTargetType(target))
                     .map(requirementContext -> (RequirementContext<TTarget>) requirementContext)
                     .map(executionContext::next)

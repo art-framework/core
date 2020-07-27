@@ -35,7 +35,7 @@ public class DefaultTriggerFactory extends AbstractArtFactory<TriggerContext, Tr
     @Override
     public TriggerContext create(Map<ConfigMapType, ConfigMap> configMaps) {
 
-        TriggerConfig config = new TriggerConfig();
+        TriggerConfig config = TriggerConfig.builder().build();
         if (configMaps.containsKey(ConfigMapType.GENERAL_ART_CONFIG)) {
             config = configMaps.get(ConfigMapType.GENERAL_ART_CONFIG).applyTo(config);
         }

@@ -25,9 +25,11 @@ import io.artframework.events.EventPriority;
 import io.artframework.events.TriggerEvent;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 
 import java.util.*;
 
+@Accessors(fluent = true)
 public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> implements TriggerContext, ArtEventListener {
 
     @Getter
@@ -50,8 +52,8 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     }
 
     @Override
-    public @NonNull String getUniqueId() {
-        return getConfig().getIdentifier();
+    public @NonNull String uniqueId() {
+        return this.config().identifier();
     }
 
     @Override
@@ -66,7 +68,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
     @ArtEventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onTriggerEvent(TriggerEvent event) {
-        if (!event.getIdentifier().equalsIgnoreCase(info().identifier())) return;
+        if (!event.getIdentifier().equalsIgnoreCase(options().identifier())) return;
 
         ExecutionContext<?> executionContext = ExecutionContext.of(
                 getConfiguration(),
@@ -88,14 +90,14 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
                     store(target.getTarget(), Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
-                    if (getConfig().isExecuteActions()) executeActions(target.getTarget(), context);
+                    if (this.config().executeActions()) executeActions(target.getTarget(), context);
                 }
             }
 
             callListeners(context);
         };
 
-        long delay = getConfig().getDelay();
+        long delay = this.config().delay();
         if (getConfiguration().scheduler().isPresent() && delay > 0) {
             getConfiguration().scheduler().get().runTaskLater(runnable, delay);
         } else {
@@ -153,7 +155,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
      */
     private <TTarget> boolean wasExecutedOnce(Target<TTarget> target) {
 
-        return getConfig().isExecuteOnce() && getLastExecution(target) > 0;
+        return this.config().executeOnce() && getLastExecution(target) > 0;
     }
 
     /**
@@ -165,7 +167,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
      * @return true if action is on cooldown
      */
     private <TTarget> boolean isOnCooldown(Target<TTarget> target) {
-        long cooldown = getConfig().getCooldown();
+        long cooldown = this.config().cooldown();
         if (cooldown < 1) return false;
 
         long lastExecution = getLastExecution(target);

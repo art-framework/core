@@ -43,11 +43,7 @@ public interface RequirementContext<TTarget> extends Requirement<TTarget>, ArtOb
      *
      * @return the underlying {@link RequirementConfig}
      */
-    RequirementConfig getConfig();
-
-    default RequirementConfig options() {
-        return getConfig();
-    }
+    RequirementConfig config();
 
     @Override
     CombinedResult test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context);

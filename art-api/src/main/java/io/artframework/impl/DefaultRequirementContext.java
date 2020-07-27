@@ -21,6 +21,7 @@ import io.artframework.conf.Constants;
 import io.artframework.conf.RequirementConfig;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 
 import java.util.Optional;
 
@@ -30,6 +31,7 @@ import java.util.Optional;
  *
  * @param <TTarget> target type of the requirement
  */
+@Accessors(fluent = true)
 public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext<Requirement<TTarget>> implements RequirementContext<TTarget> {
 
     private final Requirement<TTarget> requirement;
@@ -48,8 +50,8 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
     }
 
     @Override
-    public @NonNull String getUniqueId() {
-        return getConfig().getIdentifier();
+    public String uniqueId() {
+        return config().identifier();
     }
 
     @Override
@@ -57,7 +59,7 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
 
         if (!isTargetType(target.getSource())) return empty();
 
-        if (getConfig().isCheckOnce()) {
+        if (config().checkOnce()) {
             Optional<Boolean> result = store(target, Constants.Storage.CHECK_ONCE_RESULT, Boolean.class);
             if (result.isPresent()) {
                 return of(result.get());
@@ -71,15 +73,15 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
             store(target, Constants.Storage.COUNT, ++currentCount);
         }
 
-        if (getConfig().isCheckOnce()) {
+        if (config().checkOnce()) {
             store(target, Constants.Storage.CHECK_ONCE_RESULT, result);
         }
 
-        if (getConfig().getCount() > 0) {
-            result = of(currentCount >= getConfig().getCount()).combine(result);
+        if (config().count() > 0) {
+            result = of(currentCount >= config().count()).combine(result);
         }
 
-        if (getConfig().isNegated()) {
+        if (config().negated()) {
             switch (result.getStatus()) {
                 case FAILURE:
                     return success();

@@ -17,7 +17,9 @@
 package io.artframework.util;
 
 import io.artframework.Target;
+import lombok.NonNull;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Map;
@@ -102,5 +104,24 @@ public final class ReflectionUtil {
 
     public static boolean isLambda(Class<?> clazz) {
         return clazz.getSimpleName().contains("$$Lambda$");
+    }
+
+    /**
+     * Checks if the target type matches the given object.
+     * <p>
+     * The target can be of type {@link Target} which will extract the actual target from it first.
+     * False will be returned if the target is null.
+     *
+     * @param target the target to check against this context
+     * @return true if the type matches or false of the object is null
+     *          or does not extend the target type
+     */
+    public static <TTarget> boolean isTargetType(@NonNull Class<?> targetClass, @Nullable TTarget target) {
+        if (target == null) return false;
+
+        if (target instanceof Target) {
+            return isTargetType(targetClass, ((Target<?>) target).getSource());
+        }
+        return targetClass.isInstance(target);
     }
 }

@@ -26,6 +26,7 @@ import io.artframework.util.TimeUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,7 @@ import java.util.List;
  *
  * @param <TTarget> target type of the action
  */
+@Accessors(fluent = true)
 public final class DefaultActionContext<TTarget> extends AbstractArtObjectContext<Action<TTarget>> implements ActionContext<TTarget> {
 
     @Getter(AccessLevel.PROTECTED)
@@ -60,11 +62,6 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     }
 
     @Override
-    public @NonNull String getUniqueId() {
-        return getConfig().getIdentifier();
-    }
-
-    @Override
     public void addAction(ActionContext<?> action) {
         this.actions.add(action);
     }
@@ -78,7 +75,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     @SuppressWarnings("unchecked")
     public FutureResult execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
 
-        if (ART.callEvent(new PreActionExecutionEvent<>(getAction(), context)).isCancelled()) {
+        if (ART.callEvent(new PreActionExecutionEvent<>(action(), context)).isCancelled()) {
             return cancelled();
         }
 
@@ -92,18 +89,18 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
         Runnable runnable = () -> {
 
-            if (ART.callEvent(new ActionExecutionEvent<>(getAction(), context)).isCancelled()) {
+            if (ART.callEvent(new ActionExecutionEvent<>(action(), context)).isCancelled()) {
                 result.complete(cancelled());
                 return;
             }
 
-            getAction().execute(target, context);
+            action().execute(target, context);
 
-            ART.callEvent(new ActionExecutedEvent<>(getAction(), context));
+            ART.callEvent(new ActionExecutedEvent<>(action(), context));
 
             store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
-            FutureResult futureResult = getActions().stream()
+            FutureResult futureResult = this.actions().stream()
                     .filter(actionContext -> actionContext.isTargetType(target))
                     .map(actionContext -> (ActionContext<TTarget>) actionContext)
                     .map(action -> action.execute(target, context.next(action)))
@@ -113,7 +110,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
             result.complete(futureResult);
         };
 
-        long delay = getConfig().getDelay();
+        long delay = this.config().delay();
 
         if (getConfiguration().scheduler().isPresent() && delay > 0) {
             getConfiguration().scheduler().get().runTaskLater(runnable, delay);
@@ -133,7 +130,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
      */
     public FutureResult testExecutedOnce(Target<TTarget> target) {
 
-        if (!getConfig().isExecuteOnce()) return empty();
+        if (!this.config().executeOnce()) return empty();
 
         if (getLastExecution(target) > 0) {
             return failure("Action can only be executed once and was already executed.");
@@ -150,7 +147,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
      * @return a successful result if the action is not on cooldown a failure otherwise
      */
     public FutureResult testCooldown(Target<TTarget> target) {
-        long cooldown = getConfig().getCooldown();
+        long cooldown = this.config().cooldown();
         if (cooldown < 1) return empty();
 
         long lastExecution = getLastExecution(target);

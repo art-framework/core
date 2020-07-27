@@ -97,8 +97,8 @@ class ArtObjectContextParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            assertThat(extractConfig(ConfigMapType.GENERAL_ART_CONFIG, new ActionConfig()))
-                    .extracting(ActionConfig::getCooldown, ActionConfig::getDelay)
+            assertThat(extractConfig(ConfigMapType.GENERAL_ART_CONFIG, ActionConfig.builder().build()))
+                    .extracting(ActionConfig::cooldown, ActionConfig::delay)
                     .contains(5000L, 10000L);
         }
 
@@ -111,8 +111,8 @@ class ArtObjectContextParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            assertThat(extractConfig(ConfigMapType.GENERAL_ART_CONFIG, new ActionConfig()))
-                    .extracting(ActionConfig::getCooldown, ActionConfig::getDelay)
+            assertThat(extractConfig(ConfigMapType.GENERAL_ART_CONFIG, ActionConfig.builder().build()))
+                    .extracting(ActionConfig::cooldown, ActionConfig::delay)
                     .contains(5000L, 10000L);
         }
 
@@ -142,8 +142,8 @@ class ArtObjectContextParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            assertThat(extractConfig(ConfigMapType.GENERAL_ART_CONFIG, new ActionConfig()))
-                    .extracting(ActionConfig::getDelay)
+            assertThat(extractConfig(ConfigMapType.GENERAL_ART_CONFIG, ActionConfig.builder().build()))
+                    .extracting(ActionConfig::delay)
                     .isEqualTo(10L);
 
             assertThat(extractConfig(ConfigMapType.SPECIFIC_ART_CONFIG, new TestConfig()))

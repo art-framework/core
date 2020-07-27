@@ -37,7 +37,7 @@ public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder,
      *
      * @return trigger config
      */
-    TriggerConfig getConfig();
+    TriggerConfig config();
 
     /**
      * Fires this trigger and informs all listeners about its executing
