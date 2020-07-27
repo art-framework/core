@@ -45,7 +45,8 @@ public final class ConfigUtil {
             constructor.setAccessible(true);
             return getConfigFields("", configClass, constructor.newInstance(), formatter);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new ArtConfigException(e);
+            throw new ArtConfigException("Unable to create instance of config class \"" + configClass.getSimpleName() + "\": " + e.getMessage()
+                    + ". Is it public and has a public no args constructor?", e);
         }
     }
 
@@ -69,6 +70,12 @@ public final class ConfigUtil {
             for (Field field : allFields) {
                 if (Modifier.isStatic(field.getModifiers())) continue;
                 if (field.isAnnotationPresent(Ignore.class)) continue;
+                if (Modifier.isFinal(field.getModifiers())) {
+                    if (field.isAnnotationPresent(ConfigOption.class)) {
+                        throw new ArtConfigException("Cannot use a final field as a config option. Remove the @ConfigOption or the final modifier from \"" + field.getName() + "\"");
+                    }
+                    continue;
+                }
 
                 Optional<ConfigOption> configOption = getConfigOption(field);
 
@@ -104,6 +111,7 @@ public final class ConfigUtil {
                             && field2.getPosition() > -1
                             && field1.getPosition() == field2.getPosition()
             )).collect(Collectors.toList());
+
             if (!sameFieldPosition.isEmpty()) {
                 throw new ArtConfigException("found same position " + sameFieldPosition.get(0).getPosition() + " on the following fields: "
                         + sameFieldPosition.stream().map(ConfigFieldInformation::getIdentifier).collect(Collectors.joining(",")));

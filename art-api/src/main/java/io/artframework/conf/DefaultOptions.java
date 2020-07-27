@@ -210,7 +210,7 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
             String[] alias = tryGetAlias(methods);
             Class<?> targetClass = tryGetTargetClass();
             Class<?> configClass = findConfigClass(methods);
-            Map<String, ConfigFieldInformation> configMap = tryGetConfigInformation();
+            Map<String, ConfigFieldInformation> configMap = tryGetConfigMap(configClass);
             ArtObjectProvider<TArtObject> provider = tryGetArtObjectProvider();
 
             if (Strings.isNullOrEmpty(identifier)) {
@@ -313,7 +313,7 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
         }
     }
 
-    private Map<String, ConfigFieldInformation> tryGetConfigInformation() throws ArtConfigException {
+    private Map<String, ConfigFieldInformation> tryGetConfigMap(Class<?> configClass) throws ArtConfigException {
         if (configClass == null) return new HashMap<>();
 
         return ConfigUtil.getConfigFields(configClass);

@@ -45,6 +45,9 @@ public enum FieldNameFormatters implements FieldNameFormatter {
                 } else if (Character.isUpperCase(c)) {
                     c = Character.toLowerCase(c);
                     builder.append('_').append(c);
+                } else {
+                    // digits are not upper or lowercase
+                    builder.append(c);
                 }
             }
             return builder.toString();
@@ -65,6 +68,9 @@ public enum FieldNameFormatters implements FieldNameFormatter {
                     builder.append(Character.toUpperCase(c));
                 } else if (Character.isUpperCase(c)) {
                     builder.append('_').append(c);
+                } else {
+                    // digits are not upper or lowercase
+                    builder.append(c);
                 }
             }
             return builder.toString();

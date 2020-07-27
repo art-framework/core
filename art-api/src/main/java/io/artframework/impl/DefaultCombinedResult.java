@@ -55,6 +55,13 @@ public class DefaultCombinedResult implements CombinedResult {
                 flatResults.add(result);
             }
         }
+
+        if (flatResults.stream().anyMatch(result -> result.status() != ResultStatus.EMPTY)) {
+            return flatResults.stream()
+                    .filter(result -> result.status() != ResultStatus.EMPTY)
+                    .collect(Collectors.toList());
+        }
+
         return flatResults;
     }
 

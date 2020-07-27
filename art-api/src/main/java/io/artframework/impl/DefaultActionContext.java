@@ -94,21 +94,20 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
                 return;
             }
 
-            action().execute(target, context);
+            Result actionResult = action().execute(target, context).with(target, this);
 
             ART.callEvent(new ActionExecutedEvent<>(action(), context));
 
             store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
-            FutureResult futureResult = this.actions().stream()
+            TargetResult<TTarget, Action<TTarget>, DefaultActionContext<TTarget>> nestedActionResult = this.actions().stream()
                     .filter(actionContext -> actionContext.isTargetType(target))
                     .map(actionContext -> (ActionContext<TTarget>) actionContext)
-                    .map(action -> action.execute(target, context.next(action)))
-                    .reduce(Result::combine)
-                    .orElse(result)
-                    .future();
+                    .map(action -> action.execute(target, context.next(action)).with(target, this))
+                    .reduce((result1, result2) -> result1.combine(result2).with(target, this))
+                    .orElse(empty().with(target, this));
 
-            result.complete(futureResult);
+            result.complete(actionResult.combine(nestedActionResult));
         };
 
         long delay = this.config().delay();
