@@ -87,8 +87,6 @@ public final class DefaultFutureResult implements FutureResult {
 
     @Override
     public FutureResult combine(Result result) {
-        if (isComplete()) throw new UnsupportedOperationException("Cannot combine a completed FutureResult.");
-
         ArrayList<Consumer<CombinedResult>> consumers = new ArrayList<>(consumers());
         if (result instanceof FutureResult) {
             consumers.addAll(((FutureResult) result).consumers());

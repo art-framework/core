@@ -77,7 +77,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     @Override
     public <TTarget> FutureResult execute(@NonNull Target<TTarget> target) {
 
-        return execute(ExecutionContext.of(configuration(), this, target));
+        return execute(target, ExecutionContext.of(configuration(), this, target));
     }
 
     @SuppressWarnings("unchecked")

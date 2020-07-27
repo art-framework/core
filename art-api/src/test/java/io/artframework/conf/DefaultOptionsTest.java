@@ -19,6 +19,7 @@ package io.artframework.conf;
 import io.artframework.*;
 import io.artframework.annotations.ART;
 import io.artframework.annotations.Config;
+import io.artframework.annotations.ConfigOption;
 import io.artframework.integration.data.Player;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -29,6 +30,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 @DisplayName("ArtInformationTest")
 class DefaultOptionsTest {
@@ -94,10 +96,43 @@ class DefaultOptionsTest {
                     .extracting(Options::identifier, Options::configClass)
                     .contains("my-trigger", Optional.of(AlternateConfig.class));
         }
+
+        @SneakyThrows
+        @Test
+        @DisplayName("should create config map from art object class")
+        void shouldCreateConfigMap() {
+
+            DefaultOptions<MyClassOptions> options = new DefaultOptions<>(MyClassOptions.class);
+
+            assertThatCode(() -> assertThat(options.initialize().configMap())
+                    .containsKey("cfg")
+                    .extractingByKey("cfg")
+                    .extracting(ConfigFieldInformation::getDefaultValue)
+                    .isEqualTo("foo")
+            ).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("should extract config map from alternate config")
+        void shouldExtractConfigMapFromAlternateConfig() {
+
+            DefaultOptions<AlternateConfigOptions> options = new DefaultOptions<>(AlternateConfigOptions.class);
+
+            assertThatCode(() -> assertThat(options.initialize().configMap())
+                    .containsKey("config_value")
+                    .extractingByKey("config_value")
+                    .extracting(ConfigFieldInformation::getDefaultValue)
+                    .isEqualTo(1337)
+            ).doesNotThrowAnyException();
+
+        }
     }
 
     @ART(value = "class-options", alias = "class", description = "testing the ART annotation on classes")
-    static class MyClassOptions implements Action<Player> {
+    public static class MyClassOptions implements Action<Player> {
+
+        @ConfigOption
+        private final String cfg = "foo";
 
         @Override
         public Result execute(@NonNull Target<Player> target, @NonNull ExecutionContext<ActionContext<Player>> context) {
@@ -105,7 +140,7 @@ class DefaultOptionsTest {
         }
     }
 
-    static class MyMethodOptions implements Requirement<Player> {
+    public static class MyMethodOptions implements Requirement<Player> {
 
         @Override
         @ART(value = "class-options", alias = "class", description = "testing the ART annotation on classes")
@@ -114,7 +149,7 @@ class DefaultOptionsTest {
         }
     }
 
-    static class AlternateConfigOptions implements Trigger {
+    public static class AlternateConfigOptions implements Trigger {
 
         @ART("my-trigger")
         @Config(AlternateConfig.class)
@@ -123,7 +158,10 @@ class DefaultOptionsTest {
         }
     }
 
-    static class AlternateConfig {
+    public static class AlternateConfig {
+
+        @ConfigOption
+        private final int configValue = 1337;
 
         public AlternateConfig() {
         }
