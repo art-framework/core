@@ -34,6 +34,9 @@ public enum ConfigMapType {
      * resides as fields inside the actual {@link ArtObject} class.
      */
     SPECIFIC_ART_CONFIG,
+    ACTION,
+    REQUIREMENT,
+    TRIGGER,
     /**
      * A custom config placeholder that can be used to use the {@link ConfigParser}
      * without a general or specific art config.

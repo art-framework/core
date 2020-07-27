@@ -345,9 +345,9 @@ class FlowLogicSorterTest {
             assertThat(FlowLogicSorter.of(contexts).getResult())
                     .containsExactly(trigger, trigger1);
 
-            assertThat(trigger.getActions())
+            assertThat(trigger.actions())
                     .containsExactly(action)
-                    .extracting(ActionContext::getRequirements)
+                    .extracting(ActionContext::requirements)
                     .hasSize(1);
 
             assertThat(trigger1)
@@ -397,9 +397,9 @@ class FlowLogicSorterTest {
                     .extracting("actions.size")
                     .contains(2);
 
-            assertThat(action1.getRequirements())
+            assertThat(action1.requirements())
                     .containsExactly(requirement1);
-            assertThat(action2.getRequirements())
+            assertThat(action2.requirements())
                     .containsExactly(requirement2);
         }
     }

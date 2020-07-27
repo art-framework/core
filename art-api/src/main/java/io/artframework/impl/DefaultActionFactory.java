@@ -31,10 +31,7 @@ public class DefaultActionFactory<TTarget> extends AbstractArtFactory<ActionCont
     @Override
     public ActionContext<TTarget> create(Map<ConfigMapType, ConfigMap> configMaps) {
 
-        ActionConfig actionConfig = new ActionConfig();
-        if (configMaps.containsKey(ConfigMapType.GENERAL_ART_CONFIG)) {
-            actionConfig = configMaps.get(ConfigMapType.GENERAL_ART_CONFIG).applyTo(actionConfig);
-        }
+        ActionConfig actionConfig = ActionConfig.of(configMaps.get(ConfigMapType.ACTION));
 
         return ActionContext.of(
                 getConfiguration(),

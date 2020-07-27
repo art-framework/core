@@ -33,25 +33,13 @@ public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> ext
     }
 
     @Override
-    public @NonNull Class<?> getTargetClass() {
-        return info().targetClass();
-    }
-
-    @Override
-    public Options<TArtObject> info() {
+    public Options<TArtObject> options() {
         return information;
     }
 
     @Override
     public @NonNull Map<String, Object> data() {
         return data;
-    }
-
-    public boolean isTargetType(Object target) {
-        if (target instanceof Target) {
-            return getTargetClass().isInstance(((Target<?>) target).getSource());
-        }
-        return getTargetClass().isInstance(target);
     }
 
     @Override
@@ -65,6 +53,6 @@ public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> ext
     }
 
     private String getStorageKey(Target<?> target, String key) {
-        return getUniqueId() + "#" + target.getUniqueId() + "#" + key;
+        return uniqueId() + "#" + target.getUniqueId() + "#" + key;
     }
 }

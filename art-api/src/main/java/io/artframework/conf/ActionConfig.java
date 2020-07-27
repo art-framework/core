@@ -22,17 +22,23 @@ import io.artframework.annotations.ConfigOption;
 import io.artframework.parser.flow.ConfigMapType;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.TimeUtil;
-import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import javax.annotation.Nullable;
 
 /**
- * The {@link ActionConfig} holds general information about the execution
+ * The action config holds general information about the execution
  * properties of the action. Like delay, cooldown, etc.
+ * <p>
+ * You can use the builder to create a new action config in a programmatic way.
+ * Otherwise the config will be parsed by the given parser and provided for you.
  */
-@Getter
-@Setter(AccessLevel.PACKAGE)
+@Data
+@Builder
+@Accessors(fluent = true)
 @EqualsAndHashCode(callSuper = true)
 public final class ActionConfig extends ArtObjectConfig {
 
@@ -40,15 +46,21 @@ public final class ActionConfig extends ArtObjectConfig {
 
     private static ConfigMap configMap;
 
-    public static ConfigMap getConfigMap() {
+    public static ConfigMap configMap() {
         if (configMap == null) {
             try {
-                configMap = ConfigMap.of(ConfigMapType.GENERAL_ART_CONFIG, ConfigUtil.getConfigFields(ActionConfig.class));
+                configMap = ConfigMap.of(ConfigMapType.ACTION, ConfigUtil.getConfigFields(ActionConfig.class));
             } catch (ArtConfigException e) {
                 e.printStackTrace();
             }
         }
         return configMap;
+    }
+
+    public static ActionConfig of(@Nullable ConfigMap configMap) {
+        if (configMap == null || configMap.getType() != ConfigMapType.ACTION) return ActionConfig.builder().build();
+
+        return configMap.applyTo(ActionConfig.builder().build());
     }
 
     @ConfigOption(description = {
@@ -71,7 +83,7 @@ public final class ActionConfig extends ArtObjectConfig {
      *
      * @return delay in milliseconds
      */
-    public long getDelay() {
+    public long delay() {
         return TimeUtil.parseTimeAsMilliseconds(delay);
     }
 
@@ -80,7 +92,7 @@ public final class ActionConfig extends ArtObjectConfig {
      *
      * @return cooldown in milliseconds
      */
-    public long getCooldown() {
+    public long cooldown() {
         return TimeUtil.parseTimeAsMilliseconds(cooldown);
     }
 }

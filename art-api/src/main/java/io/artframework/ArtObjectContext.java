@@ -18,7 +18,6 @@ package io.artframework;
 
 import lombok.NonNull;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -27,41 +26,29 @@ import java.util.Optional;
  * a way to access the {@link Configuration} and defines a unique id that will be used
  * to store data for the {@link ArtObject}.
  */
-public interface ArtObjectContext<TArtObject extends ArtObject> extends Context, CombinedResultCreator {
+public interface ArtObjectContext<TArtObject extends ArtObject> extends Context, CombinedResultCreator, TargetHolder {
 
     /**
      * Gets the unique id of this {@link ArtObject} context.
      * The unique id is used to store metadata about the context.
      *
-     * @return the unique id of this context
+     * @return the unique id of this context. It will never be null or empty.
      */
-    @NonNull
-    String getUniqueId();
+    default String uniqueId() {
+        return options().identifier();
+    }
 
-    /**
-     * Gets the target type that is used by the underlying
-     * {@link ArtObject} of this context.
-     *
-     * @return target type class
-     */
-    @NonNull
-    Class<?> getTargetClass();
+    Options<TArtObject> options();
 
-    Options<TArtObject> info();
-
-    /**
-     * Checks if the target type matches the given object.
-     *
-     * @param object target to check against this context
-     * @return true if the type matches or false of the object is null
-     *          or does not extend the target type
-     */
-    boolean isTargetType(@Nullable Object object);
+    @Override
+    default Class<?> targetClass() {
+        return options().targetClass();
+    }
 
     /**
      * Stores a value for the given {@link Target} and this {@link ArtObjectContext}.
      * This means a unique key is generated from the {@link Target#getUniqueId()} and
-     * {@link ArtObjectContext#getUniqueId()} and will be appended by your key.
+     * {@link ArtObjectContext#uniqueId()} and will be appended by your key.
      * <br>
      * Then the {@link Storage#set(String, Object)} method is called and the data is persisted.
      * <br>
@@ -83,7 +70,7 @@ public interface ArtObjectContext<TArtObject extends ArtObject> extends Context,
      * fails or the data does not exist.
      * <br>
      * The data that is fetched will be stored under a unique key combination of
-     * {@link ArtObjectContext#getUniqueId()} and {@link Target#getUniqueId()}.
+     * {@link ArtObjectContext#uniqueId()} and {@link Target#getUniqueId()}.
      * <br>
      * Use the {@link #data()} methods to store data that is only available in this scope
      * and not persisted to the database.

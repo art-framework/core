@@ -42,7 +42,7 @@ public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContex
      *
      * @return config of this context
      */
-    ActionConfig getConfig();
+    ActionConfig config();
 
     @Override
     FutureResult execute(@NonNull Target<TTarget> target, @NonNull ExecutionContext<ActionContext<TTarget>> context);

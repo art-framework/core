@@ -18,25 +18,24 @@ package io.artframework.conf;
 
 import io.artframework.ArtConfigException;
 import io.artframework.ConfigMap;
-import io.artframework.Requirement;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.parser.flow.ConfigMapType;
 import io.artframework.util.ConfigUtil;
-import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.annotation.concurrent.Immutable;
+import lombok.experimental.Accessors;
 
 /**
- * The {@link RequirementConfig} holds general information about the execution
+ * The requirement config holds general information about the execution
  * properties of the requirement.
- * The config will be created when the underlying {@link Requirement} is created.
+ * <p>
+ * You can use the builder to create a new action config in a programmatic way.
+ * Otherwise the config will be parsed by the given parser and provided for you.
  */
-@Immutable
-@Getter
-@Setter(AccessLevel.PACKAGE)
+@Data
+@Builder
+@Accessors(fluent = true)
 @EqualsAndHashCode(callSuper = true)
 public class RequirementConfig extends ArtObjectConfig {
 

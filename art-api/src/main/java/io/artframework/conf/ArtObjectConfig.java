@@ -17,18 +17,13 @@
 package io.artframework.conf;
 
 import io.artframework.annotations.ConfigOption;
-import lombok.AccessLevel;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.experimental.Accessors;
 
-import javax.annotation.concurrent.Immutable;
 import java.io.Serializable;
 
-@Getter
-@Setter(AccessLevel.PACKAGE)
-@EqualsAndHashCode
-@Immutable
+@Data
+@Accessors(fluent = true)
 public class ArtObjectConfig implements Serializable {
 
     private static final long serialVersionUID = 326862832907325L;

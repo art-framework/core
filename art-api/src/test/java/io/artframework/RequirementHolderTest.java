@@ -40,7 +40,7 @@ class RequirementHolderTest implements CombinedResultCreator {
         requirements = new ArrayList<>();
         requirementHolder = mock(RequirementHolder.class);
         when(requirementHolder.testRequirements(any())).thenCallRealMethod();
-        when(requirementHolder.getRequirements()).thenReturn(requirements);
+        when(requirementHolder.requirements()).thenReturn(requirements);
         doAnswer(invocation -> requirements.add(invocation.getArgument(0)))
                 .when(requirementHolder).addRequirement(any());
     }
@@ -48,7 +48,7 @@ class RequirementHolderTest implements CombinedResultCreator {
     private <TTarget> RequirementContext<TTarget> requirement(Class<TTarget> targetClass, CombinedResult result) {
         RequirementContext<TTarget> context = mock(RequirementContext.class);
         when(context.isTargetType(any())).thenAnswer(invocation -> targetClass.isInstance(invocation.getArgument(0)));
-        when(context.getTargetClass()).thenReturn((Class) targetClass);
+        when(context.targetClass()).thenReturn((Class) targetClass);
         when(context.test(any(), any())).thenReturn(result);
         return context;
     }
