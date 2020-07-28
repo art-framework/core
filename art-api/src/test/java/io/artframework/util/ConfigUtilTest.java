@@ -37,10 +37,9 @@ class ConfigUtilTest {
         public void shouldLoadAllFields() {
 
             assertThatCode(() -> assertThat(ConfigUtil.getConfigFields(TestConfig.class))
-                    .hasSizeGreaterThanOrEqualTo(5)
+                    .hasSizeGreaterThanOrEqualTo(4)
                     .containsKeys(
                             "parent_field",
-                            "no_annotations",
                             "required",
                             "default_field",
                             "all_annotations"
@@ -112,10 +111,10 @@ class ConfigUtilTest {
         }
 
         @Test
-        @DisplayName("should ignore @Ignored fields")
+        @DisplayName("should ignore fields without an annotation")
         public void shouldIgnoredIgnored() {
             assertThatCode(() -> assertThat(ConfigUtil.getConfigFields(TestConfig.class))
-                    .doesNotContainKey("ignored")
+                    .doesNotContainKeys("ignored", "no_annotations")
             ).doesNotThrowAnyException();
         }
 
@@ -127,15 +126,6 @@ class ConfigUtilTest {
                     .extractingByKeys("required", "parent_field")
                     .extracting(ConfigFieldInformation::getPosition)
                     .contains(1, 0)
-            ).doesNotThrowAnyException();
-        }
-
-        @Test
-        @DisplayName("should ignore final fields without an annotation")
-        void shouldIgnoreNotAnnotatedFinalFields() {
-
-            assertThatCode(() -> assertThat(ConfigUtil.getConfigFields(FinalConfigDefaultIgnore.class))
-                    .containsOnlyKeys("foo")
             ).doesNotThrowAnyException();
         }
 
@@ -155,6 +145,15 @@ class ConfigUtilTest {
             assertThatExceptionOfType(ArtConfigException.class)
                     .isThrownBy(() -> ConfigUtil.getConfigFields(FinalConfig.class))
                     .withMessageContaining("final field");
+        }
+
+        @Test
+        @DisplayName("should load all fields if the class is annotated")
+        void shouldLoadAllFieldsInAnnotatedClass() {
+
+            assertThatCode(() -> assertThat(ConfigUtil.getConfigFields(AnnotatedClass.class))
+                    .containsOnlyKeys("foo", "bar")
+            ).doesNotThrowAnyException();
         }
     }
 
@@ -197,9 +196,9 @@ class ConfigUtilTest {
         @ConfigOption(description = "Required field with default value.", required = true)
         private double allAnnotations = 2.0d;
 
-        @Ignore
         private String ignored = "";
 
+        @ConfigOption
         private NestedConfig nested = new NestedConfig();
 
         private final String myFinalField = "is ignored";
@@ -214,5 +213,14 @@ class ConfigUtilTest {
 
         @ConfigOption(position = 0)
         private int error = 2;
+    }
+
+    @ConfigOption
+    public static class AnnotatedClass {
+
+        private int foo;
+        private String bar;
+        @Ignore
+        private double ignored;
     }
 }

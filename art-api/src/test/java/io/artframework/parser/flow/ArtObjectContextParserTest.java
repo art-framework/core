@@ -169,6 +169,7 @@ class ArtObjectContextParserTest {
     static class TestConfig {
         @ConfigOption(position = 0)
         private String name;
+        @ConfigOption
         private int number;
     }
 

@@ -26,7 +26,7 @@ import java.util.Optional;
  * a way to access the {@link Configuration} and defines a unique id that will be used
  * to store data for the {@link ArtObject}.
  */
-public interface ArtObjectContext<TArtObject extends ArtObject> extends Context, CombinedResultCreator, TargetHolder {
+public interface ArtObjectContext<TArtObject extends ArtObject> extends Context, TargetHolder {
 
     /**
      * Gets the unique id of this {@link ArtObject} context.
@@ -47,7 +47,7 @@ public interface ArtObjectContext<TArtObject extends ArtObject> extends Context,
 
     /**
      * Stores a value for the given {@link Target} and this {@link ArtObjectContext}.
-     * This means a unique key is generated from the {@link Target#getUniqueId()} and
+     * This means a unique key is generated from the {@link Target#uniqueId()} and
      * {@link ArtObjectContext#uniqueId()} and will be appended by your key.
      * <br>
      * Then the {@link Storage#set(String, Object)} method is called and the data is persisted.
@@ -70,7 +70,7 @@ public interface ArtObjectContext<TArtObject extends ArtObject> extends Context,
      * fails or the data does not exist.
      * <br>
      * The data that is fetched will be stored under a unique key combination of
-     * {@link ArtObjectContext#uniqueId()} and {@link Target#getUniqueId()}.
+     * {@link ArtObjectContext#uniqueId()} and {@link Target#uniqueId()}.
      * <br>
      * Use the {@link #data()} methods to store data that is only available in this scope
      * and not persisted to the database.

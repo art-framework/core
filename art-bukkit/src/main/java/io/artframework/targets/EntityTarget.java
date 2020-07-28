@@ -26,7 +26,7 @@ public class EntityTarget extends AbstractTarget<Entity> {
     }
 
     @Override
-    public String getUniqueId() {
-        return getSource().getUniqueId().toString();
+    public String uniqueId() {
+        return source().getUniqueId().toString();
     }
 }

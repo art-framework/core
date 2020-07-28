@@ -132,7 +132,7 @@ class DefaultOptionsTest {
     public static class MyClassOptions implements Action<Player> {
 
         @ConfigOption
-        private final String cfg = "foo";
+        private String cfg = "foo";
 
         @Override
         public Result execute(@NonNull Target<Player> target, @NonNull ExecutionContext<ActionContext<Player>> context) {
@@ -161,7 +161,7 @@ class DefaultOptionsTest {
     public static class AlternateConfig {
 
         @ConfigOption
-        private final int configValue = 1337;
+        private int configValue = 1337;
 
         public AlternateConfig() {
         }

@@ -90,10 +90,10 @@ public interface Context extends Scope {
     }
 
     default <TValue> Optional<TValue> data(Target<?> target, String key, TValue value) {
-        return data(target.getUniqueId() + "#" + key, value);
+        return data(target.uniqueId() + "#" + key, value);
     }
 
     default <TValue> Optional<TValue> data(Target<?> target, String key, Class<TValue> valueClass) {
-        return data(target.getUniqueId() + "#" + key, valueClass);
+        return data(target.uniqueId() + "#" + key, valueClass);
     }
 }

@@ -31,23 +31,25 @@ import java.util.function.Consumer;
 @Accessors(fluent = true)
 public final class DefaultFutureResult implements FutureResult {
 
+    @Getter
+    private final Configuration configuration;
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
     private CombinedResult result;
-    @Getter
     private boolean complete;
 
     private final List<Consumer<CombinedResult>> consumers;
 
-    public DefaultFutureResult() {
-        this(CombinedResult.empty());
+    public DefaultFutureResult(@NonNull Configuration configuration) {
+        this(configuration, CombinedResult.empty(configuration));
     }
 
-    public DefaultFutureResult(@NonNull CombinedResult result) {
-        this(result, new ArrayList<>());
+    public DefaultFutureResult(@NonNull Configuration configuration, @NonNull CombinedResult result) {
+        this(configuration, result, new ArrayList<>());
     }
 
-    DefaultFutureResult(@NonNull CombinedResult result, @NonNull Collection<Consumer<CombinedResult>> consumers) {
+    DefaultFutureResult(@NonNull Configuration configuration, @NonNull CombinedResult result, @NonNull Collection<Consumer<CombinedResult>> consumers) {
+        this.configuration = configuration;
         this.result = result;
         this.consumers = new ArrayList<>(consumers);
     }
@@ -67,18 +69,18 @@ public final class DefaultFutureResult implements FutureResult {
     }
 
     @Override
-    public CombinedResult complete() {
-        if (isComplete()) return result();
+    public FutureResult complete() {
+        if (isComplete()) return this;
 
         consumers().forEach(consumer -> consumer.accept(result()));
         complete = true;
 
-        return result();
+        return this;
     }
 
     @Override
-    public CombinedResult complete(Result futureResult) {
-        if (isComplete()) return result();
+    public FutureResult complete(Result futureResult) {
+        if (isComplete()) return this;
 
         result(combine(futureResult));
 
@@ -92,7 +94,7 @@ public final class DefaultFutureResult implements FutureResult {
             consumers.addAll(((FutureResult) result).consumers());
         }
 
-        return new DefaultFutureResult(result().combine(result), consumers);
+        return new DefaultFutureResult(configuration(), result().combine(result), consumers);
     }
 
     @Override
@@ -106,12 +108,12 @@ public final class DefaultFutureResult implements FutureResult {
     }
 
     @Override
-    public <TTarget> Collection<TargetResult<TTarget, ?, ?>> ofTarget(Target<TTarget> target) {
+    public <TTarget> Collection<TargetResult<TTarget, ?>> ofTarget(Target<TTarget> target) {
         return result().ofTarget(target);
     }
 
     @Override
-    public <TTarget> Collection<TargetResult<TTarget, ?, ?>> ofTarget(Class<TTarget> targetClass) {
+    public <TTarget> Collection<TargetResult<TTarget, ?>> ofTarget(Class<TTarget> targetClass) {
         return result().ofTarget(targetClass);
     }
 

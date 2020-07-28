@@ -20,7 +20,6 @@ import lombok.NonNull;
 
 import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * The {@link Target} is a wrapper around the different target types used by all ART objects.
@@ -29,12 +28,12 @@ import java.util.function.Function;
  * <br>
  * It is recommended that you create your own target types by extending {@link AbstractTarget}
  * which already has the correct equals and hashcode implementation.
- * Make sure that your equal and hashcode is only scoped to the {@link #getUniqueId()} method,
+ * Make sure that your equal and hashcode is only scoped to the {@link #uniqueId()} method,
  * if you directly implement the {@link Target}.
  * <br>
  * Register your target type with the {@link Configuration} on startup by calling
- * {@link Configuration#target(Class, Function)} and provide a function
- * that is used as a factory to create new {@link Target} instances from the given source type.
+ * {@link Configuration#targets()} and provide a function that is used as a factory
+ * to create new {@link Target} instances from the given source type.
  * <br>
  * You can also extend your {@link Target} by implementing one or more of the following interfaces:
  *      - {@link MessageSender}: allows your target to receive messages
@@ -75,14 +74,23 @@ public interface Target<TTarget> {
      *
      * @return The unique identifier of the target. This is never null or empty.
      */
-    String getUniqueId();
+    String uniqueId();
 
     /**
      * @return The underlying target source. This is never null.
      */
-    TTarget getSource();
+    TTarget source();
 
+    /**
+     * Checks if the given class is the same as the target class or a superclass of the target class.
+     * <p>
+     * If you pass <code>Object</code> as the target type then this will always return true.
+     *
+     * @param targetClass the target class to check against the target source
+     * @return true if the target source is of the given target class
+     * @see Class#isInstance(Object)
+     */
     default boolean isTargetType(Class<?> targetClass) {
-        return targetClass.isInstance(getSource());
+        return targetClass.isInstance(source());
     }
 }

@@ -53,6 +53,6 @@ public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> ext
     }
 
     private String getStorageKey(Target<?> target, String key) {
-        return uniqueId() + "#" + target.getUniqueId() + "#" + key;
+        return uniqueId() + "#" + target.uniqueId() + "#" + key;
     }
 }

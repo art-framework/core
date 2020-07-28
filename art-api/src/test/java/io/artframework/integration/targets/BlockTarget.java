@@ -26,7 +26,7 @@ public class BlockTarget extends AbstractTarget<Block> {
     }
 
     @Override
-    public String getUniqueId() {
-        return getSource().getLocation().toString();
+    public String uniqueId() {
+        return source().getLocation().toString();
     }
 }

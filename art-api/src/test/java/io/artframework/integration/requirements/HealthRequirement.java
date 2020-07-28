@@ -32,7 +32,7 @@ public class HealthRequirement implements Requirement<Player> {
     private final Pattern pattern = Pattern.compile("^(?<modifier>[><=]+)?(?<amount>\\d+)$");
 
     @ConfigOption(required = true)
-    private final String health = ">0";
+    private String health = ">0";
 
     @Override
     public Result test(@NonNull Target<Player> target, @NonNull ExecutionContext<RequirementContext<Player>> context) {
@@ -46,7 +46,7 @@ public class HealthRequirement implements Requirement<Player> {
 
         String modifier = matcher.group("modifier");
         double amount = Double.parseDouble(matcher.group("amount"));
-        int health = target.getSource().getHealth();
+        int health = target.source().getHealth();
 
         if (Strings.isNullOrEmpty(modifier) || modifier.equals("=")) {
             return of(health == amount);

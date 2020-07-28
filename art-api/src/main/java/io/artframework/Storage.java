@@ -73,7 +73,7 @@ public interface Storage extends Scope {
      * @see #set(String, Object)
      */
     default <TValue> Optional<TValue> set(@NonNull Target<?> target, @NonNull String key, @NonNull TValue value) {
-        return set(target.getUniqueId() + "#" + key, value);
+        return set(target.uniqueId() + "#" + key, value);
     }
 
     /**
@@ -100,6 +100,6 @@ public interface Storage extends Scope {
      * @return stored value or empty result if the value does not exist or cannot be cast into the value type.
      */
     default <TValue> Optional<TValue> get(Target<?> target, String key, Class<TValue> valueClass) {
-        return get(target.getUniqueId() + "#" + key, valueClass);
+        return get(target.uniqueId() + "#" + key, valueClass);
     }
 }

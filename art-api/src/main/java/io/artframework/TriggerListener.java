@@ -29,7 +29,7 @@ public interface TriggerListener<TTarget> {
     /**
      * Gets called when a trigger got executed and informs its listeners.
      *
-     * You can use the {@link Target#getUniqueId()} to get a unique
+     * You can use the {@link Target#uniqueId()} to get a unique
      * non changing identifier of the trigger target that can be used
      * to cache or reference the target.
      *

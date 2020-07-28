@@ -72,8 +72,8 @@ class RequirementHolderTest implements CombinedResultCreator {
 
     private <TTarget> Target<TTarget> target(Class<TTarget> targetClass) {
         Target mock = mock(Target.class);
-        when(mock.getSource()).thenReturn(mock(Object.class));
-        when(mock.getUniqueId()).thenReturn(UUID.randomUUID().toString());
+        when(mock.source()).thenReturn(mock(Object.class));
+        when(mock.uniqueId()).thenReturn(UUID.randomUUID().toString());
         when(mock.isTargetType(any())).then(invocation -> ((Class<?>) invocation.getArgument(0)).isAssignableFrom(targetClass));
         return mock;
     }

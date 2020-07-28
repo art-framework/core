@@ -31,6 +31,7 @@ import java.util.stream.Collectors;
 @Accessors(fluent = true)
 public class DefaultCombinedResult implements CombinedResult {
 
+    Configuration configuration;
     @Getter(lazy = true)
     ResultStatus status = combineStatus();
     @Getter(lazy = true)
@@ -38,11 +39,13 @@ public class DefaultCombinedResult implements CombinedResult {
     @Singular
     List<Result> results;
 
-    public DefaultCombinedResult() {
+    public DefaultCombinedResult(Configuration configuration) {
+        this.configuration = configuration;
         this.results = new ArrayList<>();
     }
 
-    public DefaultCombinedResult(List<Result> results) {
+    public DefaultCombinedResult(Configuration configuration, List<Result> results) {
+        this.configuration = configuration;
         this.results = ImmutableList.copyOf(flatten(results));
     }
 
@@ -67,21 +70,21 @@ public class DefaultCombinedResult implements CombinedResult {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <TTarget> Collection<TargetResult<TTarget, ?, ?>> ofTarget(Target<TTarget> target) {
+    public <TTarget> Collection<TargetResult<TTarget, ?>> ofTarget(Target<TTarget> target) {
         return results().stream()
                 .filter(result -> result instanceof TargetResult)
-                .filter(targetResult -> ((TargetResult<?, ?, ?>) targetResult).target().equals(target))
-                .map(targetResult -> (TargetResult<TTarget, ?, ?>) targetResult)
+                .filter(targetResult -> ((TargetResult<?, ?>) targetResult).target().equals(target))
+                .map(targetResult -> (TargetResult<TTarget, ?>) targetResult)
                 .collect(Collectors.toList());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public <TTarget> Collection<TargetResult<TTarget, ?, ?>> ofTarget(Class<TTarget> targetClass) {
+    public <TTarget> Collection<TargetResult<TTarget, ?>> ofTarget(Class<TTarget> targetClass) {
         return results().stream()
                 .filter(result -> result instanceof TargetResult)
-                .filter(targetResult -> ReflectionUtil.isTargetType(targetClass, ((TargetResult<?, ?, ?>) targetResult).target()))
-                .map(targetResult -> (TargetResult<TTarget, ?, ?>) targetResult)
+                .filter(targetResult -> ReflectionUtil.isTargetType(targetClass, ((TargetResult<?, ?>) targetResult).target()))
+                .map(targetResult -> (TargetResult<TTarget, ?>) targetResult)
                 .collect(Collectors.toList());
     }
 
@@ -89,7 +92,7 @@ public class DefaultCombinedResult implements CombinedResult {
     public CombinedResult combine(Result result) {
         ArrayList<Result> results = new ArrayList<>(results());
         results.add(result);
-        return new DefaultCombinedResult(results);
+        return new DefaultCombinedResult(configuration(), results);
     }
 
     private String[] combineMessages() {

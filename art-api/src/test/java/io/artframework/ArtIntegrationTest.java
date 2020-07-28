@@ -146,7 +146,7 @@ public class ArtIntegrationTest {
             void shouldRegisterLambda() {
 
                 ART.actions().add("kill", Player.class, (target, context) -> {
-                    target.getSource().setHealth(0);
+                    target.source().setHealth(0);
                     return success();
                 });
 
@@ -189,7 +189,8 @@ public class ArtIntegrationTest {
 
                 assertThat(result.ofTarget(player))
                         .hasSize(3)
-                        .extracting(TargetResult::options)
+                        .extracting(TargetResult::context)
+                        .extracting(ArtObjectContext::options)
                         .extracting(Options::identifier)
                         .contains("damage", "damage", "damage");
 

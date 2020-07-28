@@ -30,11 +30,11 @@ import lombok.NonNull;
 public class DamageAction implements Action<Player> {
 
     @ConfigOption
-    private final int damage = 20;
+    private int damage = 20;
 
     @Override
     public Result execute(@NonNull Target<Player> target, @NonNull ExecutionContext<ActionContext<Player>> context) {
-        Player player = target.getSource();
+        Player player = target.source();
 
         player.setHealth(player.getHealth() - damage);
 

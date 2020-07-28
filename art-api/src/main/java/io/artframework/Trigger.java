@@ -33,7 +33,7 @@ public interface Trigger extends ArtObject {
 
     default CombinedResult trigger(String identifier, Object... targets) {
         return trigger(identifier, Arrays.stream(targets)
-                .map(Target::of)
+                .map(o -> configuration().targets().get(o))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .toArray(Target[]::new));
@@ -45,7 +45,7 @@ public interface Trigger extends ArtObject {
 
     @Nullable
     default <TTarget> TriggerTarget<TTarget> of(TTarget target) {
-        return Target.of(target)
+        return configuration().targets().get(target)
                 .map(TriggerTarget::new)
                 .orElse(null);
     }
@@ -56,7 +56,7 @@ public interface Trigger extends ArtObject {
 
     @Nullable
     default <TTarget> TriggerTarget<TTarget> of(TTarget target, BiPredicate<Target<TTarget>, ExecutionContext<TriggerContext>> predicate) {
-        return Target.of(target)
+        return configuration().targets().get(target)
                 .map(targetTarget -> new TriggerTarget<>(targetTarget, predicate))
                 .orElse(null);
     }

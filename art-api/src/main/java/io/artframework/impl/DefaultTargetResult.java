@@ -22,8 +22,9 @@ import lombok.experimental.Accessors;
 
 @Value
 @Accessors(fluent = true)
-public class DefaultTargetResult<TTarget, TArtObject extends ArtObject, TContext extends ArtObjectContext<TArtObject>> implements TargetResult<TTarget, TArtObject, TContext> {
+public class DefaultTargetResult<TTarget, TContext extends ArtObjectContext<?>> implements TargetResult<TTarget, TContext> {
 
+    Configuration configuration;
     ResultStatus status;
     String[] messages;
     Target<TTarget> target;

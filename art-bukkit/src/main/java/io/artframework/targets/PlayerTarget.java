@@ -27,12 +27,12 @@ public class PlayerTarget extends AbstractTarget<Player> implements MessageSende
     }
 
     @Override
-    public String getUniqueId() {
-        return getSource().getUniqueId().toString();
+    public String uniqueId() {
+        return source().getUniqueId().toString();
     }
 
     @Override
     public void sendMessage(String... message) {
-        getSource().sendMessage(message);
+        source().sendMessage(message);
     }
 }

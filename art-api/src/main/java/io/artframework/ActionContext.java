@@ -26,7 +26,7 @@ import lombok.NonNull;
  *
  * @param <TTarget> type of the target
  */
-public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContext<Action<TTarget>>, RequirementHolder, ActionHolder, FutureResultCreator {
+public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContext<Action<TTarget>>, RequirementHolder, ActionHolder {
 
     static <TTarget> ActionContext<TTarget> of(
             @NonNull Configuration configuration,
@@ -43,11 +43,7 @@ public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContex
      * @return config of this context
      */
     ActionConfig config();
-//
-//    @Override
-//    FutureResult execute(@NonNull Target<TTarget> target, @NonNull ExecutionContext<ActionContext<TTarget>> context);
 
-    default FutureResult of(CombinedResult result) {
-        return FutureResult.of(result);
-    }
+    @Override
+    FutureResult execute(@NonNull Target<TTarget> target, @NonNull ExecutionContext<ActionContext<TTarget>> context);
 }

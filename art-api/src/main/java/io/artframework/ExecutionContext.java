@@ -105,7 +105,7 @@ public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends 
 
     /**
      * Stores a value for the {@link Target} of this {@link ExecutionContext} and the current {@link ArtObjectContext}.
-     * This means a unique key is generated from the {@link Target#getUniqueId()} and
+     * This means a unique key is generated from the {@link Target#uniqueId()} and
      * {@link ArtObjectContext#uniqueId()} and will be appended by your key.
      * <br>
      * Then the {@link Storage#set(String, Object)} method is called and the data is persisted.
@@ -128,7 +128,7 @@ public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends 
      * fails or the data does not exist.
      * <br>
      * The data that is fetched will be stored under a unique key combination of
-     * {@link ArtObjectContext#uniqueId()} and {@link Target#getUniqueId()}.
+     * {@link ArtObjectContext#uniqueId()} and {@link Target#uniqueId()}.
      * <br>
      * Use the {@link #data()} methods to store data that is only available in this scope
      * and not persisted to the database.
