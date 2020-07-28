@@ -38,7 +38,7 @@ import java.util.List;
  * @param <TTarget> target type of the action
  */
 @Accessors(fluent = true)
-public final class DefaultActionContext<TTarget> extends AbstractArtObjectContext<Action<TTarget>> implements ActionContext<TTarget> {
+public final class DefaultActionContext<TTarget> extends AbstractArtObjectContext<Action<TTarget>> implements ActionContext<TTarget>, FutureTargetResultCreator {
 
     @Getter(AccessLevel.PROTECTED)
     private final Action<TTarget> action;
@@ -73,24 +73,24 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
     @Override
     @SuppressWarnings("unchecked")
-    public Result execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
+    public FutureResult execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
 
         if (ART.callEvent(new PreActionExecutionEvent<>(action(), context)).isCancelled()) {
-            return cancelled().with(target, this);
+            return cancelled(target, this);
         }
 
-        if (!isTargetType(target)) return empty();
+        if (!isTargetType(target)) return empty(target, this);
         FutureResult executionTest = testExecution(target);
         if (executionTest.failure()) return executionTest;
         CombinedResult requirementTest = testRequirements(context);
-        if (requirementTest.failure()) return of(requirementTest);
+        if (requirementTest.failure()) return of(requirementTest, target, this);
 
-        final FutureResult result = empty();
+        final FutureResult result = empty(target, this);
 
         Runnable runnable = () -> {
 
             if (ART.callEvent(new ActionExecutionEvent<>(action(), context)).isCancelled()) {
-                result.complete(cancelled().with(target, this));
+                result.complete(cancelled(target, this));
                 return;
             }
 
@@ -100,12 +100,12 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
             store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
-            TargetResult<TTarget, Action<TTarget>, DefaultActionContext<TTarget>> nestedActionResult = this.actions().stream()
+            FutureResult nestedActionResult = this.actions().stream()
                     .filter(actionContext -> actionContext.isTargetType(target))
                     .map(actionContext -> (ActionContext<TTarget>) actionContext)
-                    .map(action -> action.execute(target, context.next(action)).with(target, this))
-                    .reduce((result1, result2) -> result1.combine(result2).with(target, this))
-                    .orElse(empty().with(target, this));
+                    .map(action -> action.execute(target, context.next(action)))
+                    .reduce(FutureResult::combine)
+                    .orElse(result);
 
             result.complete(actionResult.combine(nestedActionResult));
         };
@@ -130,12 +130,12 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
      */
     public FutureResult testExecutedOnce(Target<TTarget> target) {
 
-        if (!this.config().executeOnce()) return empty();
+        if (!this.config().executeOnce()) return empty(target, this);
 
         if (getLastExecution(target) > 0) {
-            return failure("Action can only be executed once and was already executed.");
+            return failure(target, this, "Action can only be executed once and was already executed.");
         } else {
-            return success();
+            return success(target, this);
         }
     }
 
@@ -148,19 +148,19 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
      */
     public FutureResult testCooldown(Target<TTarget> target) {
         long cooldown = this.config().cooldown();
-        if (cooldown < 1) return empty();
+        if (cooldown < 1) return empty(target, this);
 
         long lastExecution = getLastExecution(target);
 
-        if (lastExecution < 1) return success();
+        if (lastExecution < 1) return success(target, this);
 
         long remainingCooldown = (lastExecution + cooldown) - System.currentTimeMillis();
 
         if (remainingCooldown > 0) {
-            return failure("Action is still on cooldown. "
+            return failure(target, this, "Action is still on cooldown. "
                     + TimeUtil.getAccurrateShortFormatedTime(remainingCooldown) + " are remaining.");
         } else {
-            return success();
+            return success(target, this);
         }
     }
 

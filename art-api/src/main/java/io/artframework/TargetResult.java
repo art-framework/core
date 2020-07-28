@@ -17,22 +17,46 @@
 package io.artframework;
 
 import io.artframework.impl.DefaultTargetResult;
+import lombok.NonNull;
 
 /**
- * The ArtResult holds several other results and combines them into a single result.
+ * The target result contains additional target and context information about a result.
+ * <p>
+ * One target result will be created for each attempt on a target with a given context.
+ * <p>
+ * The target result is immutable and calling combine or future on it will create a new clone.
  */
-public interface TargetResult<TTarget, TArtObject extends ArtObject, TContext extends ArtObjectContext<TArtObject>> extends Result {
+public interface TargetResult<TTarget, TContext extends ArtObjectContext<?>> extends Result {
 
-    static <TTarget, TArtObject extends ArtObject, TContext extends ArtObjectContext<TArtObject>> TargetResult<TTarget, TArtObject, TContext>
-    of(Result result, Target<TTarget> target, TContext context) {
-        return new DefaultTargetResult<>(result.status(), result.messages(), target, context);
+    /**
+     * Creates a new target result from the given result with the given target and context.
+     *
+     * @param result the result to enhance
+     * @param target the target of the result
+     * @param context the context that created the result
+     * @param <TTarget> the type of the target
+     * @param <TContext> the context of the target
+     * @return the created target result
+     */
+    static <TTarget, TContext extends ArtObjectContext<?>> TargetResult<TTarget, TContext> of(
+            @NonNull Result result,
+            @NonNull Target<TTarget> target,
+            @NonNull TContext context
+    ) {
+        return new DefaultTargetResult<>(result.configuration(), result.status(), result.messages(), target, context);
     }
 
+    /**
+     * Gets the target associated with this result.
+     *
+     * @return the target of this result
+     */
     Target<TTarget> target();
 
-    default Options<TArtObject> options() {
-        return context().options();
-    }
-
+    /**
+     * Gets the context that created this result.
+     *
+     * @return the context of this result
+     */
     TContext context();
 }

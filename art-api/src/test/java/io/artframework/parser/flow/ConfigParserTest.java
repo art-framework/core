@@ -253,7 +253,7 @@ class ConfigParserTest {
     }
 
     @Data
-    static class TestConfig {
+    public static class TestConfig {
 
         @ConfigOption(position = 0)
         private String name;
@@ -264,25 +264,28 @@ class ConfigParserTest {
     }
 
     @Data
-    static class SingleFieldConfig {
+    public static class SingleFieldConfig {
         @ConfigOption(required = true)
         private double amount;
     }
 
     @Data
-    static class ConfigWithoutPositions {
+    public static class ConfigWithoutPositions {
 
+        @ConfigOption
         private String name;
+        @ConfigOption
         private String optional;
     }
 
     @Data
-    static class ConfigWithRequired {
+    public static class ConfigWithRequired {
 
         @ConfigOption(position = 0)
         private String name;
         @ConfigOption(required = true)
         private String required;
+        @ConfigOption
         private String optional;
     }
 

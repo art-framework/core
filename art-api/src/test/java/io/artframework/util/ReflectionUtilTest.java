@@ -128,12 +128,12 @@ class ReflectionUtilTest {
             }
 
             @Override
-            public String getUniqueId() {
+            public String uniqueId() {
                 return null;
             }
 
             @Override
-            public TTarget getSource() {
+            public TTarget source() {
                 return target;
             }
         }

@@ -18,7 +18,7 @@ package io.artframework;
 
 import lombok.NonNull;
 
-public interface ResultCreator {
+public interface ResultCreator extends Scope {
 
     /**
      * Creates a new result from the given parameters.
@@ -29,7 +29,7 @@ public interface ResultCreator {
      * @see Result#of(ResultStatus, String...)
      */
     default Result of(@NonNull ResultStatus status, @NonNull String... messages) {
-        return Result.of(status, messages);
+        return Result.of(configuration(), status, messages);
     }
 
     /**
@@ -42,7 +42,7 @@ public interface ResultCreator {
      * @see Result#of(boolean, String...)
      */
     default Result of(boolean result, @NonNull String... messages) {
-        return Result.of(result ? ResultStatus.SUCCESS : ResultStatus.FAILURE, messages);
+        return Result.of(configuration(), result ? ResultStatus.SUCCESS : ResultStatus.FAILURE, messages);
     }
 
     /**
@@ -54,7 +54,7 @@ public interface ResultCreator {
      * @see Result#success(String...)
      */
     default Result success(String... messages) {
-        return Result.success(messages);
+        return Result.success(configuration(), messages);
     }
 
     /**
@@ -66,7 +66,7 @@ public interface ResultCreator {
      * @see Result#empty(String...)
      */
     default Result empty(String... messages) {
-        return Result.empty(messages);
+        return Result.empty(configuration(), messages);
     }
 
     /**
@@ -78,7 +78,7 @@ public interface ResultCreator {
      * @see Result#failure(String...)
      */
     default Result failure(String... messages) {
-        return Result.failure(messages);
+        return Result.failure(configuration(), messages);
     }
 
     /**
@@ -90,7 +90,7 @@ public interface ResultCreator {
      * @see Result#error(String...)
      */
     default Result error(String... messages) {
-        return Result.error(messages);
+        return Result.error(configuration(), messages);
     }
 
     /**
@@ -105,7 +105,7 @@ public interface ResultCreator {
      * @see Result#error(Exception, String...)
      */
     default Result error(Exception exception, String... messages) {
-        return Result.error(exception, messages);
+        return Result.error(configuration(), exception, messages);
     }
 
     /**
@@ -119,6 +119,6 @@ public interface ResultCreator {
      * @see Result#cancelled(String...)
      */
     default Result cancelled(String... messages) {
-        return Result.cancelled(messages);
+        return Result.cancelled(configuration(), messages);
     }
 }

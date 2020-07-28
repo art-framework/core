@@ -138,8 +138,8 @@ class PersistenceStorageTest {
         }
 
         @Override
-        public String getUniqueId() {
-            return getSource();
+        public String uniqueId() {
+            return source();
         }
     }
 }

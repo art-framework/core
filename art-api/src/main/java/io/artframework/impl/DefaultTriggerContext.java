@@ -109,7 +109,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     private <TTarget> void callListeners(ExecutionContext<TriggerContext> executionContext) {
         for (Map.Entry<Class<?>, Set<TriggerListener<?>>> entry : listeners.entrySet()) {
             Target<TTarget>[] targets = Arrays.stream(executionContext.getTargets())
-                    .filter(target -> entry.getKey().isInstance(target.getSource()))
+                    .filter(target -> entry.getKey().isInstance(target.source()))
                     .toArray(Target[]::new);
 
             entry.getValue().stream()

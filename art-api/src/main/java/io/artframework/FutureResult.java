@@ -16,6 +16,8 @@
 
 package io.artframework;
 
+import lombok.NonNull;
+
 import java.util.Collection;
 import java.util.function.Consumer;
 
@@ -36,12 +38,33 @@ import java.util.function.Consumer;
 public interface FutureResult extends CombinedResult {
 
     /**
+     * Creates a new uncompleted future result with the given configuration.
+     *
+     * @param configuration the configuration of the scope
+     * @return a new empty future result
+     */
+    static FutureResult empty(@NonNull Configuration configuration) {
+        return new DefaultFutureResult(configuration);
+    }
+
+    /**
      * Creates a new uncompleted future result.
      *
      * @return a new empty future result
      */
     static FutureResult empty() {
-        return new DefaultFutureResult();
+        return empty(ART.configuration());
+    }
+
+    /**
+     * Creates a new future result with the given result as starting point.
+     *
+     * @param configuration the configuration of the scope
+     * @param result the result to create this future result with
+     * @return a new future result
+     */
+    static FutureResult of(@NonNull Configuration configuration, CombinedResult result) {
+        return new DefaultFutureResult(configuration, result);
     }
 
     /**
@@ -51,15 +74,32 @@ public interface FutureResult extends CombinedResult {
      * @return a new future result
      */
     static FutureResult of(CombinedResult result) {
-        return new DefaultFutureResult(result);
+        return of(result.configuration(), result);
     }
 
-    static FutureResult of(Result result) {
+    /**
+     * Creates a new future result from the given result.
+     *
+     * @param configuration the configuration of the scope
+     * @param result the result to create this future result with
+     * @return a new future result
+     */
+    static FutureResult of(@NonNull Configuration configuration, Result result) {
         if (result instanceof CombinedResult) {
-            return of((CombinedResult) result);
+            return of(configuration, (CombinedResult) result);
         } else {
-            return of(CombinedResult.of(result));
+            return of(configuration, CombinedResult.of(configuration, result));
         }
+    }
+
+    /**
+     * Creates a new future result from the given result.
+     *
+     * @param result the result to create this future result with
+     * @return a new future result
+     */
+    static FutureResult of(Result result) {
+        return of(result.configuration(), result);
     }
 
     /**
@@ -85,7 +125,7 @@ public interface FutureResult extends CombinedResult {
      *
      * @return the completed result
      */
-    CombinedResult complete();
+    FutureResult complete();
 
     /**
      * Completes this future result and combines the current result with the results from the future.
@@ -93,7 +133,7 @@ public interface FutureResult extends CombinedResult {
      * @param futureResult the future result that should be combined with this result and returned to the callback.
      * @return the combined result from the future and present
      */
-    CombinedResult complete(Result futureResult);
+    FutureResult complete(Result futureResult);
 
     /**
      * Gets a list of all subscribed callbacks of this future result.

@@ -66,8 +66,14 @@ public final class ConfigUtil {
         Map<String, ConfigFieldInformation> fields = new HashMap<>();
 
         try {
-            Field[] allFields = FieldUtils.getAllFields(configClass);
-            for (Field field : allFields) {
+            Field[] configFields;
+            if (configClass.isAnnotationPresent(ConfigOption.class)) {
+                configFields = FieldUtils.getAllFields(configClass);
+            } else {
+                configFields = FieldUtils.getFieldsWithAnnotation(configClass, ConfigOption.class);
+            }
+
+            for (Field field : configFields) {
                 if (Modifier.isStatic(field.getModifiers())) continue;
                 if (field.isAnnotationPresent(Ignore.class)) continue;
                 if (Modifier.isFinal(field.getModifiers())) {

@@ -41,7 +41,7 @@ public class DefaultTargetedTestResult<TTarget> extends DefaultTestResult implem
     public DefaultTargetedTestResult(@NonNull ResultStatus result, Target<TTarget> target, @Nullable String[] failureReasons, @Nullable String[] errorReasons) {
         super(result, target, failureReasons, errorReasons);
         this.target = target;
-        this.targetClass = (Class<TTarget>) target.getSource().getClass();
+        this.targetClass = (Class<TTarget>) target.source().getClass();
     }
 
     public DefaultTargetedTestResult(@NonNull ResultStatus result, Class<TTarget> targetClass) {

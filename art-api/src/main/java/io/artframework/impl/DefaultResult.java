@@ -16,6 +16,7 @@
 
 package io.artframework.impl;
 
+import io.artframework.Configuration;
 import io.artframework.Result;
 import io.artframework.ResultStatus;
 import lombok.Value;
@@ -25,6 +26,7 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true)
 public class DefaultResult implements Result {
 
+    Configuration configuration;
     ResultStatus status;
     String[] messages;
 }

@@ -18,15 +18,26 @@ package io.artframework.integration.targets;
 
 import io.artframework.AbstractTarget;
 import io.artframework.integration.data.Player;
+import org.apache.commons.lang3.RandomStringUtils;
+
+import static org.mockito.Mockito.spy;
 
 public class PlayerTarget extends AbstractTarget<Player> {
+
+    public static PlayerTarget mock() {
+        return mock(RandomStringUtils.randomAlphanumeric(10));
+    }
+
+    public static PlayerTarget mock(String name) {
+        return spy(new PlayerTarget(spy(new Player(name))));
+    }
 
     public PlayerTarget(Player source) {
         super(source);
     }
 
     @Override
-    public String getUniqueId() {
-        return getSource().getUniqueId().toString();
+    public String uniqueId() {
+        return source().getUniqueId().toString();
     }
 }

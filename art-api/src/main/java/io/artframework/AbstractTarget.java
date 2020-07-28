@@ -17,6 +17,7 @@
 package io.artframework;
 
 import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
 import javax.annotation.concurrent.Immutable;
@@ -29,6 +30,7 @@ import javax.annotation.concurrent.Immutable;
  * @see Target
  */
 @Immutable
+@Accessors(fluent = true)
 public abstract class AbstractTarget<TTarget> implements Target<TTarget> {
 
     @Getter
@@ -47,12 +49,12 @@ public abstract class AbstractTarget<TTarget> implements Target<TTarget> {
         AbstractTarget<?> that = (AbstractTarget<?>) o;
 
         return new EqualsBuilder()
-                .append(getUniqueId(), that.getUniqueId())
+                .append(uniqueId(), that.uniqueId())
                 .isEquals();
     }
 
     @Override
     public final int hashCode() {
-        return getUniqueId().hashCode();
+        return uniqueId().hashCode();
     }
 }

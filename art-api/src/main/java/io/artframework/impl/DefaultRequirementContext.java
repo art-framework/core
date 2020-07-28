@@ -32,7 +32,7 @@ import java.util.Optional;
  * @param <TTarget> target type of the requirement
  */
 @Accessors(fluent = true)
-public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext<Requirement<TTarget>> implements RequirementContext<TTarget> {
+public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext<Requirement<TTarget>> implements RequirementContext<TTarget>, CombinedResultCreator {
 
     private final Requirement<TTarget> requirement;
     @Getter
@@ -55,9 +55,9 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
     }
 
     @Override
-    public TargetResult<TTarget, Requirement<TTarget>, RequirementContext<TTarget>> test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context) {
+    public TargetResult<TTarget, RequirementContext<TTarget>> test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context) {
 
-        if (!isTargetType(target.getSource())) return empty().with(target, this);
+        if (!isTargetType(target.source())) return empty().with(target, this);
 
         if (config().checkOnce()) {
             Optional<Boolean> result = store(target, Constants.Storage.CHECK_ONCE_RESULT, Boolean.class);

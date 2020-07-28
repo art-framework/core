@@ -57,7 +57,7 @@ public final class ReflectionUtil {
     public static <TTarget, TResult> Optional<TResult> getEntryForTarget(TTarget target, Map<Class<?>, TResult> map) {
 
         if (target instanceof Target) {
-            target = ((Target<TTarget>) target).getSource();
+            target = ((Target<TTarget>) target).source();
         }
 
         Class<?> targetClass = target.getClass();
@@ -120,7 +120,7 @@ public final class ReflectionUtil {
         if (target == null) return false;
 
         if (target instanceof Target) {
-            return isTargetType(targetClass, ((Target<?>) target).getSource());
+            return isTargetType(targetClass, ((Target<?>) target).source());
         }
         return targetClass.isInstance(target);
     }
