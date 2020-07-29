@@ -60,7 +60,7 @@ public final class ActionConfig extends ArtObjectConfig {
     public static ActionConfig of(@Nullable ConfigMap configMap) {
         ActionConfig config = ActionConfig.builder().build();
 
-        if (configMap == null || configMap.getType() != ConfigMapType.ACTION) {
+        if (configMap == null || configMap.type() != ConfigMapType.ACTION) {
             return config;
         }
 

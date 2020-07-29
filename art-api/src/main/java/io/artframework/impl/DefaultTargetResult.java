@@ -16,7 +16,10 @@
 
 package io.artframework.impl;
 
-import io.artframework.*;
+import io.artframework.ArtObjectContext;
+import io.artframework.ResultStatus;
+import io.artframework.Target;
+import io.artframework.TargetResult;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
@@ -24,7 +27,6 @@ import lombok.experimental.Accessors;
 @Accessors(fluent = true)
 public class DefaultTargetResult<TTarget, TContext extends ArtObjectContext<?>> implements TargetResult<TTarget, TContext> {
 
-    Configuration configuration;
     ResultStatus status;
     String[] messages;
     Target<TTarget> target;

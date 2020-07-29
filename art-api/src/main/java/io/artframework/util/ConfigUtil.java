@@ -23,6 +23,8 @@ import io.artframework.annotations.ConfigOption;
 import io.artframework.annotations.Ignore;
 import io.artframework.conf.ConfigFieldInformation;
 import io.artframework.conf.FieldNameFormatters;
+import io.artframework.conf.KeyValuePair;
+import lombok.NonNull;
 import org.apache.commons.lang3.reflect.FieldUtils;
 
 import java.io.File;
@@ -177,5 +179,57 @@ public final class ConfigUtil {
             e.printStackTrace();
         }
         return false;
+    }
+
+    public static Map<ConfigFieldInformation, Object> loadConfigValues(@NonNull Map<String, ConfigFieldInformation> configFields, @NonNull List<KeyValuePair> keyValuePairs) throws ArtConfigException {
+
+        if (configFields.isEmpty()) return new HashMap<>();
+
+        Map<ConfigFieldInformation, Object> fieldValueMap = new HashMap<>();
+        Set<ConfigFieldInformation> mappedFields = new HashSet<>();
+
+        boolean usedKeyValue = false;
+
+        for (int i = 0; i < keyValuePairs.size(); i++) {
+            KeyValuePair keyValue = keyValuePairs.get(i);
+            ConfigFieldInformation configFieldInformation;
+            if (keyValue.getKey().isPresent() && configFields.containsKey(keyValue.getKey().get())) {
+                configFieldInformation = configFields.get(keyValue.getKey().get());
+                usedKeyValue = true;
+            } else if (configFields.size() == 1) {
+                configFieldInformation = configFields.values().stream().findFirst().get();
+            } else {
+                if (usedKeyValue) {
+                    throw new ArtConfigException("Positioned parameter found after key=value pair usage. Positioned parameters must come first.");
+                }
+                int finalI = i;
+                Optional<ConfigFieldInformation> optionalFieldInformation = configFields.values().stream().filter(info -> info.getPosition() == finalI).findFirst();
+                if (!optionalFieldInformation.isPresent()) {
+                    throw new ArtConfigException("Config does not define positioned parameters. Use key value pairs instead.");
+                }
+                configFieldInformation = optionalFieldInformation.get();
+            }
+
+            if (!keyValue.getValue().isPresent()) {
+                throw new ArtConfigException("Config " + configFieldInformation.getIdentifier() + " has an empty value.");
+            }
+
+            Object value = ReflectionUtil.toObject(configFieldInformation.getType(), keyValue.getValue().get());
+
+            fieldValueMap.put(configFieldInformation, value);
+            mappedFields.add(configFieldInformation);
+        }
+
+        List<ConfigFieldInformation> missingRequiredFields = configFields.values().stream()
+                .filter(ConfigFieldInformation::isRequired)
+                .filter(configFieldInformation -> !mappedFields.contains(configFieldInformation))
+                .collect(Collectors.toList());
+
+        if (!missingRequiredFields.isEmpty()) {
+            throw new ArtConfigException("Config is missing " + missingRequiredFields.size() + " required parameters: "
+                    + missingRequiredFields.stream().map(ConfigFieldInformation::getIdentifier).collect(Collectors.joining(",")));
+        }
+
+        return fieldValueMap;
     }
 }

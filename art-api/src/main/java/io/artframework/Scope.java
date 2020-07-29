@@ -28,7 +28,5 @@ public interface Scope {
     /**
      * The configuration of the current scope.
      */
-    default Configuration configuration() {
-        return ART.configuration();
-    }
+    Configuration configuration();
 }

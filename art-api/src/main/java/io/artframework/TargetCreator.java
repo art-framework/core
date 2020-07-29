@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package io.artframework.integration.trigger;
+package io.artframework;
 
-import io.artframework.Trigger;
-import io.artframework.annotations.ART;
-import io.artframework.integration.data.Player;
+import java.util.Optional;
 
-public class PlayerTrigger implements Trigger {
+/**
+ * Provides an easy shortcut to get the target from the given configuration scope.
+ */
+public interface TargetCreator extends Scope {
 
-    @ART("move")
-    public void onMove(Player player) {
-        trigger("move", player);
-
-        trigger("move", of(player));
-    }
-
-    @ART(value = "damage", alias = "dmg")
-    public void onDamage(Player player) {
-        trigger("damage", player);
+    /**
+     * Tries to find a matching target for the given source.
+     *
+     * @param target the target source to get a target wrapper for
+     * @param <TTarget> type of the target source
+     * @return the wrapped target if it exists. An empty optional otherwise.
+     */
+    default <TTarget> Optional<Target<TTarget>> target(TTarget target) {
+        return configuration().targets().get(target);
     }
 }

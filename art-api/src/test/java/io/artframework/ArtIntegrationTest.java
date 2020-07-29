@@ -187,7 +187,7 @@ public class ArtIntegrationTest {
                 assertThat(result.success()).isTrue();
                 assertThat(player.getHealth()).isEqualTo(20);
 
-                assertThat(result.ofTarget(player))
+                assertThat(result.ofTarget(new PlayerTarget(player)))
                         .hasSize(3)
                         .extracting(TargetResult::context)
                         .extracting(ArtObjectContext::options)

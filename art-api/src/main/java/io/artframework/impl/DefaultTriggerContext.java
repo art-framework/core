@@ -73,7 +73,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
         ExecutionContext<?> executionContext = ExecutionContext.of(
                 configuration(),
                 this,
-                Arrays.stream(event.getTargets()).map(TriggerTarget::getTarget).toArray(Target[]::new)
+                Arrays.stream(event.getTargets()).map(TriggerTarget::target).toArray(Target[]::new)
         );
 
         trigger(event.getTargets(), executionContext.next(this));
@@ -84,13 +84,18 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
         Runnable runnable = () -> {
             for (TriggerTarget<?> target : targets) {
-                if (cannotExecute(target.getTarget())) continue;
+                if (cannotExecute(target.target())) continue;
 
-                if (target.test(context) && testRequirements(context).success()) {
+                if (target instanceof ConfiguredTriggerTarget) {
+                    Result result = testTrigger((ConfiguredTriggerTarget<?, ?>) target, context).combine();
+                    if (result.failure()) return;
+                }
 
-                    store(target.getTarget(), Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
+                if (testRequirements(context).success()) {
 
-                    if (this.config().executeActions()) executeActions(target.getTarget(), context);
+                    store(target.target(), Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
+
+                    if (this.config().executeActions()) executeActions(target.target(), context);
                 }
             }
 
@@ -102,6 +107,16 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
             configuration().scheduler().get().runTaskLater(runnable, delay);
         } else {
             runnable.run();
+        }
+    }
+
+    private <TTarget, TConfig> Result testTrigger(ConfiguredTriggerTarget<TTarget, TConfig> target, ExecutionContext<TriggerContext> executionContext) {
+        try {
+            TConfig config = target.configMap().applyTo(target.configClass().newInstance());
+            return target.test(executionContext, config);
+        } catch (InstantiationException | IllegalAccessException e) {
+            return Result.error(e, "Failed to create a new config instance from the config class " + target.configClass().getSimpleName() + ". " +
+                    "Make sure the class is public and has an public parameterless constructor.");
         }
     }
 

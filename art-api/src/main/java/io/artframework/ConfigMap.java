@@ -31,13 +31,13 @@ public interface ConfigMap {
         return new DefaultConfigMap(type, configFields);
     }
 
-    ConfigMapType getType();
+    ConfigMapType type();
 
     <TConfig> TConfig applyTo(@NonNull TConfig config);
 
-    ConfigMap loadValues(@NonNull List<KeyValuePair> keyValuePairs) throws ArtConfigException;
+    Map<String, ConfigFieldInformation> configFields();
 
-    Map<String, ConfigFieldInformation> getConfigFields();
+    boolean loaded();
 
-    boolean isLoaded();
+    ConfigMap with(@NonNull List<KeyValuePair> keyValuePairs) throws ArtConfigException;
 }
