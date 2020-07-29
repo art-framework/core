@@ -50,7 +50,7 @@ public class ConfigParser extends LineParser<ConfigMap> {
     public ConfigMap parse() throws ArtParseException {
 
         try {
-            return configMap.loadValues(extractKeyValuePairs(getMatcher()));
+            return configMap.with(extractKeyValuePairs(getMatcher()));
         } catch (ArtConfigException e) {
             throw new ArtParseException(e.getMessage(), e);
         }

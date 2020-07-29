@@ -24,8 +24,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -41,11 +39,6 @@ class ResultTest implements ResultCreator {
         configuration = mock(Configuration.class);
         targetProvider = mock(TargetProvider.class);
         when(configuration.targets()).thenReturn(targetProvider);
-    }
-
-    @Override
-    public Configuration configuration() {
-        return configuration;
     }
 
     @Nested
@@ -108,11 +101,9 @@ class ResultTest implements ResultCreator {
             PlayerTarget target = PlayerTarget.mock("foo");
             Player player = target.source();
 
-            when(targetProvider.get(player)).thenReturn(Optional.of(target));
-
             CombinedResult result = TargetResult.of(success(), target, mock(ArtObjectContext.class)).combine();
 
-            assertThat(result.ofTarget(player))
+            assertThat(result.ofTarget(target))
                     .hasSize(1)
                     .first()
                     .extracting(TargetResult::target)

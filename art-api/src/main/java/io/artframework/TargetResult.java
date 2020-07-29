@@ -43,7 +43,7 @@ public interface TargetResult<TTarget, TContext extends ArtObjectContext<?>> ext
             @NonNull Target<TTarget> target,
             @NonNull TContext context
     ) {
-        return new DefaultTargetResult<>(result.configuration(), result.status(), result.messages(), target, context);
+        return new DefaultTargetResult<>(result.status(), result.messages(), target, context);
     }
 
     /**

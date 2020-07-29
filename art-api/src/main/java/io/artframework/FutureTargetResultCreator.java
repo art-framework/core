@@ -18,14 +18,14 @@ package io.artframework;
 
 import lombok.NonNull;
 
-public interface FutureTargetResultCreator extends Scope {
+public interface FutureTargetResultCreator {
 
     default FutureResult of(@NonNull ResultStatus status, Target<?> target, ArtObjectContext<?> context, @NonNull String... messages) {
-        return FutureResult.of(CombinedResult.of(configuration(), Result.of(configuration(), status, messages).with(target, context)));
+        return FutureResult.of(CombinedResult.of(Result.of(status, messages).with(target, context)));
     }
 
     default FutureResult of(boolean result, Target<?> target, ArtObjectContext<?> context,  @NonNull String... messages) {
-        return FutureResult.of(CombinedResult.of(configuration(), Result.of(configuration(), result, messages).with(target, context)));
+        return FutureResult.of(CombinedResult.of(Result.of(result, messages).with(target, context)));
     }
 
     default FutureResult of(Result result, Target<?> target, ArtObjectContext<?> context) {
@@ -33,26 +33,26 @@ public interface FutureTargetResultCreator extends Scope {
     }
 
     default FutureResult success(Target<?> target, ArtObjectContext<?> context, String... messages) {
-        return FutureResult.of(CombinedResult.of(configuration(), Result.success(configuration(), messages).with(target, context)));
+        return FutureResult.of(CombinedResult.of(Result.success(messages).with(target, context)));
     }
 
     default FutureResult empty(Target<?> target, ArtObjectContext<?> context, String... messages) {
-        return FutureResult.of(CombinedResult.empty(configuration(), messages).with(target, context));
+        return FutureResult.of(CombinedResult.empty(messages).with(target, context));
     }
 
     default FutureResult failure(Target<?> target, ArtObjectContext<?> context, String... messages) {
-        return FutureResult.of(CombinedResult.of(configuration(), Result.failure(configuration(), messages).with(target, context)));
+        return FutureResult.of(CombinedResult.of(Result.failure(messages).with(target, context)));
     }
 
     default FutureResult error(Target<?> target, ArtObjectContext<?> context, String... messages) {
-        return FutureResult.of(CombinedResult.of(configuration(), Result.error(configuration(), messages).with(target, context)));
+        return FutureResult.of(CombinedResult.of(Result.error(messages).with(target, context)));
     }
 
     default FutureResult error(Exception exception, Target<?> target, ArtObjectContext<?> context, String... messages) {
-        return FutureResult.of(CombinedResult.of(configuration(), Result.error(configuration(), exception, messages).with(target, context)));
+        return FutureResult.of(CombinedResult.of(Result.error(exception, messages).with(target, context)));
     }
 
     default FutureResult cancelled(Target<?> target, ArtObjectContext<?> context, String... messages) {
-        return FutureResult.of(CombinedResult.of(configuration(), Result.cancelled(configuration(), messages).with(target, context)));
+        return FutureResult.of(CombinedResult.of(Result.cancelled(messages).with(target, context)));
     }
 }

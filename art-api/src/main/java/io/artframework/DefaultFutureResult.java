@@ -31,8 +31,6 @@ import java.util.function.Consumer;
 @Accessors(fluent = true)
 public final class DefaultFutureResult implements FutureResult {
 
-    @Getter
-    private final Configuration configuration;
     @Getter(AccessLevel.PRIVATE)
     @Setter(AccessLevel.PRIVATE)
     private CombinedResult result;
@@ -40,16 +38,15 @@ public final class DefaultFutureResult implements FutureResult {
 
     private final List<Consumer<CombinedResult>> consumers;
 
-    public DefaultFutureResult(@NonNull Configuration configuration) {
-        this(configuration, CombinedResult.empty(configuration));
+    public DefaultFutureResult() {
+        this(CombinedResult.empty());
     }
 
-    public DefaultFutureResult(@NonNull Configuration configuration, @NonNull CombinedResult result) {
-        this(configuration, result, new ArrayList<>());
+    public DefaultFutureResult(@NonNull CombinedResult result) {
+        this(result, new ArrayList<>());
     }
 
-    DefaultFutureResult(@NonNull Configuration configuration, @NonNull CombinedResult result, @NonNull Collection<Consumer<CombinedResult>> consumers) {
-        this.configuration = configuration;
+    DefaultFutureResult(@NonNull CombinedResult result, @NonNull Collection<Consumer<CombinedResult>> consumers) {
         this.result = result;
         this.consumers = new ArrayList<>(consumers);
     }
@@ -94,7 +91,7 @@ public final class DefaultFutureResult implements FutureResult {
             consumers.addAll(((FutureResult) result).consumers());
         }
 
-        return new DefaultFutureResult(configuration(), result().combine(result), consumers);
+        return new DefaultFutureResult(result().combine(result), consumers);
     }
 
     @Override

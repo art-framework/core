@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 @Accessors(fluent = true)
 public class DefaultCombinedResult implements CombinedResult {
 
-    Configuration configuration;
     @Getter(lazy = true)
     ResultStatus status = combineStatus();
     @Getter(lazy = true)
@@ -39,13 +38,11 @@ public class DefaultCombinedResult implements CombinedResult {
     @Singular
     List<Result> results;
 
-    public DefaultCombinedResult(Configuration configuration) {
-        this.configuration = configuration;
+    public DefaultCombinedResult() {
         this.results = new ArrayList<>();
     }
 
-    public DefaultCombinedResult(Configuration configuration, List<Result> results) {
-        this.configuration = configuration;
+    public DefaultCombinedResult(List<Result> results) {
         this.results = ImmutableList.copyOf(flatten(results));
     }
 
@@ -92,7 +89,7 @@ public class DefaultCombinedResult implements CombinedResult {
     public CombinedResult combine(Result result) {
         ArrayList<Result> results = new ArrayList<>(results());
         results.add(result);
-        return new DefaultCombinedResult(configuration(), results);
+        return new DefaultCombinedResult(results);
     }
 
     private String[] combineMessages() {

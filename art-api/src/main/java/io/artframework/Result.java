@@ -28,7 +28,7 @@ import java.util.Arrays;
  * It is immutable, thread safe and does not return any null values.
  */
 @Immutable
-public interface Result extends Scope {
+public interface Result {
 
     /**
      * Creates a new result from the given parameters using the global configuration.
@@ -38,19 +38,7 @@ public interface Result extends Scope {
      * @return the created result
      */
     static Result of(@NonNull ResultStatus status, @NonNull String... messages) {
-        return of(ART.configuration(), status, messages);
-    }
-
-    /**
-     * Creates a new result from the given parameters.
-     *
-     * @param configuration the configuration of the scope
-     * @param status the status of the result
-     * @param messages additional messages of the result
-     * @return the created result
-     */
-    static Result of(@NonNull Configuration configuration, @NonNull ResultStatus status, @NonNull String... messages) {
-        return new DefaultResult(configuration, status, messages);
+        return new DefaultResult(status, messages);
     }
 
     /**
@@ -66,19 +54,6 @@ public interface Result extends Scope {
     }
 
     /**
-     * Creates a new result from the boolean parameter with the given configuration.
-     * <code>true</code> will result in a success and <code>false</code> in a failure.
-     *
-     * @param configuration the configuration of the scope
-     * @param result boolean to create the result from
-     * @param messages additional messages of the result
-     * @return the created result
-     */
-    static Result of(@NonNull Configuration configuration, boolean result, @NonNull String... messages) {
-        return of(configuration, result ? ResultStatus.SUCCESS : ResultStatus.FAILURE, messages);
-    }
-
-    /**
      * Creates a result that is successful.
      * You can optionally pass some messages you want to send to the user.
      *
@@ -87,18 +62,6 @@ public interface Result extends Scope {
      */
     static Result success(String... messages) {
         return of(ResultStatus.SUCCESS, messages);
-    }
-
-    /**
-     * Creates a result that is successful with the given configuration.
-     * You can optionally pass some messages you want to send to the user.
-     *
-     * @param configuration the configuration of the scope
-     * @param messages additional messages of the result
-     * @return the created result
-     */
-    static Result success(@NonNull Configuration configuration, String... messages) {
-        return of(configuration, ResultStatus.SUCCESS, messages);
     }
 
     /**
@@ -113,18 +76,6 @@ public interface Result extends Scope {
     }
 
     /**
-     * Creates an empty result that will also return as successful.
-     * Use the empty result if there was not valid target or all requirements were filtered out.
-     *
-     * @param configuration the configuration of the scope
-     * @param messages additional messages of the result
-     * @return the created result
-     */
-    static Result empty(@NonNull Configuration configuration, String... messages) {
-        return of(configuration, ResultStatus.EMPTY, messages);
-    }
-
-    /**
      * Creates a result that is not successful.
      * You can optionally pass some messages you want to send to the user.
      *
@@ -133,19 +84,6 @@ public interface Result extends Scope {
      */
     static Result failure(String... messages) {
         return of(ResultStatus.FAILURE, messages);
-    }
-
-
-    /**
-     * Creates a result that is not successful.
-     * You can optionally pass some messages you want to send to the user.
-     *
-     * @param configuration the configuration of the scope
-     * @param messages additional messages of the result
-     * @return the created result
-     */
-    static Result failure(@NonNull Configuration configuration, String... messages) {
-        return of(configuration, ResultStatus.FAILURE, messages);
     }
 
     /**
@@ -159,19 +97,6 @@ public interface Result extends Scope {
         return of(ResultStatus.ERROR, messages);
     }
 
-
-    /**
-     * Creates a result that has an error.
-     * You can optionally pass some messages you want to send to the user.
-     *
-     * @param configuration the configuration of the scope
-     * @param messages additional messages of the result
-     * @return the created result
-     */
-    static Result error(@NonNull Configuration configuration, String... messages) {
-        return of(configuration, ResultStatus.ERROR, messages);
-    }
-
     /**
      * Creates a new cancelled result.
      * A result may be cancelled by events or user actions.
@@ -183,39 +108,6 @@ public interface Result extends Scope {
      */
     static Result cancelled(String... messages) {
         return of(ResultStatus.CANCELLED, messages);
-    }
-
-
-    /**
-     * Creates a new cancelled result.
-     * A result may be cancelled by events or user actions.
-     * <p>
-     * You can optionally pass some messages you want to send to the user.
-     *
-     * @param configuration the configuration of the scope
-     * @param messages additional messages of the result
-     * @return the created result
-     */
-    static Result cancelled(@NonNull Configuration configuration, String... messages) {
-        return of(configuration, ResultStatus.CANCELLED, messages);
-    }
-
-    /**
-     * Creates a result that has an error from an exception.
-     * The message of the exception will automatically be included in the messages of the result.
-     * <p>
-     * You can optionally pass some messages you want to send to the user.
-     *
-     * @param configuration the configuration of the scope
-     * @param exception the exception that triggered the error
-     * @param messages additional messages of the result
-     * @return the created result
-     */
-    static Result error(@NonNull Configuration configuration, Exception exception, String... messages) {
-        ArrayList<String> list = new ArrayList<>(Arrays.asList(messages));
-        list.add(exception.getMessage());
-
-        return of(configuration, ResultStatus.ERROR, list.toArray(new String[0]));
     }
 
     /**

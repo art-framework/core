@@ -20,93 +20,53 @@ import com.google.common.collect.ImmutableMap;
 import io.artframework.ArtConfigException;
 import io.artframework.ConfigMap;
 import io.artframework.parser.flow.ConfigMapType;
-import io.artframework.util.ReflectionUtil;
+import io.artframework.util.ConfigUtil;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.Value;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-public final class DefaultConfigMap implements ConfigMap {
+@Value
+@Accessors(fluent = true)
+public class DefaultConfigMap implements ConfigMap {
 
     @Getter
-    private final ConfigMapType type;
+    ConfigMapType type;
     @Getter
-    private final Map<String, ConfigFieldInformation> configFields;
-    private final Map<ConfigFieldInformation, Object> configValues = new HashMap<>();
-    @Getter
-    private boolean loaded;
+    Map<String, ConfigFieldInformation> configFields;
+    Map<ConfigFieldInformation, Object> configValues;
+    boolean loaded;
 
     public DefaultConfigMap(ConfigMapType type, Map<String, ConfigFieldInformation> configFields) {
         this.type = type;
         this.configFields = ImmutableMap.copyOf(configFields);
+        this.configValues = new HashMap<>();
+        this.loaded = false;
+    }
+
+    DefaultConfigMap(ConfigMapType type, Map<String, ConfigFieldInformation> configFields, Map<ConfigFieldInformation, Object> configValues) {
+        this.type = type;
+        this.configFields = ImmutableMap.copyOf(configFields);
+        this.configValues = ImmutableMap.copyOf(configValues);
+        this.loaded = true;
     }
 
     @Override
     public <TConfig> TConfig applyTo(@NonNull TConfig config) {
-        if (!isLoaded()) return config;
+        if (!this.loaded()) return config;
         setConfigFields(config, configValues);
         return config;
     }
 
     @Override
-    public ConfigMap loadValues(@NonNull List<KeyValuePair> keyValuePairs) throws ArtConfigException {
-
-        if (getConfigFields().isEmpty()) return this;
-
-        Map<ConfigFieldInformation, Object> fieldValueMap = new HashMap<>();
-        Set<ConfigFieldInformation> mappedFields = new HashSet<>();
-
-        boolean usedKeyValue = false;
-
-        for (int i = 0; i < keyValuePairs.size(); i++) {
-            KeyValuePair keyValue = keyValuePairs.get(i);
-            ConfigFieldInformation configFieldInformation;
-            if (keyValue.getKey().isPresent() && getConfigFields().containsKey(keyValue.getKey().get())) {
-                configFieldInformation = getConfigFields().get(keyValue.getKey().get());
-                usedKeyValue = true;
-            } else if (getConfigFields().size() == 1) {
-                //noinspection OptionalGetWithoutIsPresent
-                configFieldInformation = getConfigFields().values().stream().findFirst().get();
-            } else {
-                if (usedKeyValue) {
-                    throw new ArtConfigException("Positioned parameter found after key=value pair usage. Positioned parameters must come first.");
-                }
-                int finalI = i;
-                Optional<ConfigFieldInformation> optionalFieldInformation = getConfigFields().values().stream().filter(info -> info.getPosition() == finalI).findFirst();
-                if (!optionalFieldInformation.isPresent()) {
-                    throw new ArtConfigException("Config does not define positioned parameters. Use key value pairs instead.");
-                }
-                configFieldInformation = optionalFieldInformation.get();
-            }
-
-            if (!keyValue.getValue().isPresent()) {
-                throw new ArtConfigException("Config " + configFieldInformation.getIdentifier() + " has an empty value.");
-            }
-
-            Object value = ReflectionUtil.toObject(configFieldInformation.getType(), keyValue.getValue().get());
-
-            fieldValueMap.put(configFieldInformation, value);
-            mappedFields.add(configFieldInformation);
-        }
-
-        List<ConfigFieldInformation> missingRequiredFields = getConfigFields().values().stream()
-                .filter(ConfigFieldInformation::isRequired)
-                .filter(configFieldInformation -> !mappedFields.contains(configFieldInformation))
-                .collect(Collectors.toList());
-
-        if (!missingRequiredFields.isEmpty()) {
-            throw new ArtConfigException("Config is missing " + missingRequiredFields.size() + " required parameters: "
-                    + missingRequiredFields.stream().map(ConfigFieldInformation::getIdentifier).collect(Collectors.joining(",")));
-        }
-
-        configValues.clear();
-        configValues.putAll(fieldValueMap);
-        loaded = true;
-
-        return this;
+    public ConfigMap with(@NonNull List<KeyValuePair> keyValuePairs) throws ArtConfigException {
+        return new DefaultConfigMap(type(), configFields(), ConfigUtil.loadConfigValues(configFields(), keyValuePairs));
     }
 
     private void setConfigFields(Object config, Map<ConfigFieldInformation, Object> fieldValueMap) {

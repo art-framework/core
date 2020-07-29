@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 // TODO: javadoc
-public interface ArtContext extends Context, AutoCloseable, ResultCreator {
+public interface ArtContext extends Context, AutoCloseable, ResultCreator, TargetCreator {
 
     ///
     /// ART instance related methods

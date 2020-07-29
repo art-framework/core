@@ -16,27 +16,36 @@
 
 package io.artframework;
 
+import io.artframework.conf.ConfigFieldInformation;
+import io.artframework.parser.flow.ConfigMapType;
+import io.artframework.util.ConfigUtil;
+import lombok.NonNull;
 import lombok.Value;
+import lombok.experimental.Accessors;
+import lombok.experimental.NonFinal;
 
-import java.util.function.BiPredicate;
+import java.util.Map;
 
 @Value
+@NonFinal
+@Accessors(fluent = true)
 public class TriggerTarget<TTarget> {
 
     Target<TTarget> target;
-    BiPredicate<Target<TTarget>, ExecutionContext<TriggerContext>> predicate;
 
     public TriggerTarget(Target<TTarget> target) {
         this.target = target;
-        this.predicate = (t, c) -> true;
     }
 
-    public TriggerTarget(Target<TTarget> target, BiPredicate<Target<TTarget>, ExecutionContext<TriggerContext>> predicate) {
-        this.target = target;
-        this.predicate = predicate;
-    }
+    public <TConfig> TriggerTarget<TTarget> with(@NonNull Class<TConfig> configClass, @NonNull TriggerRequirement<TTarget, TConfig> requirement) {
+        try {
+            Map<String, ConfigFieldInformation> configFields = ConfigUtil.getConfigFields(configClass);
+            ConfigMap configMap = ConfigMap.of(ConfigMapType.ART_CONFIG, configFields);
 
-    public boolean test(ExecutionContext<TriggerContext> executionContext) {
-        return predicate.test(target, executionContext);
+            return new ConfiguredTriggerTarget<>(target, configMap, configClass, requirement);
+        } catch (ArtConfigException e) {
+            e.printStackTrace();
+            return this;
+        }
     }
 }
