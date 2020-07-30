@@ -37,6 +37,7 @@ import javax.annotation.Nullable;
  */
 @Data
 @Builder
+@ConfigOption
 @Accessors(fluent = true)
 @EqualsAndHashCode(callSuper = true)
 public class RequirementConfig extends ArtObjectConfig {
@@ -70,7 +71,7 @@ public class RequirementConfig extends ArtObjectConfig {
             "Setting a count for the requirement will let it only become true if it was true for the number of the defined count.",
             "e.g. setting a count of 5 means the requirement must be met 5 times before it comes true"
     })
-    private int count = 0;
+    private int count;
 
     @ConfigOption(description = "Set to true if the outcome of the requirement should be negated/switched.")
     private boolean negated;

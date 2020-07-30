@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 
 @Data
 @Builder
+@ConfigOption
 @Accessors(fluent = true)
 @EqualsAndHashCode(callSuper = true)
 public class TriggerConfig extends ArtObjectConfig {
@@ -63,6 +64,7 @@ public class TriggerConfig extends ArtObjectConfig {
             "Use the 'time' (e.g.: 1h20s) annotation to specify the delay this trigger has.",
             "Delay means the time to wait before executing any actions and informing others about the execution of this trigger."
     })
+    @Builder.Default
     private String delay = "0s";
 
     @ConfigOption(description = {
@@ -70,6 +72,7 @@ public class TriggerConfig extends ArtObjectConfig {
             "Use the 'time' (e.g.: 1h20s) annotation to specify the cooldown this trigger has.",
             "Cooldown means the time between executions."
     })
+    @Builder.Default
     private String cooldown = "0s";
 
     @ConfigOption(description = "Set this to true to execute this trigger only once.")
@@ -79,8 +82,10 @@ public class TriggerConfig extends ArtObjectConfig {
             "Set this to false to prevent any actions being executed by this trigger.",
             "Any listeners will still be informed and all requirements checked."
     })
+    @Builder.Default
     private boolean executeActions = true;
 
+    @Builder.Default
     private int count = 0;
 
     /**

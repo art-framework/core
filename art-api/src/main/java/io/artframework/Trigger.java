@@ -81,7 +81,7 @@ public interface Trigger extends ArtObject, Scope, TargetCreator {
      */
     @SuppressWarnings("rawtypes")
     default CombinedResult trigger(String identifier, Object... targets) {
-        return trigger(identifier, Arrays.stream(targets)
+        return ART.trigger(identifier, Arrays.stream(targets)
                 .filter(Objects::nonNull)
                 .map(o -> {
                     if (o instanceof Optional) {
