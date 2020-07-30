@@ -38,6 +38,7 @@ import javax.annotation.Nullable;
  */
 @Data
 @Builder
+@ConfigOption
 @Accessors(fluent = true)
 @EqualsAndHashCode(callSuper = true)
 public final class ActionConfig extends ArtObjectConfig {
@@ -71,16 +72,18 @@ public final class ActionConfig extends ArtObjectConfig {
             "The delay after which the action is executed.",
             TimeUtil.TIME_DESC
     })
+    @Builder.Default
     private String delay = "0s";
 
     @ConfigOption(description = {
             "Prevents a consecutive execution of this action before the cooldown ended.",
             TimeUtil.TIME_DESC
     })
+    @Builder.Default
     private String cooldown = "0s";
 
     @ConfigOption(description = "Will only execute the action once.")
-    private boolean executeOnce = false;
+    private boolean executeOnce;
 
     /**
      * The delay in milliseconds for this action.
