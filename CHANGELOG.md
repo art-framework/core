@@ -1,3 +1,18 @@
+# [1.0.0-alpha.12](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) (2020-07-31)
+
+
+### Bug Fixes
+
+* ambiguous trigger method overload ([7f1a7c3](https://github.com/art-framework/art-framework/commit/7f1a7c38d06743aa46e6d1b030eed4e611431b47))
+* overloading of the trigger varargs methods ([30c6ffb](https://github.com/art-framework/art-framework/commit/30c6ffb637b1c27aa1d4ae88b9ac7e455dae3d97))
+* trigger parsing and execution ([cd4b1d6](https://github.com/art-framework/art-framework/commit/cd4b1d661655e5a8bda25e198e24eea6bda2da16))
+
+
+### Features
+
+* replace readthedocs with docsify ([6635be7](https://github.com/art-framework/art-framework/commit/6635be7baa76b0f99fa55306e32874be760717e2))
+* **parser:** add option to define primitive arrays ([579f415](https://github.com/art-framework/art-framework/commit/579f41506d04a8d6a17410e8c9a5ed95b93c7ee7))
+
 # [1.0.0-alpha.11](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.10...v1.0.0-alpha.11) (2020-07-10)
 
 
