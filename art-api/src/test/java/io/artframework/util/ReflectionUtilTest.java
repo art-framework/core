@@ -146,6 +146,29 @@ class ReflectionUtilTest {
         }
     }
 
+    @Nested
+    @DisplayName("toObject(...)")
+    class ToObject {
+
+        @Test
+        @DisplayName("should convert string array")
+        void shouldParseArrayCorrectly() {
+
+            assertThat(ReflectionUtil.toObject(String[].class, "foo, bar with, spaces"))
+                    .isInstanceOf(String[].class)
+                    .isEqualTo(new String[]{"foo", "bar with", "spaces"});
+        }
+
+        @Test
+        @DisplayName("should convert int array")
+        void shouldConvertIntArray() {
+
+            assertThat(ReflectionUtil.toObject(Integer[].class, "1, 2, 3"))
+                    .isInstanceOf(Integer[].class)
+                    .isEqualTo(new Integer[]{1, 2, 3});
+        }
+    }
+
 
     interface TypeInterface<TType> {
 

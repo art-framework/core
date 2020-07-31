@@ -62,11 +62,11 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
         if (config().checkOnce()) {
             Optional<Boolean> result = store(target, Constants.Storage.CHECK_ONCE_RESULT, Boolean.class);
             if (result.isPresent()) {
-                return of(result.get()).with(target, this);
+                return resultOf(result.get()).with(target, this);
             }
         }
 
-        Result result = of(requirement.test(target, context));
+        Result result = resultOf(requirement.test(target, context));
 
         int currentCount = store(target, Constants.Storage.COUNT, Integer.class).orElse(0);
         if (result.success()) {
@@ -78,7 +78,7 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
         }
 
         if (config().count() > 0) {
-            result = of(currentCount >= config().count()).combine(result);
+            result = resultOf(currentCount >= config().count()).combine(result);
         }
 
         if (config().negated()) {

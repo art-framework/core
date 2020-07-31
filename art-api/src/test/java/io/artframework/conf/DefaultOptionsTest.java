@@ -107,7 +107,7 @@ class DefaultOptionsTest {
             assertThatCode(() -> assertThat(options.initialize().configMap())
                     .containsKey("cfg")
                     .extractingByKey("cfg")
-                    .extracting(ConfigFieldInformation::getDefaultValue)
+                    .extracting(ConfigFieldInformation::defaultValue)
                     .isEqualTo("foo")
             ).doesNotThrowAnyException();
         }
@@ -121,7 +121,7 @@ class DefaultOptionsTest {
             assertThatCode(() -> assertThat(options.initialize().configMap())
                     .containsKey("config_value")
                     .extractingByKey("config_value")
-                    .extracting(ConfigFieldInformation::getDefaultValue)
+                    .extracting(ConfigFieldInformation::defaultValue)
                     .isEqualTo(1337)
             ).doesNotThrowAnyException();
 

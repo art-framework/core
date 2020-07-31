@@ -21,14 +21,18 @@ import io.artframework.ArtConfigException;
 import io.artframework.ArtParseException;
 import io.artframework.ConfigMap;
 import io.artframework.Configuration;
+import io.artframework.conf.ConfigFieldInformation;
 import io.artframework.conf.KeyValuePair;
 import lombok.Getter;
+import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Accessors(fluent = true)
 public class ConfigParser extends LineParser<ConfigMap> {
 
     public static ConfigParser of(Configuration configuration, ConfigMap configMap) {
@@ -42,7 +46,7 @@ public class ConfigParser extends LineParser<ConfigMap> {
         // always edit the regexr link and update the link below!
         // the regexr link and the regex should always match
         // regexr.com/576km
-        super(configuration, Pattern.compile("^(?<keyValue>((?<key>[\\w\\d._-]+)?[:=])?((\"(?<quotedValue>.*?)\")|((?<value>[^;, ]*)[,; ]?)))(?<config>.*)?$"));
+        super(configuration, Pattern.compile("^(?<keyValue>((?<key>[\\w\\d._-]+)?[:=])?((\"(?<quotedValue>.*?)\")|(\\[(?<array>.*?)\\])|(?<valueWithSpaces>(?<value>[^;, ]*)[,; ]?)))(?<config>.*)?$"));
         this.configMap = configMap;
     }
 
@@ -61,14 +65,39 @@ public class ConfigParser extends LineParser<ConfigMap> {
         ArrayList<KeyValuePair> pairs = new ArrayList<>();
 
         String quotedValue = matcher.group("quotedValue");
+        String array = matcher.group("array");
         String unquotedValue = matcher.group("value");
-        String value = Strings.isNullOrEmpty(unquotedValue) ? quotedValue : unquotedValue;
+        String value;
+
+        if (quotedValue != null) {
+            value = quotedValue;
+        } else if (array != null) {
+            value = array;
+        } else {
+            value = unquotedValue;
+        }
+
+        String config = matcher.group("config");
+        if (Strings.isNullOrEmpty(array) && configMap().configFields().size() == 1
+                && configMap().configFields().values().stream().findFirst()
+                .map(ConfigFieldInformation::type)
+                .map(Class::isArray)
+                .orElse(false)) {
+
+            if (Strings.isNullOrEmpty(quotedValue)) {
+                value = matcher.group("valueWithSpaces") + config;
+            } else {
+                value = "\"" + quotedValue + "\"" + config;
+            }
+
+            pairs.add(new KeyValuePair(matcher.group("key"), value));
+            return pairs;
+        }
 
         pairs.add(new KeyValuePair(matcher.group("key"), value));
 
-        String config = matcher.group("config");
         if (!Strings.isNullOrEmpty(config)) {
-            matcher = getPattern().matcher(config.trim());
+            matcher = getPattern().matcher(StringUtils.strip(config.trim(), ",;").trim());
             if (matcher.matches()) {
                 pairs.addAll(extractKeyValuePairs(matcher));
             }

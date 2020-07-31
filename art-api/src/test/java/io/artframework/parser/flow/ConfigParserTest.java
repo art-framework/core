@@ -51,8 +51,6 @@ class ConfigParserTest {
     @DisplayName("parse()")
     class parse {
 
-        // TODO: more tests
-
         @Test
         @SneakyThrows
         @DisplayName("should parse single config setting without position annotation")
@@ -227,14 +225,16 @@ class ConfigParserTest {
 
         @Test
         @SneakyThrows
-        @DisplayName("should throw if value is missing: name=")
+        @DisplayName("should not throw if value is missing: name=")
         void shouldThrowIfValueIsMissing() {
             ConfigParser parser = parser(TestConfig.class);
 
             assertThat(parser.accept("name=")).isTrue();
-            assertThatExceptionOfType(ArtParseException.class)
-                    .isThrownBy(parser::parse)
-                    .withMessageContaining("empty value");
+            assertThatCode(() -> {
+                TestConfig result = parser.parse().applyTo(new TestConfig());
+                assertThat(result).extracting(TestConfig::getName)
+                        .isEqualTo("");
+            }).doesNotThrowAnyException();
         }
 
         @Test
@@ -248,6 +248,88 @@ class ConfigParserTest {
                 TestConfig result = parser.parse().applyTo(new TestConfig());
                 assertThat(result).extracting(TestConfig::getName)
                         .isEqualTo("");
+            }).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("should parse array with explicit key=[...] syntax")
+        void shouldParseArrayWithExplicitSyntax() {
+
+            ConfigParser parser = parser(ConfigWithArray.class);
+
+            assertThat(parser.accept("messages=[my cool, multiline, message with spaces]")).isTrue();
+            assertThatCode(() -> {
+                ConfigWithArray result = parser.parse().applyTo(new ConfigWithArray());
+                assertThat(result.getMessages())
+                        .contains("my cool", "multiline", "message with spaces");
+            }).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("should parse array with explicit [...] value only syntax")
+        void shouldParseArrayWithExplicitValueOnlySyntax() {
+
+            ConfigParser parser = parser(ConfigWithArray.class);
+
+            assertThat(parser.accept("[my cool, multiline, message with spaces]")).isTrue();
+            assertThatCode(() -> {
+                ConfigWithArray result = parser.parse().applyTo(new ConfigWithArray());
+                assertThat(result.getMessages())
+                        .contains("my cool", "multiline", "message with spaces");
+            }).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("should auto parse arrays if they are the only argument")
+        void shouldAutoParseArrayIfOnlyArgument() {
+            ConfigParser parser = parser(ConfigWithArray.class);
+
+            assertThat(parser.accept("my cool, multiline, message with spaces")).isTrue();
+            assertThatCode(() -> {
+                ConfigWithArray result = parser.parse().applyTo(new ConfigWithArray());
+                assertThat(result.getMessages())
+                        .contains("my cool", "multiline", "message with spaces");
+            }).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("should parse array with quotes as strings with commas")
+        void shouldParseArrayWithQuotes() {
+
+            ConfigParser parser = parser(ConfigWithArray.class);
+
+            assertThat(parser.accept("\"my cool, multiline, message with spaces\", and mixed, commas")).isTrue();
+            assertThatCode(() -> {
+                ConfigWithArray result = parser.parse().applyTo(new ConfigWithArray());
+                assertThat(result.getMessages())
+                        .contains("my cool, multiline, message with spaces", "and mixed", "commas");
+            }).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("should parse explicit array sytnax with quotes as strings with commas")
+        void shouldParseArrayWithQuotesExplicitSyntax() {
+
+            ConfigParser parser = parser(ConfigWithArray.class);
+
+            assertThat(parser.accept("[\"my cool, multiline, message with spaces\", and mixed, commas]")).isTrue();
+            assertThatCode(() -> {
+                ConfigWithArray result = parser.parse().applyTo(new ConfigWithArray());
+                assertThat(result.getMessages())
+                        .contains("my cool, multiline, message with spaces", "and mixed", "commas");
+            }).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("should parse single element array that contains spaces")
+        void shouldParseSingleLineArrayWithSpaces() {
+            ConfigParser parser = parser(ConfigWithArray.class);
+
+            assertThat(parser.accept("my cool array with spaces")).isTrue();
+            assertThatCode(() -> {
+                ConfigWithArray result = parser.parse().applyTo(new ConfigWithArray());
+                assertThat(result.getMessages())
+                        .contains("my cool array with spaces");
             }).doesNotThrowAnyException();
         }
     }
@@ -289,4 +371,20 @@ class ConfigParserTest {
         private String optional;
     }
 
+    @Data
+    @ConfigOption
+    public static class ConfigWithArray {
+
+        private String[] messages;
+    }
+
+    @Data
+    @ConfigOption
+    public static class ConfigWithVargArray {
+
+        @ConfigOption
+        private int myVal = 5;
+        @ConfigOption
+        private String[] messages;
+    }
 }

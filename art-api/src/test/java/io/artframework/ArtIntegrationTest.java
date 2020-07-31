@@ -17,6 +17,7 @@
 package io.artframework;
 
 import io.artframework.integration.actions.DamageAction;
+import io.artframework.integration.actions.TextAction;
 import io.artframework.integration.data.Entity;
 import io.artframework.integration.data.Player;
 import io.artframework.integration.requirements.HealthRequirement;
@@ -32,6 +33,7 @@ import java.util.Arrays;
 
 import static io.artframework.Result.success;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
 @DisplayName("ART Integration Tests")
@@ -160,6 +162,20 @@ public class ArtIntegrationTest {
     @DisplayName("ART creation")
     class ArtCreation {
 
+        @BeforeEach
+        void setUp() {
+            ART
+                    .actions()
+                        .add(DamageAction.class)
+                        .add(TextAction.class)
+                    .requirements()
+                        .add(HealthRequirement.class)
+                    .trigger()
+                        .add(new PlayerTrigger())
+                    .targets()
+                        .add(Player.class, PlayerTarget::new);
+        }
+
         @Nested
         @DisplayName("with FlowParser")
         class FlowParser {
@@ -167,11 +183,6 @@ public class ArtIntegrationTest {
             @Test
             @DisplayName("should create list of nested actions")
             void shouldCreateListOfActions() {
-
-                ART.actions()
-                        .add(DamageAction.class)
-                    .targets()
-                        .add(Player.class, PlayerTarget::new);
 
                 ArtContext context = ART.builder().load(Arrays.asList(
                         "!damage 20",
@@ -196,6 +207,55 @@ public class ArtIntegrationTest {
 
             }
 
+            @Test
+            @DisplayName("should test requirements before executing actions")
+            void shouldTestRequirementsBeforeAction() {
+
+                ArtContext context = ART.builder().load(Arrays.asList(
+                        "?health >50",
+                        "!damage 40"
+                )).build();
+
+                Player foo = new Player("foo");
+                foo.setHealth(60);
+
+                assertThat(context.execute(foo).success());
+                assertThat(foo.getHealth()).isEqualTo(20);
+
+                assertThat(context.execute(foo).failure());
+                assertThat(foo.getHealth()).isEqualTo(20);
+            }
+
+            @Test
+            @DisplayName("should test requirements of nested actions")
+            void shouldTestRequirementsOfNestedActions() {
+
+                ArtContext context = ART.builder().load(Arrays.asList(
+                        "?health >50",
+                        "!damage 40",
+                        "?health >50",
+                        "!txt awesome, you, did it"
+                )).build();
+
+                Player bar = spy(new Player("bar"));
+                bar.setHealth(100);
+                Player foo = spy(new Player("foo"));
+                foo.setHealth(60);
+
+
+                bar.getMessageConsumer().add(strings -> assertThat(strings).contains(
+                        "awesome",
+                        "you",
+                        "did it"
+                ));
+                assertThat(context.execute(bar).success());
+                assertThat(bar.getHealth()).isEqualTo(60);
+                verify(bar, times(1)).sendMessage(any());
+
+                assertThat(context.execute(foo).failure());
+                assertThat(foo.getHealth()).isEqualTo(20);
+                verify(foo, never()).sendMessage(any());
+            }
         }
     }
 }

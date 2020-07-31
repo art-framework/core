@@ -53,7 +53,7 @@ class ConfigUtilTest {
 
             assertThatCode(() -> assertThat(ConfigUtil.getConfigFields(TestConfig.class))
                     .extractingByKey("required")
-                    .extracting(ConfigFieldInformation::isRequired)
+                    .extracting(ConfigFieldInformation::required)
                     .isEqualTo(true)
             ).doesNotThrowAnyException();
         }
@@ -64,7 +64,7 @@ class ConfigUtilTest {
 
             assertThatCode(() -> assertThat(ConfigUtil.getConfigFields(TestConfig.class))
                     .extractingByKey("default_field")
-                    .extracting(ConfigFieldInformation::getDescription)
+                    .extracting(ConfigFieldInformation::description)
                     .isEqualTo(new String[]{"World to teleport the player to."})
             ).doesNotThrowAnyException();
         }
@@ -75,7 +75,7 @@ class ConfigUtilTest {
 
             assertThatCode(() -> assertThat(ConfigUtil.getConfigFields(TestConfig.class))
                     .extractingByKey("default_field")
-                    .extracting(ConfigFieldInformation::getDefaultValue)
+                    .extracting(ConfigFieldInformation::defaultValue)
                     .isEqualTo("world")
             ).doesNotThrowAnyException();
         }
@@ -86,7 +86,7 @@ class ConfigUtilTest {
 
             assertThatCode(() -> assertThat(ConfigUtil.getConfigFields(TestConfig.class))
                     .extractingByKey("all_annotations")
-                    .extracting(ConfigFieldInformation::getDefaultValue, ConfigFieldInformation::getDescription)
+                    .extracting(ConfigFieldInformation::defaultValue, ConfigFieldInformation::description)
                     .contains(2.0d, new String[]{"Required field with default value."})
             ).doesNotThrowAnyException();
         }
@@ -97,7 +97,7 @@ class ConfigUtilTest {
 
             assertThatCode(() -> assertThat(ConfigUtil.getConfigFields(TestConfig.class))
                     .extractingByKey("nested.nested_field")
-                    .extracting(ConfigFieldInformation::getDescription, ConfigFieldInformation::getDefaultValue)
+                    .extracting(ConfigFieldInformation::description, ConfigFieldInformation::defaultValue)
                     .contains(new String[]{"nested config field"}, "foobar")
             ).doesNotThrowAnyException();
         }
@@ -124,7 +124,7 @@ class ConfigUtilTest {
 
             assertThatCode(() -> assertThat(ConfigUtil.getConfigFields(TestConfig.class))
                     .extractingByKeys("required", "parent_field")
-                    .extracting(ConfigFieldInformation::getPosition)
+                    .extracting(ConfigFieldInformation::position)
                     .contains(1, 0)
             ).doesNotThrowAnyException();
         }
@@ -153,6 +153,15 @@ class ConfigUtilTest {
 
             assertThatCode(() -> assertThat(ConfigUtil.getConfigFields(AnnotatedClass.class))
                     .containsOnlyKeys("foo", "bar")
+            ).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("should load array field")
+        void shouldLoadArrayField() {
+
+            assertThatCode(() -> assertThat(ConfigUtil.getConfigFields(ArrayConfig.class))
+                    .containsOnlyKeys("foo", "array")
             ).doesNotThrowAnyException();
         }
     }
@@ -223,4 +232,12 @@ class ConfigUtilTest {
         @Ignore
         private double ignored;
     }
+
+    @ConfigOption
+    public static class ArrayConfig {
+
+        private int foo;
+        private String[] array;
+    }
+
 }

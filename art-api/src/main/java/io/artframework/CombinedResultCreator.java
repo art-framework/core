@@ -20,17 +20,17 @@ import lombok.NonNull;
 
 public interface CombinedResultCreator extends ResultCreator {
 
-    default CombinedResult of(@NonNull Result result) {
+    default CombinedResult resultOf(@NonNull Result result) {
         return CombinedResult.of(result);
     }
 
     @Override
-    default CombinedResult of(@NonNull ResultStatus status, @NonNull String... messages) {
+    default CombinedResult resultOf(@NonNull ResultStatus status, @NonNull String... messages) {
         return CombinedResult.of(Result.of(status, messages));
     }
 
     @Override
-    default CombinedResult of(boolean result, @NonNull String... messages) {
+    default CombinedResult resultOf(boolean result, @NonNull String... messages) {
         return CombinedResult.of(Result.of(result, messages));
     }
 

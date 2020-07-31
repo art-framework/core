@@ -17,12 +17,13 @@
 package io.artframework.integration.targets;
 
 import io.artframework.AbstractTarget;
+import io.artframework.MessageSender;
 import io.artframework.integration.data.Player;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import static org.mockito.Mockito.spy;
 
-public class PlayerTarget extends AbstractTarget<Player> {
+public class PlayerTarget extends AbstractTarget<Player> implements MessageSender {
 
     public static PlayerTarget mock() {
         return mock(RandomStringUtils.randomAlphanumeric(10));
@@ -39,5 +40,10 @@ public class PlayerTarget extends AbstractTarget<Player> {
     @Override
     public String uniqueId() {
         return source().getUniqueId().toString();
+    }
+
+    @Override
+    public void sendMessage(String... messages) {
+        source().sendMessage(messages);
     }
 }

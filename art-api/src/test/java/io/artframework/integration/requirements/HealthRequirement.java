@@ -49,15 +49,15 @@ public class HealthRequirement implements Requirement<Player> {
         int health = target.source().getHealth();
 
         if (Strings.isNullOrEmpty(modifier) || modifier.equals("=")) {
-            return of(health == amount);
+            return resultOf(health == amount);
         } else if (modifier.equals(">")) {
-            return of(health > amount);
+            return resultOf(health > amount);
         } else if (modifier.equals("<")) {
-            return of(health < amount);
+            return resultOf(health < amount);
         } else if (modifier.equals(">=") || modifier.equals("=>")) {
-            return of(health >= amount);
+            return resultOf(health >= amount);
         } else if (modifier.equals("<=") || modifier.equals("=<")) {
-            return of(health <= amount);
+            return resultOf(health <= amount);
         }
 
         return failure();

@@ -16,16 +16,26 @@
 
 package io.artframework.util;
 
+import com.google.common.base.Strings;
 import io.artframework.Target;
 import lombok.NonNull;
 
 import javax.annotation.Nullable;
+import java.lang.reflect.Array;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class ReflectionUtil {
+
+    // always edit the regexr link and update the link below!
+    // the regexr link and the regex should always match
+    // https://regexr.com/59dgv
+    private static final Pattern QUOTED_STRING_ARRAY = Pattern.compile("^(\"(?<quoted>.*?)\")?(?<value>.*?)?,(?<rest>.*)$");
 
     @SuppressWarnings("rawtypes")
     public static Class getTypeArgument(Object object, int position) {
@@ -34,6 +44,11 @@ public final class ReflectionUtil {
     }
 
     public static Object toObject(Class<?> fieldType, String value) {
+
+        if (fieldType.isArray()) {
+            return toArray(fieldType.getComponentType(), value);
+        }
+
         if (Boolean.class == fieldType || Boolean.TYPE == fieldType) return Boolean.parseBoolean(value);
         if (Byte.class == fieldType || Byte.TYPE == fieldType) return Byte.parseByte(value);
         if (Short.class == fieldType || Short.TYPE == fieldType) return Short.parseShort(value);
@@ -42,6 +57,38 @@ public final class ReflectionUtil {
         if (Float.class == fieldType || Float.TYPE == fieldType) return Float.parseFloat(value);
         if (Double.class == fieldType || Double.TYPE == fieldType) return Double.parseDouble(value);
         return value;
+    }
+
+    public static Object toArray(Class<?> arrayType, String input) {
+        ArrayList<String> strings = new ArrayList<>();
+
+        Matcher matcher = QUOTED_STRING_ARRAY.matcher(input);
+
+        while (matcher.matches()) {
+            String quoted = matcher.group("quoted");
+            String value = matcher.group("value");
+            input = matcher.group("rest");
+            if (quoted != null) {
+                strings.add(quoted);
+            } else {
+                strings.add(value);
+            }
+
+            if (!Strings.isNullOrEmpty(input)) {
+                matcher = QUOTED_STRING_ARRAY.matcher(input);
+            } else {
+                break;
+            }
+        }
+        strings.add(input);
+
+        String[] result = strings.toArray(new String[0]);
+        Object array = Array.newInstance(arrayType, result.length);
+        for (int i = 0; i < result.length; i++) {
+            Array.set(array, i, toObject(arrayType, result[i].trim()));
+        }
+
+        return array;
     }
 
     /**
