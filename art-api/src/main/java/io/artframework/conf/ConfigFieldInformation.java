@@ -18,8 +18,10 @@ package io.artframework.conf;
 
 import lombok.Value;
 import lombok.With;
+import lombok.experimental.Accessors;
 
 @Value
+@Accessors(fluent = true)
 public class ConfigFieldInformation implements Comparable<ConfigFieldInformation> {
 
     /**
@@ -41,10 +43,10 @@ public class ConfigFieldInformation implements Comparable<ConfigFieldInformation
     @Override
     public int compareTo(ConfigFieldInformation o) {
 
-        if (getPosition() < 0 && o.getPosition() < 0) return getName().compareTo(o.getName());
-        if (getPosition() < 0) return 1;
-        if (o.getPosition() < 0) return -1;
+        if (position() < 0 && o.position() < 0) return name().compareTo(o.name());
+        if (position() < 0) return 1;
+        if (o.position() < 0) return -1;
 
-        return Integer.compare(getPosition(), o.getPosition());
+        return Integer.compare(position(), o.position());
     }
 }

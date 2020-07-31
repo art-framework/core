@@ -28,7 +28,7 @@ public interface ResultCreator {
      * @return the created result
      * @see Result#of(ResultStatus, String...)
      */
-    default Result of(@NonNull ResultStatus status, @NonNull String... messages) {
+    default Result resultOf(@NonNull ResultStatus status, @NonNull String... messages) {
         return Result.of(status, messages);
     }
 
@@ -41,7 +41,7 @@ public interface ResultCreator {
      * @return the created result
      * @see Result#of(boolean, String...)
      */
-    default Result of(boolean result, @NonNull String... messages) {
+    default Result resultOf(boolean result, @NonNull String... messages) {
         return Result.of(result ? ResultStatus.SUCCESS : ResultStatus.FAILURE, messages);
     }
 

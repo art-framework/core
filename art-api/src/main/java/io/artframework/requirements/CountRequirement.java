@@ -40,6 +40,6 @@ public class CountRequirement implements GenericRequirement {
         final int currentCount = context.store(target, COUNTER_KEY, Integer.class).orElse(0) + 1;
         context.store(target, COUNTER_KEY, currentCount);
 
-        return of(count <= currentCount);
+        return resultOf(count <= currentCount);
     }
 }

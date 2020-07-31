@@ -30,10 +30,7 @@ import org.apache.commons.lang3.reflect.FieldUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -91,13 +88,19 @@ public final class ConfigUtil {
                         .filter(s -> !Strings.isNullOrEmpty(s))
                         .orElse(formatter.apply(field.getName()));
 
-                if (field.getType().isPrimitive() || field.getType().equals(String.class)) {
+                if (field.getType().isPrimitive() || field.getType().equals(String.class) || field.getType().isArray()) {
 
                     String[] description = configOption.map(ConfigOption::description).orElse(new String[0]);
                     Boolean required = configOption.map(ConfigOption::required).orElse(false);
                     Integer position = configOption.map(ConfigOption::position).orElse(-1);
 
                     field.setAccessible(true);
+
+                    Object defaultValue = field.get(configInstance);
+
+                    if (field.getType().isArray() && defaultValue == null) {
+                        defaultValue = Array.newInstance(field.getType().getComponentType(), 0);
+                    }
 
                     fields.put(identifier, new ConfigFieldInformation(
                             identifier,
@@ -106,7 +109,7 @@ public final class ConfigUtil {
                             position,
                             description,
                             required,
-                            field.get(configInstance)
+                            defaultValue
                     ));
                 } else {
                     fields.putAll(getConfigFields(identifier + ".", field.getType(), field.getType().getConstructor().newInstance(), formatter));
@@ -115,14 +118,14 @@ public final class ConfigUtil {
 
             List<ConfigFieldInformation> sameFieldPosition = fields.values().stream().filter(field1 -> fields.values().stream().anyMatch(
                     field2 -> field1 != field2
-                            && field1.getPosition() > -1
-                            && field2.getPosition() > -1
-                            && field1.getPosition() == field2.getPosition()
+                            && field1.position() > -1
+                            && field2.position() > -1
+                            && field1.position() == field2.position()
             )).collect(Collectors.toList());
 
             if (!sameFieldPosition.isEmpty()) {
-                throw new ArtConfigException("found same position " + sameFieldPosition.get(0).getPosition() + " on the following fields: "
-                        + sameFieldPosition.stream().map(ConfigFieldInformation::getIdentifier).collect(Collectors.joining(",")));
+                throw new ArtConfigException("found same position " + sameFieldPosition.get(0).position() + " on the following fields: "
+                        + sameFieldPosition.stream().map(ConfigFieldInformation::identifier).collect(Collectors.joining(",")));
             }
 
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException e) {
@@ -166,11 +169,8 @@ public final class ConfigUtil {
         try {
             Scanner scanner = new Scanner(file);
 
-            //now read the file line by line...
-            int lineNum = 0;
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                lineNum++;
                 if(line.contains(string)) {
                     return true;
                 }
@@ -203,7 +203,7 @@ public final class ConfigUtil {
                     throw new ArtConfigException("Positioned parameter found after key=value pair usage. Positioned parameters must come first.");
                 }
                 int finalI = i;
-                Optional<ConfigFieldInformation> optionalFieldInformation = configFields.values().stream().filter(info -> info.getPosition() == finalI).findFirst();
+                Optional<ConfigFieldInformation> optionalFieldInformation = configFields.values().stream().filter(info -> info.position() == finalI).findFirst();
                 if (!optionalFieldInformation.isPresent()) {
                     throw new ArtConfigException("Config does not define positioned parameters. Use key value pairs instead.");
                 }
@@ -211,23 +211,23 @@ public final class ConfigUtil {
             }
 
             if (!keyValue.getValue().isPresent()) {
-                throw new ArtConfigException("Config " + configFieldInformation.getIdentifier() + " has an empty value.");
+                throw new ArtConfigException("Config " + configFieldInformation.identifier() + " has an empty value.");
             }
 
-            Object value = ReflectionUtil.toObject(configFieldInformation.getType(), keyValue.getValue().get());
+            Object value = ReflectionUtil.toObject(configFieldInformation.type(), keyValue.getValue().get());
 
             fieldValueMap.put(configFieldInformation, value);
             mappedFields.add(configFieldInformation);
         }
 
         List<ConfigFieldInformation> missingRequiredFields = configFields.values().stream()
-                .filter(ConfigFieldInformation::isRequired)
+                .filter(ConfigFieldInformation::required)
                 .filter(configFieldInformation -> !mappedFields.contains(configFieldInformation))
                 .collect(Collectors.toList());
 
         if (!missingRequiredFields.isEmpty()) {
             throw new ArtConfigException("Config is missing " + missingRequiredFields.size() + " required parameters: "
-                    + missingRequiredFields.stream().map(ConfigFieldInformation::getIdentifier).collect(Collectors.joining(",")));
+                    + missingRequiredFields.stream().map(ConfigFieldInformation::identifier).collect(Collectors.joining(",")));
         }
 
         return fieldValueMap;

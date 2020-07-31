@@ -76,15 +76,15 @@ public class DefaultConfigMap implements ConfigMap {
     private void setConfigField(Object config, ConfigFieldInformation fieldInformation, Object value) {
 
         try {
-            if (fieldInformation.getIdentifier().contains(".")) {
+            if (fieldInformation.identifier().contains(".")) {
                 // handle nested config objects
-                String nestedIdentifier = StringUtils.substringBefore(fieldInformation.getIdentifier(), ".");
+                String nestedIdentifier = StringUtils.substringBefore(fieldInformation.identifier(), ".");
                 Field parentField = config.getClass().getDeclaredField(nestedIdentifier);
                 parentField.setAccessible(true);
                 Object nestedConfigObject = parentField.get(config);
                 setConfigField(nestedConfigObject, fieldInformation.withIdentifier(nestedIdentifier), value);
             } else {
-                Field field = config.getClass().getDeclaredField(fieldInformation.getName());
+                Field field = config.getClass().getDeclaredField(fieldInformation.name());
                 field.setAccessible(true);
                 field.set(config, value);
             }

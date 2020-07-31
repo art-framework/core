@@ -16,15 +16,23 @@
 
 package io.artframework.integration.data;
 
+import io.artframework.MessageSender;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Singular;
 import org.apache.commons.lang3.RandomStringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Player extends Entity {
+public class Player extends Entity implements MessageSender {
 
     private int health = 100;
+    @Singular
+    private List<Consumer<String[]>> messageConsumer = new ArrayList<>();
 
     public Player(String name) {
         super(name);
@@ -32,5 +40,9 @@ public class Player extends Entity {
 
     public Player() {
         super(RandomStringUtils.randomAlphanumeric(10));
+    }
+
+    public void sendMessage(String... messages) {
+        getMessageConsumer().forEach(stringConsumer -> stringConsumer.accept(messages));
     }
 }

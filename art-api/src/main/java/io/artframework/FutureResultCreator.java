@@ -21,12 +21,12 @@ import lombok.NonNull;
 public interface FutureResultCreator extends CombinedResultCreator {
 
     @Override
-    default FutureResult of(@NonNull ResultStatus status, @NonNull String... messages) {
+    default FutureResult resultOf(@NonNull ResultStatus status, @NonNull String... messages) {
         return FutureResult.of(CombinedResult.of(Result.of(status, messages)));
     }
 
     @Override
-    default FutureResult of(boolean result, @NonNull String... messages) {
+    default FutureResult resultOf(boolean result, @NonNull String... messages) {
         return FutureResult.of(CombinedResult.of(Result.of(result, messages)));
     }
 
