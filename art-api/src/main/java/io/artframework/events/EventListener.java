@@ -21,7 +21,7 @@ package io.artframework.events;
  * inside the ART-Framework.
  * Simple tag your class and then create a method that takes any
  * {@link Event} as an parameter and is tagged
- * with @{@link ArtEventHandler}.
+ * with @{@link EventHandler}.
  */
-public interface ArtEventListener {
+public interface EventListener {
 }

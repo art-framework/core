@@ -100,7 +100,7 @@ public class HandlerList {
      *
      * @param listener listener to unregister
      */
-    public static void unregisterAll(ArtEventListener listener) {
+    public static void unregisterAll(EventListener listener) {
 
         synchronized (allLists) {
             for (HandlerList h : allLists) {
@@ -114,7 +114,7 @@ public class HandlerList {
      *
      * @param listener listener to remove
      */
-    public synchronized void unregister(ArtEventListener listener) {
+    public synchronized void unregister(EventListener listener) {
 
         boolean changed = false;
         for (List<RegisteredEvent> list : handlerslots.values()) {

@@ -19,8 +19,8 @@ package io.artframework.impl;
 import io.artframework.*;
 import io.artframework.conf.Constants;
 import io.artframework.conf.TriggerConfig;
-import io.artframework.events.ArtEventHandler;
-import io.artframework.events.ArtEventListener;
+import io.artframework.events.EventHandler;
+import io.artframework.events.EventListener;
 import io.artframework.events.EventPriority;
 import io.artframework.events.TriggerEvent;
 import lombok.Getter;
@@ -30,7 +30,7 @@ import lombok.experimental.Accessors;
 import java.util.*;
 
 @Accessors(fluent = true)
-public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> implements TriggerContext, ArtEventListener {
+public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> implements TriggerContext, EventListener {
 
     @Getter
     private final List<ActionContext<?>> actions = new ArrayList<>();
@@ -66,7 +66,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
         this.requirements.add(requirement);
     }
 
-    @ArtEventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onTriggerEvent(TriggerEvent event) {
         if (!event.getIdentifier().equalsIgnoreCase(options().identifier())) return;
 

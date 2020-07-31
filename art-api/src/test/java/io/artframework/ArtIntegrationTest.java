@@ -16,6 +16,9 @@
 
 package io.artframework;
 
+import io.artframework.events.EventHandler;
+import io.artframework.events.EventListener;
+import io.artframework.events.TriggerEvent;
 import io.artframework.integration.actions.DamageAction;
 import io.artframework.integration.actions.TextAction;
 import io.artframework.integration.data.Entity;
@@ -24,12 +27,13 @@ import io.artframework.integration.requirements.HealthRequirement;
 import io.artframework.integration.targets.EntityTarget;
 import io.artframework.integration.targets.PlayerTarget;
 import io.artframework.integration.trigger.PlayerTrigger;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import lombok.Data;
+import org.junit.jupiter.api.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.Consumer;
 
 import static io.artframework.Result.success;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -144,6 +148,25 @@ public class ArtIntegrationTest {
             }
 
             @Test
+            @DisplayName("should register trigger from direct instance")
+            void shouldRegisterTriggerFromInstance() {
+
+                ART.trigger().add(new PlayerTrigger());
+
+                assertThat(ART.trigger().get("move"))
+                        .isNotEmpty();
+
+                assertThat(ART.trigger().get("damage"))
+                        .isNotEmpty();
+
+                assertThat(ART.trigger().get("dmg"))
+                        .isNotEmpty().get()
+                        .extracting(triggerFactory -> triggerFactory.options())
+                        .extracting(triggerArtInformation -> triggerArtInformation.identifier())
+                        .isEqualTo("damage");
+            }
+
+            @Test
             @DisplayName("should register lambda action")
             void shouldRegisterLambda() {
 
@@ -159,11 +182,37 @@ public class ArtIntegrationTest {
     }
 
     @Nested
+    @DisplayName("Events")
+    class Events {
+
+        @Test
+        @DisplayName("should call trigger event in listener")
+        void shouldCallTriggerEventListener() {
+
+            PlayerTrigger trigger = new PlayerTrigger(ART);
+            ART.trigger().add(trigger);
+
+            MyEventListener eventListener = spy(new MyEventListener());
+            ART.events().register(eventListener);
+            eventListener.consumers.add(event -> {
+                assertThat(event.getIdentifier()).isEqualTo("move");
+            });
+
+            trigger.onMove(new Player());
+
+            verify(eventListener, times(1)).onTrigger(any());
+        }
+    }
+
+    @Nested
     @DisplayName("ART creation")
     class ArtCreation {
 
+        private PlayerTrigger playerTrigger;
+
         @BeforeEach
         void setUp() {
+            playerTrigger = new PlayerTrigger(ART);
             ART
                     .actions()
                         .add(DamageAction.class)
@@ -171,9 +220,14 @@ public class ArtIntegrationTest {
                     .requirements()
                         .add(HealthRequirement.class)
                     .trigger()
-                        .add(new PlayerTrigger())
+                        .add(playerTrigger)
                     .targets()
                         .add(Player.class, PlayerTarget::new);
+        }
+
+        @AfterEach
+        void tearDown() {
+            ART.events().unregisterAll();
         }
 
         @Nested
@@ -256,6 +310,72 @@ public class ArtIntegrationTest {
                 assertThat(foo.getHealth()).isEqualTo(20);
                 verify(foo, never()).sendMessage(any());
             }
+
+            @Test
+            @DisplayName("should execute actions after trigger was called")
+            void shouldExecuteActionsIfTriggerWasCalled() {
+
+                Player player = new Player();
+                player.setHealth(100);
+
+                ART.builder().load(Arrays.asList(
+                        "@move",
+                        "!damage 40"
+                )).build();
+
+                playerTrigger.onMove(player);
+
+                assertThat(player.getHealth()).isEqualTo(60);
+            }
+
+            @Test
+            @DisplayName("should execute trigger only once")
+            void shouldOnlyExecuteTriggerOnce() {
+
+                Player player = new Player();
+                player.setHealth(100);
+
+                ART.builder().load(Arrays.asList(
+                        "@move(execute_once=true)",
+                        "!damage 40"
+                )).build();
+
+                playerTrigger.onMove(player);
+                playerTrigger.onMove(player);
+                playerTrigger.onMove(player);
+
+                assertThat(player.getHealth()).isEqualTo(60);
+            }
+
+            @Test
+            @DisplayName("should execute actions on both triggers")
+            void shouldExecuteOneOrTheOtherTrigger() {
+
+                Player player = new Player();
+                player.setHealth(100);
+
+                ART.builder().load(Arrays.asList(
+                        "@move",
+                        "@damage",
+                        "!damage 40"
+                )).build();
+
+                playerTrigger.onMove(player);
+                playerTrigger.onDamage(player);
+
+                assertThat(player.getHealth()).isEqualTo(20);
+            }
+        }
+    }
+
+    @Data
+    public static class MyEventListener implements EventListener {
+
+        private final List<Consumer<TriggerEvent>> consumers = new ArrayList<>();
+
+        @EventHandler
+        public void onTrigger(TriggerEvent event) {
+            consumers.forEach(triggerEventConsumer -> triggerEventConsumer.accept(event));
         }
     }
 }

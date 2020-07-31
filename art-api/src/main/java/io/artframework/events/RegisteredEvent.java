@@ -18,11 +18,11 @@ package io.artframework.events;
 
 public abstract class RegisteredEvent {
 
-    protected final ArtEventListener listener;
+    protected final EventListener listener;
     protected final EventExecutor executor;
-    protected final ArtEventHandler info;
+    protected final EventHandler info;
 
-    public RegisteredEvent(final ArtEventListener listener, final EventExecutor executor, ArtEventHandler info) {
+    public RegisteredEvent(final EventListener listener, final EventExecutor executor, EventHandler info) {
 
         this.listener = listener;
         this.executor = executor;
@@ -34,7 +34,7 @@ public abstract class RegisteredEvent {
      *
      * @return Registered Listener
      */
-    public ArtEventListener getListener() {
+    public EventListener getListener() {
 
         return listener;
     }

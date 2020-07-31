@@ -19,13 +19,15 @@ package io.artframework;
 import io.artframework.parser.flow.ActionParser;
 import io.artframework.parser.flow.FlowType;
 import io.artframework.parser.flow.RequirementParser;
+import io.artframework.parser.flow.TriggerParser;
 
 public interface FlowParser {
 
     static FlowParser[] defaults(Configuration configuration) {
         return new FlowParser[]{
                 new ActionParser(configuration),
-                new RequirementParser(configuration)
+                new RequirementParser(configuration),
+                new TriggerParser(configuration)
         };
     }
 

@@ -19,7 +19,7 @@ package io.artframework.impl;
 import io.artframework.AbstractProvider;
 import io.artframework.Configuration;
 import io.artframework.EventProvider;
-import io.artframework.events.ArtEventListener;
+import io.artframework.events.EventListener;
 import io.artframework.events.EventManager;
 import lombok.NonNull;
 
@@ -30,13 +30,13 @@ public class DefaultEventProvider extends AbstractProvider implements EventProvi
     }
 
     @Override
-    public EventProvider register(ArtEventListener listener) {
+    public EventProvider register(EventListener listener) {
         EventManager.registerListeners(listener);
         return this;
     }
 
     @Override
-    public EventProvider unregister(ArtEventListener listener) {
+    public EventProvider unregister(EventListener listener) {
         EventManager.unregisterListeners(listener);
         return this;
     }

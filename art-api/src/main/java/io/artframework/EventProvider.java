@@ -16,14 +16,14 @@
 
 package io.artframework;
 
-import io.artframework.events.ArtEventListener;
+import io.artframework.events.EventListener;
 import io.artframework.impl.DefaultEventProvider;
 
 /**
  * Use the {@link EventProvider} to provide one or
- * multiple {@link ArtEventListener}s that can act and listen upon various events.
+ * multiple {@link EventListener}s that can act and listen upon various events.
  *
- * @see ArtEventListener
+ * @see EventListener
  */
 public interface EventProvider extends Provider {
 
@@ -32,25 +32,25 @@ public interface EventProvider extends Provider {
     }
 
     /**
-     * Adds a new {@link ArtEventListener} that will listen to any
+     * Adds a new {@link EventListener} that will listen to any
      * lifecycle events configured as method overrides.
      *
-     * @param listener The {@link ArtEventListener} to register
+     * @param listener The {@link EventListener} to register
      * @return this {@link EventProvider}
      */
-    EventProvider register(ArtEventListener listener);
+    EventProvider register(EventListener listener);
 
     /**
-     * Removes the given {@link ArtEventListener} from the list
+     * Removes the given {@link EventListener} from the list
      * of listening lifecycle listeners.
      *
-     * @param listener The {@link ArtEventListener} to remove
+     * @param listener The {@link EventListener} to remove
      * @return this {@link EventProvider}
      */
-    EventProvider unregister(ArtEventListener listener);
+    EventProvider unregister(EventListener listener);
 
     /**
-     * Unregisters all registered {@link ArtEventListener}s.
+     * Unregisters all registered {@link EventListener}s.
      *
      * @return this {@link EventProvider}
      */
