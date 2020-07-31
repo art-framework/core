@@ -39,10 +39,11 @@ public class TriggerEvent extends Event implements Cancellable {
     /// Required Event internal HandlerList
     ///
 
-    private static final HandlerList handlers = new HandlerList();
+    @Getter
+    private static final HandlerList handlerList = new HandlerList();
 
     @Override
     protected HandlerList getHandlers() {
-        return handlers;
+        return handlerList;
     }
 }

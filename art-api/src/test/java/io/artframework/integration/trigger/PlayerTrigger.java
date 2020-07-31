@@ -16,19 +16,31 @@
 
 package io.artframework.integration.trigger;
 
+import io.artframework.Configuration;
 import io.artframework.Trigger;
 import io.artframework.annotations.ART;
 import io.artframework.integration.data.Player;
 
 public class PlayerTrigger implements Trigger {
 
+    private final Configuration configuration;
+
+    public PlayerTrigger() {
+        this.configuration = io.artframework.ART.configuration();
+    }
+
+    public PlayerTrigger(Configuration configuration) {
+        this.configuration = configuration;
+    }
+
+    @Override
+    public Configuration configuration() {
+        return configuration;
+    }
+
     @ART("move")
     public void onMove(Player player) {
         trigger("move", player);
-
-        trigger("move", of(player));
-
-        trigger("move", of(player, LocationConfig.class, (target, context, config) -> success()));
     }
 
     @ART(value = "damage", alias = "dmg")

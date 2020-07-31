@@ -18,7 +18,7 @@ package io.artframework;
 
 import io.artframework.conf.ArtSettings;
 import io.artframework.conf.Settings;
-import io.artframework.events.ArtEventListener;
+import io.artframework.events.EventListener;
 import io.artframework.impl.DefaultConfiguration;
 import lombok.NonNull;
 
@@ -97,7 +97,7 @@ public interface Configuration extends Serializable, Cloneable {
     ArtFinder finder();
 
     /**
-     * Use the {@link EventProvider} to register your {@link ArtEventListener}s.
+     * Use the {@link EventProvider} to register your {@link EventListener}s.
      *
      * @return the configured {@link EventProvider} implementation
      */

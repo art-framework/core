@@ -41,14 +41,14 @@ public class EventManager {
         return event;
     }
 
-    public static void registerListeners(ArtEventListener listener) {
+    public static void registerListeners(EventListener listener) {
 
-        for (Map.Entry<Class<? extends Event>, Set<RegisteredEvent>> entry : createRegisteredTriggers(listener).entrySet()) {
+        for (Map.Entry<Class<? extends Event>, Set<RegisteredEvent>> entry : createRegisteredEvent(listener).entrySet()) {
             getTriggerListeners(getRegistrationClass(entry.getKey())).registerAll(entry.getValue());
         }
     }
 
-    public static void unregisterListeners(ArtEventListener listener) {
+    public static void unregisterListeners(EventListener listener) {
 
         for (HandlerList handlerList : HandlerList.getHandlerLists()) {
             handlerList.unregister(listener);
@@ -87,7 +87,7 @@ public class EventManager {
         }
     }
 
-    public static Map<Class<? extends Event>, Set<RegisteredEvent>> createRegisteredTriggers(ArtEventListener listener) {
+    public static Map<Class<? extends Event>, Set<RegisteredEvent>> createRegisteredEvent(EventListener listener) {
 
         Map<Class<? extends Event>, Set<RegisteredEvent>> ret = new HashMap<>();
         Set<Method> methods;
@@ -99,9 +99,9 @@ public class EventManager {
 
         for (final Method method : methods) {
 
-            if (!method.isAnnotationPresent(ArtEventHandler.class)) continue;
+            if (!method.isAnnotationPresent(EventHandler.class)) continue;
 
-            ArtEventHandler annotation = method.getAnnotation(ArtEventHandler.class);
+            EventHandler annotation = method.getAnnotation(EventHandler.class);
             final Class<?> checkClass = method.getParameterTypes()[0];
 
             if (!Event.class.isAssignableFrom(checkClass) || method.getParameterTypes().length != 1) {
@@ -113,7 +113,7 @@ public class EventManager {
             Set<RegisteredEvent> eventSet = ret.computeIfAbsent(eventClass, k -> new HashSet<>());
 
             EventExecutor executor = new EventExecutor() {
-                public void execute(ArtEventListener listener, Event event) throws EventException {
+                public void execute(EventListener listener, Event event) throws EventException {
 
                     try {
                         if (!eventClass.isAssignableFrom(event.getClass())) {

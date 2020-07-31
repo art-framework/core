@@ -18,5 +18,5 @@ package io.artframework.events;
 
 public interface EventExecutor {
 
-    void execute(ArtEventListener listener, Event trigger) throws EventException;
+    void execute(EventListener listener, Event trigger) throws EventException;
 }
