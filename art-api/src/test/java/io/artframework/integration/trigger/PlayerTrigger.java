@@ -27,10 +27,16 @@ public class PlayerTrigger implements Trigger {
         trigger("move", player);
 
         trigger("move", of(player));
+
+        trigger("move", of(player, LocationConfig.class, (target, context, config) -> success()));
     }
 
     @ART(value = "damage", alias = "dmg")
     public void onDamage(Player player) {
         trigger("damage", player);
+    }
+
+    public static class LocationConfig {
+
     }
 }

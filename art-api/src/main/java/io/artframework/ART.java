@@ -102,35 +102,6 @@ public final class ART {
     }
 
     /**
-     * Executes the trigger with the given identifier sourced to the given targets
-     * checking their predicates before executing the trigger.
-     * <p>
-     * This is just a convenience method delegating to {@link TriggerProvider#trigger(String, TriggerTarget[])}.
-     *
-     * @param identifier the identifier or alias of the trigger
-     * @param targets the targets that executed the trigger
-     * @return the trigger result
-     * @see TriggerProvider#trigger(String, TriggerTarget[])
-     */
-    public static CombinedResult trigger(String identifier, TriggerTarget<?>... targets) {
-        return configuration().trigger().trigger(identifier, targets);
-    }
-
-    /**
-     * Executes the trigger with the given identifier sourced to the given targets.
-     * <p>
-     * This is just a convenience method delegating to {@link TriggerProvider#trigger(String, Target[])}.
-     *
-     * @param identifier the identifier or alias of the trigger
-     * @param targets the targets that executed the trigger
-     * @return the trigger result
-     * @see TriggerProvider#trigger(String, Target[])
-     */
-    public static CombinedResult trigger(String identifier, Target<?>... targets) {
-        return configuration().trigger().trigger(identifier, targets);
-    }
-
-    /**
      * Tries to get a valid {@link Target} wrapper for the given object.
      * Delegates to {@link TargetProvider#get(Object)}.
      *
