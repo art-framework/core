@@ -56,8 +56,7 @@
             "gradle.properties",
             "CHANGELOG.md",
             "README.md",
-            "docs/admin/README.md",
-            "docs/developer/README.md"
+            "docs/**"
           ]
         }
       ]
