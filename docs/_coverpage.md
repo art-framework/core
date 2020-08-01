@@ -2,11 +2,7 @@
 
 # ART-Framework <small>1.0.0</small>
 
-> A magical documentation site generator.
+> A powerful scripting framework for Minecraft.
 
-- Simple and lightweight
-- No statically built html files
-- Multiple themes
-
-[Get Started](README)
+[Get Started](introduction)
 [GitHub](https://github.com/art-framework/art-framework)
