@@ -1,10 +1,13 @@
 # [1.0.0-alpha.12](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.11...v1.0.0-alpha.12) (2020-07-31)
 
+> ## Important  
+> This update is a major rewrite of the complete API and codebase. Almost everything has a **BREAKING CHANGE**.
+
+The ART-Framework now uses a fluent style for all API endpoints and enforces a scoped configuration approach, which allows changing and configuring every part of the framework. The design is heavily inspired by the [jOOQ](https://github.com/jOOQ/jOOQ) library.
 
 ### Bug Fixes
 
 * ambiguous trigger method overload ([7f1a7c3](https://github.com/art-framework/art-framework/commit/7f1a7c38d06743aa46e6d1b030eed4e611431b47))
-* overloading of the trigger varargs methods ([30c6ffb](https://github.com/art-framework/art-framework/commit/30c6ffb637b1c27aa1d4ae88b9ac7e455dae3d97))
 * trigger parsing and execution ([cd4b1d6](https://github.com/art-framework/art-framework/commit/cd4b1d661655e5a8bda25e198e24eea6bda2da16))
 
 
