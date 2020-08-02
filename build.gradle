@@ -22,80 +22,66 @@ buildscript {
 }
 
 plugins {
-    id 'kr.entree.spigradle' version '2.0.1' apply false
-    id 'com.github.johnrengelman.shadow' version '6.0.0' apply false
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
+    id 'java-library'
+    id 'jacoco'
 }
 
-subprojects {
-    repositories {
-        mavenCentral()
-        jcenter()
+apply from: "$rootDir/gradle/jacoco.gradle"
+apply from: "$rootDir/gradle/publish.gradle"
 
-        maven {
-            name = 'Spigot'
-            url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/'
+sourceCompatibility = 8
+targetCompatibility = 8
 
-            content {
-                includeGroup 'org.bukkit'
-                includeGroup 'org.spigotmc'
-            }
-        }
 
-        maven {
-            name = "github"
-            url = 'https://maven.pkg.github.com/Silthus/ConfigLib'
-            credentials {
-                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
-                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
+repositories {
+    mavenCentral()
+    jcenter()
+}
 
-        maven { url = 'https://oss.sonatype.org/content/repositories/snapshots' }
-        maven { url = 'https://oss.sonatype.org/content/repositories/central' }
-    }
+dependencies {
+    compile 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
-    apply plugin: 'java-library'
-    apply plugin: 'jacoco'
+    implementation group: "com.google.guava", name: "guava", version: "29.0-jre"
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
 
-    apply from: "$rootDir/gradle/jacoco.gradle"
-    apply from: "$rootDir/gradle/publish.gradle"
+    //Test dependencies
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
+    testImplementation "org.mockito:mockito-core:3.+"
+    testImplementation 'org.assertj:assertj-core:3.+'
+    testImplementation 'org.awaitility:awaitility:4.0.3'
+    testImplementation group: 'com.google.jimfs', name: 'jimfs', version: '1.+'
+    testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
+    testImplementation 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+}
 
-    sourceCompatibility = 8
-    targetCompatibility = 8
-
+shadowJar {
+    classifier = ''
     dependencies {
-        compile 'org.projectlombok:lombok:1.18.12'
-        annotationProcessor 'org.projectlombok:lombok:1.18.12'
-
-        api group: 'com.google.inject', name: 'guice', version: '4.2.3'
-        api group: 'com.google.inject.extensions', name: 'guice-assistedinject', version: '4.2.3'
-        implementation group: 'com.netflix.governator', name: 'governator-api', version: '1.17.10'
-        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
-
-        //Test dependencies
-        testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
-        testImplementation "org.mockito:mockito-core:3.+"
-        testImplementation 'org.assertj:assertj-core:3.+'
-        testImplementation 'org.awaitility:awaitility:4.0.3'
-        testImplementation group: 'com.google.jimfs', name: 'jimfs', version: '1.+'
-        testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
-        testImplementation 'org.projectlombok:lombok:1.18.12'
-        testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+        include(dependency('org.apache.commons:commons-lang3:'))
+        include(dependency('com.google.guava:guava:'))
     }
+    relocate 'org.apache.commons', "shadow.${packageName}.commonslang"
+    relocate 'com.google', "shadow.${packageName}.guava"
+}
 
-    test {
-        useJUnitPlatform()
-        testLogging {
-            events "passed", "skipped", "failed"
-        }
-    }
+tasks.build.dependsOn(shadowJar)
+tasks.publish.dependsOn(shadowJar)
 
-    tasks.withType(Javadoc) {
-        failOnError false
-        options.addStringOption('Xdoclint:none', '-quiet')
-        options.addStringOption('encoding', 'UTF-8')
-        options.addStringOption('charSet', 'UTF-8')
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
     }
+}
+
+tasks.withType(Javadoc) {
+    failOnError false
+    options.addStringOption('Xdoclint:none', '-quiet')
+    options.addStringOption('encoding', 'UTF-8')
+    options.addStringOption('charSet', 'UTF-8')
 }
 
 defaultTasks 'build'
