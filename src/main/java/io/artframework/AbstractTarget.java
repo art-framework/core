@@ -20,8 +20,6 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
-import javax.annotation.concurrent.Immutable;
-
 /**
  * Use this as an extension point to create your own {@link Target} wrapper.
  * It already implements the required equals and hashcode methods correctly.
@@ -29,7 +27,6 @@ import javax.annotation.concurrent.Immutable;
  * @param <TTarget> type of the target to wrap
  * @see Target
  */
-@Immutable
 @Accessors(fluent = true)
 public abstract class AbstractTarget<TTarget> implements Target<TTarget> {
 

@@ -18,7 +18,6 @@ package io.artframework;
 
 import lombok.Getter;
 
-import javax.annotation.concurrent.Immutable;
 import java.net.URL;
 
 /**
@@ -26,7 +25,6 @@ import java.net.URL;
  * register {@link ArtObject}s with the {@link ArtFinder}.
  */
 @Getter
-@Immutable
 public class ArtObjectError {
 
     public static ArtObjectError of(String message, Reason reason, Class<? extends ArtObject> artObject) {

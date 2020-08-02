@@ -18,7 +18,6 @@ package io.artframework;
 
 import lombok.NonNull;
 
-import javax.annotation.concurrent.Immutable;
 import java.util.Optional;
 
 /**
@@ -42,7 +41,6 @@ import java.util.Optional;
  *
  * @param <TTarget> type of the underlying target
  */
-@Immutable
 public interface Target<TTarget> {
 
     /**

@@ -19,7 +19,6 @@ package io.artframework;
 import io.artframework.impl.DefaultResult;
 import lombok.NonNull;
 
-import javax.annotation.concurrent.Immutable;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -27,7 +26,6 @@ import java.util.Arrays;
  * The Result wraps the result status and additional messages.
  * It is immutable, thread safe and does not return any null values.
  */
-@Immutable
 public interface Result {
 
     /**

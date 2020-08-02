@@ -28,7 +28,6 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import javax.annotation.Nullable;
-import javax.annotation.concurrent.Immutable;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -39,7 +38,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Immutable
 @Accessors(fluent = true)
 @EqualsAndHashCode
 public class DefaultOptions<TArtObject extends ArtObject> implements Options<TArtObject> {
