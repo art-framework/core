@@ -1,3 +1,10 @@
+# [1.0.0-beta.2](https://github.com/art-framework/art-core/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2020-08-02)
+
+
+### Bug Fixes
+
+* remove unneeded immutable annotation ([530aaef](https://github.com/art-framework/art-core/commit/530aaef293a2a16ea4b1bd2814e46af5360e1976))
+
 # 1.0.0-beta.1 (2020-08-02)
 
 
