@@ -1,3 +1,10 @@
+# [1.0.0-beta.3](https://github.com/art-framework/art-core/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2020-08-03)
+
+
+### Features
+
+* add the option to provide a trigger with a provider ([a491708](https://github.com/art-framework/art-core/commit/a49170877d782d7ead7c1cc0b044c89afb8c6fe6))
+
 # [1.0.0-beta.2](https://github.com/art-framework/art-core/compare/v1.0.0-beta.1...v1.0.0-beta.2) (2020-08-02)
 
 
