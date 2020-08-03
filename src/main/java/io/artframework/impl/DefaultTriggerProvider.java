@@ -52,6 +52,22 @@ public class DefaultTriggerProvider extends AbstractArtFactoryProvider<TriggerFa
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public <TTrigger extends Trigger> TriggerProvider add(Class<TTrigger> triggerClass, ArtObjectProvider<TTrigger> supplier) {
+
+        for (Method method : triggerClass.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(ART.class)) {
+                try {
+                    add((Options<Trigger>) Options.of(triggerClass, supplier, method));
+                } catch (OptionsInitializationException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return this;
+    }
+
+    @Override
     public TriggerProvider add(Trigger trigger) {
         return add(trigger.getClass());
     }

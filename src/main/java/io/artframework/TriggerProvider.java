@@ -63,6 +63,27 @@ public interface TriggerProvider extends ArtProvider, ArtFactoryProvider<Trigger
     TriggerProvider add(Class<? extends Trigger> triggerClass);
 
     /**
+     * Registers a new trigger with the given supplier as factory.
+     * <p>
+     * This will scan the given class for any {@link io.artframework.annotations.ART} annotations and uses that
+     * information to register the trigger contained within that class.
+     * All methods that are not annotated will be ignored.
+     * You can also annotate the class if you only have one trigger method.
+     * <p>
+     * It will use the provided supplier for every instatiation of the trigger.
+     * This may happen multiple times during the livecycle of the art-framework.
+     * Make sure you implement the {@link AutoCloseable} interface if you need to release any resources.
+     * <p>
+     * You can also use the {@link #add(Trigger)} method as an alternative to this.
+     *
+     * @param triggerClass the trigger class that should be used to extract the required information
+     * @param supplier the supplier that will be used to create new instances of the trigger
+     * @param <TTrigger> the type of the trigger
+     * @return this trigger provider
+     */
+    <TTrigger extends Trigger> TriggerProvider add(Class<TTrigger> triggerClass, ArtObjectProvider<TTrigger> supplier);
+
+    /**
      * Registers a new trigger extracting the needed information from the given trigger instance.
      * <p>
      * This will scan the trigger object for any {@link ART} annotations and uses that
