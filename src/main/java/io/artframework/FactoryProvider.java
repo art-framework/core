@@ -16,17 +16,18 @@
 
 package io.artframework;
 
-public class ArtConfigException extends ArtException {
+import lombok.NonNull;
 
-    public ArtConfigException(String message) {
-        super(message);
-    }
+import java.util.Map;
+import java.util.Optional;
 
-    public ArtConfigException(String message, Throwable cause) {
-        super(message, cause);
-    }
+public interface FactoryProvider<TFactory extends Factory<?, ?>> extends Provider {
 
-    public ArtConfigException(Throwable cause) {
-        super(cause);
-    }
+    Map<String, TFactory> getFactories();
+
+    Map<String, String> getAliasMappings();
+
+    boolean exists(@NonNull String identifier);
+
+    Optional<TFactory> get(String identifier);
 }

@@ -23,34 +23,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * The {@link ArtFactory} is used to create new instances of {@link ArtObject}s which
+ * The {@link Factory} is used to create new instances of {@link ArtObject}s which
  * are wrapped inside an {@link ArtObjectContext}.
  * The created context and art object is initialized with its configuration and properties.
  * <br>
- * Every {@link ArtObject} must have exactly one {@link ArtObjectContext} and an {@link ArtFactory}
+ * Every {@link ArtObject} must have exactly one {@link ArtObjectContext} and an {@link Factory}
  * that knows how to create the context, a new instance of the art object and how to load the configuration
  * of the art object.
  *
  * @param <TContext>
  * @param <TArtObject>
  */
-public interface ArtFactory<TContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> extends Scope {
+public interface Factory<TContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> extends Scope {
 
-    static <TTarget> ArtFactory<ActionContext<TTarget>, Action<TTarget>> ofAction(
+    static <TTarget> Factory<ActionContext<TTarget>, Action<TTarget>> ofAction(
             @NonNull Configuration configuration,
             @NonNull Options<Action<TTarget>> information
     ) {
         return ActionFactory.of(configuration, information);
     }
 
-    static <TTarget> ArtFactory<RequirementContext<TTarget>, Requirement<TTarget>> ofRequirement(
+    static <TTarget> Factory<RequirementContext<TTarget>, Requirement<TTarget>> ofRequirement(
             @NonNull Configuration configuration,
             @NonNull Options<Requirement<TTarget>> information
     ) {
         return RequirementFactory.of(configuration, information);
     }
 
-    static ArtFactory<TriggerContext, Trigger> ofTrigger(
+    static Factory<TriggerContext, Trigger> ofTrigger(
             @NonNull Configuration configuration,
             @NonNull Options<Trigger> information
     ) {

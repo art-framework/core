@@ -16,29 +16,17 @@
 
 package io.artframework;
 
-import io.artframework.impl.DefaultArtFinder;
+public class ConfigurationException extends ArtException {
 
-import java.io.File;
-import java.util.function.Predicate;
-
-public interface ArtFinder extends ArtProvider {
-
-    static ArtFinder of(Configuration configuration) {
-        return new DefaultArtFinder(configuration);
+    public ConfigurationException(String message) {
+        super(message);
     }
 
-    default ArtProvider art() {
-        return configuration().art();
+    public ConfigurationException(String message, Throwable cause) {
+        super(message, cause);
     }
 
-    ArtFinderResult all();
-
-    default ArtProvider allAndRegister() {
-        all().register();
-        return art();
+    public ConfigurationException(Throwable cause) {
+        super(cause);
     }
-
-    ArtFinderResult allIn(File file);
-
-    ArtFinderResult allIn(File file, Predicate<File> predicate);
 }

@@ -21,7 +21,7 @@ import io.artframework.impl.DefaultTriggerProvider;
 import lombok.NonNull;
 
 // TODO: javadoc
-public interface TriggerProvider extends ArtProvider, ArtFactoryProvider<TriggerFactory> {
+public interface TriggerProvider extends ArtProvider, FactoryProvider<TriggerFactory> {
 
     /**
      * Creates a new default implementation of this trigger provider using the given configuration.

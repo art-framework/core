@@ -108,7 +108,7 @@ public class ArtIntegrationTest {
 
                 assertThat(ART.actions().get("damage"))
                         .isNotEmpty().get()
-                        .extracting(ArtFactory::options)
+                        .extracting(Factory::options)
                         .extracting(Options::identifier, Options::alias, Options::artObjectClass)
                         .contains("damage", new String[]{"hit", "dmg"}, DamageAction.class);
 
@@ -122,7 +122,7 @@ public class ArtIntegrationTest {
 
                 assertThat(ART.requirements().get("health"))
                         .isNotEmpty().get()
-                        .extracting(ArtFactory::options)
+                        .extracting(Factory::options)
                         .extracting(Options::identifier, Options::alias, Options::artObjectClass)
                         .contains("health", new String[0], HealthRequirement.class);
 

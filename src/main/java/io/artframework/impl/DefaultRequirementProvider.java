@@ -22,7 +22,7 @@ import lombok.NonNull;
 import java.util.Collection;
 import java.util.Objects;
 
-public class DefaultRequirementProvider extends AbstractArtFactoryProvider<RequirementFactory<?>> implements RequirementProvider {
+public class DefaultRequirementProvider extends AbstractFactoryProvider<RequirementFactory<?>> implements RequirementProvider {
 
     public DefaultRequirementProvider(Configuration configuration) {
         super(configuration);

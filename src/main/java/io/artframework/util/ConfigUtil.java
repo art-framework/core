@@ -17,7 +17,7 @@
 package io.artframework.util;
 
 import com.google.common.base.Strings;
-import io.artframework.ArtConfigException;
+import io.artframework.ConfigurationException;
 import io.artframework.FieldNameFormatter;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.annotations.Ignore;
@@ -38,30 +38,30 @@ import java.util.stream.Collectors;
 
 public final class ConfigUtil {
 
-    public static Map<String, ConfigFieldInformation> getConfigFields(Class<?> configClass, FieldNameFormatter formatter) throws ArtConfigException {
+    public static Map<String, ConfigFieldInformation> getConfigFields(Class<?> configClass, FieldNameFormatter formatter) throws ConfigurationException {
         try {
             Constructor<?> constructor = configClass.getConstructor();
             constructor.setAccessible(true);
             return getConfigFields("", configClass, constructor.newInstance(), formatter);
         } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new ArtConfigException("Unable to create instance of config class \"" + configClass.getSimpleName() + "\": " + e.getMessage()
+            throw new ConfigurationException("Unable to create instance of config class \"" + configClass.getSimpleName() + "\": " + e.getMessage()
                     + ". Is it public and has a public no args constructor?", e);
         }
     }
 
-    public static Map<String, ConfigFieldInformation> getConfigFields(Class<?> configClass) throws ArtConfigException {
+    public static Map<String, ConfigFieldInformation> getConfigFields(Class<?> configClass) throws ConfigurationException {
         return getConfigFields(configClass, FieldNameFormatters.LOWER_UNDERSCORE);
     }
 
-    public static <TConfig> Map<String, ConfigFieldInformation> getConfigFields(Class<TConfig> configClass, TConfig config) throws ArtConfigException {
+    public static <TConfig> Map<String, ConfigFieldInformation> getConfigFields(Class<TConfig> configClass, TConfig config) throws ConfigurationException {
         return getConfigFields(configClass, config, FieldNameFormatters.LOWER_UNDERSCORE);
     }
 
-    public static <TConfig> Map<String, ConfigFieldInformation> getConfigFields(Class<TConfig> configClass, TConfig config, FieldNameFormatter formatter) throws ArtConfigException {
+    public static <TConfig> Map<String, ConfigFieldInformation> getConfigFields(Class<TConfig> configClass, TConfig config, FieldNameFormatter formatter) throws ConfigurationException {
         return getConfigFields("", configClass, config, formatter);
     }
 
-    private static Map<String, ConfigFieldInformation> getConfigFields(String basePath, Class<?> configClass, Object configInstance, FieldNameFormatter formatter) throws ArtConfigException {
+    private static Map<String, ConfigFieldInformation> getConfigFields(String basePath, Class<?> configClass, Object configInstance, FieldNameFormatter formatter) throws ConfigurationException {
         Map<String, ConfigFieldInformation> fields = new HashMap<>();
 
         try {
@@ -77,7 +77,7 @@ public final class ConfigUtil {
                 if (field.isAnnotationPresent(Ignore.class)) continue;
                 if (Modifier.isFinal(field.getModifiers())) {
                     if (field.isAnnotationPresent(ConfigOption.class)) {
-                        throw new ArtConfigException("Cannot use a final field as a config option. Remove the @ConfigOption or the final modifier from \"" + field.getName() + "\"");
+                        throw new ConfigurationException("Cannot use a final field as a config option. Remove the @ConfigOption or the final modifier from \"" + field.getName() + "\"");
                     }
                     continue;
                 }
@@ -124,12 +124,12 @@ public final class ConfigUtil {
             )).collect(Collectors.toList());
 
             if (!sameFieldPosition.isEmpty()) {
-                throw new ArtConfigException("found same position " + sameFieldPosition.get(0).position() + " on the following fields: "
+                throw new ConfigurationException("found same position " + sameFieldPosition.get(0).position() + " on the following fields: "
                         + sameFieldPosition.stream().map(ConfigFieldInformation::identifier).collect(Collectors.joining(",")));
             }
 
         } catch (IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException e) {
-            throw new ArtConfigException(e);
+            throw new ConfigurationException(e);
         }
 
         return fields;
@@ -181,7 +181,7 @@ public final class ConfigUtil {
         return false;
     }
 
-    public static Map<ConfigFieldInformation, Object> loadConfigValues(@NonNull Map<String, ConfigFieldInformation> configFields, @NonNull List<KeyValuePair> keyValuePairs) throws ArtConfigException {
+    public static Map<ConfigFieldInformation, Object> loadConfigValues(@NonNull Map<String, ConfigFieldInformation> configFields, @NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException {
 
         if (configFields.isEmpty()) return new HashMap<>();
 
@@ -200,18 +200,18 @@ public final class ConfigUtil {
                 configFieldInformation = configFields.values().stream().findFirst().get();
             } else {
                 if (usedKeyValue) {
-                    throw new ArtConfigException("Positioned parameter found after key=value pair usage. Positioned parameters must come first.");
+                    throw new ConfigurationException("Positioned parameter found after key=value pair usage. Positioned parameters must come first.");
                 }
                 int finalI = i;
                 Optional<ConfigFieldInformation> optionalFieldInformation = configFields.values().stream().filter(info -> info.position() == finalI).findFirst();
                 if (!optionalFieldInformation.isPresent()) {
-                    throw new ArtConfigException("Config does not define positioned parameters. Use key value pairs instead.");
+                    throw new ConfigurationException("Config does not define positioned parameters. Use key value pairs instead.");
                 }
                 configFieldInformation = optionalFieldInformation.get();
             }
 
             if (!keyValue.getValue().isPresent()) {
-                throw new ArtConfigException("Config " + configFieldInformation.identifier() + " has an empty value.");
+                throw new ConfigurationException("Config " + configFieldInformation.identifier() + " has an empty value.");
             }
 
             Object value = ReflectionUtil.toObject(configFieldInformation.type(), keyValue.getValue().get());
@@ -226,7 +226,7 @@ public final class ConfigUtil {
                 .collect(Collectors.toList());
 
         if (!missingRequiredFields.isEmpty()) {
-            throw new ArtConfigException("Config is missing " + missingRequiredFields.size() + " required parameters: "
+            throw new ConfigurationException("Config is missing " + missingRequiredFields.size() + " required parameters: "
                     + missingRequiredFields.stream().map(ConfigFieldInformation::identifier).collect(Collectors.joining(",")));
         }
 

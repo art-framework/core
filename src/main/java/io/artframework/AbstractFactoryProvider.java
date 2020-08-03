@@ -24,13 +24,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class AbstractArtFactoryProvider<TFactory extends ArtFactory<?, ?>> implements ArtFactoryProvider<TFactory> {
+public abstract class AbstractFactoryProvider<TFactory extends Factory<?, ?>> implements FactoryProvider<TFactory> {
 
     private final Configuration configuration;
     final Map<String, TFactory> factories = new HashMap<>();
     final Map<String, String> aliasMappings = new HashMap<>();
 
-    protected AbstractArtFactoryProvider(Configuration configuration) {
+    protected AbstractFactoryProvider(Configuration configuration) {
         this.configuration = configuration;
     }
 

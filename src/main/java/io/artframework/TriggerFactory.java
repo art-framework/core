@@ -19,7 +19,7 @@ package io.artframework;
 import io.artframework.impl.DefaultTriggerFactory;
 import lombok.NonNull;
 
-public interface TriggerFactory extends ArtFactory<TriggerContext, Trigger>
+public interface TriggerFactory extends Factory<TriggerContext, Trigger>
 {
     static TriggerFactory of(
             @NonNull Configuration configuration,

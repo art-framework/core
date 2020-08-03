@@ -22,7 +22,7 @@ import lombok.NonNull;
 import java.util.Collection;
 import java.util.Objects;
 
-public class DefaultActionProvider extends AbstractArtFactoryProvider<ActionFactory<?>> implements ActionProvider {
+public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory<?>> implements ActionProvider {
 
     public DefaultActionProvider(Configuration configuration) {
         super(configuration);

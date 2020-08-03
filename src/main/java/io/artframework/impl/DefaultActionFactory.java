@@ -22,7 +22,7 @@ import io.artframework.parser.flow.ConfigMapType;
 
 import java.util.Map;
 
-public class DefaultActionFactory<TTarget> extends AbstractArtFactory<ActionContext<TTarget>, Action<TTarget>> implements ActionFactory<TTarget> {
+public class DefaultActionFactory<TTarget> extends AbstractFactory<ActionContext<TTarget>, Action<TTarget>> implements ActionFactory<TTarget> {
 
     public DefaultActionFactory(Configuration configuration, Options<Action<TTarget>> information) {
         super(configuration, information);

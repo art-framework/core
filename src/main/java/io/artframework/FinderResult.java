@@ -29,25 +29,25 @@ import java.util.stream.Stream;
  * Classes that don't have an @{@link ART} annotation
  * or public parameterless constructor can be found in the
  */
-public interface ArtFinderResult extends Iterable<Options<?>> {
+public interface FinderResult extends Iterable<Options<?>> {
 
     /**
-     * @return the {@link ArtFinder} that created this result
+     * @return the {@link Finder} that created this result
      */
-    ArtFinder finder();
+    Finder finder();
 
     /**
      * Adds all classes that do not have an error to the {@link ArtProvider}
      * by calling {@link ArtProvider#addAll(Collection)}.
      *
-     * @return the {@link ArtFinder} that created this result
+     * @return the {@link Finder} that created this result
      */
-    default ArtFinder register() {
+    default Finder register() {
         finder().addAll(getAll());
         return finder();
     }
 
-    ArtFinderResult filter(Predicate<Options<?>> predicate);
+    FinderResult filter(Predicate<Options<?>> predicate);
 
     Stream<Options<?>> stream();
 
@@ -56,7 +56,7 @@ public interface ArtFinderResult extends Iterable<Options<?>> {
      * Use the {@link #getErrors()} method to get all classes that had errors
      * while searching for {@link ArtObject}s.
      *
-     * @return a list of all classes found by the {@link ArtFinder}
+     * @return a list of all classes found by the {@link Finder}
      */
     Collection<Options<?>> getAll();
 
@@ -66,9 +66,9 @@ public interface ArtFinderResult extends Iterable<Options<?>> {
      * in an other way.
      *
      * @param consumer the error handler
-     * @return this {@link ArtFinderResult}
+     * @return this {@link FinderResult}
      */
-    ArtFinderResult errors(Consumer<ArtObjectError> consumer);
+    FinderResult errors(Consumer<ArtObjectError> consumer);
 
     Stream<ArtObjectError> errorStream();
 

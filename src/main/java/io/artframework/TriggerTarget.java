@@ -43,7 +43,7 @@ public class TriggerTarget<TTarget> {
             ConfigMap configMap = ConfigMap.of(ConfigMapType.ART_CONFIG, configFields);
 
             return new ConfiguredTriggerTarget<>(target, configMap, configClass, requirement);
-        } catch (ArtConfigException e) {
+        } catch (ConfigurationException e) {
             e.printStackTrace();
             return this;
         }

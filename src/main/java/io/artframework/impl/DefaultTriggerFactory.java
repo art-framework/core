@@ -23,7 +23,7 @@ import lombok.NonNull;
 
 import java.util.Map;
 
-public class DefaultTriggerFactory extends AbstractArtFactory<TriggerContext, Trigger> implements TriggerFactory {
+public class DefaultTriggerFactory extends AbstractFactory<TriggerContext, Trigger> implements TriggerFactory {
 
     public DefaultTriggerFactory(
             @NonNull Configuration configuration,

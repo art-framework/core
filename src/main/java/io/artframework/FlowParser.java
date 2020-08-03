@@ -35,5 +35,5 @@ public interface FlowParser {
 
     boolean accept(String line);
 
-    ArtObjectContext<?> parse() throws ArtParseException;
+    ArtObjectContext<?> parse() throws ParseException;
 }

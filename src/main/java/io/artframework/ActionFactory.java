@@ -19,7 +19,7 @@ package io.artframework;
 import io.artframework.impl.DefaultActionFactory;
 import lombok.NonNull;
 
-public interface ActionFactory<TTarget> extends ArtFactory<ActionContext<TTarget>, Action<TTarget>>
+public interface ActionFactory<TTarget> extends Factory<ActionContext<TTarget>, Action<TTarget>>
 {
     static <TTarget> ActionFactory<TTarget> of(
             @NonNull Configuration configuration,

@@ -19,7 +19,7 @@ package io.artframework;
 import io.artframework.impl.DefaultRequirementFactory;
 import lombok.NonNull;
 
-public interface RequirementFactory<TTarget> extends ArtFactory<RequirementContext<TTarget>, Requirement<TTarget>>
+public interface RequirementFactory<TTarget> extends Factory<RequirementContext<TTarget>, Requirement<TTarget>>
 {
     static <TTarget> RequirementFactory<TTarget> of(
             @NonNull Configuration configuration,

@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.regex.Pattern;
 
 @SuppressWarnings("RegExpRedundantEscape")
-public abstract class ArtObjectContextParser<TFactory extends ArtFactory<?, ?>> extends LineParser<ArtObjectContext<?>> implements FlowParser {
+public abstract class ArtObjectContextParser<TFactory extends Factory<?, ?>> extends LineParser<ArtObjectContext<?>> implements FlowParser {
 
     @Getter
     private final FlowType flowType;
@@ -59,13 +59,13 @@ public abstract class ArtObjectContextParser<TFactory extends ArtFactory<?, ?>> 
     protected abstract ConfigMap getGeneralConfigMap();
 
     @Override
-    public ArtObjectContext<?> parse() throws ArtParseException {
+    public ArtObjectContext<?> parse() throws ParseException {
 
         String identifier = getIdentifier();
         Optional<TFactory> factoryOptional = getFactory(identifier);
 
         if (!factoryOptional.isPresent()) {
-            throw new ArtParseException("No " + this.getFlowType().getName() + " with identifier \"" + identifier + "\" found");
+            throw new ParseException("No " + this.getFlowType().getName() + " with identifier \"" + identifier + "\" found");
         }
 
         TFactory factory = factoryOptional.get();
