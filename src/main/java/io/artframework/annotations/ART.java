@@ -16,18 +16,21 @@
 
 package io.artframework.annotations;
 
+import io.artframework.ArtObject;
+import io.artframework.Module;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Every ArtObject needs an ART annotation to provide the identifier and mark it as an art object.
+ * Every art object and module needs an ART annotation to provide the identifier and mark it as an art object.
  * <p>
  * Make sure that the provided identifier is unique across all ART. To do this it is highly recommended
  * to prefix your ART with a groupId (java) like prefix, e.g. <code>io.art-framework:my-action</code>.
  * <p>
- * Use this annotation to provide additional aliases and descriptions for your ART.
+ * Use this annotation to provide additional aliases and descriptions for your {@link ArtObject} and {@link Module}s.
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
@@ -59,4 +62,17 @@ public @interface ART {
      * @return detailed description
      */
     String[] description() default {};
+
+    /**
+     * The version of your ART component.
+     * <p>
+     * This is completely optional, but can help your users in understading new features
+     * and breaking changes of your component.
+     * <p>
+     * You should use the semantic versioning schema to version your ART: https://semver.org/
+     * This means bumping the major version for every breaking change.
+     *
+     * @return the optional version of the component. Defaults to 1.0.0.
+     */
+    String version() default "1.0.0";
 }

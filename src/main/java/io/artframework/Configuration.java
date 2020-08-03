@@ -156,6 +156,13 @@ public interface Configuration extends Serializable, Cloneable {
     FlowParserProvider parser();
 
     /**
+     * Use the {@link ModuleProvider} to find and load your art {@link Module}s.
+     *
+     * @return the implementing {@link ModuleProvider}
+     */
+    ModuleProvider modules();
+
+    /**
      * Sets a new implementation for the {@link ArtProvider}.
      *
      * @param artProvider art provider implementation to use
@@ -251,6 +258,14 @@ public interface Configuration extends Serializable, Cloneable {
      * @return this {@link Configuration}
      */
     Configuration parser(@NonNull FlowParserProvider flowParserProvider);
+
+    /**
+     * Sets a new implementation for the {@link ModuleProvider}.
+     *
+     * @param moduleProvider {@link ModuleProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration modules(@NonNull ModuleProvider moduleProvider);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration.
@@ -370,4 +385,13 @@ public interface Configuration extends Serializable, Cloneable {
      * @return this {@link Configuration}
      */
     Configuration withParser(@NonNull FlowParserProvider flowParserProvider);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link ModuleProvider}.
+     *
+     * @param moduleProvider {@link ModuleProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration withModules(@NonNull ModuleProvider moduleProvider);
 }
