@@ -19,7 +19,6 @@ package io.artframework.conf;
 import com.google.common.base.Strings;
 import io.artframework.*;
 import io.artframework.annotations.ART;
-import io.artframework.annotations.Config;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.ReflectionUtil;
 import lombok.EqualsAndHashCode;
@@ -207,7 +206,7 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
             String[] description = tryGetDescription(methods);
             String[] alias = tryGetAlias(methods);
             Class<?> targetClass = tryGetTargetClass();
-            Class<?> configClass = findConfigClass(methods);
+            Class<?> configClass = findConfigClass();
             Map<String, ConfigFieldInformation> configMap = tryGetConfigMap(configClass);
             ArtObjectProvider<TArtObject> provider = tryGetArtObjectProvider();
 
@@ -238,10 +237,8 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private Class<?> findConfigClass(Method... methods) throws OptionsInitializationException {
-        Class configClass = getAnnotation(Config.class, methods).map(Config::value)
-                .orElse((Class) ReflectionUtil.getInterfaceTypeArgument(artObjectClass, Configurable.class, 0)
-                        .orElse(artObjectClass));
+    private Class<?> findConfigClass() throws OptionsInitializationException {
+        Class configClass = ReflectionUtil.getInterfaceTypeArgument(artObjectClass, Configurable.class, 0).orElse(artObjectClass);
 
         // lets make sure the config has a public parameterless constructor
         if (!configClass.equals(artObjectClass())) {
