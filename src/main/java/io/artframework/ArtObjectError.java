@@ -22,7 +22,7 @@ import java.net.URL;
 
 /**
  * Container that wraps errors that can occur when finding and
- * register {@link ArtObject}s with the {@link ArtFinder}.
+ * register {@link ArtObject}s with the {@link Finder}.
  */
 @Getter
 public class ArtObjectError {

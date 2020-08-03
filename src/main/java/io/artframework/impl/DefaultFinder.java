@@ -16,32 +16,32 @@
 
 package io.artframework.impl;
 
-import io.artframework.ArtFinder;
-import io.artframework.ArtFinderResult;
+import io.artframework.Finder;
+import io.artframework.FinderResult;
 import io.artframework.Configuration;
 import lombok.NonNull;
 
 import java.io.File;
 import java.util.function.Predicate;
 
-public class DefaultArtFinder extends DefaultArtProvider implements ArtFinder {
+public class DefaultFinder extends DefaultArtProvider implements Finder {
 
-    public DefaultArtFinder(@NonNull Configuration configuration) {
+    public DefaultFinder(@NonNull Configuration configuration) {
         super(configuration);
     }
 
     @Override
-    public ArtFinderResult all() {
+    public FinderResult all() {
         return null;
     }
 
     @Override
-    public ArtFinderResult allIn(File file) {
+    public FinderResult allIn(File file) {
         return null;
     }
 
     @Override
-    public ArtFinderResult allIn(File file, Predicate<File> predicate) {
+    public FinderResult allIn(File file, Predicate<File> predicate) {
         return null;
     }
 }

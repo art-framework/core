@@ -159,7 +159,7 @@ class ArtObjectContextParserTest {
             when(configuration.actions().get(anyString())).thenReturn(Optional.empty());
 
             assertThat(parser.accept("!foobar")).isTrue();
-            assertThatExceptionOfType(ArtParseException.class)
+            assertThatExceptionOfType(ParseException.class)
                     .isThrownBy(() -> parser.parse())
                     .withMessageContaining("No action with identifier \"foobar\" found");
         }

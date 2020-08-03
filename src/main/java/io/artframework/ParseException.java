@@ -16,13 +16,13 @@
 
 package io.artframework;
 
-public class ArtParseException extends ArtException {
+public class ParseException extends ArtException {
 
-    public ArtParseException(String message) {
+    public ParseException(String message) {
         super(message);
     }
 
-    public ArtParseException(String message, Throwable cause) {
+    public ParseException(String message, Throwable cause) {
         super(message, cause);
     }
 }

@@ -25,15 +25,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.mock;
 
-class AbstractArtFactoryProviderTest {
+class AbstractFactoryProviderTest {
 
-    private AbstractArtFactoryProvider<ArtFactory<?, ?>> factory;
-    ArtFactory<?, ?> mock;
+    private AbstractFactoryProvider<Factory<?, ?>> factory;
+    Factory<?, ?> mock;
 
     @BeforeEach
     void setUp() {
-        factory = new AbstractArtFactoryProvider<ArtFactory<?, ?>>(mock(Configuration.class)) {};
-        mock = mock(ArtFactory.class);
+        factory = new AbstractFactoryProvider<Factory<?, ?>>(mock(Configuration.class)) {};
+        mock = mock(Factory.class);
         factory.factories.put("foo", mock);
         factory.aliasMappings.put("bar", "foo");
     }

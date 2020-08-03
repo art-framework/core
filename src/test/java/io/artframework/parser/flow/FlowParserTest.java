@@ -47,16 +47,16 @@ class FlowParserTest {
 
         Configuration configuration = mock(Configuration.class);
 
-        flowParser = spy(new ArtObjectContextParser<ArtFactory<?, ?>>(configuration, new FlowType("test", ".")) {
+        flowParser = spy(new ArtObjectContextParser<Factory<?, ?>>(configuration, new FlowType("test", ".")) {
             @Override
-            protected Optional<ArtFactory<?, ?>> getFactory(String identifier) {
-                ArtFactory<ArtObjectContext<?>, ?> artFactory = mock(ArtFactory.class);
+            protected Optional<Factory<?, ?>> getFactory(String identifier) {
+                Factory<ArtObjectContext<?>, ?> factory = mock(Factory.class);
                 Options options = mock(Options.class);
                 when(options.configMap()).thenReturn(new HashMap());
-                when(artFactory.options()).thenReturn(options);
+                when(factory.options()).thenReturn(options);
                 ArtObjectContext context = mock(ArtObjectContext.class);
-                when(artFactory.create(anyMap())).thenReturn(context);
-                return Optional.of(artFactory);
+                when(factory.create(anyMap())).thenReturn(context);
+                return Optional.of(factory);
             }
 
             @Override
@@ -123,7 +123,7 @@ class FlowParserTest {
         @DisplayName("should throw and display line number if parsing fails")
         void shouldThrowIfParsingALineFails() {
 
-            ArtParseException exception = new ArtParseException("TEST ERROR");
+            ParseException exception = new ParseException("TEST ERROR");
             doAnswer((Answer<ArtObjectContext<?>>) invocation -> {
                 ArtObjectContextParser<?> parser = (ArtObjectContextParser<?>) invocation.getMock();
                 if ("ERROR".equals(parser.getInput())) {
@@ -132,7 +132,7 @@ class FlowParserTest {
                 return mock(ArtObjectContext.class);
             }).when(flowParser).parse();
 
-            assertThatExceptionOfType(ArtParseException.class)
+            assertThatExceptionOfType(ParseException.class)
                     .isThrownBy(() -> parser.parse(Arrays.asList(
                             "!foobar",
                             "?req",
@@ -150,7 +150,7 @@ class FlowParserTest {
 
             doReturn(false).when(flowParser).accept("no-match");
 
-            assertThatExceptionOfType(ArtParseException.class)
+            assertThatExceptionOfType(ParseException.class)
                     .isThrownBy(() -> parser.parse(Arrays.asList(
                             "!foobar",
                             "foo",

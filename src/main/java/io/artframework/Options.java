@@ -85,7 +85,7 @@ public interface Options<TArtObject extends ArtObject> {
     <TObject extends ArtObject> Options<TObject> get();
 
     /**
-     * Initializes the {@link ArtFactory}, loads all annotations and checks
+     * Initializes the {@link Factory}, loads all annotations and checks
      * if the {@link ArtObject} is configured correctly.
      * <br>
      * If everything looks good the {@link ArtObject} is registered for execution.

@@ -18,7 +18,7 @@ package io.artframework;
 
 import io.artframework.impl.DefaultRequirementProvider;
 
-public interface RequirementProvider extends ArtProvider, ArtFactoryProvider<RequirementFactory<?>> {
+public interface RequirementProvider extends ArtProvider, FactoryProvider<RequirementFactory<?>> {
 
     static RequirementProvider of(Configuration configuration) {
         return new DefaultRequirementProvider(configuration);

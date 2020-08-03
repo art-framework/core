@@ -16,7 +16,7 @@
 
 package io.artframework.parser.flow;
 
-import io.artframework.ArtParseException;
+import io.artframework.ParseException;
 import io.artframework.ConfigMap;
 import io.artframework.Configuration;
 import io.artframework.annotations.ConfigOption;
@@ -129,7 +129,7 @@ class ConfigParserTest {
             ConfigParser parser = parser(TestConfig.class);
 
             assertThat(parser.accept("name:foobar, true, barfoo")).isTrue();
-            assertThatExceptionOfType(ArtParseException.class)
+            assertThatExceptionOfType(ParseException.class)
                     .isThrownBy(parser::parse)
                     .withMessageContaining("Positioned parameters must come first");
         }
@@ -206,7 +206,7 @@ class ConfigParserTest {
             ConfigParser parser = parser(ConfigWithoutPositions.class);
 
             assertThat(parser.accept("foobar spaces")).isTrue();
-            assertThatExceptionOfType(ArtParseException.class)
+            assertThatExceptionOfType(ParseException.class)
                     .isThrownBy(parser::parse)
                     .withMessageContaining("Config does not define positioned parameters");
         }
@@ -218,7 +218,7 @@ class ConfigParserTest {
             ConfigParser parser = parser(ConfigWithRequired.class);
 
             assertThat(parser.accept("foobar")).isTrue();
-            assertThatExceptionOfType(ArtParseException.class)
+            assertThatExceptionOfType(ParseException.class)
                     .isThrownBy(parser::parse)
                     .withMessageContaining("required");
         }

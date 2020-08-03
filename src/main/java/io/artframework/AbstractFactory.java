@@ -21,12 +21,12 @@ import lombok.NonNull;
 
 import java.lang.reflect.InvocationTargetException;
 
-public abstract class AbstractArtFactory<TContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> implements ArtFactory<TContext, TArtObject> {
+public abstract class AbstractFactory<TContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> implements Factory<TContext, TArtObject> {
 
     private final Configuration configuration;
     private final Options<TArtObject> information;
 
-    protected AbstractArtFactory(@NonNull Configuration configuration, @NonNull Options<TArtObject> information) {
+    protected AbstractFactory(@NonNull Configuration configuration, @NonNull Options<TArtObject> information) {
         this.configuration = configuration;
         this.information = information;
     }

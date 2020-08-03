@@ -24,7 +24,7 @@ import lombok.NonNull;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-public class DefaultTriggerProvider extends AbstractArtFactoryProvider<TriggerFactory> implements TriggerProvider, CombinedResultCreator {
+public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFactory> implements TriggerProvider, CombinedResultCreator {
 
     public DefaultTriggerProvider(Configuration configuration) {
         super(configuration);

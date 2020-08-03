@@ -23,7 +23,7 @@ import lombok.NonNull;
 
 import java.util.Map;
 
-public class DefaultRequirementFactory<TTarget> extends AbstractArtFactory<RequirementContext<TTarget>, Requirement<TTarget>> implements RequirementFactory<TTarget> {
+public class DefaultRequirementFactory<TTarget> extends AbstractFactory<RequirementContext<TTarget>, Requirement<TTarget>> implements RequirementFactory<TTarget> {
 
     public DefaultRequirementFactory(
             @NonNull Configuration configuration,

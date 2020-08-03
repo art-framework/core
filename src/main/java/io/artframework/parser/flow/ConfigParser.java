@@ -17,8 +17,8 @@
 package io.artframework.parser.flow;
 
 import com.google.common.base.Strings;
-import io.artframework.ArtConfigException;
-import io.artframework.ArtParseException;
+import io.artframework.ConfigurationException;
+import io.artframework.ParseException;
 import io.artframework.ConfigMap;
 import io.artframework.Configuration;
 import io.artframework.conf.ConfigFieldInformation;
@@ -52,12 +52,12 @@ public class ConfigParser extends LineParser<ConfigMap> {
     }
 
     @Override
-    public ConfigMap parse() throws ArtParseException {
+    public ConfigMap parse() throws ParseException {
 
         try {
             return configMap.with(extractKeyValuePairs(getMatcher()));
-        } catch (ArtConfigException e) {
-            throw new ArtParseException(e.getMessage(), e);
+        } catch (ConfigurationException e) {
+            throw new ParseException(e.getMessage(), e);
         }
     }
 

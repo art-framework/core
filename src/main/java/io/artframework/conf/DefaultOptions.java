@@ -219,7 +219,7 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
             }
 
             return new DefaultOptions<>(artObjectClass, identifier, description, alias, configClass, targetClass, configMap, provider);
-        } catch (ArtConfigException e) {
+        } catch (ConfigurationException e) {
             throw new OptionsInitializationException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONFIG, artObjectClass()), e);
         }
     }
@@ -308,7 +308,7 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
         }
     }
 
-    private Map<String, ConfigFieldInformation> tryGetConfigMap(Class<?> configClass) throws ArtConfigException {
+    private Map<String, ConfigFieldInformation> tryGetConfigMap(Class<?> configClass) throws ConfigurationException {
         if (configClass == null) return new HashMap<>();
 
         return ConfigUtil.getConfigFields(configClass);

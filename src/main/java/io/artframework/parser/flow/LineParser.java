@@ -17,7 +17,7 @@
 package io.artframework.parser.flow;
 
 import com.google.common.base.Strings;
-import io.artframework.ArtParseException;
+import io.artframework.ParseException;
 import io.artframework.Configuration;
 import io.artframework.Scope;
 import lombok.EqualsAndHashCode;
@@ -52,6 +52,6 @@ public abstract class LineParser<TResult> implements Scope {
         return matcher.matches();
     }
 
-    public abstract TResult parse() throws ArtParseException;
+    public abstract TResult parse() throws ParseException;
 }
 

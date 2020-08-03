@@ -45,7 +45,7 @@ public class DefaultArtBuilderParser<TParser extends Parser<TInput>, TInput> ext
                 .map(input -> {
                     try {
                         return parser.parse(input);
-                    } catch (ArtParseException e) {
+                    } catch (ParseException e) {
                         e.printStackTrace();
                         return null;
                     }

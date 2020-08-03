@@ -38,7 +38,7 @@ public class FlowParser implements Parser<Collection<String>> {
     }
 
     @Override
-    public ArtContext parse(Collection<String> input) throws ArtParseException {
+    public ArtContext parse(Collection<String> input) throws ParseException {
 
         Collection<ArtObjectContext<?>> contexts = new ArrayList<>();
 
@@ -54,13 +54,13 @@ public class FlowParser implements Parser<Collection<String>> {
                         contexts.add(parser.parse());
                         break;
                     }
-                } catch (ArtParseException e) {
-                    throw new ArtParseException(e.getMessage() + " on ART line " + lineCount + "/" + input.size(), e);
+                } catch (ParseException e) {
+                    throw new ParseException(e.getMessage() + " on ART line " + lineCount + "/" + input.size(), e);
                 }
             }
 
             if (!matched) {
-                throw new ArtParseException("Unable to find matching FlowParser for \"" + line + "\" on line " + lineCount + "/" + input.size());
+                throw new ParseException("Unable to find matching FlowParser for \"" + line + "\" on line " + lineCount + "/" + input.size());
             }
 
             lineCount++;

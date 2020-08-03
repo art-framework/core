@@ -16,7 +16,7 @@
 
 package io.artframework.conf;
 
-import io.artframework.ArtConfigException;
+import io.artframework.ConfigurationException;
 import io.artframework.ConfigMap;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.parser.flow.ConfigMapType;
@@ -51,7 +51,7 @@ public final class ActionConfig extends ArtObjectConfig {
         if (configMap == null) {
             try {
                 configMap = ConfigMap.of(ConfigMapType.ACTION, ConfigUtil.getConfigFields(ActionConfig.class, ActionConfig.builder().build()));
-            } catch (ArtConfigException e) {
+            } catch (ConfigurationException e) {
                 e.printStackTrace();
             }
         }

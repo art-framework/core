@@ -16,13 +16,29 @@
 
 package io.artframework;
 
-public class ArtRegistrationException extends ArtException {
+import io.artframework.impl.DefaultFinder;
 
-    public ArtRegistrationException(String message) {
-        super(message);
+import java.io.File;
+import java.util.function.Predicate;
+
+public interface Finder extends ArtProvider {
+
+    static Finder of(Configuration configuration) {
+        return new DefaultFinder(configuration);
     }
 
-    public ArtRegistrationException(String message, Throwable cause) {
-        super(message, cause);
+    default ArtProvider art() {
+        return configuration().art();
     }
+
+    FinderResult all();
+
+    default ArtProvider allAndRegister() {
+        all().register();
+        return art();
+    }
+
+    FinderResult allIn(File file);
+
+    FinderResult allIn(File file, Predicate<File> predicate);
 }

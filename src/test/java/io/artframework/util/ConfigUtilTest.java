@@ -16,7 +16,7 @@
 
 package io.artframework.util;
 
-import io.artframework.ArtConfigException;
+import io.artframework.ConfigurationException;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.annotations.Ignore;
 import io.artframework.conf.ConfigFieldInformation;
@@ -133,7 +133,7 @@ class ConfigUtilTest {
         @DisplayName("should throw if same field position is found")
         public void shouldThrowExceptionForSamePosition() {
 
-            assertThatExceptionOfType(ArtConfigException.class)
+            assertThatExceptionOfType(ConfigurationException.class)
                     .isThrownBy(() -> ConfigUtil.getConfigFields(SamePositionConfig.class))
                     .withMessageContaining("same position");
         }
@@ -142,7 +142,7 @@ class ConfigUtilTest {
         @DisplayName("should throw if declared config field is final")
         void shouldThrowIfConfigOptionIsFinal() {
 
-            assertThatExceptionOfType(ArtConfigException.class)
+            assertThatExceptionOfType(ConfigurationException.class)
                     .isThrownBy(() -> ConfigUtil.getConfigFields(FinalConfig.class))
                     .withMessageContaining("final field");
         }

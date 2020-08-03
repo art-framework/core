@@ -18,5 +18,5 @@ package io.artframework;
 
 public interface Parser<TInput> extends Scope {
 
-    ArtContext parse(TInput input) throws ArtParseException;
+    ArtContext parse(TInput input) throws ParseException;
 }

@@ -17,7 +17,7 @@
 package io.artframework.conf;
 
 import com.google.common.collect.ImmutableMap;
-import io.artframework.ArtConfigException;
+import io.artframework.ConfigurationException;
 import io.artframework.ConfigMap;
 import io.artframework.parser.flow.ConfigMapType;
 import io.artframework.util.ConfigUtil;
@@ -65,7 +65,7 @@ public class DefaultConfigMap implements ConfigMap {
     }
 
     @Override
-    public ConfigMap with(@NonNull List<KeyValuePair> keyValuePairs) throws ArtConfigException {
+    public ConfigMap with(@NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException {
         return new DefaultConfigMap(type(), configFields(), ConfigUtil.loadConfigValues(configFields(), keyValuePairs));
     }
 

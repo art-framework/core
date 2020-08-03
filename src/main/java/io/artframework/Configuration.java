@@ -73,7 +73,7 @@ public interface Configuration extends Serializable, Cloneable {
     /**
      * Use the {@link RequirementProvider} to register and query your {@link Requirement}s.
      * Register requirements with the add(...) methods and get an existing {@link RequirementFactory}
-     * with the {@link ArtFactoryProvider#get(String)} method.
+     * with the {@link FactoryProvider#get(String)} method.
      *
      * @return the configured {@link ActionProvider} implementation
      */
@@ -89,12 +89,12 @@ public interface Configuration extends Serializable, Cloneable {
     TriggerProvider trigger();
 
     /**
-     * Use the {@link ArtFinder} to find all of your {@link ArtObject}s inside
+     * Use the {@link Finder} to find all of your {@link ArtObject}s inside
      * {@link File}s and the classpath. You can then register the found ART.
      *
-     * @return the configured {@link ArtFinder} implementation
+     * @return the configured {@link Finder} implementation
      */
-    ArtFinder finder();
+    Finder finder();
 
     /**
      * Use the {@link EventProvider} to register your {@link EventListener}s.
@@ -236,12 +236,12 @@ public interface Configuration extends Serializable, Cloneable {
     Configuration trigger(@NonNull TriggerProvider triggerProvider);
 
     /**
-     * Sets a new implementation for the {@link ArtFinder}.
+     * Sets a new implementation for the {@link Finder}.
      *
-     * @param artFinder {@link ArtFinder} implementation to use
+     * @param finder {@link Finder} implementation to use
      * @return this {@link Configuration}
      */
-    Configuration finder(@NonNull ArtFinder artFinder);
+    Configuration finder(@NonNull Finder finder);
 
     /**
      * Sets a new implementation for the {@link EventProvider}.
@@ -361,12 +361,12 @@ public interface Configuration extends Serializable, Cloneable {
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
-     * and sets a new implementation for the {@link ArtFinder}.
+     * and sets a new implementation for the {@link Finder}.
      *
-     * @param artFinder {@link ArtFinder} implementation to use
+     * @param finder {@link Finder} implementation to use
      * @return this {@link Configuration}
      */
-    Configuration withFinder(@NonNull ArtFinder artFinder);
+    Configuration withFinder(@NonNull Finder finder);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration

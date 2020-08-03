@@ -39,5 +39,5 @@ public interface ConfigMap {
 
     boolean loaded();
 
-    ConfigMap with(@NonNull List<KeyValuePair> keyValuePairs) throws ArtConfigException;
+    ConfigMap with(@NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException;
 }

@@ -42,7 +42,7 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     @With private transient ActionProvider actions;
     @With private transient RequirementProvider requirements;
     @With private transient TriggerProvider trigger;
-    @With private transient ArtFinder finder;
+    @With private transient Finder finder;
     @With private transient Scheduler scheduler;
     @With private transient Storage storage;
     @With private transient TargetProvider targets;
@@ -57,7 +57,7 @@ public class DefaultConfiguration implements Configuration, Cloneable {
         actions(ActionProvider.of(this));
         requirements(RequirementProvider.of(this));
         trigger(TriggerProvider.of(this));
-        finder(ArtFinder.of(this));
+        finder(Finder.of(this));
         storage(Storage.of(this));
         targets(TargetProvider.of(this));
         events(EventProvider.of(this));
