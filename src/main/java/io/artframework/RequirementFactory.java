@@ -23,7 +23,7 @@ public interface RequirementFactory<TTarget> extends Factory<RequirementContext<
 {
     static <TTarget> RequirementFactory<TTarget> of(
             @NonNull Configuration configuration,
-            @NonNull Options<Requirement<TTarget>> information
+            @NonNull ArtObjectMeta<Requirement<TTarget>> information
     ) {
         return new DefaultRequirementFactory<>(configuration, information);
     }

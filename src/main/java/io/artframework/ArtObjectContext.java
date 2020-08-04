@@ -35,14 +35,14 @@ public interface ArtObjectContext<TArtObject extends ArtObject> extends Context,
      * @return the unique id of this context. It will never be null or empty.
      */
     default String uniqueId() {
-        return options().identifier();
+        return meta().identifier();
     }
 
-    Options<TArtObject> options();
+    ArtObjectMeta<TArtObject> meta();
 
     @Override
     default Class<?> targetClass() {
-        return options().targetClass();
+        return meta().targetClass();
     }
 
     /**

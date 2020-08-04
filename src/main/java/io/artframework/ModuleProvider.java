@@ -18,6 +18,7 @@ package io.artframework;
 
 import io.artframework.impl.DefaultConfiguration;
 import io.artframework.impl.DefaultModuleProvider;
+import lombok.NonNull;
 
 /**
  * The module provider handles the registration and creation of all art modules.
@@ -37,7 +38,7 @@ public interface ModuleProvider extends Provider {
     }
 
     /**
-     * Loads the given module into the art-framework instance.
+     * Loads the given module into the art-framework configuration instance.
      * <p>
      * This will try to load the configuration of the module (if one is needed),
      * check the dependencies and then call the {@link Module#onEnable(Configuration)} method.
@@ -45,5 +46,16 @@ public interface ModuleProvider extends Provider {
      * @param module the module that should be loaded
      * @return this module provider
      */
-    ModuleProvider load(Module module);
+    ModuleProvider load(@NonNull Module module);
+
+    /**
+     * Unloads the given module from the art-framework configuration instance.
+     * <p>
+     * This will call {@link Module#onDisable(Configuration)} on the provided module
+     * after all modules that depend on it have been disabled.
+     *
+     * @param module the module that should be unloaded
+     * @return this module provider
+     */
+    ModuleProvider unload(@NonNull Module module);
 }

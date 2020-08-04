@@ -29,9 +29,16 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     }
 
     @Override
-    public ModuleProvider load(Module module) {
+    public ModuleProvider load(@NonNull Module module) {
 
         // TODO: implement
+        return this;
+    }
+
+    @Override
+    public ModuleProvider unload(@NonNull Module module) {
+
+        //TODO: implement
         return this;
     }
 }

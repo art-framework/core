@@ -24,16 +24,16 @@ import java.util.Optional;
 
 public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> extends AbstractScope implements ArtObjectContext<TArtObject> {
 
-    private final Options<TArtObject> information;
+    private final ArtObjectMeta<TArtObject> information;
     private final Map<String, Object> data = new HashMap<>();
 
-    public AbstractArtObjectContext(@NonNull Configuration configuration, Options<TArtObject> information) {
+    public AbstractArtObjectContext(@NonNull Configuration configuration, ArtObjectMeta<TArtObject> information) {
         super(configuration);
         this.information = information;
     }
 
     @Override
-    public Options<TArtObject> options() {
+    public ArtObjectMeta<TArtObject> meta() {
         return information;
     }
 

@@ -52,7 +52,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
     public DefaultActionContext(
             @NonNull Configuration configuration,
-            @NonNull Options<Action<TTarget>> information,
+            @NonNull ArtObjectMeta<Action<TTarget>> information,
             @NonNull Action<TTarget> action,
             @NonNull ActionConfig config
     ) {

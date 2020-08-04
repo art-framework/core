@@ -27,7 +27,7 @@ public class DefaultTriggerFactory extends AbstractFactory<TriggerContext, Trigg
 
     public DefaultTriggerFactory(
             @NonNull Configuration configuration,
-            @NonNull Options<Trigger> information
+            @NonNull ArtObjectMeta<Trigger> information
     ) {
         super(configuration, information);
     }
@@ -37,7 +37,7 @@ public class DefaultTriggerFactory extends AbstractFactory<TriggerContext, Trigg
 
         return TriggerContext.of(
                 configuration(),
-                options(),
+                meta(),
                 TriggerConfig.of(configMaps.get(ConfigMapType.TRIGGER))
         );
     }

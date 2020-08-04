@@ -24,7 +24,7 @@ import java.util.Map;
 
 public class DefaultActionFactory<TTarget> extends AbstractFactory<ActionContext<TTarget>, Action<TTarget>> implements ActionFactory<TTarget> {
 
-    public DefaultActionFactory(Configuration configuration, Options<Action<TTarget>> information) {
+    public DefaultActionFactory(Configuration configuration, ArtObjectMeta<Action<TTarget>> information) {
         super(configuration, information);
     }
 
@@ -33,7 +33,7 @@ public class DefaultActionFactory<TTarget> extends AbstractFactory<ActionContext
 
         return ActionContext.of(
                 configuration(),
-                options(),
+                meta(),
                 createArtObject(configMaps.get(ConfigMapType.ART_CONFIG)),
                 ActionConfig.of(configMaps.get(ConfigMapType.ACTION))
         );

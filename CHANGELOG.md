@@ -52,15 +52,15 @@
 * **config:** add BukkitArtConfig to load from a ConfigurationSection ([b56f5a3](https://github.com/art-framework/art-core/commit/b56f5a3e9b24b23347ca3235522227826fec4aa8))
 * **docs:** publish mkdocs to gh-pages ([411c48e](https://github.com/art-framework/art-core/commit/411c48eae71e814adeb454bc1c85cff6bfeeaf80))
 * **release:** replace versions in files on release ([1fd8ab1](https://github.com/art-framework/art-core/commit/1fd8ab1a646ed72683eab017fec721e06f957c11))
-* **requirements:** add check_once, count and negated options ([f5cf864](https://github.com/art-framework/art-core/commit/f5cf86434fb47d6f2da2b1a5e5dbb2bce1e52678))
-* **requirements:** add check_once, count and negated options ([61b47f9](https://github.com/art-framework/art-core/commit/61b47f9cc6f803536445d04286092a84a259d8df))
+* **requirements:** add check_once, count and negated artObjectMeta ([f5cf864](https://github.com/art-framework/art-core/commit/f5cf86434fb47d6f2da2b1a5e5dbb2bce1e52678))
+* **requirements:** add check_once, count and negated artObjectMeta ([61b47f9](https://github.com/art-framework/art-core/commit/61b47f9cc6f803536445d04286092a84a259d8df))
 * **storage:** add storage api with default memory provider ([79e0fa9](https://github.com/art-framework/art-core/commit/79e0fa999c338567d8e68de589e77fe5a4cb054d)), closes [#7](https://github.com/art-framework/art-core/issues/7)
 * **storage:** add storage api with default memory provider ([4999de9](https://github.com/art-framework/art-core/commit/4999de96f7cc4ec678a0e4db620018ef81506782)), closes [#7](https://github.com/art-framework/art-core/issues/7)
 * **trigger:** add cooldown and execute_once to trigger ([96bc6e6](https://github.com/art-framework/art-core/commit/96bc6e6703edc3733584d52f18a6226b94ace14b))
 * **trigger:** add cooldown and execute_once to trigger ([9f49c50](https://github.com/art-framework/art-core/commit/9f49c501c2c467472fe239de11b0815b495f3397))
-* **trigger:** add options to prevent action execution on trigger ([d79c366](https://github.com/art-framework/art-core/commit/d79c3667997d6c0b4aa00229f82cebc9348d2e9d))
-* **trigger:** add options to prevent action execution on trigger ([6534f12](https://github.com/art-framework/art-core/commit/6534f12d22f2c6b42ff26a4685fa3f209b528356))
-* **trigger:** add options to prevent action execution on trigger ([144b043](https://github.com/art-framework/art-core/commit/144b0431b24c0f3ad5cbbd042397a756d617fa10))
+* **trigger:** add artObjectMeta to prevent action execution on trigger ([d79c366](https://github.com/art-framework/art-core/commit/d79c3667997d6c0b4aa00229f82cebc9348d2e9d))
+* **trigger:** add artObjectMeta to prevent action execution on trigger ([6534f12](https://github.com/art-framework/art-core/commit/6534f12d22f2c6b42ff26a4685fa3f209b528356))
+* **trigger:** add artObjectMeta to prevent action execution on trigger ([144b043](https://github.com/art-framework/art-core/commit/144b0431b24c0f3ad5cbbd042397a756d617fa10))
 * actions and requirements now accept the Target object ([767fb54](https://github.com/art-framework/art-core/commit/767fb54f408c2008c8a274d095b164d250148ceb))
 * add advanced logging printing the error config filename ([6d1079d](https://github.com/art-framework/art-core/commit/6d1079d4c9a196a985f008f241350e8de644685c))
 * add advanced trigger parsing ([f20fede](https://github.com/art-framework/art-core/commit/f20fede852d313a33ee15348f49c5c572299713c))
@@ -138,7 +138,7 @@ The ART-Framework now uses a fluent style for all API endpoints and enforces a s
 * **action:** add execute_once option to actions ([20b775b](https://github.com/art-framework/art-framework/commit/20b775b01998f97729ccd8963b2ed90da84a10ac))
 * **actions:** actions now can have a cooldown ([853f2e8](https://github.com/art-framework/art-framework/commit/853f2e83a59dac8e14b8ebd0fee9b48d4df0e590)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
 * **config:** add BukkitArtConfig to load from a ConfigurationSection ([b56f5a3](https://github.com/art-framework/art-framework/commit/b56f5a3e9b24b23347ca3235522227826fec4aa8))
-* **requirements:** add check_once, count and negated options ([61b47f9](https://github.com/art-framework/art-framework/commit/61b47f9cc6f803536445d04286092a84a259d8df))
+* **requirements:** add check_once, count and negated artObjectMeta ([61b47f9](https://github.com/art-framework/art-framework/commit/61b47f9cc6f803536445d04286092a84a259d8df))
 * **storage:** add storage api with default memory provider ([4999de9](https://github.com/art-framework/art-framework/commit/4999de96f7cc4ec678a0e4db620018ef81506782)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
 * **trigger:** add cooldown and execute_once to trigger ([9f49c50](https://github.com/art-framework/art-framework/commit/9f49c501c2c467472fe239de11b0815b495f3397))
 
@@ -160,15 +160,15 @@ The ART-Framework now uses a fluent style for all API endpoints and enforces a s
 * add MessageSender and default targets ([b8c78c0](https://github.com/art-framework/art-framework/commit/b8c78c0113dccdfa0cb03dbabd282052a709717c))
 * add the option to store data via the context ([a3a52c4](https://github.com/art-framework/art-framework/commit/a3a52c471289eba73dd910dbe15440bd6b5ecc79))
 * **docs:** publish mkdocs to gh-pages ([411c48e](https://github.com/art-framework/art-framework/commit/411c48eae71e814adeb454bc1c85cff6bfeeaf80))
-* **trigger:** add options to prevent action execution on trigger ([144b043](https://github.com/art-framework/art-framework/commit/144b0431b24c0f3ad5cbbd042397a756d617fa10))
+* **trigger:** add artObjectMeta to prevent action execution on trigger ([144b043](https://github.com/art-framework/art-framework/commit/144b0431b24c0f3ad5cbbd042397a756d617fa10))
 
 # [1.0.0-alpha.8](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.7...v1.0.0-alpha.8) (2020-07-06)
 
 
 ### Features
 
-* **trigger:** add options to prevent action execution on trigger ([d79c366](https://github.com/art-framework/art-framework/commit/d79c3667997d6c0b4aa00229f82cebc9348d2e9d))
-* **trigger:** add options to prevent action execution on trigger ([6534f12](https://github.com/art-framework/art-framework/commit/6534f12d22f2c6b42ff26a4685fa3f209b528356))
+* **trigger:** add artObjectMeta to prevent action execution on trigger ([d79c366](https://github.com/art-framework/art-framework/commit/d79c3667997d6c0b4aa00229f82cebc9348d2e9d))
+* **trigger:** add artObjectMeta to prevent action execution on trigger ([6534f12](https://github.com/art-framework/art-framework/commit/6534f12d22f2c6b42ff26a4685fa3f209b528356))
 
 # [1.0.0-alpha.7](https://github.com/art-framework/art-framework/compare/v1.0.0-alpha.6...v1.0.0-alpha.7) (2020-07-06)
 
@@ -178,7 +178,7 @@ The ART-Framework now uses a fluent style for all API endpoints and enforces a s
 * **action:** add execute_once option to actions ([203f7d0](https://github.com/art-framework/art-framework/commit/203f7d0c727dd993acdf16d2c086f567a662cb92))
 * **actions:** actions now can have a cooldown ([010fc83](https://github.com/art-framework/art-framework/commit/010fc837e0186dcd5d02ddbd7aa0e54abc9a2ff1)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
 * **config:** add BukkitArtConfig to load from a ConfigurationSection ([3baac1d](https://github.com/art-framework/art-framework/commit/3baac1d6400733b7ce9bb373632329a3e667e349))
-* **requirements:** add check_once, count and negated options ([f5cf864](https://github.com/art-framework/art-framework/commit/f5cf86434fb47d6f2da2b1a5e5dbb2bce1e52678))
+* **requirements:** add check_once, count and negated artObjectMeta ([f5cf864](https://github.com/art-framework/art-framework/commit/f5cf86434fb47d6f2da2b1a5e5dbb2bce1e52678))
 * **storage:** add storage api with default memory provider ([79e0fa9](https://github.com/art-framework/art-framework/commit/79e0fa999c338567d8e68de589e77fe5a4cb054d)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
 * **trigger:** add cooldown and execute_once to trigger ([96bc6e6](https://github.com/art-framework/art-framework/commit/96bc6e6703edc3733584d52f18a6226b94ace14b))
 

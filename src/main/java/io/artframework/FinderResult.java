@@ -29,7 +29,7 @@ import java.util.stream.Stream;
  * Classes that don't have an @{@link ART} annotation
  * or public parameterless constructor can be found in the
  */
-public interface FinderResult extends Iterable<Options<?>> {
+public interface FinderResult extends Iterable<ArtObjectMeta<?>> {
 
     /**
      * @return the {@link Finder} that created this result
@@ -47,9 +47,9 @@ public interface FinderResult extends Iterable<Options<?>> {
         return finder();
     }
 
-    FinderResult filter(Predicate<Options<?>> predicate);
+    FinderResult filter(Predicate<ArtObjectMeta<?>> predicate);
 
-    Stream<Options<?>> stream();
+    Stream<ArtObjectMeta<?>> stream();
 
     /**
      * Returns a list of all classes excluding any classes that had errors.
@@ -58,7 +58,7 @@ public interface FinderResult extends Iterable<Options<?>> {
      *
      * @return a list of all classes found by the {@link Finder}
      */
-    Collection<Options<?>> getAll();
+    Collection<ArtObjectMeta<?>> getAll();
 
     /**
      * Gives the option to handle the errors in a fluent syntax style.

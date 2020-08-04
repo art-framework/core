@@ -40,7 +40,7 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
 
     public DefaultRequirementContext(
             @NonNull Configuration configuration,
-            @NonNull Options<Requirement<TTarget>> information,
+            @NonNull ArtObjectMeta<Requirement<TTarget>> information,
             @NonNull Requirement<TTarget> requirement,
             @NonNull RequirementConfig config
     ) {
