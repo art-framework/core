@@ -51,13 +51,13 @@ public interface ArtProvider extends Provider {
 
     /**
      * Adds all of the provided {@link ArtObject}s to the relevant {@link ArtProvider}.
-     * Make sure that {@link Options#initialized()} returns true.
+     * Make sure that {@link ArtObjectMeta#initialized()} returns true.
      * Otherwise the registration will fail.
      *
      * @param artObjects The list of {@link ArtObject}s that should be added to the provider
      * @return this {@link ArtProvider}
      */
-    ArtProvider addAll(Collection<Options<?>> artObjects);
+    ArtProvider addAll(Collection<ArtObjectMeta<?>> artObjects);
 
     default ActionProvider actions() {
         return configuration().actions();

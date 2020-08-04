@@ -70,9 +70,9 @@ public abstract class AbstractFactoryProvider<TFactory extends Factory<?, ?>> im
     }
 
     protected void addFactory(@NonNull TFactory factory) {
-        String identifier = factory.options().identifier();
+        String identifier = factory.meta().identifier();
         factories.put(identifier.toLowerCase(), factory);
-        for (String alias : factory.options().alias()) {
+        for (String alias : factory.meta().alias()) {
             if (!aliasMappings.containsKey(alias)) {
                 aliasMappings.put(alias, identifier);
             }

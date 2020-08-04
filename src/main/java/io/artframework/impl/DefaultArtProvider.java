@@ -28,9 +28,9 @@ public class DefaultArtProvider extends AbstractProvider implements ArtProvider 
     }
 
     @Override
-    public ArtProvider addAll(Collection<Options<?>> artObjects) {
+    public ArtProvider addAll(Collection<ArtObjectMeta<?>> artObjects) {
 
-        for (Options<?> artObject : artObjects) {
+        for (ArtObjectMeta<?> artObject : artObjects) {
             if (Action.class.isAssignableFrom(artObject.artObjectClass())) {
                 actions().add(artObject.get());
             } else if (Requirement.class.isAssignableFrom(artObject.artObjectClass())) {

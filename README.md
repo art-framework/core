@@ -86,7 +86,7 @@ if (result.test(player)) {
 [Open an issue](https://github.com/Silthus/art-framework/issues/new/choose) if you want more features or found a bug.
 
 * Actions
-  * ~~Use delays and other config options for more control~~
+  * ~~Use delays and other config artObjectMeta for more control~~
 * Requirements
   * ~~Check anything anywhere~~
   * Expression syntax for advanced scenarios  

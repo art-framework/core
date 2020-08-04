@@ -29,24 +29,24 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
     }
 
     @Override
-    public ActionProvider add(@NonNull Options<Action<?>> actionInformation) {
+    public ActionProvider add(@NonNull ArtObjectMeta<Action<?>> actionInformation) {
         addFactory(ActionFactory.of(configuration(), actionInformation.get()));
         return this;
     }
 
     @Override
     public ActionProvider add(@NonNull String identifier, @NonNull GenericAction action) {
-        return add(Options.of(identifier, Object.class, action));
+        return add(ArtObjectMeta.of(identifier, Object.class, action));
     }
 
     @Override
     public <TTarget> ActionProvider add(String identifier, Class<TTarget> targetClass, Action<TTarget> action) {
-        return add(Options.of(identifier, targetClass, action));
+        return add(ArtObjectMeta.of(identifier, targetClass, action));
     }
 
     public ActionProvider add(@NonNull Class<? extends Action<?>> aClass) {
         try {
-            return add(Objects.requireNonNull(Options.of(aClass).get()));
+            return add(Objects.requireNonNull(ArtObjectMeta.of(aClass).get()));
         } catch (OptionsInitializationException e) {
             // TODO: error handling
             e.printStackTrace();
@@ -56,7 +56,7 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
 
     public <TAction extends Action<TTarget>, TTarget> ActionProvider add(Class<TAction> aClass, ArtObjectProvider<TAction> artObjectProvider) {
         try {
-            return add(Objects.requireNonNull(Options.of(aClass, artObjectProvider).get()));
+            return add(Objects.requireNonNull(ArtObjectMeta.of(aClass, artObjectProvider).get()));
         } catch (OptionsInitializationException e) {
             // TODO: error handling
             e.printStackTrace();
@@ -64,8 +64,8 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
         return this;
     }
 
-    public ActionProvider addAll(Collection<Options<?>> artObjects) {
-        for (Options<?> artObject : artObjects) {
+    public ActionProvider addAll(Collection<ArtObjectMeta<?>> artObjects) {
+        for (ArtObjectMeta<?> artObject : artObjects) {
             add(Objects.requireNonNull(artObject.get()));
         }
         return this;

@@ -108,8 +108,8 @@ public class ArtIntegrationTest {
 
                 assertThat(ART.actions().get("damage"))
                         .isNotEmpty().get()
-                        .extracting(Factory::options)
-                        .extracting(Options::identifier, Options::alias, Options::artObjectClass)
+                        .extracting(Factory::meta)
+                        .extracting(ArtObjectMeta::identifier, ArtObjectMeta::alias, ArtObjectMeta::artObjectClass)
                         .contains("damage", new String[]{"hit", "dmg"}, DamageAction.class);
 
             }
@@ -122,8 +122,8 @@ public class ArtIntegrationTest {
 
                 assertThat(ART.requirements().get("health"))
                         .isNotEmpty().get()
-                        .extracting(Factory::options)
-                        .extracting(Options::identifier, Options::alias, Options::artObjectClass)
+                        .extracting(Factory::meta)
+                        .extracting(ArtObjectMeta::identifier, ArtObjectMeta::alias, ArtObjectMeta::artObjectClass)
                         .contains("health", new String[0], HealthRequirement.class);
 
             }
@@ -142,7 +142,7 @@ public class ArtIntegrationTest {
 
                 assertThat(ART.trigger().get("dmg"))
                         .isNotEmpty().get()
-                        .extracting(triggerFactory -> triggerFactory.options())
+                        .extracting(triggerFactory -> triggerFactory.meta())
                         .extracting(triggerArtInformation -> triggerArtInformation.identifier())
                         .isEqualTo("damage");
             }
@@ -161,7 +161,7 @@ public class ArtIntegrationTest {
 
                 assertThat(ART.trigger().get("dmg"))
                         .isNotEmpty().get()
-                        .extracting(triggerFactory -> triggerFactory.options())
+                        .extracting(triggerFactory -> triggerFactory.meta())
                         .extracting(triggerArtInformation -> triggerArtInformation.identifier())
                         .isEqualTo("damage");
             }
@@ -255,8 +255,8 @@ public class ArtIntegrationTest {
                 assertThat(result.ofTarget(new PlayerTarget(player)))
                         .hasSize(3)
                         .extracting(TargetResult::context)
-                        .extracting(ArtObjectContext::options)
-                        .extracting(Options::identifier)
+                        .extracting(ArtObjectContext::meta)
+                        .extracting(ArtObjectMeta::identifier)
                         .contains("damage", "damage", "damage");
 
             }

@@ -43,7 +43,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
     public DefaultTriggerContext(
             @NonNull Configuration configuration,
-            @NonNull Options<Trigger> information,
+            @NonNull ArtObjectMeta<Trigger> information,
             @NonNull TriggerConfig config
     ) {
         super(configuration, information);
@@ -69,7 +69,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
     public void onTriggerEvent(TriggerEvent event) {
-        if (!event.getIdentifier().equalsIgnoreCase(options().identifier())) return;
+        if (!event.getIdentifier().equalsIgnoreCase(meta().identifier())) return;
 
         ExecutionContext<?> executionContext = ExecutionContext.of(
                 configuration(),

@@ -41,7 +41,7 @@ class ArtObjectContextParserTest {
     private Configuration configuration;
     private ActionParser parser;
     private ActionFactory<?> factory;
-    private Options options;
+    private ArtObjectMeta artObjectMeta;
 
     @BeforeEach
     @SneakyThrows
@@ -50,10 +50,10 @@ class ArtObjectContextParserTest {
         ActionProvider actionProvider = mock(ActionProvider.class);
         when(configuration.actions()).thenReturn(actionProvider);
         factory = mock(ActionFactory.class);
-        options = mock(Options.class);
-        when(factory.options()).thenReturn(options);
+        artObjectMeta = mock(ArtObjectMeta.class);
+        when(factory.meta()).thenReturn(artObjectMeta);
         when(factory.create(anyMap())).thenReturn(mock(ActionContext.class));
-        when(options.configMap()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
+        when(artObjectMeta.configMap()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
         when(actionProvider.get(anyString())).thenAnswer(invocation -> Optional.of(factory));
         this.parser = new ActionParser(configuration);
     }

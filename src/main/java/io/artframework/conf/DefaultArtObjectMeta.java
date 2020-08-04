@@ -39,7 +39,7 @@ import java.util.Optional;
 
 @Accessors(fluent = true)
 @EqualsAndHashCode
-public class DefaultOptions<TArtObject extends ArtObject> implements Options<TArtObject> {
+public class DefaultArtObjectMeta<TArtObject extends ArtObject> implements ArtObjectMeta<TArtObject> {
 
     @Getter
     private final Class<TArtObject> artObjectClass;
@@ -56,7 +56,7 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
 
     private Method[] methods;
 
-    private DefaultOptions(
+    private DefaultArtObjectMeta(
             @NonNull Class<TArtObject> artObjectClass,
             @NonNull String identifier,
             @NonNull String[] description,
@@ -78,7 +78,7 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
         this.initialized = true;
     }
 
-    public DefaultOptions(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) {
+    public DefaultArtObjectMeta(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) {
         this.artObjectClass = artObjectClass;
         this.location = artObjectClass.getProtectionDomain().getCodeSource().getLocation();
         this.artObjectProvider = provider;
@@ -94,20 +94,20 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
         this.initialized = false;
     }
 
-    public DefaultOptions(@NonNull Class<TArtObject> artObjectClass, Method... methods) {
+    public DefaultArtObjectMeta(@NonNull Class<TArtObject> artObjectClass, Method... methods) {
         this(artObjectClass, null, methods);
     }
 
-    public DefaultOptions(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> artObjectProvider) {
+    public DefaultArtObjectMeta(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> artObjectProvider) {
         this(artObjectClass, artObjectProvider, artObjectClass.getDeclaredMethods());
     }
 
-    public DefaultOptions(@NonNull Class<TArtObject> artObjectClass) {
+    public DefaultArtObjectMeta(@NonNull Class<TArtObject> artObjectClass) {
         this(artObjectClass, null, artObjectClass.getDeclaredMethods());
     }
 
     @SuppressWarnings("unchecked")
-    public DefaultOptions(@NonNull String identifier, @NonNull Class<?> targetClass, @NonNull TArtObject artObject) {
+    public DefaultArtObjectMeta(@NonNull String identifier, @NonNull Class<?> targetClass, @NonNull TArtObject artObject) {
         this.artObjectClass = (Class<TArtObject>) artObject.getClass();
         this.location = artObjectClass.getProtectionDomain().getCodeSource().getLocation();
         this.artObjectProvider = () -> artObject;
@@ -188,9 +188,9 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
 
     @Override
     @SuppressWarnings("unchecked")
-    public <TObject extends ArtObject> Options<TObject> get() {
+    public <TObject extends ArtObject> ArtObjectMeta<TObject> get() {
         try {
-            return (Options<TObject>) this;
+            return (ArtObjectMeta<TObject>) this;
         } catch (ClassCastException e) {
             e.printStackTrace();
             return null;
@@ -198,7 +198,7 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
     }
 
     @Override
-    public Options<TArtObject> initialize() throws OptionsInitializationException {
+    public ArtObjectMeta<TArtObject> initialize() throws OptionsInitializationException {
         if (this.initialized()) return this;
 
         try {
@@ -218,7 +218,7 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
                 ));
             }
 
-            return new DefaultOptions<>(artObjectClass, identifier, description, alias, configClass, targetClass, configMap, provider);
+            return new DefaultArtObjectMeta<>(artObjectClass, identifier, description, alias, configClass, targetClass, configMap, provider);
         } catch (ConfigurationException e) {
             throw new OptionsInitializationException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONFIG, artObjectClass()), e);
         }
@@ -283,7 +283,7 @@ public class DefaultOptions<TArtObject extends ArtObject> implements Options<TAr
             return ReflectionUtil.getInterfaceTypeArgument(artObjectClass(), Requirement.class, 0).orElseThrow(() -> exception);
         }
 
-        return ReflectionUtil.getInterfaceTypeArgument(getClass(), Options.class, 0)
+        return ReflectionUtil.getInterfaceTypeArgument(getClass(), ArtObjectMeta.class, 0)
                 .flatMap(aClass -> ReflectionUtil.getInterfaceTypeArgument(artObjectClass(), aClass, 0))
                 .orElseThrow(() -> exception);
     }

@@ -17,7 +17,7 @@
 package io.artframework;
 
 import io.artframework.conf.ConfigFieldInformation;
-import io.artframework.conf.DefaultOptions;
+import io.artframework.conf.DefaultArtObjectMeta;
 import lombok.NonNull;
 
 import javax.annotation.Nullable;
@@ -26,26 +26,26 @@ import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 
-public interface Options<TArtObject extends ArtObject> {
+public interface ArtObjectMeta<TArtObject extends ArtObject> {
 
-    static <TArtObject extends ArtObject> Options<TArtObject> of(@NonNull Class<TArtObject> artObjectClass) throws OptionsInitializationException {
-        return new DefaultOptions<>(artObjectClass).initialize();
+    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass) throws OptionsInitializationException {
+        return new DefaultArtObjectMeta<>(artObjectClass).initialize();
     }
 
-    static <TArtObject extends ArtObject> Options<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, Method... methods) throws OptionsInitializationException {
-        return new DefaultOptions<>(artObjectClass, methods).initialize();
+    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, Method... methods) throws OptionsInitializationException {
+        return new DefaultArtObjectMeta<>(artObjectClass, methods).initialize();
     }
 
-    static <TArtObject extends ArtObject> Options<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider) throws OptionsInitializationException {
-        return new DefaultOptions<>(artObjectClass, provider).initialize();
+    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider) throws OptionsInitializationException {
+        return new DefaultArtObjectMeta<>(artObjectClass, provider).initialize();
     }
 
-    static <TArtObject extends ArtObject> Options<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) throws OptionsInitializationException {
-        return new DefaultOptions<>(artObjectClass, provider, methods).initialize();
+    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) throws OptionsInitializationException {
+        return new DefaultArtObjectMeta<>(artObjectClass, provider, methods).initialize();
     }
 
-    static <TArtObject extends ArtObject> Options<TArtObject> of(@NonNull String identifier, @NonNull Class<?> targetClass, @NonNull TArtObject artObject) {
-        return new DefaultOptions<>(identifier, targetClass, artObject);
+    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull String identifier, @NonNull Class<?> targetClass, @NonNull TArtObject artObject) {
+        return new DefaultArtObjectMeta<>(identifier, targetClass, artObject);
     }
 
     String identifier();
@@ -69,20 +69,20 @@ public interface Options<TArtObject extends ArtObject> {
     boolean initialized();
 
     /**
-     * Tries to cast this {@link Options} into the target type.
+     * Tries to cast this {@link ArtObjectMeta} into the target type.
      * You should only use this method if you are sure that the {@link #artObjectClass()}
      * matches the required target class. If that is not the case, null will be returned.
      * <br>
      * This is useful if you have collections of <pre>ArtObjectInformation<?></pre> and want to
-     * pass individual types of the object to other methods like {@link ActionProvider#add(Options)}.
+     * pass individual types of the object to other methods like {@link ActionProvider#add(ArtObjectMeta)}.
      * Make sure you do a <pre>YourTargetArtObject.class.isAssignableFrom(this.getArtObjectClass)</pre> check
      * before using this method. Otherwise null is very likely.
      *
      * @param <TObject> type of the {@link ArtObject} you need
-     * @return this {@link Options} with the concrete {@link ArtObject} type
+     * @return this {@link ArtObjectMeta} with the concrete {@link ArtObject} type
      */
     @Nullable
-    <TObject extends ArtObject> Options<TObject> get();
+    <TObject extends ArtObject> ArtObjectMeta<TObject> get();
 
     /**
      * Initializes the {@link Factory}, loads all annotations and checks
@@ -93,5 +93,5 @@ public interface Options<TArtObject extends ArtObject> {
      *
      * @throws OptionsInitializationException if the {@link ArtObject} could not be registered.
      */
-    Options<TArtObject> initialize() throws OptionsInitializationException;
+    ArtObjectMeta<TArtObject> initialize() throws OptionsInitializationException;
 }

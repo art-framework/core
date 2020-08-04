@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 @DisplayName("ArtInformationTest")
-class DefaultOptionsTest {
+class DefaultArtObjectMetaTest {
 
     @Nested
     @DisplayName("initialize()")
@@ -43,15 +43,15 @@ class DefaultOptionsTest {
         @DisplayName("should extract information from class")
         void shouldExtractIdentifierFromClass() {
 
-            DefaultOptions<MyClassOptions> options = new DefaultOptions<>(MyClassOptions.class);
+            DefaultArtObjectMeta<MyClassOptions> options = new DefaultArtObjectMeta<>(MyClassOptions.class);
 
             assertThat(options.initialize())
                 .extracting(
-                        Options::identifier,
-                        Options::alias,
-                        Options::description,
-                        Options::configClass,
-                        Options::targetClass
+                        ArtObjectMeta::identifier,
+                        ArtObjectMeta::alias,
+                        ArtObjectMeta::description,
+                        ArtObjectMeta::configClass,
+                        ArtObjectMeta::targetClass
                 ).contains(
                         "class-options",
                         new String[]{"class"},
@@ -66,15 +66,15 @@ class DefaultOptionsTest {
         @DisplayName("should extract information from method")
         void shouldExtractOptionsFromMethod() {
 
-            DefaultOptions<MyMethodOptions> options = new DefaultOptions<>(MyMethodOptions.class);
+            DefaultArtObjectMeta<MyMethodOptions> options = new DefaultArtObjectMeta<>(MyMethodOptions.class);
 
             assertThat(options.initialize())
                     .extracting(
-                            Options::identifier,
-                            Options::alias,
-                            Options::description,
-                            Options::configClass,
-                            Options::targetClass
+                            ArtObjectMeta::identifier,
+                            ArtObjectMeta::alias,
+                            ArtObjectMeta::description,
+                            ArtObjectMeta::configClass,
+                            ArtObjectMeta::targetClass
                     ).contains(
                         "class-options",
                         new String[]{"class"},
@@ -89,7 +89,7 @@ class DefaultOptionsTest {
         @DisplayName("should create config map from art object class")
         void shouldCreateConfigMap() {
 
-            DefaultOptions<MyClassOptions> options = new DefaultOptions<>(MyClassOptions.class);
+            DefaultArtObjectMeta<MyClassOptions> options = new DefaultArtObjectMeta<>(MyClassOptions.class);
 
             assertThatCode(() -> assertThat(options.initialize().configMap())
                     .containsKey("cfg")

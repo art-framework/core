@@ -36,14 +36,14 @@ public interface TriggerProvider extends ArtProvider, FactoryProvider<TriggerFac
     /**
      * Registers a new trigger using the provided information.
      * <p>
-     * This will call {@link Options#initialize()} if the information is not initialized and will fail
+     * This will call {@link ArtObjectMeta#initialize()} if the information is not initialized and will fail
      * silently if there are any exceptions.
      * Using {@link #add(Class)} or {@link #add(Trigger)} is preferred since it will handle all the dirty work for you.
      *
      * @param triggerInformation the information of the trigger you want to register
      * @return this trigger provider
      */
-    TriggerProvider add(@NonNull Options<Trigger> triggerInformation);
+    TriggerProvider add(@NonNull ArtObjectMeta<Trigger> triggerInformation);
 
     /**
      * Registers a new trigger extracting the needed information from the given class.

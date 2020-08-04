@@ -27,7 +27,7 @@ public class DefaultRequirementFactory<TTarget> extends AbstractFactory<Requirem
 
     public DefaultRequirementFactory(
             @NonNull Configuration configuration,
-            @NonNull Options<Requirement<TTarget>> information
+            @NonNull ArtObjectMeta<Requirement<TTarget>> information
     ) {
         super(configuration, information);
     }
@@ -37,7 +37,7 @@ public class DefaultRequirementFactory<TTarget> extends AbstractFactory<Requirem
 
         return RequirementContext.of(
                 configuration(),
-                options(),
+                meta(),
                 createArtObject(configMaps.get(ConfigMapType.ART_CONFIG)),
                 RequirementConfig.of(configMaps.get(ConfigMapType.REQUIREMENT))
         );
