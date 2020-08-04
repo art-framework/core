@@ -39,7 +39,7 @@ import java.util.Optional;
 
 @Accessors(fluent = true)
 @EqualsAndHashCode
-public class DefaultArtObjectMeta<TArtObject extends ArtObject> implements ArtObjectMeta<TArtObject> {
+public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements ArtObjectMeta<TArtObject> {
 
     @Getter
     private final Class<TArtObject> artObjectClass;

@@ -46,7 +46,7 @@ public interface ModuleProvider extends Provider {
      * @param module the module that should be loaded
      * @return this module provider
      */
-    ModuleProvider load(@NonNull Module module);
+    ModuleProvider load(@NonNull Module module) throws ModuleRegistrationException;
 
     /**
      * Unloads the given module from the art-framework configuration instance.
