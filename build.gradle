@@ -25,6 +25,8 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '6.0.0'
     id 'java-library'
     id 'jacoco'
+    id 'idea'
+    id "io.freefair.lombok" version "5.1.0"
 }
 
 apply from: "$rootDir/gradle/jacoco.gradle"

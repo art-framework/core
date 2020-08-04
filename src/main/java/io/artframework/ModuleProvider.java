@@ -38,6 +38,20 @@ public interface ModuleProvider extends Provider {
     }
 
     /**
+     * Registers the given module with the provider, but does not enable it.
+     * <p>
+     * This is useful if you need to load multiple modules that depend upon each other
+     * and do not want to directly enable them.
+     * <p>
+     * If you want to directly load and enable your module, call {@link #load(Module)} instead.
+     *
+     * @param module the module that should be registered
+     * @return this module provider
+     * @throws ModuleRegistrationException if the registration of the module failed
+     */
+    ModuleProvider register(@NonNull Module module) throws ModuleRegistrationException;
+
+    /**
      * Loads the given module into the art-framework configuration instance.
      * <p>
      * This will try to load the configuration of the module (if one is needed),
@@ -45,6 +59,7 @@ public interface ModuleProvider extends Provider {
      *
      * @param module the module that should be loaded
      * @return this module provider
+     * @throws ModuleRegistrationException if the registration or enabling of the module or its child modules failed
      */
     ModuleProvider load(@NonNull Module module) throws ModuleRegistrationException;
 

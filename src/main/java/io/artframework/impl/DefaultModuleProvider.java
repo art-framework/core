@@ -16,38 +16,24 @@
 
 package io.artframework.impl;
 
-import io.artframework.AbstractProvider;
-import io.artframework.Configuration;
-import io.artframework.Module;
-import io.artframework.ModuleMeta;
-import io.artframework.ModuleProvider;
-import io.artframework.ModuleRegistrationException;
-import io.artframework.ModuleState;
+import io.artframework.*;
 import io.artframework.annotations.ART;
 import io.artframework.annotations.Depends;
 import io.artframework.events.ModuleDisabledEvent;
 import io.artframework.events.ModuleEnabledEvent;
-import io.artframework.events.ModuleLoadedEvent;
+import io.artframework.events.ModuleRegisteredEvent;
 import io.artframework.util.graphs.CycleSearch;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class DefaultModuleProvider extends AbstractProvider implements ModuleProvider {
 
-    private final Map<ModuleMeta, ModuleInformation> modules = new HashMap<>();
+    final Map<ModuleMeta, ModuleInformation> modules = new HashMap<>();
     private CycleSearch<ModuleMeta> cycleSearcher = new CycleSearch<>(new boolean[0][0], new ModuleMeta[0]);
 
     public DefaultModuleProvider(@NonNull Configuration configuration) {
@@ -55,23 +41,17 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     }
 
     @Override
+    public ModuleProvider register(@NonNull Module module) throws ModuleRegistrationException {
+
+        registerModule(module);
+
+        return this;
+    }
+
+    @Override
     public ModuleProvider load(@NonNull Module module) throws ModuleRegistrationException {
 
-        Optional<ModuleMeta> optionalModuleMeta = getModuleMeta(module);
-
-        if (optionalModuleMeta.isPresent()) {
-            ModuleMeta moduleMeta = optionalModuleMeta.get();
-            ModuleInformation moduleInformation = new ModuleInformation(moduleMeta, module).state(ModuleState.LOADED);
-            modules.put(moduleMeta, moduleInformation);
-            cycleSearcher = CycleSearch.of(modules.keySet());
-
-            io.artframework.ART.callEvent(new ModuleLoadedEvent(moduleMeta, module));
-
-            enableModule(moduleInformation);
-        } else {
-            throw new ModuleRegistrationException(null, ModuleState.ERROR,
-                    "The module class " + module.getClass().getSimpleName() + " is missing the required @ART annotation.");
-        }
+        enableModule(registerModule(module));
 
         return this;
     }
@@ -89,28 +69,58 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         return this;
     }
 
+    private ModuleInformation registerModule(Module module) throws ModuleRegistrationException {
+        Optional<ModuleMeta> meta = getModuleMeta(module);
+        if (meta.isPresent()) {
+            return registerModule(meta.get(), module);
+        }
+
+        throw new ModuleRegistrationException(null, ModuleState.INVALID_MODULE,
+                "The module class " + module.getClass().getSimpleName() + " is missing the required @ART annotation.");
+    }
+
+    private ModuleInformation registerModule(ModuleMeta moduleMeta, Module module) throws ModuleRegistrationException {
+        Optional<ModuleMeta> existingModule = modules.keySet().stream()
+                .filter(meta -> meta.identifier().equals(moduleMeta.identifier()) && !meta.moduleClass().equals(moduleMeta.moduleClass())).findAny();
+        if (existingModule.isPresent()) {
+            throw new ModuleRegistrationException(moduleMeta, ModuleState.DUPLICATE_MODULE,
+                    "There is already a module named \"" + moduleMeta.identifier() + "\" registered: " + existingModule.get().moduleClass().getCanonicalName());
+        }
+
+        ModuleInformation moduleInformation;
+        if (modules.containsKey(moduleMeta)) {
+            moduleInformation = this.modules.get(moduleMeta);
+        } else {
+            moduleInformation = updateModuleCache(new ModuleInformation(moduleMeta, module).state(ModuleState.REGISTERED));
+            io.artframework.ART.callEvent(new ModuleRegisteredEvent(moduleMeta, module));
+            cycleSearcher = CycleSearch.of(modules.keySet());
+
+            Optional<List<ModuleMeta>> dependencyGraph = getDependencyGraph(moduleInformation);
+            if (dependencyGraph.isPresent()) {
+                updateModuleCache(moduleInformation.state(ModuleState.CYCLIC_DEPENDENCIES));
+                throw new ModuleRegistrationException(moduleInformation.moduleMeta(), moduleInformation.state(),
+                        "The module \"" + moduleInformation.moduleMeta().identifier() + "\" has cyclic dependencies: " + dependencyGraphToString(dependencyGraph.get()));
+            }
+        }
+
+        return moduleInformation;
+    }
+
     private void enableModule(ModuleInformation moduleInformation) throws ModuleRegistrationException {
 
         if (moduleInformation.state() == ModuleState.ENABLED) return;
 
         if (hasMissingDependencies(moduleInformation)) {
-            moduleInformation.state(ModuleState.MISSING_DEPENDENCIES);
+            updateModuleCache(moduleInformation.state(ModuleState.MISSING_DEPENDENCIES));
             throw new ModuleRegistrationException(moduleInformation.moduleMeta(), moduleInformation.state(),
                     "The module \"" + moduleInformation.moduleMeta().identifier() + "\" is missing the following dependencies: " + String.join(",", getMissingDependencies(moduleInformation)));
-        }
-
-        Optional<List<ModuleMeta>> dependencyGraph = getDependencyGraph(moduleInformation);
-        if (dependencyGraph.isPresent()) {
-            moduleInformation.state(ModuleState.CYCLIC_DEPENDENCIES);
-            throw new ModuleRegistrationException(moduleInformation.moduleMeta(), moduleInformation.state(),
-                    "The module \"" + moduleInformation.moduleMeta().identifier() + "\" has cyclic dependencies: " + dependencyGraphToString(dependencyGraph.get()));
         }
 
         for (ModuleInformation childModule : getModules(moduleInformation.moduleMeta().dependencies())) {
             try {
                 enableModule(childModule);
             } catch (ModuleRegistrationException e) {
-                moduleInformation.state(ModuleState.DEPENDENCY_ERROR);
+                updateModuleCache(moduleInformation.state(ModuleState.DEPENDENCY_ERROR));
                 throw new ModuleRegistrationException(moduleInformation.moduleMeta(), ModuleState.DEPENDENCY_ERROR,
                         "Failed to enable the module \"" + moduleInformation.moduleMeta().identifier() + "\" because a child module could not be enabled: " + e.getMessage(), e);
             }
@@ -118,9 +128,10 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
         try {
             moduleInformation.module().onEnable(configuration());
+            updateModuleCache(moduleInformation.state(ModuleState.ENABLED));
             io.artframework.ART.callEvent(new ModuleEnabledEvent(moduleInformation.moduleMeta(), moduleInformation.module()));
         } catch (Exception e) {
-            moduleInformation.state(ModuleState.ERROR);
+            updateModuleCache(moduleInformation.state(ModuleState.ERROR));
             throw new ModuleRegistrationException(moduleInformation.moduleMeta(), ModuleState.ERROR,
                     "An error occured when trying to enable the module \"" + moduleInformation.moduleMeta().identifier() + "\": " + e.getMessage(), e);
         }
@@ -137,7 +148,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             return Optional.empty();
         }
 
-        return Optional.of(ModuleMeta.of(module.getClass().getAnnotation(ART.class), module.getClass().getAnnotation(Depends.class)));
+        return Optional.of(ModuleMeta.of(module.getClass(), module.getClass().getAnnotation(ART.class), module.getClass().getAnnotation(Depends.class)));
     }
 
     private Optional<List<ModuleMeta>> getDependencyGraph(ModuleInformation information) {
@@ -156,7 +167,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         StringBuilder sb = new StringBuilder();
 
         for (int i = 0; i < graph.size(); i++) {
-            sb.append(graph.get(i)).append(" --> ");
+            sb.append(graph.get(i).identifier()).append(" --> ");
 
             if (i == graph.size() -1) {
                 sb.append(sourceModule.identifier());
@@ -206,6 +217,11 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         return this.modules.values().stream()
                 .filter(moduleInformation -> identifier.contains(moduleInformation.moduleMeta().identifier()))
                 .collect(Collectors.toList());
+    }
+
+    private ModuleInformation updateModuleCache(ModuleInformation moduleInformation) {
+        this.modules.put(moduleInformation.moduleMeta(), moduleInformation);
+        return moduleInformation;
     }
 
     @Data
