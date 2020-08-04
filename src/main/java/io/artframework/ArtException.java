@@ -18,6 +18,9 @@ package io.artframework;
 
 public class ArtException extends Exception {
 
+    public ArtException() {
+    }
+
     public ArtException(String message) {
         super(message);
     }

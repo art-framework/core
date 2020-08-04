@@ -34,7 +34,7 @@ import java.lang.annotation.Target;
 public @interface Depends {
 
     /**
-     * @return a list of module identifiers this module depends upon
+     * @return a list of module identifiers this module depends on
      */
     String[] value();
 }
