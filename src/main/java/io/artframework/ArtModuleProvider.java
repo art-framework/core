@@ -16,16 +16,16 @@
 
 package io.artframework;
 
+import io.artframework.impl.DefaultArtModuleProvider;
 import io.artframework.impl.DefaultConfiguration;
-import io.artframework.impl.DefaultModuleProvider;
 import lombok.NonNull;
 
 /**
  * The module provider handles the registration and creation of all art modules.
  * <p>
- * Use it to add your {@link Module} or load modules as JAR files from a given path.
+ * Use it to add your {@link ArtModule} or load modules as JAR files from a given path.
  */
-public interface ModuleProvider extends Provider {
+public interface ArtModuleProvider extends Provider {
 
     /**
      * Creates a new default instance of the module provider.
@@ -33,8 +33,8 @@ public interface ModuleProvider extends Provider {
      * @param configuration the configuration instance to use
      * @return a new default instance of the module provider
      */
-    static ModuleProvider of(DefaultConfiguration configuration) {
-        return new DefaultModuleProvider(configuration);
+    static ArtModuleProvider of(DefaultConfiguration configuration) {
+        return new DefaultArtModuleProvider(configuration);
     }
 
     /**
@@ -43,34 +43,34 @@ public interface ModuleProvider extends Provider {
      * This is useful if you need to load multiple modules that depend upon each other
      * and do not want to directly enable them.
      * <p>
-     * If you want to directly load and enable your module, call {@link #load(Module)} instead.
+     * If you want to directly load and enable your module, call {@link #load(ArtModule)} instead.
      *
      * @param module the module that should be registered
      * @return this module provider
      * @throws ModuleRegistrationException if the registration of the module failed
      */
-    ModuleProvider register(@NonNull Module module) throws ModuleRegistrationException;
+    ArtModuleProvider register(@NonNull ArtModule module) throws ModuleRegistrationException;
 
     /**
      * Loads the given module into the art-framework configuration instance.
      * <p>
      * This will try to load the configuration of the module (if one is needed),
-     * check the dependencies and then call the {@link Module#onEnable(Configuration)} method.
+     * check the dependencies and then call the {@link ArtModule#onEnable(Configuration)} method.
      *
      * @param module the module that should be loaded
      * @return this module provider
      * @throws ModuleRegistrationException if the registration or enabling of the module or its child modules failed
      */
-    ModuleProvider load(@NonNull Module module) throws ModuleRegistrationException;
+    ArtModuleProvider load(@NonNull ArtModule module) throws ModuleRegistrationException;
 
     /**
      * Unloads the given module from the art-framework configuration instance.
      * <p>
-     * This will call {@link Module#onDisable(Configuration)} on the provided module
+     * This will call {@link ArtModule#onDisable(Configuration)} on the provided module
      * after all modules that depend on it have been disabled.
      *
      * @param module the module that should be unloaded
      * @return this module provider
      */
-    ModuleProvider unload(@NonNull Module module);
+    ArtModuleProvider unload(@NonNull ArtModule module);
 }

@@ -16,8 +16,8 @@
 
 package io.artframework.impl;
 
+import io.artframework.ArtModule;
 import io.artframework.Configuration;
-import io.artframework.Module;
 import io.artframework.ModuleRegistrationException;
 import io.artframework.annotations.ART;
 import io.artframework.annotations.Depends;
@@ -32,15 +32,15 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.Mockito.*;
 
-class DefaultModuleProviderTest {
+class DefaultArtArtModuleProviderTest {
 
-    DefaultModuleProvider provider;
+    DefaultArtModuleProvider provider;
     TestModule module;
 
     @BeforeEach
     void setUp() {
         Configuration configuration = mock(Configuration.class);
-        provider = new DefaultModuleProvider(configuration);
+        provider = new DefaultArtModuleProvider(configuration);
         module = spy(new TestModule());
     }
 
@@ -119,7 +119,7 @@ class DefaultModuleProviderTest {
     }
 
     @ART("test")
-    static class TestModule implements Module {
+    static class TestModule implements ArtModule {
         @Override
         public void onEnable(Configuration configuration) {
 
@@ -132,7 +132,7 @@ class DefaultModuleProviderTest {
     }
 
     @ART("test")
-    static class DuplicateModule implements Module {
+    static class DuplicateModule implements ArtModule {
 
         @Override
         public void onEnable(Configuration configuration) {
@@ -145,7 +145,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    static class MissingAnnotationModule implements Module {
+    static class MissingAnnotationModule implements ArtModule {
         @Override
         public void onEnable(Configuration configuration) {
 
@@ -159,7 +159,7 @@ class DefaultModuleProviderTest {
 
     @ART("foo")
     @Depends("bar")
-    static class FooModule implements Module {
+    static class FooModule implements ArtModule {
         @Override
         public void onEnable(Configuration configuration) {
 
@@ -172,7 +172,7 @@ class DefaultModuleProviderTest {
     }
 
     @ART("bar")
-    static class BarModule implements Module {
+    static class BarModule implements ArtModule {
         @Override
         public void onEnable(Configuration configuration) {
 
@@ -186,7 +186,7 @@ class DefaultModuleProviderTest {
 
     @ART("module 1")
     @Depends({"module 2", "foo"})
-    static class Module1 implements Module {
+    static class Module1 implements ArtModule {
 
         @Override
         public void onEnable(Configuration configuration) {
@@ -201,7 +201,7 @@ class DefaultModuleProviderTest {
 
     @ART("module 2")
     @Depends("module 3")
-    static class Module2 implements Module {
+    static class Module2 implements ArtModule {
 
         @Override
         public void onEnable(Configuration configuration) {
@@ -216,7 +216,7 @@ class DefaultModuleProviderTest {
 
     @ART("module 3")
     @Depends("module 1")
-    static class Module3 implements Module {
+    static class Module3 implements ArtModule {
 
         @Override
         public void onEnable(Configuration configuration) {

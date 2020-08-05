@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 /**
  * The module meta provides meta information about a loaded module.
  * <p>
- * Every {@link Module} creates meta data on initialization from the annotations attached to the module.
+ * Every {@link ArtModule} creates meta data on initialization from the annotations attached to the module.
  */
 public interface ModuleMeta {
 

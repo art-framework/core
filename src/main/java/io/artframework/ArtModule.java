@@ -39,7 +39,7 @@ import io.artframework.annotations.Depends;
  * By default the identifier of your module will be used as the config file name.
  * You can define an alternative file name with the @{@link Config} annotation.
  */
-public interface Module {
+public interface ArtModule {
 
     /**
      * This method is called after all modules have been loaded and when this module is enabled.
