@@ -49,7 +49,7 @@ public class DefaultConfiguration implements Configuration, Cloneable {
     @With private transient EventProvider events;
     @With private transient ArtSettings artSettings;
     @With private transient FlowParserProvider parser;
-    @With private transient ModuleProvider modules;
+    @With private transient ArtModuleProvider modules;
 
     public DefaultConfiguration() {
         settings(Settings.getDefault());
@@ -63,7 +63,7 @@ public class DefaultConfiguration implements Configuration, Cloneable {
         events(EventProvider.of(this));
         artSettings(ArtSettings.getDefault());
         parser(FlowParserProvider.of(this));
-        modules(ModuleProvider.of(this));
+        modules(ArtModuleProvider.of(this));
     }
 
     @Override

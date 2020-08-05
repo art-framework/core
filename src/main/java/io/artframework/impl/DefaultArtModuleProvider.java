@@ -31,17 +31,17 @@ import lombok.experimental.Accessors;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class DefaultModuleProvider extends AbstractProvider implements ModuleProvider {
+public class DefaultArtModuleProvider extends AbstractProvider implements ArtModuleProvider {
 
     final Map<ModuleMeta, ModuleInformation> modules = new HashMap<>();
     private CycleSearch<ModuleMeta> cycleSearcher = new CycleSearch<>(new boolean[0][0], new ModuleMeta[0]);
 
-    public DefaultModuleProvider(@NonNull Configuration configuration) {
+    public DefaultArtModuleProvider(@NonNull Configuration configuration) {
         super(configuration);
     }
 
     @Override
-    public ModuleProvider register(@NonNull Module module) throws ModuleRegistrationException {
+    public ArtModuleProvider register(@NonNull ArtModule module) throws ModuleRegistrationException {
 
         registerModule(module);
 
@@ -49,7 +49,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     }
 
     @Override
-    public ModuleProvider load(@NonNull Module module) throws ModuleRegistrationException {
+    public ArtModuleProvider load(@NonNull ArtModule module) throws ModuleRegistrationException {
 
         enableModule(registerModule(module));
 
@@ -57,7 +57,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     }
 
     @Override
-    public ModuleProvider unload(@NonNull Module module) {
+    public ArtModuleProvider unload(@NonNull ArtModule module) {
 
         getModuleMeta(module).ifPresent(moduleMeta -> {
             ModuleInformation moduleInformation = modules.remove(moduleMeta);
@@ -69,7 +69,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         return this;
     }
 
-    private ModuleInformation registerModule(Module module) throws ModuleRegistrationException {
+    private ModuleInformation registerModule(ArtModule module) throws ModuleRegistrationException {
         Optional<ModuleMeta> meta = getModuleMeta(module);
         if (meta.isPresent()) {
             return registerModule(meta.get(), module);
@@ -79,7 +79,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
                 "The module class " + module.getClass().getSimpleName() + " is missing the required @ART annotation.");
     }
 
-    private ModuleInformation registerModule(ModuleMeta moduleMeta, Module module) throws ModuleRegistrationException {
+    private ModuleInformation registerModule(ModuleMeta moduleMeta, ArtModule module) throws ModuleRegistrationException {
         Optional<ModuleMeta> existingModule = modules.keySet().stream()
                 .filter(meta -> meta.identifier().equals(moduleMeta.identifier()) && !meta.moduleClass().equals(moduleMeta.moduleClass())).findAny();
         if (existingModule.isPresent()) {
@@ -142,7 +142,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         io.artframework.ART.callEvent(new ModuleDisabledEvent(module.moduleMeta(), module.module()));
     }
 
-    private Optional<ModuleMeta> getModuleMeta(@NonNull Module module) {
+    private Optional<ModuleMeta> getModuleMeta(@NonNull ArtModule module) {
 
         if (!module.getClass().isAnnotationPresent(ART.class)) {
             return Optional.empty();
@@ -230,7 +230,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     static class ModuleInformation {
 
         private final ModuleMeta moduleMeta;
-        private final Module module;
+        private final ArtModule module;
         private ModuleState state;
     }
 }

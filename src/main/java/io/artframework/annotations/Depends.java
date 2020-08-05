@@ -16,7 +16,7 @@
 
 package io.artframework.annotations;
 
-import io.artframework.Module;
+import io.artframework.ArtModule;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
 /**
  * Provide a list of dependencies for your module.
  * <p>
- * The art-framework will make sure that all {@link Module}s your module depends upon are loaded
+ * The art-framework will make sure that all {@link ArtModule}s your module depends upon are loaded
  * before loading and enabling your module.
  */
 @Target({ElementType.TYPE})

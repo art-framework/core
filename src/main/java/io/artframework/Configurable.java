@@ -31,7 +31,7 @@ import lombok.NonNull;
  * You can also annotate your class, load method or config parameter in the load method with the @{@link Config} annotation.
  * This will allow it to load the config directly from a file based of the base path of the art-framework.
  * <p>
- * If you do not annotate it and the configurable class is a {@link Module}, the identifier of the module will be used.
+ * If you do not annotate it and the configurable class is a {@link ArtModule}, the identifier of the module will be used.
  *
  * @param <TConfig> the type of the config that should be loaded
  * @see Config
