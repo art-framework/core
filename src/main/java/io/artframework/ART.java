@@ -47,7 +47,7 @@ public final class ART {
     }
 
     // TODO: javadoc
-    public static Finder find() {
+    public static FinderProvider find() {
         return configuration().art().find();
     }
 

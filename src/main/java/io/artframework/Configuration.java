@@ -22,7 +22,6 @@ import io.artframework.events.EventListener;
 import io.artframework.impl.DefaultConfiguration;
 import lombok.NonNull;
 
-import java.io.File;
 import java.io.Serializable;
 import java.util.Optional;
 
@@ -89,14 +88,6 @@ public interface Configuration extends Serializable, Cloneable {
     TriggerProvider trigger();
 
     /**
-     * Use the {@link Finder} to find all of your {@link ArtObject}s inside
-     * {@link File}s and the classpath. You can then register the found ART.
-     *
-     * @return the configured {@link Finder} implementation
-     */
-    Finder finder();
-
-    /**
      * Use the {@link EventProvider} to register your {@link EventListener}s.
      *
      * @return the configured {@link EventProvider} implementation
@@ -156,11 +147,28 @@ public interface Configuration extends Serializable, Cloneable {
     FlowParserProvider parser();
 
     /**
-     * Use the {@link ArtModuleProvider} to find and load your art {@link ArtModule}s.
+     * Use the {@link ArtModuleProvider} to load your art {@link ArtModule}s.
      *
      * @return the implementing {@link ArtModuleProvider}
      */
     ArtModuleProvider modules();
+
+    /**
+     * Use the {@link FinderProvider} to register your {@link Finder}s.
+     *
+     * @return the implementing {@link FinderProvider}
+     */
+    FinderProvider finder();
+
+    /**
+     * Gets the class loader that should be used to load additional classes.
+     * By default the class loader of the configuration class will be used.
+     * <p>
+     * Set your custom class loader with the {@link #classLoader(ClassLoader)} method.
+     *
+     * @return the provided class loader
+     */
+    ClassLoader classLoader();
 
     /**
      * Sets a new implementation for the {@link ArtProvider}.
@@ -236,14 +244,6 @@ public interface Configuration extends Serializable, Cloneable {
     Configuration trigger(@NonNull TriggerProvider triggerProvider);
 
     /**
-     * Sets a new implementation for the {@link Finder}.
-     *
-     * @param finder {@link Finder} implementation to use
-     * @return this {@link Configuration}
-     */
-    Configuration finder(@NonNull Finder finder);
-
-    /**
      * Sets a new implementation for the {@link EventProvider}.
      *
      * @param eventProvider {@link EventProvider} implementation to use
@@ -266,6 +266,23 @@ public interface Configuration extends Serializable, Cloneable {
      * @return this {@link Configuration}
      */
     Configuration modules(@NonNull ArtModuleProvider moduleProvider);
+
+    /**
+     * Sets a new implementation for the {@link FinderProvider}.
+     *
+     * @param finderProvider {@link FinderProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration finder(@NonNull FinderProvider finderProvider);
+
+    /**
+     * Provides an alternate class loader that should be used when loading additional classes.
+     * For example in a {@link Finder}.
+     *
+     * @param classLoader the class loader to use
+     * @return this {@link Configuration}
+     */
+    Configuration classLoader(@NonNull ClassLoader classLoader);
 
     /**
      * Creates a new {@link Configuration} derived from this configuration.
@@ -361,15 +378,6 @@ public interface Configuration extends Serializable, Cloneable {
 
     /**
      * Creates a new {@link Configuration} derived from this configuration
-     * and sets a new implementation for the {@link Finder}.
-     *
-     * @param finder {@link Finder} implementation to use
-     * @return this {@link Configuration}
-     */
-    Configuration withFinder(@NonNull Finder finder);
-
-    /**
-     * Creates a new {@link Configuration} derived from this configuration
      * and sets a new implementation for the {@link EventProvider}.
      *
      * @param eventProvider {@link EventProvider} implementation to use
@@ -394,4 +402,22 @@ public interface Configuration extends Serializable, Cloneable {
      * @return this {@link Configuration}
      */
     Configuration withModules(@NonNull ArtModuleProvider moduleProvider);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link FinderProvider}.
+     *
+     * @param finderProvider {@link FinderProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration withFinder(@NonNull FinderProvider finderProvider);
+
+    /**
+     * Creates a new {@link Configuration} derived from this configuration
+     * and sets a new implementation for the {@link ClassLoader}.
+     *
+     * @param classLoader {@link FinderProvider} implementation to use
+     * @return this {@link Configuration}
+     */
+    Configuration withClassLoader(@NonNull ClassLoader classLoader);
 }

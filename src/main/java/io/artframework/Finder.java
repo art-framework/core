@@ -16,29 +16,22 @@
 
 package io.artframework;
 
-import io.artframework.impl.DefaultFinder;
+import io.artframework.finder.ArtObjectFinder;
 
 import java.io.File;
 import java.util.function.Predicate;
 
-public interface Finder extends ArtProvider {
+public interface Finder<TResult, TError> extends Scope {
 
-    static Finder of(Configuration configuration) {
-        return new DefaultFinder(configuration);
+    static Finder<?, ?>[] defaults(Configuration configuration) {
+        return new ArtObjectFinder[]{
+                new ArtObjectFinder(configuration)
+        };
     }
 
-    default ArtProvider art() {
-        return configuration().art();
+    default FinderResult<TResult, TError> findAllIn(File file) {
+        return findAllIn(file, f -> true);
     }
 
-    FinderResult all();
-
-    default ArtProvider allAndRegister() {
-        all().register();
-        return art();
-    }
-
-    FinderResult allIn(File file);
-
-    FinderResult allIn(File file, Predicate<File> predicate);
+    FinderResult<TResult, TError> findAllIn(File file, Predicate<File> predicate);
 }
