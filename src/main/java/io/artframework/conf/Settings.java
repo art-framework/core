@@ -18,9 +18,12 @@ package io.artframework.conf;
 
 import io.artframework.ArtObject;
 import io.artframework.ArtProvider;
+import io.artframework.annotations.Config;
 import io.artframework.annotations.ConfigOption;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.With;
 
 import java.io.Serializable;
 
@@ -28,6 +31,10 @@ import java.io.Serializable;
  * Settings that influence how ART works.
  */
 @Data
+@With
+@ConfigOption
+@AllArgsConstructor
+@Config("settings.yml")
 @EqualsAndHashCode(callSuper = false)
 public class Settings extends SettingsBase implements Serializable, Cloneable {
 
@@ -43,8 +50,14 @@ public class Settings extends SettingsBase implements Serializable, Cloneable {
     }
 
     Settings(Settings settings) {
+        this.basePath = settings.basePath;
         this.autoRegisterAllArt = settings.autoRegisterAllArt;
+        this.modulePath = settings.modulePath;
     }
+
+    private String basePath = "./";
+
+    private String modulePath = "modules/";
 
     /**
      * If this is set to true, the ART-Framework will automatically scan the whole
@@ -54,6 +67,6 @@ public class Settings extends SettingsBase implements Serializable, Cloneable {
      * Use the {@link ArtProvider} methods to register {@link ArtObject}s
      * that cannot be constructed so easily.
      */
-    @ConfigOption
     private boolean autoRegisterAllArt = true;
 }
+

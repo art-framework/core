@@ -18,6 +18,7 @@ package io.artframework.impl;
 
 import io.artframework.ArtModule;
 import io.artframework.Configuration;
+import io.artframework.ModuleMeta;
 import io.artframework.ModuleRegistrationException;
 import io.artframework.annotations.ART;
 import io.artframework.annotations.Depends;
@@ -28,10 +29,10 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@SuppressWarnings("ALL")
 class DefaultArtArtModuleProviderTest {
 
     DefaultArtModuleProvider provider;
@@ -115,6 +116,19 @@ class DefaultArtArtModuleProviderTest {
             assertThatExceptionOfType(ModuleRegistrationException.class)
                     .isThrownBy(() -> provider.register(new Module3()))
                     .withMessageContaining("cyclic dependencies");
+        }
+
+        @Test
+        @DisplayName("should register module")
+        void shouldRegisterModule() {
+
+            assertThatCode(() -> provider.register(module)).doesNotThrowAnyException();
+            assertThat(provider.modules)
+                    .hasSize(1)
+                    .extractingByKey(ModuleMeta.of(TestModule.class, TestModule.class.getAnnotation(ART.class), null))
+                    .isNotNull()
+                    .extracting(moduleInformation -> moduleInformation.moduleMeta().identifier(), DefaultArtModuleProvider.ModuleInformation::module)
+                    .contains("test", module);
         }
     }
 

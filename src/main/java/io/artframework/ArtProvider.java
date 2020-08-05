@@ -27,7 +27,7 @@ import java.util.Collection;
  * <br>
  * You can also scan a path or JAR file and automatically register all ART that is found.
  * Use the {@link #find()} and the {@link Finder} to find specific ART in your files
- * and register the {@link FinderResult} with the {@link FinderResult#register()} method.
+ * and load the {@link FinderResult} with the {@link FinderResult#load(Configuration)} ()} method.
  * <br>
  * By default the ART-Framework will scan the whole classpath. You can disable this by
  * setting {@link Settings#setAutoRegisterAllArt(boolean)} to <pre>false</pre>.
@@ -45,7 +45,7 @@ public interface ArtProvider extends Provider {
      *
      * @return The {@link Finder} to find {@link ArtObject}s in your filesystem and classpath.
      */
-    default Finder find() {
+    default FinderProvider find() {
         return configuration().finder();
     }
 

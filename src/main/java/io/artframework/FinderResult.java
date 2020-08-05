@@ -16,49 +16,50 @@
 
 package io.artframework;
 
-import io.artframework.annotations.ART;
-
 import java.util.Collection;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 
 /**
- * Contains all of the classes that were found when searching the classpath
- * or a file for {@link ArtObject}s.
- * Classes that don't have an @{@link ART} annotation
- * or public parameterless constructor can be found in the
+ * Contains all result objects and errors that were found during a find operation with a finder.
+ * <p>
+ * Each finder result should have a corresponding {@link Finder} implementation that produces the result.
+ * <p>
+ * <h4>Implementation notice</h4>
+ * The underlying result must be immutable and should only be directly produced by the corresponding finder.
  */
-public interface FinderResult extends Iterable<ArtObjectMeta<?>> {
+public interface FinderResult<TResult, TError> extends Iterable<TResult> {
 
     /**
-     * @return the {@link Finder} that created this result
-     */
-    Finder finder();
-
-    /**
-     * Adds all classes that do not have an error to the {@link ArtProvider}
-     * by calling {@link ArtProvider#addAll(Collection)}.
+     * Loads all results into the given configuration instance.
+     * <p>
+     * Depending on the finder, this might register new modules or load ART objects, etc.
      *
-     * @return the {@link Finder} that created this result
+     * @param configuration the configuration instance to load the results into
+     * @return this finder result
      */
-    default Finder register() {
-        finder().addAll(getAll());
-        return finder();
-    }
-
-    FinderResult filter(Predicate<ArtObjectMeta<?>> predicate);
-
-    Stream<ArtObjectMeta<?>> stream();
+    FinderResult<TResult, TError> load(Configuration configuration);
 
     /**
      * Returns a list of all classes excluding any classes that had errors.
-     * Use the {@link #getErrors()} method to get all classes that had errors
+     * Use the {@link #errors()} method to get all classes that had errors
      * while searching for {@link ArtObject}s.
      *
-     * @return a list of all classes found by the {@link Finder}
+     * @return a list of all results found by the finder
      */
-    Collection<ArtObjectMeta<?>> getAll();
+    Collection<TResult> results();
+
+    /**
+     * Iterates every result in this result set and applies the given consumer to it.
+     *
+     * @param consumer the result handler
+     * @return this result
+     */
+    FinderResult<TResult, TError> forEachResult(Consumer<TResult> consumer);
+
+    /**
+     * @return a list of all errors that occurred during the find operation
+     */
+    Collection<TError> errors();
 
     /**
      * Gives the option to handle the errors in a fluent syntax style.
@@ -66,11 +67,7 @@ public interface FinderResult extends Iterable<ArtObjectMeta<?>> {
      * in an other way.
      *
      * @param consumer the error handler
-     * @return this {@link FinderResult}
+     * @return this result
      */
-    FinderResult errors(Consumer<ArtObjectError> consumer);
-
-    Stream<ArtObjectError> errorStream();
-
-    Collection<ArtObjectError> getErrors();
+    FinderResult<TResult, TError> forEachError(Consumer<TError> consumer);
 }
