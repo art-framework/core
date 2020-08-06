@@ -20,6 +20,9 @@ import io.artframework.impl.DefaultArtModuleProvider;
 import io.artframework.impl.DefaultConfiguration;
 import lombok.NonNull;
 
+import javax.annotation.Nullable;
+import java.util.Optional;
+
 /**
  * The module provider handles the registration and creation of all art modules.
  * <p>
@@ -36,6 +39,22 @@ public interface ArtModuleProvider extends Provider {
     static ArtModuleProvider of(DefaultConfiguration configuration) {
         return new DefaultArtModuleProvider(configuration);
     }
+
+    /**
+     * Registers the given resolve with the module provider.
+     * <p>
+     * The provider will use the given resolver when a module has unknown dependencies.
+     * Set the resolver to null to clear out the default resolver and only use registered modules.
+     *
+     * @param resolver the resolver that should be used when
+     * @return this module provider
+     */
+    ArtModuleProvider resolver(@Nullable ArtModuleDependencyResolver resolver);
+
+    /**
+     * @return the currently registered resolver
+     */
+    Optional<ArtModuleDependencyResolver> resolver();
 
     /**
      * Registers the given module with the provider, but does not enable it.

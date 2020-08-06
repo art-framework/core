@@ -28,6 +28,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,9 +36,21 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
 
     final Map<ModuleMeta, ModuleInformation> modules = new HashMap<>();
     private CycleSearch<ModuleMeta> cycleSearcher = new CycleSearch<>(new boolean[0][0], new ModuleMeta[0]);
+    private ArtModuleDependencyResolver resolver;
 
     public DefaultArtModuleProvider(@NonNull Configuration configuration) {
         super(configuration);
+    }
+
+    @Override
+    public ArtModuleProvider resolver(@Nullable ArtModuleDependencyResolver resolver) {
+        this.resolver = resolver;
+        return this;
+    }
+
+    @Override
+    public Optional<ArtModuleDependencyResolver> resolver() {
+        return Optional.ofNullable(resolver);
     }
 
     @Override

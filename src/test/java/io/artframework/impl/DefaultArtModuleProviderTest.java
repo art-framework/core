@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
-class DefaultArtArtModuleProviderTest {
+class DefaultArtModuleProviderTest {
 
     DefaultArtModuleProvider provider;
     TestModule module;
@@ -172,7 +172,7 @@ class DefaultArtArtModuleProviderTest {
     }
 
     @ART("foo")
-    @Depends("bar")
+    @Depends(modules = "bar")
     static class FooModule implements ArtModule {
         @Override
         public void onEnable(Configuration configuration) {
@@ -199,7 +199,7 @@ class DefaultArtArtModuleProviderTest {
     }
 
     @ART("module 1")
-    @Depends({"module 2", "foo"})
+    @Depends(modules = {"module 2", "foo"})
     static class Module1 implements ArtModule {
 
         @Override
@@ -214,7 +214,7 @@ class DefaultArtArtModuleProviderTest {
     }
 
     @ART("module 2")
-    @Depends("module 3")
+    @Depends(modules = "module 3")
     static class Module2 implements ArtModule {
 
         @Override
@@ -229,7 +229,7 @@ class DefaultArtArtModuleProviderTest {
     }
 
     @ART("module 3")
-    @Depends("module 1")
+    @Depends(modules = "module 1")
     static class Module3 implements ArtModule {
 
         @Override

@@ -36,5 +36,10 @@ public @interface Depends {
     /**
      * @return a list of module identifiers this module depends on
      */
-    String[] value();
+    String[] modules() default {};
+
+    /**
+     * @return a list of plugins this module depends on
+     */
+    String[] plugins() default {};
 }
