@@ -399,6 +399,31 @@ public class ArtIntegrationTest {
 
                 assertThat(player.getHealth()).isEqualTo(20);
             }
+
+            @Test
+            @DisplayName("should call the listener in the art context")
+            void shouldCallTheListenerOfTheArtContext() {
+
+                Player player = new Player();
+                player.setHealth(100);
+
+                ArtContext artContext = ART.builder().load(Arrays.asList(
+                        "@move"
+                )).build();
+
+                TriggerListener<Player> listener = spy(new TriggerListener<Player>() {
+                    @Override
+                    public void onTrigger(Target<Player>[] targets, ExecutionContext<TriggerContext> context) {
+
+                    }
+                });
+
+                artContext.onTrigger(Player.class, listener);
+
+                playerTrigger.onMove(player);
+
+                verify(listener, times(1)).onTrigger(any(), any());
+            }
         }
     }
 

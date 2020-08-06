@@ -20,8 +20,9 @@ import io.artframework.conf.ArtSettings;
 import io.artframework.impl.DefaultArtContext;
 import lombok.NonNull;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.stream.Stream;
 
 // TODO: javadoc
@@ -137,7 +138,7 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
      * @param listener function to react to the trigger
      * @param <TTarget> type of the target
      */
-    <TTarget> void registerListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener);
+    <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> listener);
 
     /**
      * Combines this {@link ArtContext} with the given {@link ArtContext}.
