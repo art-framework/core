@@ -47,7 +47,7 @@ public class DefaultRequirementProvider extends AbstractFactoryProvider<Requirem
     public RequirementProvider add(@NonNull Class<? extends Requirement<?>> aClass) {
         try {
             return add(Objects.requireNonNull(ArtObjectMeta.of(aClass).get()));
-        } catch (OptionsInitializationException e) {
+        } catch (ArtMetaDataException e) {
             // TODO: error handling
             e.printStackTrace();
         }
@@ -57,7 +57,7 @@ public class DefaultRequirementProvider extends AbstractFactoryProvider<Requirem
     public <TRequirement extends Requirement<TTarget>, TTarget> RequirementProvider add(Class<TRequirement> aClass, ArtObjectProvider<TRequirement> artObjectProvider) {
         try {
             return add(Objects.requireNonNull(ArtObjectMeta.of(aClass, artObjectProvider).get()));
-        } catch (OptionsInitializationException e) {
+        } catch (ArtMetaDataException e) {
             // TODO: error handling
             e.printStackTrace();
         }

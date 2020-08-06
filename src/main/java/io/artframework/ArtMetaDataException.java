@@ -16,16 +16,16 @@
 
 package io.artframework;
 
-public class OptionsInitializationException extends ArtException {
+public class ArtMetaDataException extends ArtException {
 
     private final ArtObjectError error;
 
-    public OptionsInitializationException(ArtObjectError error, Throwable cause) {
+    public ArtMetaDataException(ArtObjectError error, Throwable cause) {
         super(error.getMessage(), cause);
         this.error = error;
     }
 
-    public OptionsInitializationException(ArtObjectError error) {
+    public ArtMetaDataException(ArtObjectError error) {
         super(error.getMessage());
         this.error = error;
     }

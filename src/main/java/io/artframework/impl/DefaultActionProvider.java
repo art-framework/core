@@ -47,7 +47,7 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
     public ActionProvider add(@NonNull Class<? extends Action<?>> aClass) {
         try {
             return add(Objects.requireNonNull(ArtObjectMeta.of(aClass).get()));
-        } catch (OptionsInitializationException e) {
+        } catch (ArtMetaDataException e) {
             // TODO: error handling
             e.printStackTrace();
         }
@@ -57,7 +57,7 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
     public <TAction extends Action<TTarget>, TTarget> ActionProvider add(Class<TAction> aClass, ArtObjectProvider<TAction> artObjectProvider) {
         try {
             return add(Objects.requireNonNull(ArtObjectMeta.of(aClass, artObjectProvider).get()));
-        } catch (OptionsInitializationException e) {
+        } catch (ArtMetaDataException e) {
             // TODO: error handling
             e.printStackTrace();
         }

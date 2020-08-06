@@ -28,19 +28,19 @@ import java.util.Optional;
 
 public interface ArtObjectMeta<TArtObject extends ArtObject> {
 
-    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass) throws OptionsInitializationException {
+    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass) throws ArtMetaDataException {
         return new DefaultArtObjectMeta<>(artObjectClass).initialize();
     }
 
-    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, Method... methods) throws OptionsInitializationException {
+    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, Method... methods) throws ArtMetaDataException {
         return new DefaultArtObjectMeta<>(artObjectClass, methods).initialize();
     }
 
-    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider) throws OptionsInitializationException {
+    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider) throws ArtMetaDataException {
         return new DefaultArtObjectMeta<>(artObjectClass, provider).initialize();
     }
 
-    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) throws OptionsInitializationException {
+    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) throws ArtMetaDataException {
         return new DefaultArtObjectMeta<>(artObjectClass, provider, methods).initialize();
     }
 
@@ -89,9 +89,9 @@ public interface ArtObjectMeta<TArtObject extends ArtObject> {
      * if the {@link ArtObject} is configured correctly.
      * <br>
      * If everything looks good the {@link ArtObject} is registered for execution.
-     * If not a {@link OptionsInitializationException} is thrown.
+     * If not a {@link ArtMetaDataException} is thrown.
      *
-     * @throws OptionsInitializationException if the {@link ArtObject} could not be registered.
+     * @throws ArtMetaDataException if the {@link ArtObject} could not be registered.
      */
-    ArtObjectMeta<TArtObject> initialize() throws OptionsInitializationException;
+    ArtObjectMeta<TArtObject> initialize() throws ArtMetaDataException;
 }

@@ -43,7 +43,7 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
             if (method.isAnnotationPresent(ART.class)) {
                 try {
                     add((ArtObjectMeta<Trigger>) ArtObjectMeta.of(triggerClass, method));
-                } catch (OptionsInitializationException e) {
+                } catch (ArtMetaDataException e) {
                     e.printStackTrace();
                 }
             }
@@ -59,7 +59,7 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
             if (method.isAnnotationPresent(ART.class)) {
                 try {
                     add((ArtObjectMeta<Trigger>) ArtObjectMeta.of(triggerClass, supplier, method));
-                } catch (OptionsInitializationException e) {
+                } catch (ArtMetaDataException e) {
                     e.printStackTrace();
                 }
             }
