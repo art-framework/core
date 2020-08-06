@@ -20,8 +20,9 @@ import io.artframework.conf.ArtSettings;
 import io.artframework.impl.DefaultArtContext;
 import lombok.NonNull;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // TODO: javadoc
 public interface ArtContext extends Context, AutoCloseable, ResultCreator, TargetCreator {
@@ -107,22 +108,21 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
      * the actions. No action will be executed if any filter or requirement fails.
      *
      * @param target    target to execute actions against. Can be null.
-     * @param <TTarget> type of the target
      */
-    <TTarget> FutureResult execute(@NonNull Target<TTarget> target);
+    FutureResult execute(@NonNull Target<?>... target);
 
     /**
-     * Wraps the given target into a {@link Target} and then calls {@link #execute(Target)}.
+     * Wraps the given target into a {@link Target} and then calls {@link #execute(Target...)}.
      * Does nothing if no {@link Target} wrapper was found for the given source.
      *
-     * @param target    target to execute actions for
-     * @param <TTarget> type of the target
+     * @param targets    target to execute actions for
      */
-    default <TTarget> FutureResult execute(@NonNull TTarget target) {
-        return configuration().targets().get(target)
-                .map(this::execute)
-                .orElse(FutureResult.of(failure("Target of type " + target.getClass().getSimpleName() + " not found.")));
+    default FutureResult execute(@NonNull Object... targets) {
+        return execute(Arrays.stream(targets)
+                .map(target -> configuration().targets().get(target))
+                .flatMap(target -> target.map(Stream::of).orElseGet(Stream::empty)).toArray(Target[]::new));
     }
+
     /**
      * Listens on all {@link Trigger}s in the {@link ArtContext} for the given target type.
      * You can add multiple {@link TriggerListener}s of the same target type

@@ -124,7 +124,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     @SuppressWarnings("unchecked")
     private <TTarget> void callListeners(ExecutionContext<TriggerContext> executionContext) {
         for (Map.Entry<Class<?>, Set<TriggerListener<?>>> entry : listeners.entrySet()) {
-            Target<TTarget>[] targets = Arrays.stream(executionContext.getTargets())
+            Target<TTarget>[] targets = executionContext.targets().stream()
                     .filter(target -> entry.getKey().isInstance(target.source()))
                     .toArray(Target[]::new);
 

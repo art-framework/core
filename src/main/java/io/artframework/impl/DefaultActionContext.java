@@ -72,7 +72,6 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public FutureResult execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
 
         if (ART.callEvent(new PreActionExecutionEvent<>(action(), context)).isCancelled()) {
@@ -100,14 +99,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
             store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
-            FutureResult nestedActionResult = this.actions().stream()
-                    .filter(actionContext -> actionContext.isTargetType(target))
-                    .map(actionContext -> (ActionContext<TTarget>) actionContext)
-                    .map(action -> action.execute(target, context.next(action)))
-                    .reduce(FutureResult::combine)
-                    .orElse(result);
-
-            result.complete(actionResult.combine(nestedActionResult));
+            result.complete(actionResult.combine(executeActions(target, context)));
         };
 
         long delay = this.config().delay();

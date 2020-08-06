@@ -17,16 +17,15 @@
 package io.artframework;
 
 import io.artframework.integration.data.Block;
+import io.artframework.integration.data.Location;
 import io.artframework.integration.data.Player;
+import io.artframework.integration.targets.BlockTarget;
 import io.artframework.integration.targets.PlayerTarget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.UUID;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -36,16 +35,10 @@ import static org.mockito.Mockito.*;
 class RequirementHolderTest implements CombinedResultCreator {
 
     private RequirementHolder requirementHolder;
-    private Collection<RequirementContext<?>> requirements;
 
     @BeforeEach
     void setUp() {
-        requirements = new ArrayList<>();
-        requirementHolder = mock(RequirementHolder.class);
-        when(requirementHolder.testRequirements(any())).thenCallRealMethod();
-        when(requirementHolder.requirements()).thenReturn(requirements);
-        doAnswer(invocation -> requirements.add(invocation.getArgument(0)))
-                .when(requirementHolder).addRequirement(any());
+        requirementHolder = new TestRequirementHolder();
     }
 
     private <TTarget> RequirementContext<TTarget> requirement(Class<TTarget> targetClass, CombinedResult result) {
@@ -82,8 +75,8 @@ class RequirementHolderTest implements CombinedResultCreator {
     @DisplayName("should filter out requirements that do not match the target")
     void shouldFilterOutRequirementsThatDoNotMatchTheTarget() {
 
-        requirements.add(requirement(Player.class, success()));
-        requirements.add(requirement(Block.class, failure()));
+        requirementHolder.addRequirement(requirement(Player.class, success()));
+        requirementHolder.addRequirement(requirement(Block.class, failure()));
 
         Target<Player> target = new PlayerTarget(new Player());
         CombinedResult result = requirementHolder.testRequirements(executionContext(target));
@@ -95,4 +88,42 @@ class RequirementHolderTest implements CombinedResultCreator {
                 .extracting(Result::status)
                 .contains(ResultStatus.SUCCESS);
     }
+
+    @Test
+    @DisplayName("should combine the test results of all targets")
+    void shouldCombineTheTestResultsOfAllTargets() {
+
+        requirementHolder.addRequirement(requirement(Player.class, success()));
+        requirementHolder.addRequirement(requirement(Block.class, failure()));
+
+        Target<Player> target = new PlayerTarget(new Player());
+        BlockTarget blockTarget = new BlockTarget(new Block(new Location(0, 0, 0, "world")));
+        CombinedResult result = requirementHolder.testRequirements(executionContext(target, blockTarget));
+
+        assertThat(result)
+                .extracting(Result::status, Result::success)
+                .contains(ResultStatus.FAILURE, false);
+        assertThat(result.ofTarget(target))
+                .extracting(Result::status)
+                .contains(ResultStatus.SUCCESS);
+        assertThat(result.ofTarget(blockTarget))
+                .extracting(Result::status)
+                .contains(ResultStatus.FAILURE);
+    }
+
+    static class TestRequirementHolder implements RequirementHolder {
+
+        private final List<RequirementContext<?>> requirements = new ArrayList<>();
+
+        @Override
+        public void addRequirement(RequirementContext<?> requirement) {
+            requirements.add(requirement);
+        }
+
+        @Override
+        public Collection<RequirementContext<?>> requirements() {
+            return requirements;
+        }
+    }
+
 }

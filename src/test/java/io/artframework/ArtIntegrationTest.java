@@ -262,6 +262,40 @@ public class ArtIntegrationTest {
             }
 
             @Test
+            @DisplayName("should execute actions for multiple targets")
+            void shouldCreateListOfActionsForMultipleTargets() {
+
+                ArtContext context = ART.builder().load(Arrays.asList(
+                        "!damage 20",
+                        "!dmg 50",
+                        "!hit 10"
+                )).build();
+
+                Player[] players = new Player[10];
+                for (int i = 0; i < 10; i++) {
+                    Player player = new Player();
+                    player.setHealth(100);
+                    players[i] = player;
+                }
+
+                CombinedResult result = context.execute(players);
+
+                assertThat(result.success()).isTrue();
+                assertThat(players).extracting(Player::getHealth)
+                        .allMatch(integer -> integer == 20);
+
+                assertThat(result.ofTarget(new PlayerTarget(players[5])))
+                        .hasSize(3)
+                        .extracting(TargetResult::context)
+                        .extracting(ArtObjectContext::meta)
+                        .extracting(ArtObjectMeta::identifier)
+                        .contains("damage", "damage", "damage");
+
+                assertThat(result.ofTarget(Player.class))
+                        .hasSize(30);
+            }
+
+            @Test
             @DisplayName("should test requirements before executing actions")
             void shouldTestRequirementsBeforeAction() {
 

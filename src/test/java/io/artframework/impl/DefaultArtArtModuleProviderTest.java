@@ -104,6 +104,7 @@ class DefaultArtArtModuleProviderTest {
             inOrder.verify(fooModule, times(1)).onEnable(any());
         }
 
+        @SneakyThrows
         @Test
         @DisplayName("should throw if a module has cyclic dependencies")
         void shouldThrowIfCyclicDependenciesExist() {
@@ -113,9 +114,8 @@ class DefaultArtArtModuleProviderTest {
             assertThatCode(() -> provider.register(new Module1())).doesNotThrowAnyException();
             assertThatCode(() -> provider.register(new Module2())).doesNotThrowAnyException();
 
-            assertThatExceptionOfType(ModuleRegistrationException.class)
-                    .isThrownBy(() -> provider.register(new Module3()))
-                    .withMessageContaining("cyclic dependencies");
+            assertThatThrownBy(() -> provider.register(new Module3()))
+                    .hasMessageContaining("cyclic dependencies");
         }
 
         @Test

@@ -24,21 +24,21 @@ public interface RequirementHolder {
 
     Collection<RequirementContext<?>> requirements();
 
+    default CombinedResult testRequirements(ExecutionContext<?> context) {
+        return context.targets().stream()
+                .map(target -> testRequirements(target, context))
+                .reduce(Result::combine)
+                .orElse(CombinedResult.empty());
+    }
+
     @SuppressWarnings("unchecked")
-    default <TTarget> CombinedResult testRequirements(ExecutionContext<?> executionContext) {
-        CombinedResult result = CombinedResult.empty();
-
-        for (Target<?> target : executionContext.getTargets()) {
-            result = result.combine(requirements().stream()
-                    .filter(requirementContext -> requirementContext.isTargetType(target))
-                    .map(requirementContext -> (RequirementContext<TTarget>) requirementContext)
-                    .map(executionContext::next)
-                    .map(context -> context.current().test((Target<TTarget>) target, context))
-                    .map(CombinedResult::of)
-                    .reduce(CombinedResult::combine)
-                    .orElse(CombinedResult.of(Result.empty())));
-        }
-
-        return result;
+    default <TTarget> CombinedResult testRequirements(Target<TTarget> target, ExecutionContext<?> context) {
+        return requirements().stream()
+                .filter(requirementContext -> requirementContext.isTargetType(target))
+                .map(requirementContext -> (RequirementContext<TTarget>) requirementContext)
+                .map(requirementContext -> requirementContext.test(target, context.next(requirementContext)))
+                .map(Result::combine)
+                .reduce(Result::combine)
+                .orElse(CombinedResult.empty());
     }
 }
