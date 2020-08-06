@@ -198,7 +198,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
     }
 
     @Override
-    public ArtObjectMeta<TArtObject> initialize() throws OptionsInitializationException {
+    public ArtObjectMeta<TArtObject> initialize() throws ArtMetaDataException {
         if (this.initialized()) return this;
 
         try {
@@ -211,7 +211,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
             ArtObjectProvider<TArtObject> provider = tryGetArtObjectProvider();
 
             if (Strings.isNullOrEmpty(identifier)) {
-                throw new OptionsInitializationException(ArtObjectError.of(
+                throw new ArtMetaDataException(ArtObjectError.of(
                         artObjectClass().getCanonicalName() + " has no defined name. Use the @ArtOptions annotation on the class or a method.",
                         ArtObjectError.Reason.NO_IDENTIFIER,
                         artObjectClass()
@@ -220,7 +220,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
 
             return new DefaultArtObjectMeta<>(artObjectClass, identifier, description, alias, configClass, targetClass, configMap, provider);
         } catch (ConfigurationException e) {
-            throw new OptionsInitializationException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONFIG, artObjectClass()), e);
+            throw new ArtMetaDataException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONFIG, artObjectClass()), e);
         }
     }
 
@@ -237,7 +237,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private Class<?> findConfigClass() throws OptionsInitializationException {
+    private Class<?> findConfigClass() throws ArtMetaDataException {
         Class configClass = ReflectionUtil.getInterfaceTypeArgument(artObjectClass, Configurable.class, 0).orElse(artObjectClass);
 
         // lets make sure the config has a public parameterless constructor
@@ -247,7 +247,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
                 constructor.setAccessible(true);
                 constructor.newInstance();
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-                throw new OptionsInitializationException(ArtObjectError.of(
+                throw new ArtMetaDataException(ArtObjectError.of(
                         "Unable to create a new instance of the config class " + configClass.getCanonicalName() + ": " + e.getMessage(),
                         ArtObjectError.Reason.INVALID_CONFIG,
                         artObjectClass
@@ -258,11 +258,11 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
         return configClass;
     }
 
-    private Class<?> tryGetTargetClass() throws OptionsInitializationException {
+    private Class<?> tryGetTargetClass() throws ArtMetaDataException {
         if (targetClass != null) return targetClass;
         if (Trigger.class.isAssignableFrom(artObjectClass)) return Object.class;
         if (ReflectionUtil.isLambda(artObjectClass)) {
-            throw new OptionsInitializationException(ArtObjectError.of(
+            throw new ArtMetaDataException(ArtObjectError.of(
                     "Unable to infer target type from a lambda expression." +
                             "Please use the correct add(String, Class<Target>, Lambda) method to register your ArtObject.",
                             ArtObjectError.Reason.INVALID_ART_OBJECT,
@@ -270,7 +270,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
             ));
         }
 
-        OptionsInitializationException exception = new OptionsInitializationException(ArtObjectError.of(
+        ArtMetaDataException exception = new ArtMetaDataException(ArtObjectError.of(
                 "Unable to find a valid target type for the class " + artObjectClass.getCanonicalName(),
                 ArtObjectError.Reason.INVALID_ART_OBJECT,
                 artObjectClass
@@ -288,7 +288,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
                 .orElseThrow(() -> exception);
     }
 
-    private ArtObjectProvider<TArtObject> tryGetArtObjectProvider() throws OptionsInitializationException {
+    private ArtObjectProvider<TArtObject> tryGetArtObjectProvider() throws ArtMetaDataException {
 
         if (artObjectProvider != null) return artObjectProvider;
 
@@ -304,7 +304,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
                 }
             };
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
-            throw new OptionsInitializationException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONSTRUCTOR, artObjectClass()), e);
+            throw new ArtMetaDataException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONSTRUCTOR, artObjectClass()), e);
         }
     }
 

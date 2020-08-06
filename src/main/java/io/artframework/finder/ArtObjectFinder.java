@@ -60,7 +60,7 @@ public final class ArtObjectFinder extends AbstractScope implements Finder<ArtOb
                     if (method.isAnnotationPresent(ART.class)) {
                         try {
                             artObjectMetas.add(ArtObjectMeta.of(artClass, method));
-                        } catch (OptionsInitializationException e) {
+                        } catch (ArtMetaDataException e) {
                             errors.add(e.error());
                         }
                     }
@@ -68,7 +68,7 @@ public final class ArtObjectFinder extends AbstractScope implements Finder<ArtOb
             } else {
                 try {
                     artObjectMetas.add(ArtObjectMeta.of(artClass));
-                } catch (OptionsInitializationException e) {
+                } catch (ArtMetaDataException e) {
                     errors.add(e.error());
                 }
             }
