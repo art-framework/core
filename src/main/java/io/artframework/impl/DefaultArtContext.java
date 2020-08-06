@@ -68,24 +68,32 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     @SuppressWarnings("unchecked")
     private <TTarget> CombinedResult test(Target<TTarget> target, ExecutionContext<?> executionContext) {
 
-        return executeContext(target, RequirementContext.class, requirementContext ->
+        return executeContext(RequirementContext.class, requirementContext ->
                 requirementContext.test(target, executionContext.next(requirementContext)),
                 getArtContexts()
         );
     }
 
     @Override
-    public <TTarget> FutureResult execute(@NonNull Target<TTarget> target) {
+    public FutureResult execute(@NonNull Target<?>... targets) {
 
-        return execute(target, ExecutionContext.of(configuration(), this, target));
+        return execute(ExecutionContext.of(configuration(), this, targets));
     }
 
     @SuppressWarnings("unchecked")
-    private <TTarget> FutureResult execute(Target<TTarget> target, ExecutionContext<?> executionContext) {
-        return executeContext(target, ActionContext.class, actionContext ->
-                actionContext.execute(target, executionContext.next(actionContext)),
+    private FutureResult execute(ExecutionContext<?> executionContext) {
+        return executeContext(ActionContext.class, actionContext ->
+                actionContext.execute(executionContext.next(actionContext)),
                 getArtContexts()
         ).future();
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TTarget> void execute(Target<TTarget> target, ExecutionContext<?> context) {
+        executeContext(ActionContext.class, actionContext ->
+                        actionContext.execute(target, context.next(actionContext)),
+                getArtContexts()
+        );
     }
 
     @Override
@@ -166,15 +174,13 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     }
 
     @SuppressWarnings("unchecked")
-    protected final <TTarget, TContext> CombinedResult executeContext(
-            Target<TTarget> target,
+    protected final <TContext> CombinedResult executeContext(
             Class<TContext> contextClass,
             Function<TContext, Result> function,
             Collection<ArtObjectContext<?>> contexts)
     {
         return contexts.stream()
                 .filter(contextClass::isInstance)
-                .filter(artObjectContext -> artObjectContext.isTargetType(target))
                 .map(artObjectContext -> (TContext) artObjectContext)
                 .map(function)
                 .map(CombinedResult::of)

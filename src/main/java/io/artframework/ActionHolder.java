@@ -24,12 +24,20 @@ public interface ActionHolder {
 
     Collection<ActionContext<?>> actions();
 
+    default FutureResult executeActions(ExecutionContext<?> context) {
+        return context.targets().stream()
+                .map(target -> executeActions(target, context))
+                .reduce(FutureResult::combine)
+                .orElse(FutureResult.empty());
+    }
+
     @SuppressWarnings("unchecked")
-    default <TTarget> void executeActions(Target<TTarget> target, ExecutionContext<?> executionContext) {
-        actions().stream()
+    default <TTarget> FutureResult executeActions(Target<TTarget> target, ExecutionContext<?> executionContext) {
+        return actions().stream()
                 .filter(actionContext -> actionContext.isTargetType(target))
                 .map(actionContext -> (ActionContext<TTarget>) actionContext)
-                .forEach(action -> action.execute(target, executionContext.next(action)));
-
+                .map(action -> action.execute(target, executionContext.next(action)))
+                .reduce(FutureResult::combine)
+                .orElse(FutureResult.empty());
     }
 }

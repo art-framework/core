@@ -16,21 +16,19 @@
 
 package io.artframework.impl;
 
+import com.google.common.collect.ImmutableList;
 import io.artframework.*;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Stack;
+import java.util.*;
 
+@Accessors(fluent = true)
 public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> extends AbstractScope implements ExecutionContext<TContext> {
 
     private final Context root;
-    @Getter
-    private final Target<?>[] targets;
     private final Container container;
     private final TContext currentContext;
 
@@ -41,15 +39,13 @@ public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> exten
     ) {
         super(configuration);
         this.root = root;
-        this.targets = targets;
-        this.container = new Container();
+        this.container = new Container(targets);
         this.currentContext = null;
     }
 
-    DefaultExecutionContext(Configuration configuration, Context root, Target<?>[] targets, Container container, TContext currentContext) {
+    DefaultExecutionContext(Configuration configuration, Context root, Container container, TContext currentContext) {
         super(configuration);
         this.root = root;
-        this.targets = targets;
         this.container = container;
         this.currentContext = currentContext;
     }
@@ -68,8 +64,19 @@ public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> exten
     }
 
     @Override
-    public ArtObjectContext<?>[] history() {
-        return container.history.toArray(new ArtObjectContext[0]);
+    public Collection<ArtObjectContext<?>> history() {
+        return ImmutableList.copyOf(container.history);
+    }
+
+    @Override
+    public Collection<Target<?>> targets() {
+        return ImmutableList.copyOf(container.targets);
+    }
+
+    @Override
+    public <TTarget> ExecutionContext<TContext> addTarget(Target<TTarget> target) {
+        container.targets.add(target);
+        return this;
     }
 
     @Override
@@ -101,17 +108,25 @@ public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> exten
     @Override
     public <TNextContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> ExecutionContext<TNextContext> next(TNextContext nextContext) {
         if (current() != null) container.history.push(current());
-        return new DefaultExecutionContext<>(configuration(), root, targets, container, nextContext);
+        return new DefaultExecutionContext<>(configuration(), root, container, nextContext);
     }
 
-    static class Container {
+    private static class Container {
 
         private final Map<String, Object> data;
         private final Stack<ArtObjectContext<?>> history;
+        private final Set<Target<?>> targets;
 
-        Container() {
+        private Container() {
             this.data = new HashMap<>();
             this.history = new Stack<>();
+            this.targets = new HashSet<>();
+        }
+
+        private Container(Target<?>... targets) {
+            this.data = new HashMap<>();
+            this.history = new Stack<>();
+            this.targets = new HashSet<>(Arrays.asList(targets));
         }
     }
 }

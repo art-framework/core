@@ -20,6 +20,8 @@ import io.artframework.conf.ActionConfig;
 import io.artframework.impl.DefaultActionContext;
 import lombok.NonNull;
 
+import java.util.Collection;
+
 /**
  * The <pre>ActionContext</pre> wraps the actual {@link Action} and handles
  * the execution logic of the action.
@@ -43,6 +45,16 @@ public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContex
      * @return config of this context
      */
     ActionConfig config();
+
+    @SuppressWarnings("unchecked")
+    default FutureResult execute(@NonNull ExecutionContext<?> context) {
+        return context.targets().stream()
+                .filter(target -> target.isTargetType(targetClass()))
+                .map(target -> (Target<TTarget>) target)
+                .map(target -> execute(target, context.next(this)))
+                .reduce(FutureResult::combine)
+                .orElse(FutureResult.empty());
+    }
 
     @Override
     FutureResult execute(@NonNull Target<TTarget> target, @NonNull ExecutionContext<ActionContext<TTarget>> context);

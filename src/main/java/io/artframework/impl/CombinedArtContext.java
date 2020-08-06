@@ -51,9 +51,9 @@ public final class CombinedArtContext extends DefaultArtContext implements ArtCo
     }
 
     @Override
-    public final <TTarget> FutureResult execute(@NonNull Target<TTarget> target) {
+    public final FutureResult execute(@NonNull Target<?>... targets) {
         return contextSet.stream()
-                .map(artContext -> artContext.execute(target))
+                .map(artContext -> artContext.execute(targets))
                 .reduce(FutureResult::combine)
                 .orElse(FutureResult.of(empty()));
     }

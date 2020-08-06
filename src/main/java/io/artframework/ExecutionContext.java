@@ -21,7 +21,9 @@ import io.artframework.impl.DefaultExecutionContext;
 import lombok.NonNull;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.Stack;
 
 /**
  * The <pre>ExecutionContext</pre> holds a hierarchical order of execution
@@ -80,9 +82,9 @@ public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends 
      * This means the first item in the array (index 0) is the {@link #parent()}
      * of the {@link #current()} context.
      *
-     * @return Execution history in a stack sorted format. From newest to oldest.
+     * @return immutable execution history in a stack sorted format. From newest to oldest.
      */
-    ArtObjectContext<?>[] history();
+    Collection<ArtObjectContext<?>> history();
 
     /**
      * Gets all targets that are linked to this execution context.
@@ -90,9 +92,18 @@ public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends 
      * The execution context will check each target type against the next
      * executable context and use it if they match.
      *
-     * @return a list of targets in this execution context
+     * @return an immutable list of targets in this execution context
      */
-    Target<?>[] getTargets();
+    Collection<Target<?>> targets();
+
+    /**
+     * Adds the given target to this execution context.
+     *
+     * @param target the target that should be added
+     * @param <TTarget> type of the target that is added
+     * @return this execution context
+     */
+    <TTarget> ExecutionContext<TContext> addTarget(Target<TTarget> target);
 
     /**
      * Gets the context that is currently being executed.
