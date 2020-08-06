@@ -20,6 +20,7 @@ import com.google.common.base.Strings;
 import io.artframework.ModuleMeta;
 import io.artframework.annotations.ART;
 import io.artframework.annotations.Depends;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.experimental.Accessors;
@@ -28,6 +29,7 @@ import javax.annotation.Nullable;
 
 @Value
 @Accessors(fluent = true)
+@EqualsAndHashCode(of = {"identifier", "moduleClass"})
 public class DefaultModuleMeta implements ModuleMeta {
 
     String identifier;
