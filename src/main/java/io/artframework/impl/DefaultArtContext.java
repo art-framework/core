@@ -97,7 +97,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     }
 
     @Override
-    public <TTarget> void registerListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
+    public <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
         if (!triggerListeners.containsKey(targetClass)) {
             triggerListeners.put(targetClass, new ArrayList<>());
         }

@@ -19,7 +19,7 @@ package io.artframework;
 /**
  * Used to listen on events fired by {@link Trigger}s.
  * <p>
- * Make sure to register your listener either with the {@link ArtContext#registerListener(Class, TriggerListener)}.
+ * Make sure to register your listener either with the {@link ArtContext#onTrigger(Class, TriggerListener)}.
  *
  * @param <TTarget> target type
  */

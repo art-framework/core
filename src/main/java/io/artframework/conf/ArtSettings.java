@@ -50,7 +50,7 @@ public class ArtSettings extends SettingsBase {
      * Defaults to true.
      * <br>
      * As an alternative you can subscribe to this {@link ArtContext} by using the
-     * {@link ArtContext#registerListener(Class, TriggerListener)} method. Then all actions defined in the
+     * {@link ArtContext#onTrigger(Class, TriggerListener)} method. Then all actions defined in the
      * config will be executed, unless {@link #isExecuteActions()} is false.
      *
      * @see #isExecuteActions()
