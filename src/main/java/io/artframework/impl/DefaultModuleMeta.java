@@ -38,13 +38,15 @@ public class DefaultModuleMeta implements ModuleMeta {
     String[] alias;
     String[] description;
     String[] dependencies;
+    String[] pluginDependencies;
 
     public DefaultModuleMeta(@NonNull String identifier,
                              @NonNull Class<?> moduleClass,
                              @Nullable String version,
                              @Nullable String[] alias,
                              @Nullable String[] description,
-                             @Nullable String[] dependencies) {
+                             @Nullable String[] dependencies,
+                             @Nullable String[] pluginDependencies) {
 
         this.identifier = identifier;
         this.moduleClass = moduleClass;
@@ -52,6 +54,7 @@ public class DefaultModuleMeta implements ModuleMeta {
         this.alias = alias == null ? new String[0] : alias;
         this.description = description == null ? new String[0] : description;
         this.dependencies = dependencies == null ? new String[0] : dependencies;
+        this.pluginDependencies = pluginDependencies == null ? new String[0] : pluginDependencies;
     }
 
     public DefaultModuleMeta(@NonNull Class<?> moduleClass,
@@ -62,7 +65,8 @@ public class DefaultModuleMeta implements ModuleMeta {
                 art.version(),
                 art.alias(),
                 art.description(),
-                depends == null ? null : depends.value()
+                depends == null ? null : depends.modules(),
+                depends == null ? null : depends.plugins()
         );
     }
 }

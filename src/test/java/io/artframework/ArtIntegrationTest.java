@@ -278,7 +278,7 @@ public class ArtIntegrationTest {
                     players[i] = player;
                 }
 
-                CombinedResult result = context.execute(players);
+                CombinedResult result = context.execute((Object[]) players);
 
                 assertThat(result.success()).isTrue();
                 assertThat(players).extracting(Player::getHealth)
