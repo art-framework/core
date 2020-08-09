@@ -38,8 +38,8 @@ public final class ReflectionUtil {
     private static final Pattern QUOTED_STRING_ARRAY = Pattern.compile("^(\"(?<quoted>.*?)\")?(?<value>.*?)?,(?<rest>.*)$");
 
     @SuppressWarnings("rawtypes")
-    public static Class getTypeArgument(Object object, int position) {
-        Type genericSuperclass = object.getClass().getGenericSuperclass();
+    public static Class getTypeArgument(@NonNull Object object, int position) {
+        Type genericSuperclass = object instanceof Class ? ((Class) object).getGenericSuperclass() : object.getClass().getGenericSuperclass();
         return ((Class) ((ParameterizedType) genericSuperclass).getActualTypeArguments()[position]);
     }
 

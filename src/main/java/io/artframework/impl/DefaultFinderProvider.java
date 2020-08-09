@@ -17,10 +17,7 @@
 package io.artframework.impl;
 
 import com.google.common.collect.ImmutableList;
-import io.artframework.AbstractProvider;
-import io.artframework.Configuration;
-import io.artframework.Finder;
-import io.artframework.FinderProvider;
+import io.artframework.*;
 import lombok.NonNull;
 
 import java.util.Collection;
@@ -29,24 +26,24 @@ import java.util.Set;
 
 public class DefaultFinderProvider extends AbstractProvider implements FinderProvider {
 
-    private final Set<Finder<?, ?>> finders = new HashSet<>();
+    private final Set<Finder> finders = new HashSet<>();
 
     public DefaultFinderProvider(@NonNull Configuration configuration) {
         super(configuration);
 
-        for (Finder<?, ?> defaultFinder : Finder.defaults(configuration)) {
+        for (Finder defaultFinder : Finder.defaults(configuration)) {
             add(defaultFinder);
         }
     }
 
     @Override
-    public <TResult, TError> FinderProvider add(Finder<TResult, TError> finder) {
+    public FinderProvider add(Finder finder) {
         finders.add(finder);
         return this;
     }
 
     @Override
-    public <TResult, TError> FinderProvider remove(Finder<TResult, TError> finder) {
+    public FinderProvider remove(Finder finder) {
         finders.remove(finder);
         return this;
     }
@@ -58,7 +55,7 @@ public class DefaultFinderProvider extends AbstractProvider implements FinderPro
     }
 
     @Override
-    public Collection<Finder<?, ?>> all() {
+    public Collection<Finder> all() {
         return ImmutableList.copyOf(finders);
     }
 }

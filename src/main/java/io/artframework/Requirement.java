@@ -36,7 +36,7 @@ import lombok.NonNull;
  * @see Trigger
  */
 @FunctionalInterface
-public interface Requirement<TTarget> extends ArtObject {
+public interface Requirement<TTarget> extends ArtObject, ResultCreator {
 
     /**
      * Tests if this requirement should filter {@link Action}s or {@link Trigger}s for the given target.

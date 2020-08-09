@@ -17,6 +17,7 @@
 package io.artframework.finder;
 
 import com.google.common.collect.ImmutableList;
+import io.artframework.ArtObjectError;
 import io.artframework.FinderResult;
 import lombok.Getter;
 import lombok.experimental.Accessors;
@@ -27,12 +28,12 @@ import java.util.function.Consumer;
 
 @Getter
 @Accessors(fluent = true)
-public abstract class AbstractFinderResult<TResult, TError> implements FinderResult<TResult, TError> {
+public abstract class AbstractFinderResult<TResult> implements FinderResult<TResult> {
 
     private final Collection<TResult> results;
-    private final Collection<TError> errors;
+    private final Collection<ArtObjectError> errors;
 
-    protected AbstractFinderResult(Collection<TResult> results, Collection<TError> errors) {
+    protected AbstractFinderResult(Collection<TResult> results, Collection<ArtObjectError> errors) {
         this.results = ImmutableList.copyOf(results);
         this.errors = ImmutableList.copyOf(errors);
     }
@@ -43,18 +44,18 @@ public abstract class AbstractFinderResult<TResult, TError> implements FinderRes
     }
 
     @Override
-    public Collection<TError> errors() {
+    public Collection<ArtObjectError> errors() {
         return errors;
     }
 
     @Override
-    public final FinderResult<TResult, TError> forEachResult(Consumer<TResult> consumer) {
+    public final FinderResult<TResult> forEachResult(Consumer<TResult> consumer) {
         results().forEach(consumer);
         return this;
     }
 
     @Override
-    public final FinderResult<TResult, TError> forEachError(Consumer<TError> consumer) {
+    public final FinderResult<TResult> forEachError(Consumer<ArtObjectError> consumer) {
         errors().forEach(consumer);
         return this;
     }

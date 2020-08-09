@@ -26,7 +26,7 @@ import java.util.Collection;
  * Use it to register your ART or to retrieve registered implementations for a given identifier.
  * <br>
  * You can also scan a path or JAR file and automatically register all ART that is found.
- * Use the {@link #find()} and the {@link Finder} to find specific ART in your files
+ * Use the {@link #find()} and the {@link AbstractFinder} to find specific ART in your files
  * and load the {@link FinderResult} with the {@link FinderResult#load(Configuration)} ()} method.
  * <br>
  * By default the ART-Framework will scan the whole classpath. You can disable this by
@@ -39,11 +39,11 @@ public interface ArtProvider extends Provider {
     }
 
     /**
-     * Gets the {@link Finder} to find {@link ArtObject}s inside your
+     * Gets the {@link AbstractFinder} to find {@link ArtObject}s inside your
      * classpath or file tree. Use the {@link FinderResult} to register
      * the found art objects with the {@link ArtProvider}.
      *
-     * @return The {@link Finder} to find {@link ArtObject}s in your filesystem and classpath.
+     * @return The {@link AbstractFinder} to find {@link ArtObject}s in your filesystem and classpath.
      */
     default FinderProvider find() {
         return configuration().finder();

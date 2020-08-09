@@ -21,12 +21,12 @@ public class ArtMetaDataException extends ArtException {
     private final ArtObjectError error;
 
     public ArtMetaDataException(ArtObjectError error, Throwable cause) {
-        super(error.getMessage(), cause);
+        super(error.message(), cause);
         this.error = error;
     }
 
     public ArtMetaDataException(ArtObjectError error) {
-        super(error.getMessage());
+        super(error.message());
         this.error = error;
     }
 

@@ -16,5 +16,5 @@
 
 package io.artframework;
 
-public interface ArtObject extends ResultCreator {
+public interface ArtObject {
 }
