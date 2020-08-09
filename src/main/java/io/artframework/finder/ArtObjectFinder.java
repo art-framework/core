@@ -23,57 +23,62 @@ import io.artframework.util.FileUtil;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
 
-public final class ArtObjectFinder extends AbstractScope implements Finder<ArtObjectMeta<?>, ArtObjectError> {
+public final class ArtObjectFinder extends AbstractFinder {
 
     public ArtObjectFinder(Configuration configuration) {
         super(configuration);
     }
 
     @Override
-    public ArtObjectFinderResult findAllIn(File file, Predicate<File> predicate) {
-
-        if (!file.mkdirs()) {
-            return ArtObjectFinderResult.empty();
-        }
-
-        final List<Class<? extends ArtObject>> classes = new ArrayList<>();
-
-        if (file.isDirectory()) {
-            for (File f : file.listFiles()) {
-                if (f.isFile() && predicate.test(f)) {
-                    classes.addAll(FileUtil.findClasses(configuration().classLoader(), f, ArtObject.class));
-                }
-            }
-        } else if (file.isFile() && predicate.test(file)) {
-            classes.addAll(FileUtil.findClasses(configuration().classLoader(), file, ArtObject.class));
-        }
+    protected ArtObjectFinderResult findAllIn(File... files) {
 
         final List<ArtObjectMeta<?>> artObjectMetas = new ArrayList<>();
         final List<ArtObjectError> errors = new ArrayList<>();
 
-        for (Class<? extends ArtObject> artClass : classes) {
-            if (Trigger.class.isAssignableFrom(artClass)) {
-                for (Method method : artClass.getDeclaredMethods()) {
-                    if (method.isAnnotationPresent(ART.class)) {
+        Arrays.stream(files)
+                .flatMap(file -> FileUtil.findClasses(configuration().classLoader(), file, ArtObject.class).stream())
+                .forEach(artClass -> {
+                    if (Trigger.class.isAssignableFrom(artClass)) {
+                        for (Method method : artClass.getDeclaredMethods()) {
+                            if (method.isAnnotationPresent(ART.class)) {
+                                try {
+                                    artObjectMetas.add(ArtObjectMeta.of(artClass, method));
+                                } catch (ArtMetaDataException e) {
+                                    errors.add(e.error());
+                                }
+                            }
+                        }
+                    } else {
                         try {
-                            artObjectMetas.add(ArtObjectMeta.of(artClass, method));
+                            artObjectMetas.add(ArtObjectMeta.of(artClass));
                         } catch (ArtMetaDataException e) {
                             errors.add(e.error());
                         }
                     }
-                }
-            } else {
-                try {
-                    artObjectMetas.add(ArtObjectMeta.of(artClass));
-                } catch (ArtMetaDataException e) {
-                    errors.add(e.error());
-                }
-            }
-        }
+                });
 
         return new ArtObjectFinderResult(artObjectMetas, errors);
+    }
+
+    public static final class ArtObjectFinderResult extends AbstractFinderResult<ArtObjectMeta<?>> {
+
+        public static ArtObjectFinderResult empty() {
+            return new ArtObjectFinderResult(new ArrayList<>(), new ArrayList<>());
+        }
+
+        public ArtObjectFinderResult(Collection<ArtObjectMeta<?>> artObjectMetas, Collection<ArtObjectError> artObjectErrors) {
+            super(artObjectMetas, artObjectErrors);
+        }
+
+        @Override
+        public FinderResult<ArtObjectMeta<?>> load(Configuration configuration) {
+
+            configuration.art().addAll(results());
+            return this;
+        }
     }
 }

@@ -41,7 +41,7 @@ import java.util.Optional;
  *
  * @param <TTarget> type of the underlying target
  */
-public interface Target<TTarget> {
+public interface Target<TTarget> extends ArtObject {
 
     /**
      * Wraps the given target object into a {@link Target}.

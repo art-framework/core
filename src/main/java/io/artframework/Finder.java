@@ -17,21 +17,24 @@
 package io.artframework;
 
 import io.artframework.finder.ArtObjectFinder;
+import io.artframework.finder.TargetFinder;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.function.Predicate;
 
-public interface Finder<TResult, TError> extends Scope {
+public interface Finder extends Scope {
 
-    static Finder<?, ?>[] defaults(Configuration configuration) {
-        return new ArtObjectFinder[]{
-                new ArtObjectFinder(configuration)
+    static Finder[] defaults(Configuration configuration) {
+        return new Finder[]{
+                new ArtObjectFinder(configuration),
+                new TargetFinder(configuration)
         };
     }
 
-    default FinderResult<TResult, TError> findAllIn(File file) {
-        return findAllIn(file, f -> true);
+    default FinderResult<?> findAllIn(Path path) {
+        return findAllIn(path, file -> true);
     }
 
-    FinderResult<TResult, TError> findAllIn(File file, Predicate<File> predicate);
+    FinderResult<?> findAllIn(Path path, Predicate<File> predicate);
 }

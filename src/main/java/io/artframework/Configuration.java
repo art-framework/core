@@ -154,7 +154,7 @@ public interface Configuration extends Serializable, Cloneable {
     ArtModuleProvider modules();
 
     /**
-     * Use the {@link FinderProvider} to register your {@link Finder}s.
+     * Use the {@link FinderProvider} to register your {@link AbstractFinder}s.
      *
      * @return the implementing {@link FinderProvider}
      */
@@ -277,7 +277,7 @@ public interface Configuration extends Serializable, Cloneable {
 
     /**
      * Provides an alternate class loader that should be used when loading additional classes.
-     * For example in a {@link Finder}.
+     * For example in a {@link AbstractFinder}.
      *
      * @param classLoader the class loader to use
      * @return this {@link Configuration}

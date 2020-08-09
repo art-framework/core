@@ -35,7 +35,7 @@ import lombok.NonNull;
  *                  This could be a player, entity or anything as long as there is a trigger for it.
  */
 @FunctionalInterface
-public interface Action<TTarget> extends ArtObject {
+public interface Action<TTarget> extends ArtObject, ResultCreator {
 
     /**
      * Called when the action is executed.

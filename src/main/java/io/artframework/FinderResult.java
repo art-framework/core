@@ -16,18 +16,30 @@
 
 package io.artframework;
 
+import io.artframework.finder.AbstractFinderResult;
+
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Consumer;
 
 /**
  * Contains all result objects and errors that were found during a find operation with a finder.
  * <p>
- * Each finder result should have a corresponding {@link Finder} implementation that produces the result.
+ * Each finder result should have a corresponding {@link AbstractFinder} implementation that produces the result.
  * <p>
  * <h4>Implementation notice</h4>
  * The underlying result must be immutable and should only be directly produced by the corresponding finder.
  */
-public interface FinderResult<TResult, TError> extends Iterable<TResult> {
+public interface FinderResult<TResult> extends Iterable<TResult> {
+
+    static FinderResult<?> empty() {
+        return new AbstractFinderResult<Object>(new ArrayList<>(), new ArrayList<>()) {
+            @Override
+            public FinderResult<Object> load(Configuration configuration) {
+                return this;
+            }
+        };
+    }
 
     /**
      * Loads all results into the given configuration instance.
@@ -37,7 +49,7 @@ public interface FinderResult<TResult, TError> extends Iterable<TResult> {
      * @param configuration the configuration instance to load the results into
      * @return this finder result
      */
-    FinderResult<TResult, TError> load(Configuration configuration);
+    FinderResult<TResult> load(Configuration configuration);
 
     /**
      * Returns a list of all classes excluding any classes that had errors.
@@ -54,12 +66,12 @@ public interface FinderResult<TResult, TError> extends Iterable<TResult> {
      * @param consumer the result handler
      * @return this result
      */
-    FinderResult<TResult, TError> forEachResult(Consumer<TResult> consumer);
+    FinderResult<TResult> forEachResult(Consumer<TResult> consumer);
 
     /**
      * @return a list of all errors that occurred during the find operation
      */
-    Collection<TError> errors();
+    Collection<ArtObjectError> errors();
 
     /**
      * Gives the option to handle the errors in a fluent syntax style.
@@ -69,5 +81,5 @@ public interface FinderResult<TResult, TError> extends Iterable<TResult> {
      * @param consumer the error handler
      * @return this result
      */
-    FinderResult<TResult, TError> forEachError(Consumer<TError> consumer);
+    FinderResult<TResult> forEachError(Consumer<ArtObjectError> consumer);
 }

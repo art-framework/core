@@ -19,6 +19,7 @@ package io.artframework;
 import io.artframework.impl.DefaultFinderProvider;
 
 import java.io.File;
+import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -26,7 +27,7 @@ import java.util.stream.Collectors;
 /**
  * Provides the option to register various finder implementations that can load different parts of the art-framework.
  * <p>
- * Implement the {@link Finder} and {@link FinderResult} interface to create your own finders
+ * Implement the {@link AbstractFinder} and {@link FinderResult} interface to create your own finders
  * and then register them with this provider.
  */
 public interface FinderProvider extends Provider {
@@ -49,11 +50,9 @@ public interface FinderProvider extends Provider {
      * Nothing will happen if the finder instance has already been added to this provider.
      *
      * @param finder the finder to register
-     * @param <TResult> the type of result the finder returns
-     * @param <TError> the type of errors the finder returns
      * @return this finder provider
      */
-    <TResult, TError> FinderProvider add(Finder<TResult, TError> finder);
+    FinderProvider add(Finder finder);
 
     /**
      * Adds the given finder from this provider if it exists.
@@ -61,11 +60,9 @@ public interface FinderProvider extends Provider {
      * Nothing will happen if the finder instance has not been added to this provider.
      *
      * @param finder the finder to remove
-     * @param <TResult> the type of result the finder returns
-     * @param <TError> the type of errors the finder returns
      * @return this finder provider
      */
-    <TResult, TError> FinderProvider remove(Finder<TResult, TError> finder);
+    FinderProvider remove(Finder finder);
 
     /**
      * Removes all finders from this provider.
@@ -77,33 +74,33 @@ public interface FinderProvider extends Provider {
     /**
      * @return all finders that are currently registered in this provider
      */
-    Collection<Finder<?, ?>> all();
+    Collection<Finder> all();
 
     /**
      * Aggregates the find results of all finders registered in this provider.
      * <p>
-     * This will call the {@link Finder#findAllIn(File)} method on all registered finders and return all results.
+     * This will call the {@link Finder#findAllIn(Path)} method on all registered finders and return all results.
      *
-     * @param file the path or file to search in
+     * @param path the path or file to search in
      * @return a list of all finder results. this is never null but may be empty.
      */
-    default Collection<FinderResult<?, ?>> findAllIn(File file) {
+    default Collection<FinderResult<?>> findAllIn(Path path) {
         return all().stream()
-                .map(finder -> finder.findAllIn(file))
+                .map(finder -> finder.findAllIn(path))
                 .collect(Collectors.toList());
     }
 
     /**
      * Aggregates the find results of all finders registered in this provider and calls the load method on all results.
      * <p>
-     * This will call the {@link Finder#findAllIn(File)} method on all registered finders
+     * This will call the {@link Finder#findAllIn(Path)} method on all registered finders
      * and then call {@link FinderResult#load(Configuration)} on all of them returning the result.
      *
-     * @param file the path or file to search in
+     * @param path the path or file to search in
      * @return a list of all finder results. this is never null but may be empty.
      */
-    default Collection<FinderResult<?, ?>> findAllAndLoadIn(File file) {
-        Collection<FinderResult<?, ?>> results = findAllIn(file);
+    default Collection<FinderResult<?>> findAllAndLoadIn(Path path) {
+        Collection<FinderResult<?>> results = findAllIn(path);
         results.forEach(result -> result.load(configuration()));
         return results;
     }
@@ -112,15 +109,15 @@ public interface FinderProvider extends Provider {
      * Aggregates the find results of all finders registered in this provider
      * filtering the files based on the given predicate.
      * <p>
-     * This will call the {@link Finder#findAllIn(File)} method on all registered finders and return all results.
+     * This will call the {@link Finder#findAllIn(Path)} method on all registered finders and return all results.
      *
-     * @param file the path or file to search in
+     * @param path the path or file to search in
      * @param predicate the predicate used to filter the files
      * @return a list of all finder results. this is never null but may be empty.
      */
-    default Collection<FinderResult<?, ?>> findAllIn(File file, Predicate<File> predicate) {
+    default Collection<FinderResult<?>> findAllIn(Path path, Predicate<File> predicate) {
         return all().stream()
-                .map(finder -> finder.findAllIn(file, predicate))
+                .map(finder -> finder.findAllIn(path, predicate))
                 .collect(Collectors.toList());
     }
 
@@ -128,15 +125,15 @@ public interface FinderProvider extends Provider {
      * Aggregates the find results of all finders registered in this provider and calls the load method on all results
      * filtering the files based on the given predicate.
      * <p>
-     * This will call the {@link Finder#findAllIn(File)} method on all registered finders
+     * This will call the {@link Finder#findAllIn(Path)} method on all registered finders
      * and then call {@link FinderResult#load(Configuration)} on all of them returning the result.
      *
-     * @param file the path or file to search in
+     * @param path the path or file to search in
      * @param predicate the predicate used to filter the files
      * @return a list of all finder results. this is never null but may be empty.
      */
-    default Collection<FinderResult<?, ?>> findAllAndLoadIn(File file, Predicate<File> predicate) {
-        Collection<FinderResult<?, ?>> results = findAllIn(file, predicate);
+    default Collection<FinderResult<?>> findAllAndLoadIn(Path path, Predicate<File> predicate) {
+        Collection<FinderResult<?>> results = findAllIn(path, predicate);
         results.forEach(result -> result.load(configuration()));
         return results;
     }
