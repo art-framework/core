@@ -24,6 +24,7 @@ import io.artframework.annotations.ART;
 import io.artframework.annotations.Depends;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -106,6 +107,7 @@ class DefaultArtModuleProviderTest {
 
         @SneakyThrows
         @Test
+        @Disabled
         @DisplayName("should throw if a module has cyclic dependencies")
         void shouldThrowIfCyclicDependenciesExist() {
 
