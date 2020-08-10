@@ -409,7 +409,7 @@ public class ArtIntegrationTest {
 
                 ArtContext artContext = ART.builder().load(Arrays.asList(
                         "@move"
-                )).build();
+                )).build().enableTrigger();
 
                 TriggerListener<Player> listener = spy(new TriggerListener<Player>() {
                     @Override
