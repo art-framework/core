@@ -1,3 +1,10 @@
+# [1.0.0-beta.5](https://github.com/art-framework/art-core/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2020-08-10)
+
+
+### Features
+
+* **modules:** any class can now be registered as module ([a9bac73](https://github.com/art-framework/art-core/commit/a9bac7333ba67d875e0c0404c458321aa5ee0521))
+
 # [1.0.0-beta.4](https://github.com/art-framework/art-core/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2020-08-10)
 
 
