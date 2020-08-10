@@ -1,3 +1,22 @@
+# [1.0.0-beta.4](https://github.com/art-framework/art-core/compare/v1.0.0-beta.3...v1.0.0-beta.4) (2020-08-10)
+
+
+### Bug Fixes
+
+* **release:** update yarn.lock and remove husky ([9ccc838](https://github.com/art-framework/art-core/commit/9ccc83853abd3dcd0569da03b99411481ccbac43))
+* only calc module meta equals with identifier and class ([5c91b1f](https://github.com/art-framework/art-core/commit/5c91b1f81e6994da5fd485003f9acd2676040507))
+
+
+### Features
+
+* add cyclic dependency resolver and module resolution ([33d4270](https://github.com/art-framework/art-core/commit/33d4270a66fb525b115c670bcad54cd274fbf3c7))
+* add finder provider and art object finder ([2441f70](https://github.com/art-framework/art-core/commit/2441f707345b4425e7d1495df3d555ab5faf8611))
+* add module interface and annotations ([bb79800](https://github.com/art-framework/art-core/commit/bb79800e4d9f07bebfe42194c92e287429718dc1))
+* add module interface and annotations ([b1e995f](https://github.com/art-framework/art-core/commit/b1e995fd95e2943414a1947f99f54e86165f57a1))
+* add target and artobject finder ([5200954](https://github.com/art-framework/art-core/commit/5200954902fd987e3204cd365e554cfeb2f69ab0))
+* add the option to use a custom module resolver ([deb99a7](https://github.com/art-framework/art-core/commit/deb99a7a38e3b5eeb213aa74bcf3b4abe89c65a8))
+* allow adding targets to the current execution context ([ef9c4a8](https://github.com/art-framework/art-core/commit/ef9c4a82b5440787c36e139aaabea63437f73875))
+
 # [1.0.0-beta.3](https://github.com/art-framework/art-core/compare/v1.0.0-beta.2...v1.0.0-beta.3) (2020-08-03)
 
 
