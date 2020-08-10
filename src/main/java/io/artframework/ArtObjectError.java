@@ -32,15 +32,15 @@ import java.util.Optional;
 @Accessors(fluent = true)
 public class ArtObjectError {
 
-    public static ArtObjectError of(String message, Reason reason, Class<? extends ArtObject> artObject) {
+    public static ArtObjectError of(String message, Reason reason, Class<?> artObject) {
         return of(message, reason, artObject, null);
     }
 
-    public static ArtObjectError of(String message, Reason reason, Class<? extends ArtObject> artObject, @Nullable Exception exception) {
+    public static ArtObjectError of(String message, Reason reason, Class<?> artObject, @Nullable Exception exception) {
         return new ArtObjectError(message, reason, artObject, exception);
     }
 
-    public static ArtObjectError of(Reason reason, Class<? extends ArtObject> artObject, @NonNull Exception exception) {
+    public static ArtObjectError of(Reason reason, Class<?> artObject, @NonNull Exception exception) {
         return new ArtObjectError(exception.getMessage(), reason, artObject, exception);
     }
 
@@ -56,7 +56,7 @@ public class ArtObjectError {
     /**
      * The actual class of the {@link ArtObject} that produced the error.
      */
-    Class<? extends ArtObject> artObject;
+    Class<?> artObject;
     /**
      * Returns the source file of the underlying {@link ArtObject}.
      * This is either a class file in a path or a JAR file containing the class.
@@ -67,7 +67,7 @@ public class ArtObjectError {
      */
     Exception exception;
 
-    private ArtObjectError(String message, Reason reason, Class<? extends ArtObject> artObject, @Nullable Exception exception) {
+    private ArtObjectError(String message, Reason reason, Class<?> artObject, @Nullable Exception exception) {
         this.message = message;
         this.reason = reason;
         this.artObject = artObject;

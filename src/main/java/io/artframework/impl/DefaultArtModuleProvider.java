@@ -16,9 +16,16 @@
 
 package io.artframework.impl;
 
-import io.artframework.*;
-import io.artframework.annotations.ART;
-import io.artframework.annotations.Depends;
+import io.artframework.ART;
+import io.artframework.AbstractProvider;
+import io.artframework.ArtMetaDataException;
+import io.artframework.ArtModule;
+import io.artframework.ArtModuleDependencyResolver;
+import io.artframework.ArtModuleProvider;
+import io.artframework.Configuration;
+import io.artframework.ModuleMeta;
+import io.artframework.ModuleRegistrationException;
+import io.artframework.ModuleState;
 import io.artframework.events.ModuleDisabledEvent;
 import io.artframework.events.ModuleEnabledEvent;
 import io.artframework.events.ModuleRegisteredEvent;
@@ -29,12 +36,22 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DefaultArtModuleProvider extends AbstractProvider implements ArtModuleProvider {
 
-    final Map<ModuleMeta, ModuleInformation> modules = new HashMap<>();
+    final Map<Class<?>, ModuleInformation> modules = new HashMap<>();
     private CycleSearch<ModuleMeta> cycleSearcher = new CycleSearch<>(new boolean[0][0], new ModuleMeta[0]);
     private ArtModuleDependencyResolver resolver;
 
@@ -62,6 +79,14 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
     }
 
     @Override
+    public ArtModuleProvider register(@NonNull Class<?> moduleClass) throws ModuleRegistrationException {
+
+        registerModule(moduleClass);
+
+        return this;
+    }
+
+    @Override
     public ArtModuleProvider load(@NonNull ArtModule module) throws ModuleRegistrationException {
 
         enableModule(registerModule(module));
@@ -70,30 +95,64 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
     }
 
     @Override
-    public ArtModuleProvider unload(@NonNull ArtModule module) {
+    public ArtModuleProvider load(@NonNull Class<?> moduleClass) throws ModuleRegistrationException {
 
-        getModuleMeta(module).ifPresent(moduleMeta -> {
-            ModuleInformation moduleInformation = modules.remove(moduleMeta);
-            if (moduleInformation != null) {
-                disableModule(moduleInformation);
-            }
-        });
+        enableModule(registerModule(moduleClass));
 
         return this;
     }
 
-    private ModuleInformation registerModule(ArtModule module) throws ModuleRegistrationException {
-        Optional<ModuleMeta> meta = getModuleMeta(module);
-        if (meta.isPresent()) {
-            return registerModule(meta.get(), module);
+    @Override
+    public ArtModuleProvider unload(@NonNull ArtModule module) {
+
+        ModuleInformation information = modules.remove(module.getClass());
+        if (information != null) {
+            disableModule(information);
         }
 
-        throw new ModuleRegistrationException(null, ModuleState.INVALID_MODULE,
-                "The module class " + module.getClass().getSimpleName() + " is missing the required @ART annotation.");
+        return this;
     }
 
-    private ModuleInformation registerModule(ModuleMeta moduleMeta, ArtModule module) throws ModuleRegistrationException {
-        Optional<ModuleMeta> existingModule = modules.keySet().stream()
+    @SuppressWarnings("unchecked")
+    private ModuleInformation registerModule(Class<?> moduleClass) throws ModuleRegistrationException {
+
+        try {
+            ModuleMeta moduleMeta = ModuleMeta.of(moduleClass);
+
+            if (ArtModule.class.isAssignableFrom(moduleClass)) {
+                try {
+                    Constructor<? extends ArtModule> constructor = (Constructor<? extends ArtModule>) moduleClass.getDeclaredConstructor();
+                    constructor.setAccessible(true);
+                    ArtModule artModule = constructor.newInstance();
+                    return registerModule(moduleMeta, artModule);
+                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    throw new ModuleRegistrationException(
+                            moduleMeta,
+                            ModuleState.INVALID_MODULE,
+                            "Unable to create a new instance of the ArtModule " + moduleClass.getSimpleName() + ". " +
+                                    "Does it have a parameterless public constructor?",
+                            e
+                    );
+                }
+            } else {
+                return registerModule(moduleMeta, null);
+            }
+        } catch (ArtMetaDataException e) {
+            throw new ModuleRegistrationException(null, ModuleState.INVALID_MODULE, e);
+        }
+    }
+
+    private ModuleInformation registerModule(ArtModule module) throws ModuleRegistrationException {
+
+        try {
+            return registerModule(ModuleMeta.of(module.getClass()), module);
+        } catch (ArtMetaDataException e) {
+            throw new ModuleRegistrationException(null, ModuleState.INVALID_MODULE, e);
+        }
+    }
+
+    private ModuleInformation registerModule(ModuleMeta moduleMeta, @Nullable ArtModule module) throws ModuleRegistrationException {
+        Optional<ModuleMeta> existingModule = modules.values().stream().map(ModuleInformation::moduleMeta)
                 .filter(meta -> meta.identifier().equals(moduleMeta.identifier()) && !meta.moduleClass().equals(moduleMeta.moduleClass())).findAny();
         if (existingModule.isPresent()) {
             throw new ModuleRegistrationException(moduleMeta, ModuleState.DUPLICATE_MODULE,
@@ -101,12 +160,12 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
         }
 
         ModuleInformation moduleInformation;
-        if (modules.containsKey(moduleMeta)) {
-            moduleInformation = this.modules.get(moduleMeta);
+        if (modules.containsKey(moduleMeta.moduleClass())) {
+            moduleInformation = this.modules.get(moduleMeta.moduleClass());
         } else {
             moduleInformation = updateModuleCache(new ModuleInformation(moduleMeta, module).state(ModuleState.REGISTERED));
-            io.artframework.ART.callEvent(new ModuleRegisteredEvent(moduleMeta, module));
-            cycleSearcher = CycleSearch.of(modules.keySet());
+            ART.callEvent(new ModuleRegisteredEvent(moduleMeta));
+            cycleSearcher = CycleSearch.of(modules.values().stream().map(ModuleInformation::moduleMeta).collect(Collectors.toList()));
 
             Optional<List<ModuleMeta>> dependencyGraph = getDependencyGraph(moduleInformation);
             if (dependencyGraph.isPresent()) {
@@ -140,9 +199,9 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
         }
 
         try {
-            moduleInformation.module().onEnable(configuration());
+            moduleInformation.module().ifPresent(artModule -> artModule.onEnable(configuration()));
             updateModuleCache(moduleInformation.state(ModuleState.ENABLED));
-            io.artframework.ART.callEvent(new ModuleEnabledEvent(moduleInformation.moduleMeta(), moduleInformation.module()));
+            ART.callEvent(new ModuleEnabledEvent(moduleInformation.moduleMeta()));
         } catch (Exception e) {
             updateModuleCache(moduleInformation.state(ModuleState.ERROR));
             throw new ModuleRegistrationException(moduleInformation.moduleMeta(), ModuleState.ERROR,
@@ -152,16 +211,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
 
     private void disableModule(ModuleInformation module) {
 
-        io.artframework.ART.callEvent(new ModuleDisabledEvent(module.moduleMeta(), module.module()));
-    }
-
-    private Optional<ModuleMeta> getModuleMeta(@NonNull ArtModule module) {
-
-        if (!module.getClass().isAnnotationPresent(ART.class)) {
-            return Optional.empty();
-        }
-
-        return Optional.of(ModuleMeta.of(module.getClass(), module.getClass().getAnnotation(ART.class), module.getClass().getAnnotation(Depends.class)));
+        ART.callEvent(new ModuleDisabledEvent(module.moduleMeta()));
     }
 
     private Optional<List<ModuleMeta>> getDependencyGraph(ModuleInformation information) {
@@ -233,7 +283,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
     }
 
     private ModuleInformation updateModuleCache(ModuleInformation moduleInformation) {
-        this.modules.put(moduleInformation.moduleMeta(), moduleInformation);
+        this.modules.put(moduleInformation.moduleMeta().moduleClass(), moduleInformation);
         return moduleInformation;
     }
 
@@ -243,7 +293,12 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
     static class ModuleInformation {
 
         private final ModuleMeta moduleMeta;
-        private final ArtModule module;
+        @Nullable private final ArtModule module;
         private ModuleState state;
+
+        public Optional<ArtModule> module() {
+
+            return Optional.ofNullable(module);
+        }
     }
 }

@@ -16,16 +16,12 @@
 
 package io.artframework.impl;
 
-import com.google.common.base.Strings;
 import io.artframework.ModuleMeta;
-import io.artframework.annotations.ART;
-import io.artframework.annotations.Depends;
+import io.artframework.annotations.Module;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.experimental.Accessors;
-
-import javax.annotation.Nullable;
 
 @Value
 @Accessors(fluent = true)
@@ -33,40 +29,31 @@ import javax.annotation.Nullable;
 public class DefaultModuleMeta implements ModuleMeta {
 
     String identifier;
+    String prefix;
     Class<?> moduleClass;
     String version;
-    String[] alias;
     String[] description;
     String[] dependencies;
-    String[] pluginDependencies;
 
-    public DefaultModuleMeta(@NonNull String identifier,
-                             @NonNull Class<?> moduleClass,
-                             @Nullable String version,
-                             @Nullable String[] alias,
-                             @Nullable String[] description,
-                             @Nullable String[] dependencies,
-                             @Nullable String[] pluginDependencies) {
+    DefaultModuleMeta(String identifier, String prefix, Class<?> moduleClass, String version, String[] description, String[] dependencies) {
 
         this.identifier = identifier;
+        this.prefix = prefix;
         this.moduleClass = moduleClass;
-        this.version = Strings.isNullOrEmpty(version) ? "1.0.0" : version;
-        this.alias = alias == null ? new String[0] : alias;
-        this.description = description == null ? new String[0] : description;
-        this.dependencies = dependencies == null ? new String[0] : dependencies;
-        this.pluginDependencies = pluginDependencies == null ? new String[0] : pluginDependencies;
+        this.version = version;
+        this.description = description;
+        this.dependencies = dependencies;
     }
 
     public DefaultModuleMeta(@NonNull Class<?> moduleClass,
-                             @NonNull ART art,
-                             @Nullable Depends depends) {
-        this(art.value(),
+                             @NonNull Module annotation) {
+        this(
+                annotation.value(),
+                annotation.prefix(),
                 moduleClass,
-                art.version(),
-                art.alias(),
-                art.description(),
-                depends == null ? null : depends.modules(),
-                depends == null ? null : depends.plugins()
+                annotation.version(),
+                annotation.description(),
+                annotation.dependencies()
         );
     }
 }

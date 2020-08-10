@@ -18,11 +18,10 @@ package io.artframework.impl;
 
 import io.artframework.ArtModule;
 import io.artframework.Configuration;
-import io.artframework.ModuleMeta;
 import io.artframework.ModuleRegistrationException;
-import io.artframework.annotations.ART;
-import io.artframework.annotations.Depends;
+import io.artframework.annotations.Module;
 import lombok.SneakyThrows;
+import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
@@ -30,8 +29,19 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.InstanceOfAssertFactories.optional;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @SuppressWarnings("ALL")
 class DefaultArtModuleProviderTest {
@@ -77,7 +87,7 @@ class DefaultArtModuleProviderTest {
 
             assertThatExceptionOfType(ModuleRegistrationException.class)
                     .isThrownBy(() -> provider.load(new MissingAnnotationModule()))
-                    .withMessageContaining("missing the required @ART annotation");
+                    .withMessageContaining("missing the required @Module annotation");
         }
 
         @Test
@@ -127,14 +137,34 @@ class DefaultArtModuleProviderTest {
             assertThatCode(() -> provider.register(module)).doesNotThrowAnyException();
             assertThat(provider.modules)
                     .hasSize(1)
-                    .extractingByKey(ModuleMeta.of(TestModule.class, TestModule.class.getAnnotation(ART.class), null))
+                    .extractingByKey(module.getClass())
                     .isNotNull()
                     .extracting(moduleInformation -> moduleInformation.moduleMeta().identifier(), DefaultArtModuleProvider.ModuleInformation::module)
-                    .contains("test", module);
+                    .contains("test", Optional.of(module));
+        }
+
+        @Test
+        @DisplayName("should register module that does not implement ArtModule")
+        void shouldRegisterRandomModule() {
+
+            assertThatCode(() -> provider.register(RandomModule.class)).doesNotThrowAnyException();
+            AbstractObjectAssert<?, DefaultArtModuleProvider.ModuleInformation> moduleAssert = assertThat(provider.modules)
+                    .hasSize(1)
+                    .extractingByKey(RandomModule.class)
+                    .isNotNull();
+
+            moduleAssert
+                    .extracting(moduleInformation -> moduleInformation.module())
+                    .asInstanceOf(optional(ArtModule.class))
+                    .isEmpty();
+            moduleAssert
+                    .extracting(DefaultArtModuleProvider.ModuleInformation::moduleMeta)
+                    .extracting(moduleMeta -> moduleMeta.identifier(), moduleMeta -> moduleMeta.moduleClass())
+                    .contains("foobar", RandomModule.class);
         }
     }
 
-    @ART("test")
+    @Module("test")
     static class TestModule implements ArtModule {
         @Override
         public void onEnable(Configuration configuration) {
@@ -147,7 +177,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ART("test")
+    @Module("test")
     static class DuplicateModule implements ArtModule {
 
         @Override
@@ -173,8 +203,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ART("foo")
-    @Depends(modules = "bar")
+    @Module(value = "foo", dependencies = "bar")
     static class FooModule implements ArtModule {
         @Override
         public void onEnable(Configuration configuration) {
@@ -187,7 +216,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ART("bar")
+    @Module("bar")
     static class BarModule implements ArtModule {
         @Override
         public void onEnable(Configuration configuration) {
@@ -200,8 +229,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ART("module 1")
-    @Depends(modules = {"module 2", "foo"})
+    @Module(value = "module 1", dependencies = {"module 2", "foo"})
     static class Module1 implements ArtModule {
 
         @Override
@@ -215,8 +243,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ART("module 2")
-    @Depends(modules = "module 3")
+    @Module(value = "module 2", dependencies = "module 3")
     static class Module2 implements ArtModule {
 
         @Override
@@ -230,8 +257,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ART("module 3")
-    @Depends(modules = "module 1")
+    @Module(value = "module 3", description = "module 1")
     static class Module3 implements ArtModule {
 
         @Override
@@ -243,5 +269,10 @@ class DefaultArtModuleProviderTest {
         public void onDisable(Configuration configuration) {
 
         }
+    }
+
+    @Module("foobar")
+    static class RandomModule {
+
     }
 }

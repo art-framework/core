@@ -16,12 +16,8 @@
 
 package io.artframework;
 
-import io.artframework.annotations.ART;
-import io.artframework.annotations.Depends;
+import io.artframework.annotations.Module;
 import io.artframework.impl.DefaultModuleMeta;
-import lombok.NonNull;
-
-import javax.annotation.Nullable;
 
 /**
  * The module meta provides meta information about a loaded module.
@@ -33,13 +29,20 @@ public interface ModuleMeta {
     /**
      * Creates new module meta by extracting the information from the given annotations.
      *
-     * @param art the art annotation of the module class
-     * @param depends the optional dependency annotation of the module class. can be null.
+     * @param moduleClass the class of the module meta data should be extracted from
      * @return a new default module meta instance
      */
-    static ModuleMeta of(Class<?> moduleClass, @NonNull ART art, @Nullable Depends depends) {
+    static ModuleMeta of(Class<?> moduleClass) throws ArtMetaDataException {
 
-        return new DefaultModuleMeta(moduleClass, art, depends);
+        if (!moduleClass.isAnnotationPresent(Module.class)) {
+            throw new ArtMetaDataException(ArtObjectError.of(
+                    moduleClass.getCanonicalName() + " is missing the required @Module annotation.",
+                    ArtObjectError.Reason.NO_ANNOTATION,
+                    moduleClass)
+            );
+        }
+
+        return new DefaultModuleMeta(moduleClass, moduleClass.getAnnotation(Module.class));
     }
 
     /**
@@ -47,12 +50,10 @@ public interface ModuleMeta {
      */
     String identifier();
 
-    Class<?> moduleClass();
-
     /**
-     * @return a list of aliases of the module
+     * @return the class of the module.
      */
-    String[] alias();
+    Class<?> moduleClass();
 
     /**
      * @return the description of the module

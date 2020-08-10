@@ -77,7 +77,7 @@ public final class ART {
      * Use this method to create and load an {@link ArtContext} from your config.
      * <br>
      * You can then use the {@link ArtContext} to invoke {@link Action}s by calling
-     * {@link ArtContext#execute(Target)} or to check for requirements by calling {@link ArtContext#test(Target)}.
+     * {@link ArtContext#execute(Target[])} or to check for requirements by calling {@link ArtContext#test(Target)}.
      * <br>
      * This is actually a shortcut to {@link ArtBuilderParser#parse(Object)}. You can also call the
      * builder directly ({@link #builder()}) and fine tune how you want to load and parse your ART.

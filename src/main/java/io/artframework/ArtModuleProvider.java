@@ -16,6 +16,7 @@
 
 package io.artframework;
 
+import io.artframework.annotations.Module;
 import io.artframework.impl.DefaultArtModuleProvider;
 import io.artframework.impl.DefaultConfiguration;
 import lombok.NonNull;
@@ -71,6 +72,24 @@ public interface ArtModuleProvider extends Provider {
     ArtModuleProvider register(@NonNull ArtModule module) throws ModuleRegistrationException;
 
     /**
+     * Registers the given class as a module with the provider.
+     * <p>
+     * This is used to load unrelated classes as modules without implementing the actual interface.
+     * The main use is to extract the @{@link Module} meta data annotation to extract additional information
+     * about the art classes located in the same JAR as the module.
+     * <p>
+     * Additionally if the class implements the {@link ArtModule} interface the provider will try to create an instance of it.
+     * If it does implement the ArtModule interface a parameterless public constructor must also be provided.
+     * <p>
+     * Use {@link #register(ArtModule)} if you already have an instance of your module, e.g. it was loaded as a plugin.
+     *
+     * @param moduleClass the class of the module
+     * @return this module provider
+     * @throws ModuleRegistrationException if the registration or instance creation of the module failed
+     */
+    ArtModuleProvider register(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
+
+    /**
      * Loads the given module into the art-framework configuration instance.
      * <p>
      * This will try to load the configuration of the module (if one is needed),
@@ -81,6 +100,20 @@ public interface ArtModuleProvider extends Provider {
      * @throws ModuleRegistrationException if the registration or enabling of the module or its child modules failed
      */
     ArtModuleProvider load(@NonNull ArtModule module) throws ModuleRegistrationException;
+
+    /**
+     * Tries to load the given module into the art-framework configuration instance.
+     * <p>
+     * This will first register the module class, if is not already registered, and then
+     * call the {@link ArtModule#onEnable(Configuration)} method if an instance of the module class was created.
+     * <p>
+     * If the class implements {@link ArtModule} then it also must provide a parameterless public constructor.
+     *
+     * @param moduleClass the class of the module
+     * @return this module provider
+     * @throws ModuleRegistrationException if the registration or instance creation of the module failed
+     */
+    ArtModuleProvider load(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
 
     /**
      * Unloads the given module from the art-framework configuration instance.

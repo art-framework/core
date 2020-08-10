@@ -16,7 +16,6 @@
 
 package io.artframework.events;
 
-import io.artframework.ArtModule;
 import io.artframework.ModuleMeta;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -27,7 +26,6 @@ import lombok.Value;
 public class ModuleDisabledEvent extends Event {
 
     ModuleMeta moduleMeta;
-    ArtModule module;
 
     ///
     /// Required Event internal HandlerList

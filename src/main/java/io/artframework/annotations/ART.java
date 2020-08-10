@@ -62,17 +62,4 @@ public @interface ART {
      * @return detailed description
      */
     String[] description() default {};
-
-    /**
-     * The version of your ART component.
-     * <p>
-     * This is completely optional, but can help your users in understading new features
-     * and breaking changes of your component.
-     * <p>
-     * You should use the semantic versioning schema to version your ART: https://semver.org/
-     * This means bumping the major version for every breaking change.
-     *
-     * @return the optional version of the component. Defaults to 1.0.0.
-     */
-    String version() default "1.0.0";
 }
