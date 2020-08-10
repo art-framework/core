@@ -1,3 +1,22 @@
+# [1.0.0-beta.7](https://github.com/art-framework/art-core/compare/v1.0.0-beta.6...v1.0.0-beta.7) (2020-08-10)
+
+
+### Bug Fixes
+
+* **trigger:** provide result creation methods ([29aeab3](https://github.com/art-framework/art-core/commit/29aeab315db7eea3fb69ffbd96423dbbe43f820a))
+
+
+### Features
+
+* register modules with annotations only ([c9d5573](https://github.com/art-framework/art-core/commit/c9d5573e35b75959dba748aff59c3a27e868c06f))
+
+
+### BREAKING CHANGES
+
+* removed the ArtModule interface and replaced it with the @ArtModule, @OnLoad, @OnEnable and @OnDisable annotations.
+
+Signed-off-by: Michael Reichenbach <michael@reichenbach.in>
+
 # [1.0.0-beta.6](https://github.com/art-framework/art-core/compare/v1.0.0-beta.5...v1.0.0-beta.6) (2020-08-10)
 
 
