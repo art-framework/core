@@ -16,32 +16,20 @@
 
 package io.artframework.impl;
 
-import io.artframework.ArtModule;
 import io.artframework.Configuration;
 import io.artframework.ModuleRegistrationException;
-import io.artframework.annotations.Module;
+import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.OnDisable;
+import io.artframework.annotations.OnEnable;
 import lombok.SneakyThrows;
 import org.assertj.core.api.AbstractObjectAssert;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.mockito.InOrder;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.InstanceOfAssertFactories.optional;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
 class DefaultArtModuleProviderTest {
@@ -65,8 +53,8 @@ class DefaultArtModuleProviderTest {
         @DisplayName("should not enable already enabled modules")
         void shouldNotLoadModuleIfAlreadyEnabled() {
 
-            provider.load(module);
-            provider.load(module);
+            provider.enable(module);
+            provider.enable(module);
 
             verify(module, times(1)).onEnable(any());
         }
@@ -75,9 +63,9 @@ class DefaultArtModuleProviderTest {
         @DisplayName("should throw if a module with the same identifier and different class exists")
         void shouldThrowIfDuplicateModuleExists() {
 
-            assertThatCode(() -> provider.load(module)).doesNotThrowAnyException();
+            assertThatCode(() -> provider.enable(module)).doesNotThrowAnyException();
             assertThatExceptionOfType(ModuleRegistrationException.class)
-                    .isThrownBy(() -> provider.load(new DuplicateModule()))
+                    .isThrownBy(() -> provider.enable(new DuplicateModule()))
                     .withMessageContaining("There is already a module named \"test\" registered");
         }
 
@@ -86,7 +74,7 @@ class DefaultArtModuleProviderTest {
         void shouldThrowIfModuleIsMissingAnnotation() {
 
             assertThatExceptionOfType(ModuleRegistrationException.class)
-                    .isThrownBy(() -> provider.load(new MissingAnnotationModule()))
+                    .isThrownBy(() -> provider.enable(new MissingAnnotationModule()))
                     .withMessageContaining("missing the required @Module annotation");
         }
 
@@ -95,7 +83,7 @@ class DefaultArtModuleProviderTest {
         void shouldThrowIfModuleHasMissingDependencies() {
 
             assertThatExceptionOfType(ModuleRegistrationException.class)
-                    .isThrownBy(() -> provider.load(new FooModule()))
+                    .isThrownBy(() -> provider.enable(new FooModule()))
                     .withMessageContaining("is missing the following dependencies: bar");
 
         }
@@ -108,7 +96,7 @@ class DefaultArtModuleProviderTest {
             FooModule fooModule = spy(new FooModule());
 
             assertThatCode(() -> provider.register(barModule)).doesNotThrowAnyException();
-            assertThatCode(() -> provider.load(fooModule)).doesNotThrowAnyException();
+            assertThatCode(() -> provider.enable(fooModule)).doesNotThrowAnyException();
 
             InOrder inOrder = inOrder(barModule, fooModule);
             inOrder.verify(barModule, times(1)).onEnable(any());
@@ -154,124 +142,120 @@ class DefaultArtModuleProviderTest {
                     .isNotNull();
 
             moduleAssert
-                    .extracting(moduleInformation -> moduleInformation.module())
-                    .asInstanceOf(optional(ArtModule.class))
-                    .isEmpty();
-            moduleAssert
                     .extracting(DefaultArtModuleProvider.ModuleInformation::moduleMeta)
                     .extracting(moduleMeta -> moduleMeta.identifier(), moduleMeta -> moduleMeta.moduleClass())
                     .contains("foobar", RandomModule.class);
         }
     }
 
-    @Module("test")
-    static class TestModule implements ArtModule {
-        @Override
+    @ArtModule("test")
+    static class TestModule {
+        @OnEnable
         public void onEnable(Configuration configuration) {
 
         }
 
-        @Override
+        @OnDisable
         public void onDisable(Configuration configuration) {
 
         }
     }
 
-    @Module("test")
-    static class DuplicateModule implements ArtModule {
+    @ArtModule("test")
+    static class DuplicateModule {
 
-        @Override
+        @OnEnable
         public void onEnable(Configuration configuration) {
 
         }
 
-        @Override
+        @OnDisable
         public void onDisable(Configuration configuration) {
 
         }
     }
 
-    static class MissingAnnotationModule implements ArtModule {
-        @Override
+    static class MissingAnnotationModule {
+        @OnEnable
         public void onEnable(Configuration configuration) {
 
         }
 
-        @Override
+        @OnDisable
         public void onDisable(Configuration configuration) {
 
         }
     }
 
-    @Module(value = "foo", dependencies = "bar")
-    static class FooModule implements ArtModule {
-        @Override
+    @ArtModule(value = "foo", dependencies = "bar")
+    static class FooModule {
+        @OnEnable
         public void onEnable(Configuration configuration) {
 
         }
 
-        @Override
+        @OnDisable
         public void onDisable(Configuration configuration) {
 
         }
     }
 
-    @Module("bar")
-    static class BarModule implements ArtModule {
-        @Override
+    @ArtModule("bar")
+    static class BarModule {
+        @OnEnable
         public void onEnable(Configuration configuration) {
 
         }
 
-        @Override
+        @OnDisable
         public void onDisable(Configuration configuration) {
 
         }
     }
 
-    @Module(value = "module 1", dependencies = {"module 2", "foo"})
-    static class Module1 implements ArtModule {
+    @ArtModule(value = "module 1", dependencies = {"module 2", "foo"})
+    static class Module1 {
 
-        @Override
+        @OnEnable
         public void onEnable(Configuration configuration) {
 
         }
 
-        @Override
+        @OnDisable
         public void onDisable(Configuration configuration) {
 
         }
     }
 
-    @Module(value = "module 2", dependencies = "module 3")
-    static class Module2 implements ArtModule {
+    @ArtModule(value = "module 2", dependencies = "module 3")
+    static class Module2 {
 
-        @Override
+        @OnEnable
         public void onEnable(Configuration configuration) {
 
         }
 
-        @Override
+        @OnDisable
         public void onDisable(Configuration configuration) {
 
         }
     }
 
-    @Module(value = "module 3", description = "module 1")
-    static class Module3 implements ArtModule {
+    @ArtModule(value = "module 3", description = "module 1")
+    static class Module3 {
 
-        @Override
+        @OnEnable
         public void onEnable(Configuration configuration) {
 
         }
 
-        @Override
+        @OnDisable
         public void onDisable(Configuration configuration) {
 
         }
     }
 
-    @Module("foobar")
+    @ArtModule("foobar")
     static class RandomModule {
 
     }

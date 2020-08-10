@@ -16,7 +16,7 @@
 
 package io.artframework;
 
-import io.artframework.annotations.Module;
+import io.artframework.annotations.ArtModule;
 import io.artframework.impl.DefaultArtModuleProvider;
 import io.artframework.impl.DefaultConfiguration;
 import lombok.NonNull;
@@ -27,7 +27,7 @@ import java.util.Optional;
 /**
  * The module provider handles the registration and creation of all art modules.
  * <p>
- * Use it to add your {@link ArtModule} or load modules as JAR files from a given path.
+ * Use it to add your modules that are annotated with the @{@link ArtModule} annotation.
  */
 public interface ArtModuleProvider extends Provider {
 
@@ -63,66 +63,85 @@ public interface ArtModuleProvider extends Provider {
      * This is useful if you need to load multiple modules that depend upon each other
      * and do not want to directly enable them.
      * <p>
-     * If you want to directly load and enable your module, call {@link #load(ArtModule)} instead.
+     * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
+     * <p>
+     * If you want to directly load and enable your module, call {@link #enable(Object)} instead.
+     * And if you don't have an instance of your module use the {@link #register(Class)} method instead.
      *
      * @param module the module that should be registered
      * @return this module provider
-     * @throws ModuleRegistrationException if the registration of the module failed
+     * @throws ModuleRegistrationException if the registration of the module failed,
+     *                                     e.g. if no {@code @ArtModule} annotation is present on the class
      */
-    ArtModuleProvider register(@NonNull ArtModule module) throws ModuleRegistrationException;
+    ArtModuleProvider register(@NonNull Object module) throws ModuleRegistrationException;
 
     /**
      * Registers the given class as a module with the provider.
      * <p>
-     * This is used to load unrelated classes as modules without implementing the actual interface.
-     * The main use is to extract the @{@link Module} meta data annotation to extract additional information
-     * about the art classes located in the same JAR as the module.
+     * Use this if you do not have an instance of the module and one should be created for you.
+     * This could be the case if the module was loaded from a classpath search inside one of the module JAR files.
      * <p>
-     * Additionally if the class implements the {@link ArtModule} interface the provider will try to create an instance of it.
-     * If it does implement the ArtModule interface a parameterless public constructor must also be provided.
+     * The class must provide a parameterless public constructor or the module won't be registered.
+     * Also make sure it is annotated with @{@link ArtModule} or else the registration will fail also.
      * <p>
-     * Use {@link #register(ArtModule)} if you already have an instance of your module, e.g. it was loaded as a plugin.
+     * Use {@link #register(Object)} if you already have an instance of your module, e.g. it was loaded as a plugin.
      *
      * @param moduleClass the class of the module
      * @return this module provider
-     * @throws ModuleRegistrationException if the registration or instance creation of the module failed
+     * @throws ModuleRegistrationException if the registration or instance creation of the module failed,
+     *                                     e.g. if no {@code @ArtModule} annotation is present on the class
+     *                                     or no instance of the module could be created.
      */
     ArtModuleProvider register(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
 
     /**
-     * Loads the given module into the art-framework configuration instance.
+     * Loads the given module into the art-framework configuration instance and enables it.
      * <p>
-     * This will try to load the configuration of the module (if one is needed),
-     * check the dependencies and then call the {@link ArtModule#onEnable(Configuration)} method.
+     * This will call any methods inside the module that are annotated with one of the {@code On...} annotations.
+     * <p>
+     * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
      *
      * @param module the module that should be loaded
      * @return this module provider
-     * @throws ModuleRegistrationException if the registration or enabling of the module or its child modules failed
+     * @throws ModuleRegistrationException if the registration of the module failed,
+     *                                     e.g. if no {@code @ArtModule} annotation is present on the class
+     *                                     or if one of the annotated methods encountered an exception.
+     * @see io.artframework.annotations.OnEnable
+     * @see io.artframework.annotations.OnDisable
+     * @see io.artframework.annotations.OnLoad
      */
-    ArtModuleProvider load(@NonNull ArtModule module) throws ModuleRegistrationException;
+    ArtModuleProvider enable(@NonNull Object module) throws ModuleRegistrationException;
 
     /**
-     * Tries to load the given module into the art-framework configuration instance.
+     * Loads the given module into the art-framework configuration instance and enables it.
      * <p>
-     * This will first register the module class, if is not already registered, and then
-     * call the {@link ArtModule#onEnable(Configuration)} method if an instance of the module class was created.
+     * Use this if you do not have an instance of the module and one should be created for you.
+     * This could be the case if the module was loaded from a classpath search inside one of the module JAR files.
      * <p>
-     * If the class implements {@link ArtModule} then it also must provide a parameterless public constructor.
+     * The class must provide a parameterless public constructor or the module won't be registered.
+     * Also make sure it is annotated with @{@link ArtModule} or else the registration will fail also.
+     * <p>
+     * This will then call any methods inside the module that are annotated with one of the {@code On...} annotations.
+     * <p>
+     * Use {@link #enable(Object)} if you already have an instance of your module, e.g. it was loaded as a plugin.
      *
      * @param moduleClass the class of the module
      * @return this module provider
-     * @throws ModuleRegistrationException if the registration or instance creation of the module failed
+     * @throws ModuleRegistrationException if the registration or instance creation of the module failed,
+     *                                     e.g. if no {@code @ArtModule} annotation is present on the class,
+     *                                     no instance of the module could be created
+     *                                     or if one of the annotated methods encountered an exception.
+     * @see io.artframework.annotations.OnEnable
+     * @see io.artframework.annotations.OnDisable
+     * @see io.artframework.annotations.OnLoad
      */
-    ArtModuleProvider load(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
+    ArtModuleProvider enable(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
 
     /**
-     * Unloads the given module from the art-framework configuration instance.
-     * <p>
-     * This will call {@link ArtModule#onDisable(Configuration)} on the provided module
-     * after all modules that depend on it have been disabled.
+     * Disabled the given module and unloads it from the art-framework configuration instance.
      *
      * @param module the module that should be unloaded
      * @return this module provider
      */
-    ArtModuleProvider unload(@NonNull ArtModule module);
+    ArtModuleProvider disable(@NonNull Object module);
 }

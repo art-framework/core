@@ -16,38 +16,30 @@
 
 package io.artframework.impl;
 
-import io.artframework.ART;
-import io.artframework.AbstractProvider;
-import io.artframework.ArtMetaDataException;
-import io.artframework.ArtModule;
-import io.artframework.ArtModuleDependencyResolver;
-import io.artframework.ArtModuleProvider;
-import io.artframework.Configuration;
-import io.artframework.ModuleMeta;
-import io.artframework.ModuleRegistrationException;
-import io.artframework.ModuleState;
+import io.artframework.*;
+import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.OnDisable;
+import io.artframework.annotations.OnEnable;
+import io.artframework.annotations.OnLoad;
 import io.artframework.events.ModuleDisabledEvent;
 import io.artframework.events.ModuleEnabledEvent;
 import io.artframework.events.ModuleRegisteredEvent;
 import io.artframework.util.graphs.CycleSearch;
-import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.lang.reflect.Method;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.reflections.ReflectionUtils.getAllMethods;
+import static org.reflections.ReflectionUtils.withAnnotation;
 
 public class DefaultArtModuleProvider extends AbstractProvider implements ArtModuleProvider {
 
@@ -71,7 +63,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
     }
 
     @Override
-    public ArtModuleProvider register(@NonNull ArtModule module) throws ModuleRegistrationException {
+    public ArtModuleProvider register(@NonNull Object module) throws ModuleRegistrationException {
 
         registerModule(module);
 
@@ -86,8 +78,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
         return this;
     }
 
-    @Override
-    public ArtModuleProvider load(@NonNull ArtModule module) throws ModuleRegistrationException {
+    public ArtModuleProvider enable(@NonNull Object module) throws ModuleRegistrationException {
 
         enableModule(registerModule(module));
 
@@ -95,7 +86,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
     }
 
     @Override
-    public ArtModuleProvider load(@NonNull Class<?> moduleClass) throws ModuleRegistrationException {
+    public ArtModuleProvider enable(@NonNull Class<?> moduleClass) throws ModuleRegistrationException {
 
         enableModule(registerModule(moduleClass));
 
@@ -103,7 +94,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
     }
 
     @Override
-    public ArtModuleProvider unload(@NonNull ArtModule module) {
+    public ArtModuleProvider disable(@NonNull Object module) {
 
         ModuleInformation information = modules.remove(module.getClass());
         if (information != null) {
@@ -142,7 +133,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
         }
     }
 
-    private ModuleInformation registerModule(ArtModule module) throws ModuleRegistrationException {
+    private ModuleInformation registerModule(Object module) throws ModuleRegistrationException {
 
         try {
             return registerModule(ModuleMeta.of(module.getClass()), module);
@@ -151,7 +142,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
         }
     }
 
-    private ModuleInformation registerModule(ModuleMeta moduleMeta, @Nullable ArtModule module) throws ModuleRegistrationException {
+    private ModuleInformation registerModule(ModuleMeta moduleMeta, @Nullable Object module) throws ModuleRegistrationException {
         Optional<ModuleMeta> existingModule = modules.values().stream().map(ModuleInformation::moduleMeta)
                 .filter(meta -> meta.identifier().equals(moduleMeta.identifier()) && !meta.moduleClass().equals(moduleMeta.moduleClass())).findAny();
         if (existingModule.isPresent()) {
@@ -199,7 +190,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
         }
 
         try {
-            moduleInformation.module().ifPresent(artModule -> artModule.onEnable(configuration()));
+            moduleInformation.onEnable(configuration());
             updateModuleCache(moduleInformation.state(ModuleState.ENABLED));
             ART.callEvent(new ModuleEnabledEvent(moduleInformation.moduleMeta()));
         } catch (Exception e) {
@@ -211,6 +202,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
 
     private void disableModule(ModuleInformation module) {
 
+        module.onDisable(configuration());
         ART.callEvent(new ModuleDisabledEvent(module.moduleMeta()));
     }
 
@@ -287,18 +279,64 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
         return moduleInformation;
     }
 
-    @Data
+    @Getter
+    @Setter
     @EqualsAndHashCode(of = "moduleMeta")
     @Accessors(fluent = true)
     static class ModuleInformation {
 
         private final ModuleMeta moduleMeta;
-        @Nullable private final ArtModule module;
+        @Nullable private final Object module;
+        @Nullable private final Method onLoad;
+        @Nullable private final Method onEnable;
+        @Nullable private final Method onDisable;
         private ModuleState state;
 
-        public Optional<ArtModule> module() {
+        @SuppressWarnings("unchecked")
+        public ModuleInformation(ModuleMeta moduleMeta, @Nullable Object module) {
+            this.moduleMeta = moduleMeta;
+            this.module = module;
+            onLoad = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnLoad.class)).stream().findFirst().orElse(null);
+            onEnable = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnEnable.class)).stream().findFirst().orElse(null);
+            onDisable = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnDisable.class)).stream().findFirst().orElse(null);
+        }
+
+        public Optional<Object> module() {
 
             return Optional.ofNullable(module);
+        }
+
+        public void onLoad(Configuration configuration) {
+            if (onLoad == null) return;
+            invokeMethod(onLoad, configuration);
+        }
+
+        public void onEnable(Configuration configuration) {
+            if (onEnable == null) return;
+            invokeMethod(onEnable, configuration);
+        }
+
+        public void onDisable(Configuration configuration) {
+            if (onDisable == null) return;
+            invokeMethod(onDisable, configuration);
+        }
+
+        private void invokeMethod(@NonNull Method method, Configuration configuration) {
+            try {
+                Class<?>[] parameterTypes = method.getParameterTypes();
+                Object[] parameters = new Object[parameterTypes.length];
+                for (int i = 0; i < parameterTypes.length; i++) {
+                    if (parameterTypes[i].isInstance(configuration)) {
+                        parameters[i] = configuration;
+                    } else {
+                        parameters[i] = null;
+                    }
+                }
+                method.setAccessible(true);
+                method.invoke(module, parameters);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

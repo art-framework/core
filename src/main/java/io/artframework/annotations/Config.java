@@ -16,7 +16,6 @@
 
 package io.artframework.annotations;
 
-import io.artframework.ArtModule;
 import io.artframework.Configurable;
 
 import java.lang.annotation.ElementType;

@@ -16,7 +16,7 @@
 
 package io.artframework;
 
-import io.artframework.annotations.Module;
+import io.artframework.annotations.ArtModule;
 import io.artframework.impl.DefaultModuleMeta;
 
 /**
@@ -34,7 +34,7 @@ public interface ModuleMeta {
      */
     static ModuleMeta of(Class<?> moduleClass) throws ArtMetaDataException {
 
-        if (!moduleClass.isAnnotationPresent(Module.class)) {
+        if (!moduleClass.isAnnotationPresent(ArtModule.class)) {
             throw new ArtMetaDataException(ArtObjectError.of(
                     moduleClass.getCanonicalName() + " is missing the required @Module annotation.",
                     ArtObjectError.Reason.NO_ANNOTATION,
@@ -42,7 +42,7 @@ public interface ModuleMeta {
             );
         }
 
-        return new DefaultModuleMeta(moduleClass, moduleClass.getAnnotation(Module.class));
+        return new DefaultModuleMeta(moduleClass, moduleClass.getAnnotation(ArtModule.class));
     }
 
     /**
