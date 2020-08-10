@@ -5,7 +5,7 @@
     <dependency>
       <groupId>io.art-framework</groupId>
       <artifactId>art-core</artifactId>
-      <version>1.0.0-beta.5</version>
+      <version>1.0.0-beta.6</version>
     </dependency>
   </dependencies>
   ...

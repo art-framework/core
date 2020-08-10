@@ -1,3 +1,15 @@
+# [1.0.0-beta.6](https://github.com/art-framework/art-core/compare/v1.0.0-beta.5...v1.0.0-beta.6) (2020-08-10)
+
+
+### Features
+
+* add the option to enable and disable trigger manually ([c48ea65](https://github.com/art-framework/art-core/commit/c48ea65e20b397bf94df92edaf5059d151b0300f))
+
+
+### BREAKING CHANGES
+
+* triggers in the art context must now be enabled manually for them to work. The reason for this is unwanted side effects of ART configs that should not contain trigger.
+
 # [1.0.0-beta.5](https://github.com/art-framework/art-core/compare/v1.0.0-beta.4...v1.0.0-beta.5) (2020-08-10)
 
 
