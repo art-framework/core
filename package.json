@@ -4,6 +4,7 @@
     "@semantic-release/commit-analyzer": "8.0.1",
     "@semantic-release/git": "9.0.0",
     "@semantic-release/github": "7.0.5",
+    "@semantic-release/exec": "5.0.0",
     "@semantic-release/release-notes-generator": "9.0.1",
     "conventional-changelog-conventionalcommits": "4.2.3",
     "gradle-semantic-release-plugin": "1.4.1"
@@ -14,17 +15,19 @@
   "release": {
     "plugins": [
       "@semantic-release/commit-analyzer",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "./update-versions.sh ${nextRelease.version}"
+        }
+      ],
       "@semantic-release/release-notes-generator",
       "@semantic-release/changelog",
       "gradle-semantic-release-plugin",
       [
         "@semantic-release/github",
         {
-          "assets": [
-            {
-              "path": "**/build/libs/*.jar"
-            }
-          ]
+          "assets": [["art-bukkit/build/libs/*.jar", "!**/*(sources|javadoc).jar"]]
         }
       ],
       [
@@ -32,7 +35,9 @@
         {
           "assets": [
             "gradle.properties",
-            "CHANGELOG.md"
+            "CHANGELOG.md",
+            "README.md",
+            "docs/**"
           ]
         }
       ]
