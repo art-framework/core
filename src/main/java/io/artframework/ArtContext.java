@@ -150,6 +150,25 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
      */
     ArtContext combine(ArtContext context);
 
+    /**
+     * Enables all configured trigger in this context, registering them as listeners.
+     * <p>
+     * Use this method if you want to register all trigger in the config as listeners.
+     * Do not use this if triggers are not intended in your config.
+     *
+     * @return this art context
+     */
+    ArtContext enableTrigger();
+
+    /**
+     * Disables all triggers in this context, unregistering them as listeners.
+     * <p>
+     * Use this to cleanup your context.
+     *
+     * @return this art context
+     */
+    ArtContext disableTrigger();
+
     @Override
     void close();
 }

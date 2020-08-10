@@ -33,4 +33,6 @@ public interface ActionProvider extends ArtProvider, FactoryProvider<ActionFacto
     <TTarget> ActionProvider add(String identifier, Class<TTarget> targetClass, Action<TTarget> action);
 
     <TAction extends Action<TTarget>, TTarget> ActionProvider add(Class<TAction> actionClass, ArtObjectProvider<TAction> action);
+
+    <TAction extends Action<TTarget>, TTarget> ActionProvider add(ArtObjectProvider<TAction> action);
 }

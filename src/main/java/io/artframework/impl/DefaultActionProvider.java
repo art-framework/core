@@ -64,6 +64,13 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
         return this;
     }
 
+    @Override
+    @SuppressWarnings("unchecked")
+    public <TAction extends Action<TTarget>, TTarget> ActionProvider add(ArtObjectProvider<TAction> action) {
+
+        return add((Class<TAction>) action.create().getClass(), action);
+    }
+
     public ActionProvider addAll(Collection<ArtObjectMeta<?>> artObjects) {
         for (ArtObjectMeta<?> artObject : artObjects) {
             add(Objects.requireNonNull(artObject.get()));

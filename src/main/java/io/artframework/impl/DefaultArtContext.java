@@ -41,8 +41,6 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
         super(configuration);
         this.settings = settings;
         this.artContexts = ImmutableList.copyOf(artContexts);
-
-        registerListeners();
     }
 
     @Override
@@ -156,21 +154,25 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
 
     @Override
     public void close() {
-        unregisterListeners();
+        disableTrigger();
     }
 
-    private void registerListeners() {
+    @Override
+    public ArtContext enableTrigger() {
         getArtContexts().stream()
                 .filter(artObjectContext -> artObjectContext instanceof TriggerContext)
                 .map(artObjectContext -> (TriggerContext) artObjectContext)
                 .forEach(context -> context.addListener(this));
+        return this;
     }
 
-    private void unregisterListeners() {
+    @Override
+    public ArtContext disableTrigger() {
         getArtContexts().stream()
                 .filter(artObjectContext -> artObjectContext instanceof TriggerContext)
                 .map(artObjectContext -> (TriggerContext) artObjectContext)
                 .forEach(context -> context.removeListener(this));
+        return this;
     }
 
     @SuppressWarnings("unchecked")
