@@ -17,10 +17,10 @@
 package io.artframework.parser.flow;
 
 import com.google.common.base.Strings;
-import io.artframework.ConfigurationException;
-import io.artframework.ParseException;
 import io.artframework.ConfigMap;
 import io.artframework.Configuration;
+import io.artframework.ConfigurationException;
+import io.artframework.ParseException;
 import io.artframework.conf.ConfigFieldInformation;
 import io.artframework.conf.KeyValuePair;
 import lombok.Getter;
@@ -55,7 +55,7 @@ public class ConfigParser extends LineParser<ConfigMap> {
     public ConfigMap parse() throws ParseException {
 
         try {
-            return configMap.with(extractKeyValuePairs(getMatcher()));
+            return configMap.with(extractKeyValuePairs(matcher()));
         } catch (ConfigurationException e) {
             throw new ParseException(e.getMessage(), e);
         }
@@ -98,7 +98,7 @@ public class ConfigParser extends LineParser<ConfigMap> {
         pairs.add(new KeyValuePair(matcher.group("key"), value));
 
         if (!Strings.isNullOrEmpty(config)) {
-            matcher = getPattern().matcher(StringUtils.strip(config.trim(), ",;").trim());
+            matcher = pattern().matcher(StringUtils.strip(config.trim(), ",;").trim());
             if (matcher.matches()) {
                 pairs.addAll(extractKeyValuePairs(matcher));
             }

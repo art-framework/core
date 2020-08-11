@@ -17,8 +17,10 @@
 package io.artframework.parser.flow;
 
 import lombok.Getter;
+import lombok.experimental.Accessors;
 
 @Getter
+@Accessors(fluent = true)
 public final class FlowType {
 
     private final String name;

@@ -20,12 +20,14 @@ import com.google.common.base.Strings;
 import io.artframework.FlowParser;
 import io.artframework.*;
 import lombok.Getter;
+import lombok.experimental.Accessors;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+@Accessors(fluent = true)
 @SuppressWarnings("RegExpRedundantEscape")
 public abstract class ArtObjectContextParser<TFactory extends Factory<?, ?>> extends LineParser<ArtObjectContext<?>> implements FlowParser {
 
@@ -36,36 +38,36 @@ public abstract class ArtObjectContextParser<TFactory extends Factory<?, ?>> ext
         // always edit the regexr link and update the link below!
         // the regexr link and the regex should always match
         // regexr.com/56s09
-        super(configuration, Pattern.compile("^" + flowType.getTypeIdentifier() + "(?<identifier>[\\w\\d:._-]+)([\\[\\(](?<config>[^\\]\\)]*?)[\\]\\)])?( (?<userConfig>.+))?$"));
+        super(configuration, Pattern.compile("^" + flowType.typeIdentifier() + "(?<identifier>[\\w\\d:._-]+)([\\[\\(](?<config>[^\\]\\)]*?)[\\]\\)])?( (?<userConfig>.+))?$"));
         this.flowType = flowType;
     }
 
     protected String getIdentifier() {
-        return getMatcher().group("identifier");
+        return matcher().group("identifier");
     }
 
     protected Optional<String> getConfig() {
-        String config = getMatcher().group("config");
+        String config = matcher().group("config");
         if (Strings.isNullOrEmpty(config)) return Optional.empty();
         return Optional.of(config);
     }
 
-    protected String getUserConfig() {
-        return getMatcher().group("userConfig");
+    protected String userConfig() {
+        return matcher().group("userConfig");
     }
 
-    protected abstract Optional<TFactory> getFactory(String identifier);
+    protected abstract Optional<TFactory> factory(String identifier);
 
-    protected abstract ConfigMap getGeneralConfigMap();
+    protected abstract ConfigMap configMap();
 
     @Override
     public ArtObjectContext<?> parse() throws ParseException {
 
         String identifier = getIdentifier();
-        Optional<TFactory> factoryOptional = getFactory(identifier);
+        Optional<TFactory> factoryOptional = factory(identifier);
 
         if (!factoryOptional.isPresent()) {
-            throw new ParseException("No " + this.getFlowType().getName() + " with identifier \"" + identifier + "\" found");
+            throw new ParseException("No " + this.flowType().name() + " with identifier \"" + identifier + "\" found");
         }
 
         TFactory factory = factoryOptional.get();
@@ -73,7 +75,7 @@ public abstract class ArtObjectContextParser<TFactory extends Factory<?, ?>> ext
 
         Optional<String> config = getConfig();
         if (config.isPresent()) {
-            ConfigMap configMap = getGeneralConfigMap();
+            ConfigMap configMap = configMap();
             ConfigParser configParser = ConfigParser.of(this.configuration(), configMap);
             if (configParser.accept(config.get())) {
                 configMaps.put(configMap.type(), configParser.parse());
@@ -82,7 +84,7 @@ public abstract class ArtObjectContextParser<TFactory extends Factory<?, ?>> ext
 
 
         ConfigParser configParser = ConfigParser.of(this.configuration(), ConfigMap.of(ConfigMapType.ART_CONFIG, factory.meta().configMap()));
-        if (configParser.accept(getUserConfig())) {
+        if (configParser.accept(userConfig())) {
             configMaps.put(ConfigMapType.ART_CONFIG, configParser.parse());
         }
 

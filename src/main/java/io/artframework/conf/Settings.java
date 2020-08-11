@@ -24,6 +24,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.With;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
@@ -35,6 +36,7 @@ import java.io.Serializable;
 @ConfigOption
 @AllArgsConstructor
 @Config("settings.yml")
+@Accessors(fluent = true)
 @EqualsAndHashCode(callSuper = false)
 public class Settings extends SettingsBase implements Serializable, Cloneable {
 

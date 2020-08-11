@@ -49,7 +49,7 @@ class FlowParserTest {
 
         flowParser = spy(new ArtObjectContextParser<Factory<?, ?>>(configuration, new FlowType("test", ".")) {
             @Override
-            protected Optional<Factory<?, ?>> getFactory(String identifier) {
+            protected Optional<Factory<?, ?>> factory(String identifier) {
                 Factory<ArtObjectContext<?>, ?> factory = mock(Factory.class);
                 ArtObjectMeta artObjectMeta = mock(ArtObjectMeta.class);
                 when(artObjectMeta.configMap()).thenReturn(new HashMap());
@@ -60,7 +60,7 @@ class FlowParserTest {
             }
 
             @Override
-            protected ConfigMap getGeneralConfigMap() {
+            protected ConfigMap configMap() {
                 return ActionConfig.configMap();
             }
         });
@@ -126,7 +126,7 @@ class FlowParserTest {
             ParseException exception = new ParseException("TEST ERROR");
             doAnswer((Answer<ArtObjectContext<?>>) invocation -> {
                 ArtObjectContextParser<?> parser = (ArtObjectContextParser<?>) invocation.getMock();
-                if ("ERROR".equals(parser.getInput())) {
+                if ("ERROR".equals(parser.input())) {
                     throw exception;
                 }
                 return mock(ArtObjectContext.class);

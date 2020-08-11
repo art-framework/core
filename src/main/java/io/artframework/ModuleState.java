@@ -19,7 +19,7 @@ package io.artframework;
 /**
  * Defines the state of a module provided by the module provider.
  * <p>
- * The {@link ArtModule} can have multiple states during its lifecycle,
+ * The art module can have multiple states during its lifecycle,
  * defining the different stages of module initialization and loading of dependencies.
  */
 public enum ModuleState {

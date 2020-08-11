@@ -23,9 +23,9 @@ import java.util.Optional;
 
 public interface FactoryProvider<TFactory extends Factory<?, ?>> extends Provider {
 
-    Map<String, TFactory> getFactories();
+    Map<String, TFactory> factories();
 
-    Map<String, String> getAliasMappings();
+    Map<String, String> aliasMappings();
 
     boolean exists(@NonNull String identifier);
 

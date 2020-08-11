@@ -42,14 +42,14 @@ class AbstractFactoryProviderTest {
     @DisplayName("getAliasMappings is immutable")
     void aliasMappingsShouldBeImmutable() {
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> factory.getAliasMappings().put("alal", "bar"));
+                .isThrownBy(() -> factory.aliasMappings().put("alal", "bar"));
     }
 
     @Test
     @DisplayName("getFactories is immutable")
     void factoriesShouldBeImmutable() {
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> factory.getFactories().put("foo", null));
+                .isThrownBy(() -> factory.factories().put("foo", null));
     }
 
     @Nested

@@ -30,12 +30,12 @@ public class ActionParser extends ArtObjectContextParser<ActionFactory<?>> {
     }
 
     @Override
-    protected Optional<ActionFactory<?>> getFactory(String identifier) {
+    protected Optional<ActionFactory<?>> factory(String identifier) {
         return this.configuration().actions().get(identifier);
     }
 
     @Override
-    protected ConfigMap getGeneralConfigMap() {
+    protected ConfigMap configMap() {
         return ActionConfig.configMap();
     }
 }

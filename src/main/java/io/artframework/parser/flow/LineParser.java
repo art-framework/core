@@ -17,18 +17,20 @@
 package io.artframework.parser.flow;
 
 import com.google.common.base.Strings;
-import io.artframework.ParseException;
 import io.artframework.Configuration;
+import io.artframework.ParseException;
 import io.artframework.Scope;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.Accessors;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Getter
+@Accessors(fluent = true)
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public abstract class LineParser<TResult> implements Scope {

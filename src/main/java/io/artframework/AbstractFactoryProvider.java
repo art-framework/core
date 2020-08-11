@@ -46,12 +46,12 @@ public abstract class AbstractFactoryProvider<TFactory extends Factory<?, ?>> im
     }
 
     @Override
-    public Map<String, TFactory> getFactories() {
+    public Map<String, TFactory> factories() {
         return ImmutableMap.copyOf(factories);
     }
 
     @Override
-    public Map<String, String> getAliasMappings() {
+    public Map<String, String> aliasMappings() {
         return ImmutableMap.copyOf(aliasMappings);
     }
 

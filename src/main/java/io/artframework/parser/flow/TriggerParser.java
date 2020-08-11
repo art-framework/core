@@ -30,12 +30,12 @@ public class TriggerParser extends ArtObjectContextParser<TriggerFactory> {
     }
 
     @Override
-    protected Optional<TriggerFactory> getFactory(String identifier) {
+    protected Optional<TriggerFactory> factory(String identifier) {
         return this.configuration().trigger().get(identifier);
     }
 
     @Override
-    protected ConfigMap getGeneralConfigMap() {
+    protected ConfigMap configMap() {
         return TriggerConfig.configMap();
     }
 }

@@ -31,7 +31,7 @@ public interface FlowParser {
         };
     }
 
-    FlowType getFlowType();
+    FlowType flowType();
 
     boolean accept(String line);
 
