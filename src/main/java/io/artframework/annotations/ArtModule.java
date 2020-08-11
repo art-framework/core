@@ -42,10 +42,11 @@ public @interface ArtModule {
 
     /**
      * An unique identifier of your module.
+     * <p>Defaults to the package name the annotated module class.
      *
      * @return the unique identifier of this module
      */
-    String value();
+    String identifier() default "";
 
     /**
      * An optional prefix that is applied to all art objects that are found inside this module.
@@ -55,6 +56,16 @@ public @interface ArtModule {
      * @return the prefix used for all art objects found in this module
      */
     String prefix() default "";
+
+    /**
+     * A list of packages that should be scanned for art classes.
+     * <p>
+     * By default all packages defined in this array will be scanned recusivly.
+     * And if the array is empty the package of the module class will be used as the base package.
+     *
+     * @return a list of packages to be scanned for art classes
+     */
+    String[] packages() default {};
 
     /**
      * Optionally provide a detailed description about what your art module does.

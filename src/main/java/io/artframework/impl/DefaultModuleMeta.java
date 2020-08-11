@@ -34,8 +34,15 @@ public class DefaultModuleMeta implements ModuleMeta {
     String version;
     String[] description;
     String[] dependencies;
+    String[] packages;
 
-    DefaultModuleMeta(String identifier, String prefix, Class<?> moduleClass, String version, String[] description, String[] dependencies) {
+    DefaultModuleMeta(@NonNull String identifier,
+                      @NonNull String prefix,
+                      @NonNull Class<?> moduleClass,
+                      @NonNull String version,
+                      @NonNull String[] description,
+                      @NonNull String[] dependencies,
+                      @NonNull String[] packages) {
 
         this.identifier = identifier;
         this.prefix = prefix;
@@ -43,17 +50,19 @@ public class DefaultModuleMeta implements ModuleMeta {
         this.version = version;
         this.description = description;
         this.dependencies = dependencies;
+        this.packages = packages.length < 1 ? new String[] {moduleClass.getPackage().getName()} : packages;
     }
 
     public DefaultModuleMeta(@NonNull Class<?> moduleClass,
                              @NonNull ArtModule annotation) {
         this(
-                annotation.value(),
+                annotation.identifier(),
                 annotation.prefix(),
                 moduleClass,
                 annotation.version(),
                 annotation.description(),
-                annotation.dependencies()
+                annotation.dependencies(),
+                annotation.packages()
         );
     }
 }
