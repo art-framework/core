@@ -30,4 +30,8 @@ public interface FactoryProvider<TFactory extends Factory<?, ?>> extends Provide
     boolean exists(@NonNull String identifier);
 
     Optional<TFactory> get(String identifier);
+
+    FactoryProvider<TFactory> remove(String identifier);
+
+    FactoryProvider<TFactory> remove(Class<? extends ArtObject> actionClass);
 }

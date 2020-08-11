@@ -78,4 +78,20 @@ public abstract class AbstractFactoryProvider<TFactory extends Factory<?, ?>> im
             }
         }
     }
+
+    public FactoryProvider<TFactory> remove(String identifier) {
+
+        factories.remove(identifier);
+        aliasMappings.remove(identifier);
+        return this;
+    }
+
+    public FactoryProvider<TFactory> remove(Class<? extends ArtObject> artClass) {
+
+        try {
+            remove(ArtObjectMeta.of(artClass).identifier());
+        } catch (ArtMetaDataException ignored) {
+        }
+        return this;
+    }
 }
