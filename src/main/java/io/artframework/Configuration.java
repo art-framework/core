@@ -23,6 +23,7 @@ import io.artframework.impl.DefaultConfiguration;
 import lombok.NonNull;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -45,6 +46,19 @@ public interface Configuration extends Serializable, Cloneable {
      */
     default ArtBuilder builder() {
         return ArtBuilder.of(this);
+    }
+
+    /**
+     * Parses the given art config into an art context.
+     * <p>
+     * This is just a shortcut to the {@link ArtBuilder#load(Collection)} method.
+     *
+     * @param lines the lines that should be parsed
+     * @return the created art context
+     * @see ArtBuilder#load(Collection)
+     */
+    default ArtContext load(Collection<String> lines) {
+        return builder().load(lines).build();
     }
 
     /**
@@ -147,7 +161,7 @@ public interface Configuration extends Serializable, Cloneable {
     FlowParserProvider parser();
 
     /**
-     * Use the {@link ArtModuleProvider} to load your art {@link ArtModule}s.
+     * Use the {@link ArtModuleProvider} to load your art modules.
      *
      * @return the implementing {@link ArtModuleProvider}
      */
