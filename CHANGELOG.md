@@ -1,3 +1,18 @@
+# [1.0.0-beta.8](https://github.com/art-framework/art-core/compare/v1.0.0-beta.7...v1.0.0-beta.8) (2020-08-11)
+
+
+### Bug Fixes
+
+* **modules:** create new instance of module class on register ([a645266](https://github.com/art-framework/art-core/commit/a645266c5a0595a653369904f45ab5222dcdc692))
+
+
+### Features
+
+* add ModuleFinder ([aae0e0b](https://github.com/art-framework/art-core/commit/aae0e0b427780fe92f948b173fb53fe5278f9f7a))
+* **modules:** add option to provide package names to scan for art ([b49d460](https://github.com/art-framework/art-core/commit/b49d46098142e3db8908ba24266a42f05f8e0421))
+* add convenience load(...) method to the Configuration ([a08bb35](https://github.com/art-framework/art-core/commit/a08bb35a49958c684623935710b1fe881c0c42b7))
+* add remove methods to the FactoryProvider ([55b2ffb](https://github.com/art-framework/art-core/commit/55b2ffb96cf7d3f32c51babe1ab739ef9fdaf995))
+
 # [1.0.0-beta.7](https://github.com/art-framework/art-core/compare/v1.0.0-beta.6...v1.0.0-beta.7) (2020-08-10)
 
 
