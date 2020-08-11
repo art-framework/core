@@ -1,3 +1,17 @@
+# [1.0.0-beta.9](https://github.com/art-framework/art-core/compare/v1.0.0-beta.8...v1.0.0-beta.9) (2020-08-11)
+
+
+### Code Refactoring
+
+* make all methods fluent ([bcff317](https://github.com/art-framework/art-core/commit/bcff3176189eeb3412d73e0068761eb804fde098))
+
+
+### BREAKING CHANGES
+
+* refactored and cleaned up a lot of non fluent methods making them fluent.
+
+Signed-off-by: Michael Reichenbach <michael@reichenbach.in>
+
 # [1.0.0-beta.8](https://github.com/art-framework/art-core/compare/v1.0.0-beta.7...v1.0.0-beta.8) (2020-08-11)
 
 
