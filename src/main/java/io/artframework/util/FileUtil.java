@@ -25,22 +25,36 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import java.util.stream.Collectors;
 
 public class FileUtil {
 
+    @SuppressWarnings("unchecked")
     public static <T> List<Class<? extends T>> findClasses(
             @NonNull final ClassLoader classLoader,
             @NonNull final File file,
             @NonNull final Class<T> clazz
     ) {
 
+        return findClasses(classLoader, file, clazz::isAssignableFrom).stream()
+                .map(aClass -> (Class<T>) aClass.asSubclass(clazz))
+                .collect(Collectors.toList());
+    }
+
+    public static List<Class<?>> findClasses(
+            @NonNull final ClassLoader classLoader,
+            @NonNull final File file,
+            @NonNull final Predicate<Class<?>> predicate
+            ) {
+
         if (!file.exists() || !file.getName().endsWith(".jar")) {
             return new ArrayList<>();
         }
 
-        final List<Class<? extends T>> classes = new ArrayList<>();
+        final List<Class<?>> classes = new ArrayList<>();
 
         try {
 
@@ -65,8 +79,8 @@ public class FileUtil {
                 for (final String match : matches) {
                     try {
                         final Class<?> loaded = loader.loadClass(match);
-                        if (clazz.isAssignableFrom(loaded)) {
-                            classes.add(loaded.asSubclass(clazz));
+                        if (predicate.test(loaded)) {
+                            classes.add(loaded);
                         }
                     } catch (final NoClassDefFoundError ignored) {
                     }

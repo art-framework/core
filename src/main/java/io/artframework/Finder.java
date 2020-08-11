@@ -17,6 +17,7 @@
 package io.artframework;
 
 import io.artframework.finder.ArtObjectFinder;
+import io.artframework.finder.ModuleFinder;
 import io.artframework.finder.TargetFinder;
 
 import java.io.File;
@@ -28,7 +29,8 @@ public interface Finder extends Scope {
     static Finder[] defaults(Configuration configuration) {
         return new Finder[]{
                 new ArtObjectFinder(configuration),
-                new TargetFinder(configuration)
+                new TargetFinder(configuration),
+                new ModuleFinder(configuration)
         };
     }
 

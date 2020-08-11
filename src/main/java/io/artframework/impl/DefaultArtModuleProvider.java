@@ -95,7 +95,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
 
     public ArtModuleProvider enable(@NonNull Object module) throws ModuleRegistrationException {
 
-        enableModule(registerModule(module));
+        enable(registerModule(module));
 
         return this;
     }
@@ -103,7 +103,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
     @Override
     public ArtModuleProvider enable(@NonNull Class<?> moduleClass) throws ModuleRegistrationException {
 
-        enableModule(registerModule(moduleClass));
+        enable(registerModule(moduleClass));
 
         return this;
     }
@@ -113,7 +113,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
 
         ModuleInformation information = modules.remove(module.getClass());
         if (information != null) {
-            disableModule(information);
+            disable(information);
         }
 
         return this;
@@ -179,7 +179,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
         return moduleInformation;
     }
 
-    private void enableModule(ModuleInformation moduleInformation) throws ModuleRegistrationException {
+    private void enable(ModuleInformation moduleInformation) throws ModuleRegistrationException {
 
         if (moduleInformation.state() == ModuleState.ENABLED) return;
 
@@ -191,7 +191,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
 
         for (ModuleInformation childModule : getModules(moduleInformation.moduleMeta().dependencies())) {
             try {
-                enableModule(childModule);
+                enable(childModule);
             } catch (ModuleRegistrationException e) {
                 updateModuleCache(moduleInformation.state(ModuleState.DEPENDENCY_ERROR));
                 throw new ModuleRegistrationException(moduleInformation.moduleMeta(), ModuleState.DEPENDENCY_ERROR,
@@ -210,7 +210,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
         }
     }
 
-    private void disableModule(ModuleInformation module) {
+    private void disable(ModuleInformation module) {
 
         module.onDisable(configuration());
         ART.callEvent(new ModuleDisabledEvent(module.moduleMeta()));

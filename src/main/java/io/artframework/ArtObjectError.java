@@ -44,6 +44,11 @@ public class ArtObjectError {
         return new ArtObjectError(exception.getMessage(), reason, artObject, exception);
     }
 
+    public static ArtObjectError of(Class<?> artObject, @NonNull Exception exception) {
+
+        return new ArtObjectError(exception.getMessage(), Reason.UNKNOWN, artObject, exception);
+    }
+
     /**
      * A descriptive message why this {@link ArtObject} cannot be
      * registered.
