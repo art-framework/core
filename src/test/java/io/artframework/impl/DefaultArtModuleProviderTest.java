@@ -146,10 +146,30 @@ class DefaultArtModuleProviderTest {
                     .extracting(moduleMeta -> moduleMeta.identifier(), moduleMeta -> moduleMeta.moduleClass())
                     .contains("foobar", RandomModule.class);
         }
+
+        @Test
+        @DisplayName("should create new instance of module class")
+        void shouldCreateNewInstanceOfModule() {
+
+            assertThatCode(() -> provider.register(TestModule.class)).doesNotThrowAnyException();
+            DefaultArtModuleProvider.ModuleInformation information = provider.modules.get(TestModule.class);
+            assertThat(information.module())
+                    .isNotEmpty().get()
+                    .extracting("created")
+                    .isEqualTo(true);
+        }
     }
 
-    @ArtModule("test")
+    @ArtModule(identifier = "test")
     static class TestModule {
+
+        private boolean created = false;
+
+        public TestModule() {
+
+            created = true;
+        }
+
         @OnEnable
         public void onEnable(Configuration configuration) {
 
@@ -161,7 +181,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ArtModule("test")
+    @ArtModule(identifier = "test")
     static class DuplicateModule {
 
         @OnEnable
@@ -187,7 +207,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "foo", dependencies = "bar")
+    @ArtModule(identifier = "foo", dependencies = "bar")
     static class FooModule {
         @OnEnable
         public void onEnable(Configuration configuration) {
@@ -200,7 +220,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ArtModule("bar")
+    @ArtModule(identifier = "bar")
     static class BarModule {
         @OnEnable
         public void onEnable(Configuration configuration) {
@@ -213,7 +233,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "module 1", dependencies = {"module 2", "foo"})
+    @ArtModule(identifier = "module 1", dependencies = {"module 2", "foo"})
     static class Module1 {
 
         @OnEnable
@@ -227,7 +247,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "module 2", dependencies = "module 3")
+    @ArtModule(identifier = "module 2", dependencies = "module 3")
     static class Module2 {
 
         @OnEnable
@@ -241,7 +261,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "module 3", description = "module 1")
+    @ArtModule(identifier = "module 3", description = "module 1")
     static class Module3 {
 
         @OnEnable
@@ -255,7 +275,7 @@ class DefaultArtModuleProviderTest {
         }
     }
 
-    @ArtModule("foobar")
+    @ArtModule(identifier = "foobar")
     static class RandomModule {
 
     }

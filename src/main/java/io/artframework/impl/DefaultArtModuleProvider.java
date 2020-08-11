@@ -16,8 +16,15 @@
 
 package io.artframework.impl;
 
-import io.artframework.*;
-import io.artframework.annotations.ArtModule;
+import io.artframework.ART;
+import io.artframework.AbstractProvider;
+import io.artframework.ArtMetaDataException;
+import io.artframework.ArtModuleDependencyResolver;
+import io.artframework.ArtModuleProvider;
+import io.artframework.Configuration;
+import io.artframework.ModuleMeta;
+import io.artframework.ModuleRegistrationException;
+import io.artframework.ModuleState;
 import io.artframework.annotations.OnDisable;
 import io.artframework.annotations.OnEnable;
 import io.artframework.annotations.OnLoad;
@@ -35,7 +42,15 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.reflections.ReflectionUtils.getAllMethods;
@@ -104,29 +119,24 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
         return this;
     }
 
-    @SuppressWarnings("unchecked")
     private ModuleInformation registerModule(Class<?> moduleClass) throws ModuleRegistrationException {
 
         try {
             ModuleMeta moduleMeta = ModuleMeta.of(moduleClass);
 
-            if (ArtModule.class.isAssignableFrom(moduleClass)) {
-                try {
-                    Constructor<? extends ArtModule> constructor = (Constructor<? extends ArtModule>) moduleClass.getDeclaredConstructor();
-                    constructor.setAccessible(true);
-                    ArtModule artModule = constructor.newInstance();
-                    return registerModule(moduleMeta, artModule);
-                } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                    throw new ModuleRegistrationException(
-                            moduleMeta,
-                            ModuleState.INVALID_MODULE,
-                            "Unable to create a new instance of the ArtModule " + moduleClass.getSimpleName() + ". " +
-                                    "Does it have a parameterless public constructor?",
-                            e
-                    );
-                }
-            } else {
-                return registerModule(moduleMeta, null);
+            try {
+                Constructor<?> constructor = moduleClass.getDeclaredConstructor();
+                constructor.setAccessible(true);
+                Object artModule = constructor.newInstance();
+                return registerModule(moduleMeta, artModule);
+            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                throw new ModuleRegistrationException(
+                        moduleMeta,
+                        ModuleState.INVALID_MODULE,
+                        "Unable to create a new instance of the ArtModule " + moduleClass.getSimpleName() + ". " +
+                                "Does it have a parameterless public constructor?",
+                        e
+                );
             }
         } catch (ArtMetaDataException e) {
             throw new ModuleRegistrationException(null, ModuleState.INVALID_MODULE, e);
