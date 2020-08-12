@@ -58,6 +58,8 @@ public final class Scope {
 
     @Setter(AccessLevel.PACKAGE)
     private Configuration configuration = configurationBuilder().build();
+    @Setter(AccessLevel.PACKAGE)
+    private boolean bootstrapped = false;
 
     public Scope() {}
 
