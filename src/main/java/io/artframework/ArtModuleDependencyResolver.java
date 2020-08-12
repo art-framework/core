@@ -22,11 +22,11 @@ import java.util.concurrent.CompletableFuture;
  * The module dependency resolver tries to resolve all dependencies and
  * indicates if the module can be loaded or not.
  * <p>
- * Make sure to register the dependency resolver with the {@link ArtModuleProvider}.
+ * Make sure to register the dependency resolver with the {@link ModuleProvider}.
  * <p>
  * <h4>Implementation notice</h4>
  * Make sure you register all resolved modules before you return the future result.
- * Use the {@link ArtModuleProvider#register(ArtModule)} method for that.
+ * Use the {@link ModuleProvider#register(Object)} method for that.
  */
 public interface ArtModuleDependencyResolver {
 

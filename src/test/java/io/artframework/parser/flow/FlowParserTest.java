@@ -16,7 +16,13 @@
 
 package io.artframework.parser.flow;
 
-import io.artframework.*;
+import io.artframework.ArtContext;
+import io.artframework.ArtObjectContext;
+import io.artframework.ArtObjectMeta;
+import io.artframework.ConfigMap;
+import io.artframework.Configuration;
+import io.artframework.Factory;
+import io.artframework.ParseException;
 import io.artframework.conf.ActionConfig;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,14 +31,20 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.anyMap;
+import static org.mockito.Mockito.doAnswer;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SuppressWarnings("ALL")
 @DisplayName("FlowParser")
@@ -45,7 +57,7 @@ class FlowParserTest {
     @SneakyThrows
     void beforeEach() {
 
-        Configuration configuration = mock(Configuration.class);
+        Configuration configuration = Configuration.getDefault();
 
         flowParser = spy(new ArtObjectContextParser<Factory<?, ?>>(configuration, new FlowType("test", ".")) {
             @Override
@@ -65,12 +77,8 @@ class FlowParserTest {
             }
         });
 
-        ArrayList<io.artframework.FlowParser> parsers = new ArrayList<>();
-        parsers.add(flowParser);
-
-        FlowParserProvider parserProvider = mock(FlowParserProvider.class);
-        when(configuration.parser()).thenReturn(parserProvider);
-        when(parserProvider.all()).thenReturn(parsers);
+        configuration.parser().clear();
+        configuration.parser().add(flowParser);
 
         parser = new FlowParser(configuration);
     }

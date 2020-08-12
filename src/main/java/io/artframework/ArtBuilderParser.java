@@ -16,7 +16,7 @@
 
 package io.artframework;
 
-public interface ArtBuilderParser<TParser extends Parser<TInput>, TInput> extends ArtBuilder {
+public interface ArtBuilderParser<TParser extends Parser<TInput>, TInput> extends ArtLoader {
 
-    ArtBuilderParser<TParser, TInput> parse(TInput input);
+    ArtBuilderParser<TParser, TInput> parseArt(TInput input);
 }

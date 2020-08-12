@@ -32,15 +32,15 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
-class DefaultArtModuleProviderTest {
+class DefaultModuleProviderTest {
 
-    DefaultArtModuleProvider provider;
+    DefaultModuleProvider provider;
     TestModule module;
 
     @BeforeEach
     void setUp() {
         Configuration configuration = mock(Configuration.class);
-        provider = new DefaultArtModuleProvider(configuration);
+        provider = new DefaultModuleProvider(configuration);
         module = spy(new TestModule());
     }
 
@@ -127,7 +127,7 @@ class DefaultArtModuleProviderTest {
                     .hasSize(1)
                     .extractingByKey(module.getClass())
                     .isNotNull()
-                    .extracting(moduleInformation -> moduleInformation.moduleMeta().identifier(), DefaultArtModuleProvider.ModuleInformation::module)
+                    .extracting(moduleInformation -> moduleInformation.moduleMeta().identifier(), DefaultModuleProvider.ModuleInformation::module)
                     .contains("test", Optional.of(module));
         }
 
@@ -136,13 +136,13 @@ class DefaultArtModuleProviderTest {
         void shouldRegisterRandomModule() {
 
             assertThatCode(() -> provider.register(RandomModule.class)).doesNotThrowAnyException();
-            AbstractObjectAssert<?, DefaultArtModuleProvider.ModuleInformation> moduleAssert = assertThat(provider.modules)
+            AbstractObjectAssert<?, DefaultModuleProvider.ModuleInformation> moduleAssert = assertThat(provider.modules)
                     .hasSize(1)
                     .extractingByKey(RandomModule.class)
                     .isNotNull();
 
             moduleAssert
-                    .extracting(DefaultArtModuleProvider.ModuleInformation::moduleMeta)
+                    .extracting(DefaultModuleProvider.ModuleInformation::moduleMeta)
                     .extracting(moduleMeta -> moduleMeta.identifier(), moduleMeta -> moduleMeta.moduleClass())
                     .contains("foobar", RandomModule.class);
         }
@@ -152,7 +152,7 @@ class DefaultArtModuleProviderTest {
         void shouldCreateNewInstanceOfModule() {
 
             assertThatCode(() -> provider.register(TestModule.class)).doesNotThrowAnyException();
-            DefaultArtModuleProvider.ModuleInformation information = provider.modules.get(TestModule.class);
+            DefaultModuleProvider.ModuleInformation information = provider.modules.get(TestModule.class);
             assertThat(information.module())
                     .isNotEmpty().get()
                     .extracting("created")

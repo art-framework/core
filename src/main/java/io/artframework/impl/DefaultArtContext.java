@@ -54,7 +54,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     }
 
     private boolean isAutoTrigger() {
-        return settings().isAutoTrigger() || triggerListeners.size() > 0;
+        return settings().autoTrigger() || triggerListeners.size() > 0;
     }
 
     @Override
@@ -110,7 +110,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
 
         for (Target<Object> target : targets) {
             if (test(target, context).success()) {
-                if (settings.isExecuteActions()) execute(target, context);
+                if (settings.executeActions()) execute(target, context);
 
                 successfulTargets.add(target);
             }

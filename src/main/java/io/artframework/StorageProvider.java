@@ -16,7 +16,7 @@
 
 package io.artframework;
 
-import io.artframework.impl.DefaultMapStorage;
+import io.artframework.impl.DefaultMapStorageProvider;
 import lombok.NonNull;
 
 import java.util.Optional;
@@ -40,10 +40,10 @@ import java.util.Optional;
  *     </pre>
  * </p>
  */
-public interface Storage extends Scope {
+public interface StorageProvider extends Scope {
 
-    static Storage of(Configuration configuration) {
-        return new DefaultMapStorage(configuration);
+    static StorageProvider of(Configuration configuration) {
+        return new DefaultMapStorageProvider(configuration);
     }
 
     /**

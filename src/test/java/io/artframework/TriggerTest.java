@@ -44,9 +44,9 @@ class TriggerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        Configuration configuration = spy(ART.configuration());
         triggerProvider = mock(TriggerProvider.class);
-        configuration.trigger(triggerProvider);
+        Configuration configuration = spy(Configuration.builder().trigger(triggerProvider).build());
+
         configuration.targets().add(Player.class, PlayerTarget::new);
         configuration.targets().add(Block.class, BlockTarget::new);
 
