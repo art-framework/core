@@ -24,15 +24,15 @@ import java.util.Map;
 
 public class DefaultActionFactory<TTarget> extends AbstractFactory<ActionContext<TTarget>, Action<TTarget>> implements ActionFactory<TTarget> {
 
-    public DefaultActionFactory(Configuration configuration, ArtObjectMeta<Action<TTarget>> information) {
-        super(configuration, information);
+    public DefaultActionFactory(Scope scope, ArtObjectMeta<Action<TTarget>> information) {
+        super(scope, information);
     }
 
     @Override
     public ActionContext<TTarget> create(Map<ConfigMapType, ConfigMap> configMaps) {
 
         return ActionContext.of(
-                configuration(),
+                scope(),
                 meta(),
                 createArtObject(configMaps.get(ConfigMapType.ART_CONFIG)),
                 ActionConfig.of(configMaps.get(ConfigMapType.ACTION))

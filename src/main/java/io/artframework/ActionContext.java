@@ -20,8 +20,6 @@ import io.artframework.conf.ActionConfig;
 import io.artframework.impl.DefaultActionContext;
 import lombok.NonNull;
 
-import java.util.Collection;
-
 /**
  * The <pre>ActionContext</pre> wraps the actual {@link Action} and handles
  * the execution logic of the action.
@@ -31,12 +29,12 @@ import java.util.Collection;
 public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContext<Action<TTarget>>, RequirementHolder, ActionHolder {
 
     static <TTarget> ActionContext<TTarget> of(
-            @NonNull Configuration configuration,
+            @NonNull Scope scope,
             @NonNull ArtObjectMeta<Action<TTarget>> information,
             @NonNull Action<TTarget> action,
             @NonNull ActionConfig config
     ) {
-        return new DefaultActionContext<>(configuration, information, action, config);
+        return new DefaultActionContext<>(scope, information, action, config);
     }
 
     /**

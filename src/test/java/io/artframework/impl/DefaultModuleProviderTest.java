@@ -18,6 +18,7 @@ package io.artframework.impl;
 
 import io.artframework.Configuration;
 import io.artframework.ModuleRegistrationException;
+import io.artframework.Scope;
 import io.artframework.annotations.ArtModule;
 import io.artframework.annotations.OnDisable;
 import io.artframework.annotations.OnEnable;
@@ -39,8 +40,8 @@ class DefaultModuleProviderTest {
 
     @BeforeEach
     void setUp() {
-        Configuration configuration = mock(Configuration.class);
-        provider = new DefaultModuleProvider(configuration);
+        Scope scope = Scope.defaultScope();
+        provider = new DefaultModuleProvider(scope);
         module = spy(new TestModule());
     }
 

@@ -17,16 +17,16 @@
 package io.artframework.impl;
 
 import io.artframework.AbstractProvider;
-import io.artframework.Configuration;
 import io.artframework.EventProvider;
+import io.artframework.Scope;
 import io.artframework.events.EventListener;
 import io.artframework.events.EventManager;
 import lombok.NonNull;
 
 public class DefaultEventProvider extends AbstractProvider implements EventProvider {
 
-    public DefaultEventProvider(@NonNull Configuration configuration) {
-        super(configuration);
+    public DefaultEventProvider(@NonNull Scope scope) {
+        super(scope);
     }
 
     @Override

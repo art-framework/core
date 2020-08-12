@@ -17,7 +17,10 @@
 package io.artframework.impl;
 
 import com.google.common.collect.ImmutableList;
-import io.artframework.*;
+import io.artframework.AbstractProvider;
+import io.artframework.Finder;
+import io.artframework.FinderProvider;
+import io.artframework.Scope;
 import lombok.NonNull;
 
 import java.util.Collection;
@@ -28,10 +31,10 @@ public class DefaultFinderProvider extends AbstractProvider implements FinderPro
 
     private final Set<Finder> finders = new HashSet<>();
 
-    public DefaultFinderProvider(@NonNull Configuration configuration) {
-        super(configuration);
+    public DefaultFinderProvider(@NonNull Scope scope) {
+        super(scope);
 
-        for (Finder defaultFinder : Finder.defaults(configuration)) {
+        for (Finder defaultFinder : Finder.defaults(scope)) {
             add(defaultFinder);
         }
     }

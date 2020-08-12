@@ -25,25 +25,25 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 @Accessors(fluent = true)
-public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> extends AbstractScope implements ExecutionContext<TContext> {
+public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> extends AbstractScoped implements ExecutionContext<TContext> {
 
     private final Context root;
     private final Container container;
     private final TContext currentContext;
 
     public DefaultExecutionContext(
-            @NonNull Configuration configuration,
+            @NonNull Scope scope,
             @Nullable Context root,
             @NonNull Target<?>... targets
     ) {
-        super(configuration);
+        super(scope);
         this.root = root;
         this.container = new Container(targets);
         this.currentContext = null;
     }
 
-    DefaultExecutionContext(Configuration configuration, Context root, Container container, TContext currentContext) {
-        super(configuration);
+    DefaultExecutionContext(Scope scope, Context root, Container container, TContext currentContext) {
+        super(scope);
         this.root = root;
         this.container = container;
         this.currentContext = currentContext;
@@ -107,7 +107,7 @@ public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> exten
     @Override
     public <TNextContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> ExecutionContext<TNextContext> next(TNextContext nextContext) {
         if (current() != null) container.history.push(current());
-        return new DefaultExecutionContext<>(configuration(), root, container, nextContext);
+        return new DefaultExecutionContext<>(scope(), root, container, nextContext);
     }
 
     private static class Container {

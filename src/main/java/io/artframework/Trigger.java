@@ -29,7 +29,7 @@ import java.util.stream.Stream;
  * <p>
  * Make sure that you register your <code>Trigger</code> with the {@link TriggerProvider}.
  */
-public interface Trigger extends ArtObject, Scope, TargetCreator, ResultCreator {
+public interface Trigger extends ArtObject, Scoped, TargetCreator, ResultCreator {
 
     /**
      * Override this and provide your own configuration instance if you are deriving from the global scope.
@@ -37,8 +37,8 @@ public interface Trigger extends ArtObject, Scope, TargetCreator, ResultCreator 
      * @return the configuration scope
      */
     @Override
-    default Configuration configuration() {
-        return ART.configuration();
+    default Scope scope() {
+        return ART.globalScope();
     }
 
     /**

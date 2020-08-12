@@ -45,15 +45,15 @@ class TriggerTest {
         MockitoAnnotations.openMocks(this);
 
         triggerProvider = mock(TriggerProvider.class);
-        Configuration configuration = spy(Configuration.builder().trigger(triggerProvider).build());
+        Scope scope = spy(Scope.of(configurationBuilder -> configurationBuilder.trigger(triggerProvider)));
 
-        configuration.targets().add(Player.class, PlayerTarget::new);
-        configuration.targets().add(Block.class, BlockTarget::new);
+        scope.configuration().targets().add(Player.class, PlayerTarget::new);
+        scope.configuration().targets().add(Block.class, BlockTarget::new);
 
         trigger = new Trigger() {
             @Override
-            public Configuration configuration() {
-                return configuration;
+            public Scope scope() {
+                return scope;
             }
         };
     }

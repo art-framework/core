@@ -17,7 +17,7 @@
 package io.artframework.impl;
 
 import io.artframework.AbstractProvider;
-import io.artframework.Configuration;
+import io.artframework.Scope;
 import io.artframework.Target;
 import io.artframework.TargetProvider;
 import io.artframework.util.ReflectionUtil;
@@ -34,8 +34,8 @@ public class DefaultTargetProvider extends AbstractProvider implements TargetPro
     @SuppressWarnings("rawtypes")
     private final Map<Class<?>, Function> targetProviders = new HashMap<>();
 
-    public DefaultTargetProvider(@NonNull Configuration configuration) {
-        super(configuration);
+    public DefaultTargetProvider(@NonNull Scope scope) {
+        super(scope);
     }
 
     @SuppressWarnings("unchecked")

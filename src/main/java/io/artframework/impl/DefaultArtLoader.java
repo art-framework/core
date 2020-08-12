@@ -23,15 +23,15 @@ import java.util.Collection;
 
 public class DefaultArtLoader implements ArtLoader {
 
-    private final Configuration configuration;
+    private final Scope scope;
 
-    public DefaultArtLoader(Configuration configuration) {
-        this.configuration = configuration;
+    public DefaultArtLoader(Scope scope) {
+        this.scope = scope;
     }
 
     @Override
-    public Configuration configuration() {
-        return configuration;
+    public Scope scope() {
+        return scope;
     }
 
     @Override
@@ -41,7 +41,7 @@ public class DefaultArtLoader implements ArtLoader {
 
     @Override
     public ArtBuilderParser<FlowParser, Collection<String>> parser() {
-        return new DefaultArtBuilderParser<>(configuration(), new FlowParser(configuration()));
+        return new DefaultArtBuilderParser<>(scope(), new FlowParser(scope()));
     }
 
     @Override

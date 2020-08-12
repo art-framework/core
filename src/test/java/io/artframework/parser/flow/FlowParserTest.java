@@ -16,13 +16,7 @@
 
 package io.artframework.parser.flow;
 
-import io.artframework.ArtContext;
-import io.artframework.ArtObjectContext;
-import io.artframework.ArtObjectMeta;
-import io.artframework.ConfigMap;
-import io.artframework.Configuration;
-import io.artframework.Factory;
-import io.artframework.ParseException;
+import io.artframework.*;
 import io.artframework.conf.ActionConfig;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,14 +31,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.anyMap;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
 @DisplayName("FlowParser")
@@ -57,9 +44,9 @@ class FlowParserTest {
     @SneakyThrows
     void beforeEach() {
 
-        Configuration configuration = Configuration.getDefault();
+        Scope scope = Scope.defaultScope();
 
-        flowParser = spy(new ArtObjectContextParser<Factory<?, ?>>(configuration, new FlowType("test", ".")) {
+        flowParser = spy(new ArtObjectContextParser<Factory<?, ?>>(scope, new FlowType("test", ".")) {
             @Override
             protected Optional<Factory<?, ?>> factory(String identifier) {
                 Factory<ArtObjectContext<?>, ?> factory = mock(Factory.class);
@@ -77,10 +64,10 @@ class FlowParserTest {
             }
         });
 
-        configuration.parser().clear();
-        configuration.parser().add(flowParser);
+        scope.configuration().parser().clear();
+        scope.configuration().parser().add(flowParser);
 
-        parser = new FlowParser(configuration);
+        parser = new FlowParser(scope);
     }
 
     @Nested

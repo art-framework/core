@@ -26,17 +26,17 @@ import java.util.Map;
 public class DefaultRequirementFactory<TTarget> extends AbstractFactory<RequirementContext<TTarget>, Requirement<TTarget>> implements RequirementFactory<TTarget> {
 
     public DefaultRequirementFactory(
-            @NonNull Configuration configuration,
+            @NonNull Scope scope,
             @NonNull ArtObjectMeta<Requirement<TTarget>> information
     ) {
-        super(configuration, information);
+        super(scope, information);
     }
 
     @Override
     public RequirementContext<TTarget> create(Map<ConfigMapType, ConfigMap> configMaps) {
 
         return RequirementContext.of(
-                configuration(),
+                scope(),
                 meta(),
                 createArtObject(configMaps.get(ConfigMapType.ART_CONFIG)),
                 RequirementConfig.of(configMaps.get(ConfigMapType.REQUIREMENT))

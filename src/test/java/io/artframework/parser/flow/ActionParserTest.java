@@ -42,16 +42,14 @@ class ActionParserTest {
 
     @BeforeEach
     void beforeEach() {
-        Configuration configuration = mock(Configuration.class);
         actionFactory = mock(ActionFactory.class);
         when(actionFactory.meta()).thenReturn(mock(ArtObjectMeta.class));
 
         ActionProvider actionProvider = mock(ActionProvider.class);
-        when(configuration.actions()).thenReturn(actionProvider);
         when(actionProvider.get(anyString())).thenReturn(Optional.of(actionFactory));
         when(actionFactory.create(anyMap())).thenReturn(mock(ActionContext.class));
 
-        this.parser = new ActionParser(configuration);
+        this.parser = new ActionParser(new Scope(configurationBuilder -> configurationBuilder.actions(actionProvider)));
     }
 
     @Nested

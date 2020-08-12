@@ -31,7 +31,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 @SuppressWarnings("ALL")
 class FlowLogicSorterTest {
@@ -44,17 +45,17 @@ class FlowLogicSorterTest {
     }
 
     private ActionContext<?> action() {
-        return spy(ActionContext.of(mock(Configuration.class), mock(ArtObjectMeta.class), mock(Action.class), mock(ActionConfig.class)));
+        return spy(ActionContext.of(Scope.defaultScope(), mock(ArtObjectMeta.class), mock(Action.class), mock(ActionConfig.class)));
     }
 
     private RequirementContext<?> requirement() {
-        return spy(RequirementContext.of(mock(Configuration.class), mock(ArtObjectMeta.class), mock(Requirement.class), mock(RequirementConfig.class)));
+        return spy(RequirementContext.of(Scope.defaultScope(), mock(ArtObjectMeta.class), mock(Requirement.class), mock(RequirementConfig.class)));
     }
 
     private TriggerContext trigger() {
-        Configuration configuration = mock(Configuration.class);
-        when(configuration.events()).thenReturn(mock(EventProvider.class));
-        return spy(TriggerContext.of(configuration, mock(ArtObjectMeta.class), mock(TriggerConfig.class)));
+        return spy(TriggerContext.of(Scope.of(configurationBuilder -> configurationBuilder.events(mock(EventProvider.class))),
+                mock(ArtObjectMeta.class),
+                mock(TriggerConfig.class)));
     }
 
     @Nested

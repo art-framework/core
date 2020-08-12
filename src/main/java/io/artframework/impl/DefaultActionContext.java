@@ -51,12 +51,12 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     private final List<RequirementContext<?>> requirements = new ArrayList<>();
 
     public DefaultActionContext(
-            @NonNull Configuration configuration,
+            @NonNull Scope scope,
             @NonNull ArtObjectMeta<Action<TTarget>> information,
             @NonNull Action<TTarget> action,
             @NonNull ActionConfig config
     ) {
-        super(configuration, information);
+        super(scope, information);
         this.action = action;
         this.config = config;
     }

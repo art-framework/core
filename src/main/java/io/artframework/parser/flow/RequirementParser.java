@@ -17,16 +17,16 @@
 package io.artframework.parser.flow;
 
 import io.artframework.ConfigMap;
-import io.artframework.Configuration;
 import io.artframework.RequirementFactory;
+import io.artframework.Scope;
 import io.artframework.conf.RequirementConfig;
 
 import java.util.Optional;
 
 public class RequirementParser extends ArtObjectContextParser<RequirementFactory<?>> {
 
-    public RequirementParser(Configuration configuration) {
-        super(configuration, new FlowType("requirement", "\\?"));
+    public RequirementParser(Scope scope) {
+        super(scope, new FlowType("requirement", "\\?"));
     }
 
     @Override

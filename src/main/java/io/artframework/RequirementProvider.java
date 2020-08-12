@@ -20,8 +20,8 @@ import io.artframework.impl.DefaultRequirementProvider;
 
 public interface RequirementProvider extends ArtProvider, FactoryProvider<RequirementFactory<?>> {
 
-    static RequirementProvider of(Configuration configuration) {
-        return new DefaultRequirementProvider(configuration);
+    static RequirementProvider of(Scope scope) {
+        return new DefaultRequirementProvider(scope);
     }
 
     RequirementProvider add(ArtObjectMeta<Requirement<?>> information);

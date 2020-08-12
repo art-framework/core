@@ -40,17 +40,17 @@ public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends 
     /**
      * Creates a new {@link Configuration} from the given parameters.
      *
-     * @param configuration configuration of the context
+     * @param scope configuration of the context
      * @param rootContext The root context that initiated the execution. This can be null.
      * @param targets the targets that are used by this execution context
      * @return a new {@link ExecutionContext} for executing the ART
      */
     static ExecutionContext<?> of(
-            @NonNull io.artframework.Configuration configuration,
+            @NonNull Scope scope,
             @Nullable Context rootContext,
             @NonNull Target<?>... targets
     ) {
-        return new DefaultExecutionContext<>(configuration, rootContext, targets);
+        return new DefaultExecutionContext<>(scope, rootContext, targets);
     }
 
     /**

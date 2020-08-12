@@ -16,26 +16,26 @@
 
 package io.artframework.integration.trigger;
 
-import io.artframework.Configuration;
+import io.artframework.Scope;
 import io.artframework.Trigger;
 import io.artframework.annotations.ART;
 import io.artframework.integration.data.Player;
 
 public class PlayerTrigger implements Trigger {
 
-    private final Configuration configuration;
+    private final Scope scope;
 
     public PlayerTrigger() {
-        this.configuration = io.artframework.ART.configuration();
+        this.scope = Scope.defaultScope();
     }
 
-    public PlayerTrigger(Configuration configuration) {
-        this.configuration = configuration;
+    public PlayerTrigger(Scope scope) {
+        this.scope = scope;
     }
 
     @Override
-    public Configuration configuration() {
-        return configuration;
+    public Scope scope() {
+        return scope;
     }
 
     @ART("move")

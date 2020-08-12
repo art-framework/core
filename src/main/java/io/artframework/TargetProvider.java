@@ -33,8 +33,8 @@ import java.util.function.Function;
  */
 public interface TargetProvider extends Provider {
 
-    static TargetProvider of(Configuration configuration) {
-        return new DefaultTargetProvider(configuration);
+    static TargetProvider of(Scope scope) {
+        return new DefaultTargetProvider(scope);
     }
 
     /**

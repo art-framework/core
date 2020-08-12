@@ -22,9 +22,9 @@ import lombok.NonNull;
 public interface TriggerFactory extends Factory<TriggerContext, Trigger>
 {
     static TriggerFactory of(
-            @NonNull Configuration configuration,
+            @NonNull Scope scope,
             @NonNull ArtObjectMeta<Trigger> information
     ) {
-        return new DefaultTriggerFactory(configuration, information);
+        return new DefaultTriggerFactory(scope, information);
     }
 }

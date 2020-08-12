@@ -16,18 +16,21 @@
 
 package io.artframework;
 
-import lombok.NonNull;
+/**
+ * Scope implementations provide access to a variety of objects that are
+ * available from a given scope.
+ * <p>
+ * The scope of the various objects contained in this type (e.g.
+ * {@link #configuration()} is implementation dependent and will be specified by the concrete subtype of <code>Scope</code>.
+ */
+public interface Scoped {
 
-public abstract class AbstractScope implements Scope {
+    Scope scope();
 
-    private final Configuration configuration;
-
-    protected AbstractScope(Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    @Override
-    public @NonNull Configuration configuration() {
-        return configuration;
+    /**
+     * The configuration of the current scope.
+     */
+    default Configuration configuration() {
+        return scope().configuration();
     }
 }

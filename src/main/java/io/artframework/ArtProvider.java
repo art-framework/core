@@ -34,8 +34,8 @@ import java.util.Collection;
  */
 public interface ArtProvider extends Provider {
 
-    static ArtProvider of(Configuration configuration) {
-        return new DefaultArtProvider(configuration);
+    static ArtProvider of(Scope scope) {
+        return new DefaultArtProvider(scope);
     }
 
     /**

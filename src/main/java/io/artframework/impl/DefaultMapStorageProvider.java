@@ -16,8 +16,8 @@
 
 package io.artframework.impl;
 
-import io.artframework.AbstractScope;
-import io.artframework.Configuration;
+import io.artframework.AbstractScoped;
+import io.artframework.Scope;
 import io.artframework.StorageProvider;
 import lombok.NonNull;
 
@@ -25,12 +25,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class DefaultMapStorageProvider extends AbstractScope implements StorageProvider {
+public class DefaultMapStorageProvider extends AbstractScoped implements StorageProvider {
 
     private final Map<String, Object> storage = new HashMap<>();
 
-    public DefaultMapStorageProvider(Configuration configuration) {
-        super(configuration);
+    public DefaultMapStorageProvider(Scope scope) {
+        super(scope);
     }
 
     @Override
@@ -52,5 +52,10 @@ public class DefaultMapStorageProvider extends AbstractScope implements StorageP
             e.printStackTrace();
             return Optional.empty();
         }
+    }
+
+    @Override
+    public void close() {
+        storage.clear();
     }
 }

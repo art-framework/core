@@ -17,8 +17,8 @@
 package io.artframework.parser.flow;
 
 import io.artframework.ConfigMap;
-import io.artframework.Configuration;
 import io.artframework.ParseException;
+import io.artframework.Scope;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.util.ConfigUtil;
 import lombok.Data;
@@ -28,9 +28,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("ConfigParser")
 class ConfigParserTest {
@@ -45,7 +43,7 @@ class ConfigParserTest {
 
     @SneakyThrows
     private ConfigParser parser(Class<?> configClass) {
-        return new ConfigParser(Configuration.getDefault(), ConfigMap.of(ConfigMapType.ART_CONFIG, ConfigUtil.getConfigFields(configClass)));
+        return new ConfigParser(Scope.defaultScope(), ConfigMap.of(ConfigMapType.ART_CONFIG, ConfigUtil.getConfigFields(configClass)));
     }
 
     @Nested

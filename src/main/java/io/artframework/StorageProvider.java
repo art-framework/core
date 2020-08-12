@@ -40,10 +40,10 @@ import java.util.Optional;
  *     </pre>
  * </p>
  */
-public interface StorageProvider extends Scope {
+public interface StorageProvider extends Scoped, AutoCloseable {
 
-    static StorageProvider of(Configuration configuration) {
-        return new DefaultMapStorageProvider(configuration);
+    static StorageProvider of(Scope scope) {
+        return new DefaultMapStorageProvider(scope);
     }
 
     /**

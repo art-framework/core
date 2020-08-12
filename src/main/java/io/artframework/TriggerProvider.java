@@ -26,11 +26,11 @@ public interface TriggerProvider extends ArtProvider, FactoryProvider<TriggerFac
     /**
      * Creates a new default implementation of this trigger provider using the given configuration.
      *
-     * @param configuration the configuration to use
+     * @param scope the configuration to use
      * @return a new default trigger provider using the given configuration
      */
-    static TriggerProvider of(Configuration configuration) {
-        return new DefaultTriggerProvider(configuration);
+    static TriggerProvider of(Scope scope) {
+        return new DefaultTriggerProvider(scope);
     }
 
     /**
@@ -101,12 +101,12 @@ public interface TriggerProvider extends ArtProvider, FactoryProvider<TriggerFac
     /**
      * Triggers the trigger that matches the given identifier or has an alias that matches it.
      * <p>
-     * Will return a {@link TriggerResult} that contains all information about the execution
+     * Will return a {@link CombinedResult} that contains all information about the execution
      * of the {@link Trigger} and all of its child executions and checks.
      * This may be in the future since trigger execution may be delayed.
      * <p>
-     * The result will never be null even if there are not trigger with the given identifier.
-     * A result that had no trigger will be empty instead. Use {@link TriggerResult#isEmpty()} to check that.
+     * The result will never be null even if there are no trigger with the given identifier.
+     * A result that had no trigger will be empty instead. Use {@link Result#status()} to check that.
      *
      * @param identifier the identifier or alias of the trigger
      * @param targets the trigger targets that wrap a predicate

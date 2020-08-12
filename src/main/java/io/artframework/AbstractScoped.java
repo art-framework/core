@@ -16,21 +16,16 @@
 
 package io.artframework;
 
-import io.artframework.impl.DefaultFlowParserProvider;
+public abstract class AbstractScoped implements Scoped {
 
-import java.util.Collection;
+    private final Scope scope;
 
-public interface FlowParserProvider extends Provider {
-
-    static FlowParserProvider of(Scope scope) {
-        return new DefaultFlowParserProvider(scope);
+    protected AbstractScoped(Scope scope) {
+        this.scope = scope;
     }
 
-    Collection<FlowParser> all();
-
-    FlowParserProvider add(FlowParser parser);
-
-    FlowParserProvider remove(FlowParser parser);
-
-    FlowParserProvider clear();
+    @Override
+    public Scope scope() {
+        return scope;
+    }
 }

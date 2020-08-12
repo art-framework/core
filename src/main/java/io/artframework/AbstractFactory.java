@@ -17,28 +17,22 @@
 package io.artframework;
 
 import io.artframework.parser.flow.ConfigMapType;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 
 import java.lang.reflect.InvocationTargetException;
 
+@Getter
+@Accessors(fluent = true)
 public abstract class AbstractFactory<TContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> implements Factory<TContext, TArtObject> {
 
-    private final Configuration configuration;
-    private final ArtObjectMeta<TArtObject> information;
+    private final Scope scope;
+    private final ArtObjectMeta<TArtObject> meta;
 
-    protected AbstractFactory(@NonNull Configuration configuration, @NonNull ArtObjectMeta<TArtObject> information) {
-        this.configuration = configuration;
-        this.information = information;
-    }
-
-    @Override
-    public ArtObjectMeta<TArtObject> meta() {
-        return information;
-    }
-
-    @Override
-    public Configuration configuration() {
-        return configuration;
+    protected AbstractFactory(@NonNull Scope scope, @NonNull ArtObjectMeta<TArtObject> meta) {
+        this.scope = scope;
+        this.meta = meta;
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

@@ -21,7 +21,7 @@ package io.artframework;
  * that holds a {@link Configuration} and is used to compose the
  * other service provider.
  */
-public interface Provider extends Scope {
+public interface Provider extends Scoped {
 
     /**
      * This is just syntactic suggar to return to the {@link Configuration}

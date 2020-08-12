@@ -22,9 +22,9 @@ import lombok.NonNull;
 public interface ActionFactory<TTarget> extends Factory<ActionContext<TTarget>, Action<TTarget>>
 {
     static <TTarget> ActionFactory<TTarget> of(
-            @NonNull Configuration configuration,
+            @NonNull Scope scope,
             @NonNull ArtObjectMeta<Action<TTarget>> information
     ) {
-        return new DefaultActionFactory<>(configuration, information);
+        return new DefaultActionFactory<>(scope, information);
     }
 }

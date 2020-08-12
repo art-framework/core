@@ -38,7 +38,7 @@ import static org.mockito.Mockito.*;
 @SuppressWarnings("ALL")
 class ArtObjectContextParserTest {
 
-    private Configuration configuration;
+    private ActionProvider actions;
     private ActionParser parser;
     private ActionFactory<?> factory;
     private ArtObjectMeta artObjectMeta;
@@ -46,16 +46,15 @@ class ArtObjectContextParserTest {
     @BeforeEach
     @SneakyThrows
     void beforeEach() {
-        configuration = mock(Configuration.class);
-        ActionProvider actionProvider = mock(ActionProvider.class);
-        when(configuration.actions()).thenReturn(actionProvider);
+        actions = mock(ActionProvider.class);
         factory = mock(ActionFactory.class);
         artObjectMeta = mock(ArtObjectMeta.class);
         when(factory.meta()).thenReturn(artObjectMeta);
         when(factory.create(anyMap())).thenReturn(mock(ActionContext.class));
         when(artObjectMeta.configMap()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
-        when(actionProvider.get(anyString())).thenAnswer(invocation -> Optional.of(factory));
-        this.parser = new ActionParser(configuration);
+        when(actions.get(anyString())).thenAnswer(invocation -> Optional.of(factory));
+
+        this.parser = new ActionParser(Scope.of(configurationBuilder -> configurationBuilder.actions(actions)));
     }
 
     private <TConfig> TConfig extractConfig(ConfigMapType type, TConfig config) {
@@ -156,7 +155,7 @@ class ArtObjectContextParserTest {
         @DisplayName("should throw if no matching factory is found")
         void shouldThrowIfNoIdentifierMatches() {
 
-            when(configuration.actions().get(anyString())).thenReturn(Optional.empty());
+            when(actions.get(anyString())).thenReturn(Optional.empty());
 
             assertThat(parser.accept("!foobar")).isTrue();
             assertThatExceptionOfType(ParseException.class)

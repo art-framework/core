@@ -17,7 +17,7 @@
 package io.artframework.parser.flow;
 
 import io.artframework.ConfigMap;
-import io.artframework.Configuration;
+import io.artframework.Scope;
 import io.artframework.TriggerFactory;
 import io.artframework.conf.TriggerConfig;
 
@@ -25,8 +25,8 @@ import java.util.Optional;
 
 public class TriggerParser extends ArtObjectContextParser<TriggerFactory> {
 
-    public TriggerParser(Configuration configuration) {
-        super(configuration, new FlowType("trigger", "@"));
+    public TriggerParser(Scope scope) {
+        super(scope, new FlowType("trigger", "@"));
     }
 
     @Override

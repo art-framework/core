@@ -24,13 +24,13 @@ import java.util.Objects;
 
 public class DefaultRequirementProvider extends AbstractFactoryProvider<RequirementFactory<?>> implements RequirementProvider {
 
-    public DefaultRequirementProvider(Configuration configuration) {
-        super(configuration);
+    public DefaultRequirementProvider(Scope scope) {
+        super(scope);
     }
 
     @Override
     public RequirementProvider add(@NonNull ArtObjectMeta<Requirement<?>> information) {
-        addFactory(RequirementFactory.of(configuration(), information.get()));
+        addFactory(RequirementFactory.of(scope(), information.get()));
         return this;
     }
 

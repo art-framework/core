@@ -18,15 +18,15 @@ package io.artframework.parser.flow;
 
 import io.artframework.ActionFactory;
 import io.artframework.ConfigMap;
-import io.artframework.Configuration;
+import io.artframework.Scope;
 import io.artframework.conf.ActionConfig;
 
 import java.util.Optional;
 
 public class ActionParser extends ArtObjectContextParser<ActionFactory<?>> {
 
-    public ActionParser(Configuration configuration) {
-        super(configuration, new FlowType("action", "!"));
+    public ActionParser(Scope scope) {
+        super(scope, new FlowType("action", "!"));
     }
 
     @Override

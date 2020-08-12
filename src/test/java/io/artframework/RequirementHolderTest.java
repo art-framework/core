@@ -29,7 +29,8 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @SuppressWarnings("ALL")
 class RequirementHolderTest implements CombinedResultCreator {
@@ -51,7 +52,7 @@ class RequirementHolderTest implements CombinedResultCreator {
 
     private ExecutionContext<?> executionContext(Class<?>... targets) {
         return ExecutionContext.of(
-                mock(Configuration.class),
+                Scope.defaultScope(),
                 null,
                 Arrays.stream(targets)
                         .map(this::target)
@@ -60,7 +61,7 @@ class RequirementHolderTest implements CombinedResultCreator {
     }
 
     private ExecutionContext<?> executionContext(Target<?>... targets) {
-        return ExecutionContext.of(mock(Configuration.class), null, targets);
+        return ExecutionContext.of(Scope.defaultScope(), null, targets);
     }
 
     private <TTarget> Target<TTarget> target(Class<TTarget> targetClass) {

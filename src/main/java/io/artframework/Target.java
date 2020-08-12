@@ -16,10 +16,6 @@
 
 package io.artframework;
 
-import lombok.NonNull;
-
-import java.util.Optional;
-
 /**
  * The {@link Target} is a wrapper around the different target types used by all ART objects.
  * It is needed to provide a consistent way to get a unique identifier
@@ -42,22 +38,6 @@ import java.util.Optional;
  * @param <TTarget> type of the underlying target
  */
 public interface Target<TTarget> extends ArtObject {
-
-    /**
-     * Wraps the given target object into a {@link Target}.
-     * It will try to find the best possible (nearest) wrapper
-     * and will return null if no wrapper was found.
-     * <br>
-     * Delegates to {@link TargetProvider#get(Object)}.
-     *
-     * @param target    target to wrap
-     * @param <TTarget> type of the target
-     * @return wrapped target object or null if no wrapper was found
-     * @see TargetProvider#get(Object)
-     */
-    static <TTarget> Optional<Target<TTarget>> of(@NonNull TTarget target) {
-        return ART.target(target);
-    }
 
     /**
      * Gets a unique identifier of the wrapped target object.
