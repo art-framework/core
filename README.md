@@ -1,7 +1,7 @@
 # **A**ctions **R**equirements **T**rigger (ART) Framework
 
 [![Build Status](https://github.com/Silthus/art-framework/workflows/Build/badge.svg)](../../actions?query=workflow%3ABuild)
-[![Documentation Status](https://readthedocs.org/projects/art-framework/badge/?version=latest)](https://art.silthus.net/en/latest/?badge=latest)
+[![Netlify](https://img.shields.io/netlify/dae1bdab-7c51-4172-97ab-f8fdd8f0612e?label=docs)](https://art-framework.io)
 [![jitpack status](https://jitpack.io/v/io.art-framework/art-core.svg)](https://jitpack.io/#io.art-framework/art-core)
 [![codecov](https://codecov.io/gh/Silthus/art-framework/branch/master/graph/badge.svg)](https://codecov.io/gh/Silthus/art-framework)
 [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/Silthus/art-framework?include_prereleases&label=release)](../../releases)
