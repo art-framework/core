@@ -16,14 +16,12 @@
 
 package io.artframework;
 
-import io.artframework.impl.DefaultConfiguration;
 import io.artframework.impl.DefaultExecutionContext;
 import lombok.NonNull;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.Stack;
 
 /**
  * The <pre>ExecutionContext</pre> holds a hierarchical order of execution
@@ -40,7 +38,7 @@ import java.util.Stack;
 public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends Context {
 
     /**
-     * Creates a new {@link DefaultConfiguration} from the given parameters.
+     * Creates a new {@link Configuration} from the given parameters.
      *
      * @param configuration configuration of the context
      * @param rootContext The root context that initiated the execution. This can be null.
@@ -48,7 +46,7 @@ public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends 
      * @return a new {@link ExecutionContext} for executing the ART
      */
     static ExecutionContext<?> of(
-            @NonNull Configuration configuration,
+            @NonNull io.artframework.Configuration configuration,
             @Nullable Context rootContext,
             @NonNull Target<?>... targets
     ) {
@@ -119,7 +117,7 @@ public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends 
      * This means a unique key is generated from the {@link Target#uniqueId()} and
      * {@link ArtObjectContext#uniqueId()} and will be appended by your key.
      * <br>
-     * Then the {@link Storage#set(String, Object)} method is called and the data is persisted.
+     * Then the {@link StorageProvider#set(String, Object)} method is called and the data is persisted.
      * <br>
      * Use the {@link #data()} methods to store data that is only available in this scope
      * and not persisted to the database.
@@ -129,12 +127,12 @@ public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends 
      * @param value    value to store
      * @param <TValue> type of the value
      * @return an {@link Optional} containing the existing value
-     * @see Storage#set(String, Object)
+     * @see StorageProvider#set(String, Object)
      */
     <TValue> Optional<TValue> store(@NonNull Target<?> target, @NonNull String key, @NonNull TValue value);
 
     /**
-     * Retrieves a persistently stored value from the {@link Storage} and returns
+     * Retrieves a persistently stored value from the {@link StorageProvider} and returns
      * it cast to the given type. Will return an empty {@link Optional} if casting
      * fails or the data does not exist.
      * <br>

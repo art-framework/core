@@ -20,27 +20,22 @@ import io.artframework.Action;
 import io.artframework.ArtContext;
 import io.artframework.Trigger;
 import io.artframework.TriggerListener;
+import io.artframework.annotations.ConfigOption;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
 @Data
+@ConfigOption
+@Builder(toBuilder = true)
+@Accessors(fluent = true)
 @EqualsAndHashCode(callSuper = true)
 public class ArtSettings extends SettingsBase {
 
     public static ArtSettings getDefault() {
-        return new ArtSettings();
-    }
 
-    public static ArtSettings of(ArtSettings settings) {
-        return new ArtSettings(settings);
-    }
-
-    ArtSettings() {
-    }
-
-    ArtSettings(ArtSettings settings) {
-        this.autoTrigger = settings.autoTrigger;
-        this.executeActions = settings.executeActions;
+        return ArtSettings.builder().build();
     }
 
     /**
@@ -51,20 +46,22 @@ public class ArtSettings extends SettingsBase {
      * <br>
      * As an alternative you can subscribe to this {@link ArtContext} by using the
      * {@link ArtContext#onTrigger(Class, TriggerListener)} method. Then all actions defined in the
-     * config will be executed, unless {@link #isExecuteActions()} is false.
+     * config will be executed, unless {@link #executeActions()} is false.
      *
-     * @see #isExecuteActions()
+     * @see #executeActions()
      */
+    @Builder.Default
     private boolean autoTrigger = true;
 
     /**
      * Set to false if you want to prevent the {@link ArtContext} from executing
      * any {@link Action}s. This only affects actions that would be automatically
      * executed when a {@link Trigger} fires and a {@link TriggerListener} is attached
-     * or {@link #isAutoTrigger()} is set to true.
+     * or {@link #autoTrigger()} is set to true.
      * Defaults to true.
      * <br>
      * You can always bypass this by directly calling one of the {@link ArtContext} methods.
      */
+    @Builder.Default
     private boolean executeActions = true;
 }

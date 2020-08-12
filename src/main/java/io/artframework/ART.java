@@ -27,12 +27,12 @@ public final class ART {
 
     private ART() {}
 
-    private static final Configuration globalConfiguration = Configuration.create();
+    private static final Configuration globalConfiguration = Configuration.getDefault();
 
     /**
      * Gets the global {@link Configuration} configured for all static methods in this class.
-     * You can use the {@link Configuration#derive()} method to clone the configuration
-     * and provide a local modified copy of it to the {@link ArtBuilder}
+     * You can use the {@link Configuration#toBuilder()} method to clone the configuration
+     * and provide a local modified copy of it to the {@link ArtLoader}
      * or any other object in the ART-Framework.
      *
      * @return the global {@link Configuration}
@@ -64,13 +64,13 @@ public final class ART {
     }
 
     // TODO: javadoc
-    public static ArtBuilder builder() {
-        return builder(configuration());
+    public static ArtLoader load() {
+        return load(configuration());
     }
 
     // TODO: javadoc
-    public static ArtBuilder builder(Configuration configuration) {
-        return ArtBuilder.of(configuration);
+    public static ArtLoader load(Configuration configuration) {
+        return ArtLoader.of(configuration);
     }
 
     /**
@@ -79,15 +79,15 @@ public final class ART {
      * You can then use the {@link ArtContext} to invoke {@link Action}s by calling
      * {@link ArtContext#execute(Target[])} or to check for requirements by calling {@link ArtContext#test(Target)}.
      * <br>
-     * This is actually a shortcut to {@link ArtBuilderParser#parse(Object)}. You can also call the
-     * builder directly ({@link #builder()}) and fine tune how you want to load and parse your ART.
+     * This is actually a shortcut to {@link ArtBuilderParser#parseArt(Object)}. You can also call the
+     * builder directly ({@link #load()}) and fine tune how you want to load and parse your ART.
      *
      * @param lines a list of strings that contain the ART you want to load
      * @return ART containing the parsed art lines
-     * @see ArtBuilder
+     * @see ArtLoader
      */
     public static ArtContext load(List<String> lines) {
-        return builder().parser().load(lines).build();
+        return load().parse(lines).build();
     }
 
     /**

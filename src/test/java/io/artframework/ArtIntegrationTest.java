@@ -47,7 +47,8 @@ public class ArtIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        ART = Configuration.create();
+
+        ART = new Configuration();
     }
 
     @Nested
@@ -238,11 +239,11 @@ public class ArtIntegrationTest {
             @DisplayName("should create list of nested actions")
             void shouldCreateListOfActions() {
 
-                ArtContext context = ART.builder().load(Arrays.asList(
+                ArtContext context = ART.load(Arrays.asList(
                         "!damage 20",
                         "!dmg 50",
                         "!hit 10"
-                )).build();
+                ));
 
                 Player player = new Player();
                 player.setHealth(100);
@@ -265,11 +266,11 @@ public class ArtIntegrationTest {
             @DisplayName("should execute actions for multiple targets")
             void shouldCreateListOfActionsForMultipleTargets() {
 
-                ArtContext context = ART.builder().load(Arrays.asList(
+                ArtContext context = ART.load(Arrays.asList(
                         "!damage 20",
                         "!dmg 50",
                         "!hit 10"
-                )).build();
+                ));
 
                 Player[] players = new Player[10];
                 for (int i = 0; i < 10; i++) {
@@ -299,10 +300,10 @@ public class ArtIntegrationTest {
             @DisplayName("should test requirements before executing actions")
             void shouldTestRequirementsBeforeAction() {
 
-                ArtContext context = ART.builder().load(Arrays.asList(
+                ArtContext context = ART.load(Arrays.asList(
                         "?health >50",
                         "!damage 40"
-                )).build();
+                ));
 
                 Player foo = new Player("foo");
                 foo.setHealth(60);
@@ -318,12 +319,12 @@ public class ArtIntegrationTest {
             @DisplayName("should test requirements of nested actions")
             void shouldTestRequirementsOfNestedActions() {
 
-                ArtContext context = ART.builder().load(Arrays.asList(
+                ArtContext context = ART.load(Arrays.asList(
                         "?health >50",
                         "!damage 40",
                         "?health >50",
                         "!txt awesome, you, did it"
-                )).build();
+                ));
 
                 Player bar = spy(new Player("bar"));
                 bar.setHealth(100);
@@ -352,10 +353,10 @@ public class ArtIntegrationTest {
                 Player player = new Player();
                 player.setHealth(100);
 
-                ART.builder().load(Arrays.asList(
+                ART.load(Arrays.asList(
                         "@move",
                         "!damage 40"
-                )).build();
+                ));
 
                 playerTrigger.onMove(player);
 
@@ -369,10 +370,10 @@ public class ArtIntegrationTest {
                 Player player = new Player();
                 player.setHealth(100);
 
-                ART.builder().load(Arrays.asList(
+                ART.load(Arrays.asList(
                         "@move(execute_once=true)",
                         "!damage 40"
-                )).build();
+                ));
 
                 playerTrigger.onMove(player);
                 playerTrigger.onMove(player);
@@ -388,11 +389,11 @@ public class ArtIntegrationTest {
                 Player player = new Player();
                 player.setHealth(100);
 
-                ART.builder().load(Arrays.asList(
+                ART.load(Arrays.asList(
                         "@move",
                         "@damage",
                         "!damage 40"
-                )).build();
+                ));
 
                 playerTrigger.onMove(player);
                 playerTrigger.onDamage(player);
@@ -407,9 +408,9 @@ public class ArtIntegrationTest {
                 Player player = new Player();
                 player.setHealth(100);
 
-                ArtContext artContext = ART.builder().load(Arrays.asList(
+                ArtContext artContext = ART.load(Arrays.asList(
                         "@move"
-                )).build().enableTrigger();
+                )).enableTrigger();
 
                 TriggerListener<Player> listener = spy(new TriggerListener<Player>() {
                     @Override

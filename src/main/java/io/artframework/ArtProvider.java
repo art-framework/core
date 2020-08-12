@@ -30,7 +30,7 @@ import java.util.Collection;
  * and load the {@link FinderResult} with the {@link FinderResult#load(Configuration)} ()} method.
  * <br>
  * By default the ART-Framework will scan the whole classpath. You can disable this by
- * setting {@link Settings#setAutoRegisterAllArt(boolean)} to <pre>false</pre>.
+ * setting {@link Settings#autoRegisterAllArt(boolean)} to <pre>false</pre>.
  */
 public interface ArtProvider extends Provider {
 

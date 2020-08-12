@@ -17,8 +17,7 @@
 package io.artframework;
 
 import io.artframework.annotations.ArtModule;
-import io.artframework.impl.DefaultArtModuleProvider;
-import io.artframework.impl.DefaultConfiguration;
+import io.artframework.impl.DefaultModuleProvider;
 import lombok.NonNull;
 
 import javax.annotation.Nullable;
@@ -29,7 +28,7 @@ import java.util.Optional;
  * <p>
  * Use it to add your modules that are annotated with the @{@link ArtModule} annotation.
  */
-public interface ArtModuleProvider extends Provider {
+public interface ModuleProvider extends Provider {
 
     /**
      * Creates a new default instance of the module provider.
@@ -37,8 +36,8 @@ public interface ArtModuleProvider extends Provider {
      * @param configuration the configuration instance to use
      * @return a new default instance of the module provider
      */
-    static ArtModuleProvider of(DefaultConfiguration configuration) {
-        return new DefaultArtModuleProvider(configuration);
+    static ModuleProvider of(Configuration configuration) {
+        return new DefaultModuleProvider(configuration);
     }
 
     /**
@@ -50,7 +49,7 @@ public interface ArtModuleProvider extends Provider {
      * @param resolver the resolver that should be used when
      * @return this module provider
      */
-    ArtModuleProvider resolver(@Nullable ArtModuleDependencyResolver resolver);
+    ModuleProvider resolver(@Nullable ArtModuleDependencyResolver resolver);
 
     /**
      * @return the currently registered resolver
@@ -73,7 +72,7 @@ public interface ArtModuleProvider extends Provider {
      * @throws ModuleRegistrationException if the registration of the module failed,
      *                                     e.g. if no {@code @ArtModule} annotation is present on the class
      */
-    ArtModuleProvider register(@NonNull Object module) throws ModuleRegistrationException;
+    ModuleProvider register(@NonNull Object module) throws ModuleRegistrationException;
 
     /**
      * Registers the given class as a module with the provider.
@@ -92,7 +91,7 @@ public interface ArtModuleProvider extends Provider {
      *                                     e.g. if no {@code @ArtModule} annotation is present on the class
      *                                     or no instance of the module could be created.
      */
-    ArtModuleProvider register(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
+    ModuleProvider register(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
 
     /**
      * Loads the given module into the art-framework configuration instance and enables it.
@@ -110,7 +109,7 @@ public interface ArtModuleProvider extends Provider {
      * @see io.artframework.annotations.OnDisable
      * @see io.artframework.annotations.OnLoad
      */
-    ArtModuleProvider enable(@NonNull Object module) throws ModuleRegistrationException;
+    ModuleProvider enable(@NonNull Object module) throws ModuleRegistrationException;
 
     /**
      * Loads the given module into the art-framework configuration instance and enables it.
@@ -135,7 +134,7 @@ public interface ArtModuleProvider extends Provider {
      * @see io.artframework.annotations.OnDisable
      * @see io.artframework.annotations.OnLoad
      */
-    ArtModuleProvider enable(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
+    ModuleProvider enable(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
 
     /**
      * Disabled the given module and unloads it from the art-framework configuration instance.
@@ -143,5 +142,5 @@ public interface ArtModuleProvider extends Provider {
      * @param module the module that should be unloaded
      * @return this module provider
      */
-    ArtModuleProvider disable(@NonNull Object module);
+    ModuleProvider disable(@NonNull Object module);
 }

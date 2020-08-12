@@ -16,25 +16,25 @@
 
 package io.artframework;
 
-import io.artframework.impl.DefaultArtBuilder;
+import io.artframework.impl.DefaultArtLoader;
 import io.artframework.parser.flow.FlowParser;
 
 import java.util.Collection;
 
-public interface ArtBuilder extends Scope {
+public interface ArtLoader extends Scope {
 
-    ArtBuilder DEFAULT = of(ART.configuration());
+    ArtLoader DEFAULT = of(ART.configuration());
 
-    static ArtBuilder of(Configuration configuration) {
-        return new DefaultArtBuilder(configuration);
+    static ArtLoader of(Configuration configuration) {
+        return new DefaultArtLoader(configuration);
     }
 
     <TParser extends Parser<TInput>, TInput> ArtBuilderParser<TParser, TInput> parser(TParser parser);
 
     ArtBuilderParser<FlowParser, Collection<String>> parser();
 
-    default ArtBuilderParser<FlowParser, Collection<String>> load(Collection<String> strings) {
-        return parser().parse(strings);
+    default ArtBuilderParser<FlowParser, Collection<String>> parse(Collection<String> strings) {
+        return parser().parseArt(strings);
     }
 
     ArtContext build();

@@ -21,11 +21,11 @@ import io.artframework.parser.flow.FlowParser;
 
 import java.util.Collection;
 
-public class DefaultArtBuilder implements ArtBuilder {
+public class DefaultArtLoader implements ArtLoader {
 
     private final Configuration configuration;
 
-    public DefaultArtBuilder(Configuration configuration) {
+    public DefaultArtLoader(Configuration configuration) {
         this.configuration = configuration;
     }
 

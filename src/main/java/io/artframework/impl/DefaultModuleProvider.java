@@ -20,7 +20,7 @@ import io.artframework.ART;
 import io.artframework.AbstractProvider;
 import io.artframework.ArtMetaDataException;
 import io.artframework.ArtModuleDependencyResolver;
-import io.artframework.ArtModuleProvider;
+import io.artframework.ModuleProvider;
 import io.artframework.Configuration;
 import io.artframework.ModuleMeta;
 import io.artframework.ModuleRegistrationException;
@@ -56,18 +56,18 @@ import java.util.stream.Collectors;
 import static org.reflections.ReflectionUtils.getAllMethods;
 import static org.reflections.ReflectionUtils.withAnnotation;
 
-public class DefaultArtModuleProvider extends AbstractProvider implements ArtModuleProvider {
+public class DefaultModuleProvider extends AbstractProvider implements ModuleProvider {
 
     final Map<Class<?>, ModuleInformation> modules = new HashMap<>();
     private CycleSearch<ModuleMeta> cycleSearcher = new CycleSearch<>(new boolean[0][0], new ModuleMeta[0]);
     private ArtModuleDependencyResolver resolver;
 
-    public DefaultArtModuleProvider(@NonNull Configuration configuration) {
+    public DefaultModuleProvider(@NonNull Configuration configuration) {
         super(configuration);
     }
 
     @Override
-    public ArtModuleProvider resolver(@Nullable ArtModuleDependencyResolver resolver) {
+    public ModuleProvider resolver(@Nullable ArtModuleDependencyResolver resolver) {
         this.resolver = resolver;
         return this;
     }
@@ -78,7 +78,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
     }
 
     @Override
-    public ArtModuleProvider register(@NonNull Object module) throws ModuleRegistrationException {
+    public ModuleProvider register(@NonNull Object module) throws ModuleRegistrationException {
 
         registerModule(module);
 
@@ -86,14 +86,14 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
     }
 
     @Override
-    public ArtModuleProvider register(@NonNull Class<?> moduleClass) throws ModuleRegistrationException {
+    public ModuleProvider register(@NonNull Class<?> moduleClass) throws ModuleRegistrationException {
 
         registerModule(moduleClass);
 
         return this;
     }
 
-    public ArtModuleProvider enable(@NonNull Object module) throws ModuleRegistrationException {
+    public ModuleProvider enable(@NonNull Object module) throws ModuleRegistrationException {
 
         enable(registerModule(module));
 
@@ -101,7 +101,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
     }
 
     @Override
-    public ArtModuleProvider enable(@NonNull Class<?> moduleClass) throws ModuleRegistrationException {
+    public ModuleProvider enable(@NonNull Class<?> moduleClass) throws ModuleRegistrationException {
 
         enable(registerModule(moduleClass));
 
@@ -109,7 +109,7 @@ public class DefaultArtModuleProvider extends AbstractProvider implements ArtMod
     }
 
     @Override
-    public ArtModuleProvider disable(@NonNull Object module) {
+    public ModuleProvider disable(@NonNull Object module) {
 
         ModuleInformation information = modules.remove(module.getClass());
         if (information != null) {

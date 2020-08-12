@@ -18,7 +18,6 @@ package io.artframework.impl;
 
 import com.google.common.collect.ImmutableList;
 import io.artframework.*;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 

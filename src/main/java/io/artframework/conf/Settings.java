@@ -20,10 +20,9 @@ import io.artframework.ArtObject;
 import io.artframework.ArtProvider;
 import io.artframework.annotations.Config;
 import io.artframework.annotations.ConfigOption;
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.With;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
@@ -32,33 +31,22 @@ import java.io.Serializable;
  * Settings that influence how ART works.
  */
 @Data
-@With
+@Builder(toBuilder = true)
 @ConfigOption
-@AllArgsConstructor
 @Config("settings.yml")
 @Accessors(fluent = true)
-@EqualsAndHashCode(callSuper = false)
+@EqualsAndHashCode(callSuper = true)
 public class Settings extends SettingsBase implements Serializable, Cloneable {
 
     public static Settings getDefault() {
-        return new Settings();
+
+        return Settings.builder().build();
     }
 
-    public static Settings of(Settings settings) {
-        return new Settings(settings);
-    }
-
-    Settings() {
-    }
-
-    Settings(Settings settings) {
-        this.basePath = settings.basePath;
-        this.autoRegisterAllArt = settings.autoRegisterAllArt;
-        this.modulePath = settings.modulePath;
-    }
-
+    @Builder.Default
     private String basePath = "./";
 
+    @Builder.Default
     private String modulePath = "modules/";
 
     /**
@@ -69,6 +57,10 @@ public class Settings extends SettingsBase implements Serializable, Cloneable {
      * Use the {@link ArtProvider} methods to register {@link ArtObject}s
      * that cannot be constructed so easily.
      */
+    @Builder.Default
     private boolean autoRegisterAllArt = true;
+
+    @Builder.Default
+    private ArtSettings artSettings = ArtSettings.getDefault();
 }
 

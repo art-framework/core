@@ -140,8 +140,8 @@ Signed-off-by: Michael Reichenbach <michael@reichenbach.in>
 * **release:** replace versions in files on release ([1fd8ab1](https://github.com/art-framework/art-core/commit/1fd8ab1a646ed72683eab017fec721e06f957c11))
 * **requirements:** add check_once, count and negated artObjectMeta ([f5cf864](https://github.com/art-framework/art-core/commit/f5cf86434fb47d6f2da2b1a5e5dbb2bce1e52678))
 * **requirements:** add check_once, count and negated artObjectMeta ([61b47f9](https://github.com/art-framework/art-core/commit/61b47f9cc6f803536445d04286092a84a259d8df))
-* **storage:** add storage api with default memory provider ([79e0fa9](https://github.com/art-framework/art-core/commit/79e0fa999c338567d8e68de589e77fe5a4cb054d)), closes [#7](https://github.com/art-framework/art-core/issues/7)
-* **storage:** add storage api with default memory provider ([4999de9](https://github.com/art-framework/art-core/commit/4999de96f7cc4ec678a0e4db620018ef81506782)), closes [#7](https://github.com/art-framework/art-core/issues/7)
+* **storageProvider:** add storageProvider api with default memory provider ([79e0fa9](https://github.com/art-framework/art-core/commit/79e0fa999c338567d8e68de589e77fe5a4cb054d)), closes [#7](https://github.com/art-framework/art-core/issues/7)
+* **storageProvider:** add storageProvider api with default memory provider ([4999de9](https://github.com/art-framework/art-core/commit/4999de96f7cc4ec678a0e4db620018ef81506782)), closes [#7](https://github.com/art-framework/art-core/issues/7)
 * **trigger:** add cooldown and execute_once to trigger ([96bc6e6](https://github.com/art-framework/art-core/commit/96bc6e6703edc3733584d52f18a6226b94ace14b))
 * **trigger:** add cooldown and execute_once to trigger ([9f49c50](https://github.com/art-framework/art-core/commit/9f49c501c2c467472fe239de11b0815b495f3397))
 * **trigger:** add artObjectMeta to prevent action execution on trigger ([d79c366](https://github.com/art-framework/art-core/commit/d79c3667997d6c0b4aa00229f82cebc9348d2e9d))
@@ -225,7 +225,7 @@ The ART-Framework now uses a fluent style for all API endpoints and enforces a s
 * **actions:** actions now can have a cooldown ([853f2e8](https://github.com/art-framework/art-framework/commit/853f2e83a59dac8e14b8ebd0fee9b48d4df0e590)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
 * **config:** add BukkitArtConfig to load from a ConfigurationSection ([b56f5a3](https://github.com/art-framework/art-framework/commit/b56f5a3e9b24b23347ca3235522227826fec4aa8))
 * **requirements:** add check_once, count and negated artObjectMeta ([61b47f9](https://github.com/art-framework/art-framework/commit/61b47f9cc6f803536445d04286092a84a259d8df))
-* **storage:** add storage api with default memory provider ([4999de9](https://github.com/art-framework/art-framework/commit/4999de96f7cc4ec678a0e4db620018ef81506782)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
+* **storageProvider:** add storageProvider api with default memory provider ([4999de9](https://github.com/art-framework/art-framework/commit/4999de96f7cc4ec678a0e4db620018ef81506782)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
 * **trigger:** add cooldown and execute_once to trigger ([9f49c50](https://github.com/art-framework/art-framework/commit/9f49c501c2c467472fe239de11b0815b495f3397))
 
 
@@ -265,7 +265,7 @@ The ART-Framework now uses a fluent style for all API endpoints and enforces a s
 * **actions:** actions now can have a cooldown ([010fc83](https://github.com/art-framework/art-framework/commit/010fc837e0186dcd5d02ddbd7aa0e54abc9a2ff1)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
 * **config:** add BukkitArtConfig to load from a ConfigurationSection ([3baac1d](https://github.com/art-framework/art-framework/commit/3baac1d6400733b7ce9bb373632329a3e667e349))
 * **requirements:** add check_once, count and negated artObjectMeta ([f5cf864](https://github.com/art-framework/art-framework/commit/f5cf86434fb47d6f2da2b1a5e5dbb2bce1e52678))
-* **storage:** add storage api with default memory provider ([79e0fa9](https://github.com/art-framework/art-framework/commit/79e0fa999c338567d8e68de589e77fe5a4cb054d)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
+* **storageProvider:** add storageProvider api with default memory provider ([79e0fa9](https://github.com/art-framework/art-framework/commit/79e0fa999c338567d8e68de589e77fe5a4cb054d)), closes [#7](https://github.com/art-framework/art-framework/issues/7)
 * **trigger:** add cooldown and execute_once to trigger ([96bc6e6](https://github.com/art-framework/art-framework/commit/96bc6e6703edc3733584d52f18a6226b94ace14b))
 
 

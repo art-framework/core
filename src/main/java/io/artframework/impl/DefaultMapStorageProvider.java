@@ -18,18 +18,18 @@ package io.artframework.impl;
 
 import io.artframework.AbstractScope;
 import io.artframework.Configuration;
-import io.artframework.Storage;
+import io.artframework.StorageProvider;
 import lombok.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class DefaultMapStorage extends AbstractScope implements Storage {
+public class DefaultMapStorageProvider extends AbstractScope implements StorageProvider {
 
     private final Map<String, Object> storage = new HashMap<>();
 
-    public DefaultMapStorage(Configuration configuration) {
+    public DefaultMapStorageProvider(Configuration configuration) {
         super(configuration);
     }
 

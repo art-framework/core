@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class DefaultArtBuilderParser<TParser extends Parser<TInput>, TInput> extends DefaultArtBuilder implements ArtBuilderParser<TParser, TInput> {
+public class DefaultArtBuilderParser<TParser extends Parser<TInput>, TInput> extends DefaultArtLoader implements ArtBuilderParser<TParser, TInput> {
 
     private final TParser parser;
     private final List<TInput> inputs = new ArrayList<>();
@@ -33,7 +33,7 @@ public class DefaultArtBuilderParser<TParser extends Parser<TInput>, TInput> ext
     }
 
     @Override
-    public ArtBuilderParser<TParser, TInput> parse(TInput input) {
+    public ArtBuilderParser<TParser, TInput> parseArt(TInput input) {
         inputs.add(input);
         return this;
     }
