@@ -30,7 +30,7 @@ public final class CombinedArtContext extends DefaultArtContext implements ArtCo
     private final Map<String, Object> data = new HashMap<>();
 
     CombinedArtContext(ArtContext context1, ArtContext context2) {
-        super(context1.configuration(), context1.settings(), new ArrayList<>());
+        super(context1.scope(), context1.settings(), new ArrayList<>());
         this.data.putAll(context1.data());
         this.contextSet.add(context1);
 

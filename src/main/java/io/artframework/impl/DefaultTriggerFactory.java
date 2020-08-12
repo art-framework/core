@@ -26,17 +26,17 @@ import java.util.Map;
 public class DefaultTriggerFactory extends AbstractFactory<TriggerContext, Trigger> implements TriggerFactory {
 
     public DefaultTriggerFactory(
-            @NonNull Configuration configuration,
+            @NonNull Scope scope,
             @NonNull ArtObjectMeta<Trigger> information
     ) {
-        super(configuration, information);
+        super(scope, information);
     }
 
     @Override
     public TriggerContext create(Map<ConfigMapType, ConfigMap> configMaps) {
 
         return TriggerContext.of(
-                configuration(),
+                scope(),
                 meta(),
                 TriggerConfig.of(configMaps.get(ConfigMapType.TRIGGER))
         );

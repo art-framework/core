@@ -16,15 +16,7 @@
 
 package io.artframework.impl;
 
-import io.artframework.ART;
-import io.artframework.AbstractProvider;
-import io.artframework.ArtMetaDataException;
-import io.artframework.ArtModuleDependencyResolver;
-import io.artframework.ModuleProvider;
-import io.artframework.Configuration;
-import io.artframework.ModuleMeta;
-import io.artframework.ModuleRegistrationException;
-import io.artframework.ModuleState;
+import io.artframework.*;
 import io.artframework.annotations.OnDisable;
 import io.artframework.annotations.OnEnable;
 import io.artframework.annotations.OnLoad;
@@ -42,15 +34,7 @@ import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.reflections.ReflectionUtils.getAllMethods;
@@ -62,8 +46,8 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     private CycleSearch<ModuleMeta> cycleSearcher = new CycleSearch<>(new boolean[0][0], new ModuleMeta[0]);
     private ArtModuleDependencyResolver resolver;
 
-    public DefaultModuleProvider(@NonNull Configuration configuration) {
-        super(configuration);
+    public DefaultModuleProvider(@NonNull Scope scope) {
+        super(scope);
     }
 
     @Override
@@ -316,9 +300,15 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             return Optional.ofNullable(module);
         }
 
-        public void onLoad(Configuration configuration) {
-            if (onLoad == null) return;
-            invokeMethod(onLoad, configuration);
+        public Configuration onLoad(Configuration configuration) {
+            if (onLoad == null) return configuration;
+
+            Object invokeMethod = invokeMethod(onLoad, configuration);
+            if (invokeMethod instanceof Configuration) {
+                return (Configuration) invokeMethod;
+            }
+
+            return configuration;
         }
 
         public void onEnable(Configuration configuration) {
@@ -331,7 +321,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             invokeMethod(onDisable, configuration);
         }
 
-        private void invokeMethod(@NonNull Method method, Configuration configuration) {
+        private Object invokeMethod(@NonNull Method method, Configuration configuration) {
             try {
                 Class<?>[] parameterTypes = method.getParameterTypes();
                 Object[] parameters = new Object[parameterTypes.length];
@@ -343,9 +333,10 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
                     }
                 }
                 method.setAccessible(true);
-                method.invoke(module, parameters);
+                return method.invoke(module, parameters);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
+                return null;
             }
         }
     }

@@ -22,13 +22,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> extends AbstractScope implements ArtObjectContext<TArtObject> {
+public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> extends AbstractScoped implements ArtObjectContext<TArtObject> {
 
     private final ArtObjectMeta<TArtObject> information;
     private final Map<String, Object> data = new HashMap<>();
 
-    public AbstractArtObjectContext(@NonNull Configuration configuration, ArtObjectMeta<TArtObject> information) {
-        super(configuration);
+    public AbstractArtObjectContext(@NonNull Scope scope, ArtObjectMeta<TArtObject> information) {
+        super(scope);
         this.information = information;
     }
 

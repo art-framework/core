@@ -24,13 +24,13 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.function.Predicate;
 
-public interface Finder extends Scope {
+public interface Finder extends Scoped {
 
-    static Finder[] defaults(Configuration configuration) {
+    static Finder[] defaults(Scope scope) {
         return new Finder[]{
-                new ArtObjectFinder(configuration),
-                new TargetFinder(configuration),
-                new ModuleFinder(configuration)
+                new ArtObjectFinder(scope),
+                new TargetFinder(scope),
+                new ModuleFinder(scope)
         };
     }
 

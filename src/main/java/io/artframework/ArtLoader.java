@@ -21,12 +21,10 @@ import io.artframework.parser.flow.FlowParser;
 
 import java.util.Collection;
 
-public interface ArtLoader extends Scope {
+public interface ArtLoader extends Scoped {
 
-    ArtLoader DEFAULT = of(ART.configuration());
-
-    static ArtLoader of(Configuration configuration) {
-        return new DefaultArtLoader(configuration);
+    static ArtLoader of(Scope scope) {
+        return new DefaultArtLoader(scope);
     }
 
     <TParser extends Parser<TInput>, TInput> ArtBuilderParser<TParser, TInput> parser(TParser parser);

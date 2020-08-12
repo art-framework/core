@@ -36,20 +36,20 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
         return of(new ArrayList<>());
     }
 
-    static ArtContext of(Configuration configuration, ArtSettings settings, Collection<ArtObjectContext<?>> art) {
-        return new DefaultArtContext(configuration, settings, art);
+    static ArtContext of(Scope scope, ArtSettings settings, Collection<ArtObjectContext<?>> art) {
+        return new DefaultArtContext(scope, settings, art);
     }
 
-    static ArtContext of(Configuration configuration, Collection<ArtObjectContext<?>> art) {
-        return of(configuration, ART.configuration().settings().artSettings(), art);
+    static ArtContext of(Scope scope, Collection<ArtObjectContext<?>> art) {
+        return of(scope, scope.configuration().settings().artSettings(), art);
     }
 
     static ArtContext of(ArtSettings settings, Collection<ArtObjectContext<?>> art) {
-        return of(ART.configuration(), settings, art);
+        return of(ART.globalScope(), settings, art);
     }
 
     static ArtContext of(Collection<ArtObjectContext<?>> art) {
-        return of(ART.configuration(), art);
+        return of(ART.globalScope(), art);
     }
 
     /**

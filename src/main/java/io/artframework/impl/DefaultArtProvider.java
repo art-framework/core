@@ -23,8 +23,8 @@ import java.util.Collection;
 
 public class DefaultArtProvider extends AbstractProvider implements ArtProvider {
 
-    public DefaultArtProvider(@NonNull Configuration configuration) {
-        super(configuration);
+    public DefaultArtProvider(@NonNull Scope scope) {
+        super(scope);
     }
 
     @Override

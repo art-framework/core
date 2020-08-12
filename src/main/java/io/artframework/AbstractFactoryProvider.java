@@ -26,17 +26,17 @@ import java.util.Optional;
 
 public abstract class AbstractFactoryProvider<TFactory extends Factory<?, ?>> implements FactoryProvider<TFactory> {
 
-    private final Configuration configuration;
+    private final Scope scope;
     final Map<String, TFactory> factories = new HashMap<>();
     final Map<String, String> aliasMappings = new HashMap<>();
 
-    protected AbstractFactoryProvider(Configuration configuration) {
-        this.configuration = configuration;
+    protected AbstractFactoryProvider(Scope scope) {
+        this.scope = scope;
     }
 
     @Override
-    public Configuration configuration() {
-        return configuration;
+    public Scope scope() {
+        return scope;
     }
 
     public boolean exists(@NonNull String identifier) {

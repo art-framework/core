@@ -23,11 +23,11 @@ import io.artframework.parser.flow.TriggerParser;
 
 public interface FlowParser {
 
-    static FlowParser[] defaults(Configuration configuration) {
+    static FlowParser[] defaults(Scope scope) {
         return new FlowParser[]{
-                new ActionParser(configuration),
-                new RequirementParser(configuration),
-                new TriggerParser(configuration)
+                new ActionParser(scope),
+                new RequirementParser(scope),
+                new TriggerParser(scope)
         };
     }
 

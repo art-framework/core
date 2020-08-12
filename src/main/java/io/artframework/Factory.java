@@ -17,7 +17,6 @@
 package io.artframework;
 
 import io.artframework.parser.flow.ConfigMapType;
-import lombok.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,28 +33,7 @@ import java.util.Map;
  * @param <TContext>
  * @param <TArtObject>
  */
-public interface Factory<TContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> extends Scope {
-
-    static <TTarget> Factory<ActionContext<TTarget>, Action<TTarget>> ofAction(
-            @NonNull Configuration configuration,
-            @NonNull ArtObjectMeta<Action<TTarget>> information
-    ) {
-        return ActionFactory.of(configuration, information);
-    }
-
-    static <TTarget> Factory<RequirementContext<TTarget>, Requirement<TTarget>> ofRequirement(
-            @NonNull Configuration configuration,
-            @NonNull ArtObjectMeta<Requirement<TTarget>> information
-    ) {
-        return RequirementFactory.of(configuration, information);
-    }
-
-    static Factory<TriggerContext, Trigger> ofTrigger(
-            @NonNull Configuration configuration,
-            @NonNull ArtObjectMeta<Trigger> information
-    ) {
-        return TriggerFactory.of(configuration, information);
-    }
+public interface Factory<TContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> extends Scoped {
 
     ArtObjectMeta<TArtObject> meta();
 

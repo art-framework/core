@@ -43,12 +43,12 @@ import static org.mockito.Mockito.*;
 @DisplayName("ART Integration Tests")
 public class ArtIntegrationTest {
 
-    private Configuration ART;
+    private Scope scope;
 
     @BeforeEach
     void setUp() {
 
-        ART = new Configuration();
+        scope = Scope.defaultScope();
     }
 
     @Nested
@@ -63,17 +63,18 @@ public class ArtIntegrationTest {
             @DisplayName("should register direct matching targets")
             void targets() {
 
-                ART.targets()
+                TargetProvider targets = scope.configuration().targets();
+                targets
                         .add(Player.class, PlayerTarget::new)
                         .add(Entity.class, EntityTarget::new);
 
-                assertThat(ART.targets().exists(new Player("foo"))).isTrue();
-                assertThat(ART.targets().exists(new Entity("foo"))).isTrue();
+                assertThat(targets.exists(new Player("foo"))).isTrue();
+                assertThat(targets.exists(new Entity("foo"))).isTrue();
 
-                assertThat(ART.targets().get(new Player("foo")))
+                assertThat(targets.get(new Player("foo")))
                         .isNotEmpty().get()
                         .isExactlyInstanceOf(PlayerTarget.class);
-                assertThat(ART.targets().get(new Entity("foo")))
+                assertThat(targets.get(new Entity("foo")))
                         .isNotEmpty().get()
                         .isExactlyInstanceOf(EntityTarget.class);
             }
@@ -82,9 +83,10 @@ public class ArtIntegrationTest {
             @DisplayName("should use closest target type")
             void shouldUseClosestTarget() {
 
-                ART.targets().add(Entity.class, EntityTarget::new);
+                TargetProvider targets = scope.configuration().targets();
+                targets.add(Entity.class, EntityTarget::new);
 
-                assertThat(ART.targets().get(new Player("foo")))
+                assertThat(targets.get(new Player("foo")))
                         .isNotEmpty().get()
                         .isExactlyInstanceOf(EntityTarget.class);
             }
@@ -93,7 +95,7 @@ public class ArtIntegrationTest {
             @DisplayName("should return empty if no target exists")
             void shouldReturnEmptyIfNoneExists() {
 
-                assertThat(ART.targets().get("foo")).isEmpty();
+                assertThat(scope.configuration().targets().get("foo")).isEmpty();
             }
         }
 
@@ -105,9 +107,10 @@ public class ArtIntegrationTest {
             @DisplayName("should register actions")
             void shouldRegisterActions() {
 
-                ART.actions().add(DamageAction.class);
+                ActionProvider actions = scope.configuration().actions();
+                actions.add(DamageAction.class);
 
-                assertThat(ART.actions().get("damage"))
+                assertThat(actions.get("damage"))
                         .isNotEmpty().get()
                         .extracting(Factory::meta)
                         .extracting(ArtObjectMeta::identifier, ArtObjectMeta::alias, ArtObjectMeta::artObjectClass)
@@ -119,9 +122,9 @@ public class ArtIntegrationTest {
             @DisplayName("should register actions")
             void shouldRegisterRequirements() {
 
-                ART.requirements().add(HealthRequirement.class);
+                scope.configuration().requirements().add(HealthRequirement.class);
 
-                assertThat(ART.requirements().get("health"))
+                assertThat(scope.configuration().requirements().get("health"))
                         .isNotEmpty().get()
                         .extracting(Factory::meta)
                         .extracting(ArtObjectMeta::identifier, ArtObjectMeta::alias, ArtObjectMeta::artObjectClass)
@@ -133,15 +136,16 @@ public class ArtIntegrationTest {
             @DisplayName("should register trigger")
             void shouldRegisterTrigger() {
 
-                ART.trigger().add(PlayerTrigger.class);
+                TriggerProvider trigger = scope.configuration().trigger();
+                trigger.add(PlayerTrigger.class);
 
-                assertThat(ART.trigger().get("move"))
+                assertThat(trigger.get("move"))
                         .isNotEmpty();
 
-                assertThat(ART.trigger().get("damage"))
+                assertThat(trigger.get("damage"))
                         .isNotEmpty();
 
-                assertThat(ART.trigger().get("dmg"))
+                assertThat(trigger.get("dmg"))
                         .isNotEmpty().get()
                         .extracting(triggerFactory -> triggerFactory.meta())
                         .extracting(triggerArtInformation -> triggerArtInformation.identifier())
@@ -152,15 +156,16 @@ public class ArtIntegrationTest {
             @DisplayName("should register trigger from direct instance")
             void shouldRegisterTriggerFromInstance() {
 
-                ART.trigger().add(new PlayerTrigger());
+                TriggerProvider trigger = scope.configuration().trigger();
+                trigger.add(new PlayerTrigger());
 
-                assertThat(ART.trigger().get("move"))
+                assertThat(trigger.get("move"))
                         .isNotEmpty();
 
-                assertThat(ART.trigger().get("damage"))
+                assertThat(trigger.get("damage"))
                         .isNotEmpty();
 
-                assertThat(ART.trigger().get("dmg"))
+                assertThat(trigger.get("dmg"))
                         .isNotEmpty().get()
                         .extracting(triggerFactory -> triggerFactory.meta())
                         .extracting(triggerArtInformation -> triggerArtInformation.identifier())
@@ -171,12 +176,13 @@ public class ArtIntegrationTest {
             @DisplayName("should register lambda action")
             void shouldRegisterLambda() {
 
-                ART.actions().add("kill", Player.class, (target, context) -> {
+                ActionProvider actions = scope.configuration().actions();
+                actions.add("kill", Player.class, (target, context) -> {
                     target.source().setHealth(0);
                     return success();
                 });
 
-                assertThat(ART.actions().get("kill"))
+                assertThat(actions.get("kill"))
                         .isNotEmpty();
             }
         }
@@ -190,11 +196,11 @@ public class ArtIntegrationTest {
         @DisplayName("should call trigger event in listener")
         void shouldCallTriggerEventListener() {
 
-            PlayerTrigger trigger = new PlayerTrigger(ART);
-            ART.trigger().add(trigger);
+            PlayerTrigger trigger = new PlayerTrigger(scope);
+            scope.configuration().trigger().add(trigger);
 
             MyEventListener eventListener = spy(new MyEventListener());
-            ART.events().register(eventListener);
+            scope.configuration().events().register(eventListener);
             eventListener.consumers.add(event -> {
                 assertThat(event.getIdentifier()).isEqualTo("move");
             });
@@ -213,8 +219,8 @@ public class ArtIntegrationTest {
 
         @BeforeEach
         void setUp() {
-            playerTrigger = new PlayerTrigger(ART);
-            ART
+            playerTrigger = new PlayerTrigger(scope);
+            scope.configuration()
                     .actions()
                         .add(DamageAction.class)
                         .add(TextAction.class)
@@ -228,7 +234,7 @@ public class ArtIntegrationTest {
 
         @AfterEach
         void tearDown() {
-            ART.events().unregisterAll();
+            scope.configuration().events().unregisterAll();
         }
 
         @Nested
@@ -239,7 +245,7 @@ public class ArtIntegrationTest {
             @DisplayName("should create list of nested actions")
             void shouldCreateListOfActions() {
 
-                ArtContext context = ART.load(Arrays.asList(
+                ArtContext context = scope.load(Arrays.asList(
                         "!damage 20",
                         "!dmg 50",
                         "!hit 10"
@@ -266,7 +272,7 @@ public class ArtIntegrationTest {
             @DisplayName("should execute actions for multiple targets")
             void shouldCreateListOfActionsForMultipleTargets() {
 
-                ArtContext context = ART.load(Arrays.asList(
+                ArtContext context = scope.load(Arrays.asList(
                         "!damage 20",
                         "!dmg 50",
                         "!hit 10"
@@ -300,7 +306,7 @@ public class ArtIntegrationTest {
             @DisplayName("should test requirements before executing actions")
             void shouldTestRequirementsBeforeAction() {
 
-                ArtContext context = ART.load(Arrays.asList(
+                ArtContext context = scope.load(Arrays.asList(
                         "?health >50",
                         "!damage 40"
                 ));
@@ -319,7 +325,7 @@ public class ArtIntegrationTest {
             @DisplayName("should test requirements of nested actions")
             void shouldTestRequirementsOfNestedActions() {
 
-                ArtContext context = ART.load(Arrays.asList(
+                ArtContext context = scope.load(Arrays.asList(
                         "?health >50",
                         "!damage 40",
                         "?health >50",
@@ -353,7 +359,7 @@ public class ArtIntegrationTest {
                 Player player = new Player();
                 player.setHealth(100);
 
-                ART.load(Arrays.asList(
+                scope.load(Arrays.asList(
                         "@move",
                         "!damage 40"
                 ));
@@ -370,7 +376,7 @@ public class ArtIntegrationTest {
                 Player player = new Player();
                 player.setHealth(100);
 
-                ART.load(Arrays.asList(
+                scope.load(Arrays.asList(
                         "@move(execute_once=true)",
                         "!damage 40"
                 ));
@@ -389,7 +395,7 @@ public class ArtIntegrationTest {
                 Player player = new Player();
                 player.setHealth(100);
 
-                ART.load(Arrays.asList(
+                scope.load(Arrays.asList(
                         "@move",
                         "@damage",
                         "!damage 40"
@@ -408,7 +414,7 @@ public class ArtIntegrationTest {
                 Player player = new Player();
                 player.setHealth(100);
 
-                ArtContext artContext = ART.load(Arrays.asList(
+                ArtContext artContext = scope.load(Arrays.asList(
                         "@move"
                 )).enableTrigger();
 

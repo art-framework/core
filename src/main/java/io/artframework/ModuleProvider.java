@@ -33,11 +33,11 @@ public interface ModuleProvider extends Provider {
     /**
      * Creates a new default instance of the module provider.
      *
-     * @param configuration the configuration instance to use
+     * @param scope the configuration instance to use
      * @return a new default instance of the module provider
      */
-    static ModuleProvider of(Configuration configuration) {
-        return new DefaultModuleProvider(configuration);
+    static ModuleProvider of(Scope scope) {
+        return new DefaultModuleProvider(scope);
     }
 
     /**

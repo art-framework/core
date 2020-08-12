@@ -25,11 +25,11 @@ import java.util.Set;
 public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder, RequirementHolder, AutoCloseable {
 
     static TriggerContext of(
-            @NonNull Configuration configuration,
+            @NonNull Scope scope,
             @NonNull ArtObjectMeta<Trigger> information,
             @NonNull TriggerConfig config
     ) {
-        return new DefaultTriggerContext(configuration, information, config);
+        return new DefaultTriggerContext(scope, information, config);
     }
 
     /**

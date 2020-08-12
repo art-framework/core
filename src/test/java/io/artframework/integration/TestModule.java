@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package io.artframework;
+package io.artframework.integration;
 
-import io.artframework.impl.DefaultFlowParserProvider;
+import io.artframework.Configuration;
+import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.OnLoad;
 
-import java.util.Collection;
+@ArtModule
+public class TestModule {
 
-public interface FlowParserProvider extends Provider {
-
-    static FlowParserProvider of(Scope scope) {
-        return new DefaultFlowParserProvider(scope);
+    @OnLoad
+    public Configuration onLoad(Configuration configuration) {
+        return configuration.withStorage(null);
     }
-
-    Collection<FlowParser> all();
-
-    FlowParserProvider add(FlowParser parser);
-
-    FlowParserProvider remove(FlowParser parser);
-
-    FlowParserProvider clear();
 }

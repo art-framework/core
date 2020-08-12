@@ -27,8 +27,8 @@ import io.artframework.impl.DefaultEventProvider;
  */
 public interface EventProvider extends Provider {
 
-    static EventProvider of(Configuration configuration) {
-        return new DefaultEventProvider(configuration);
+    static EventProvider of(Scope scope) {
+        return new DefaultEventProvider(scope);
     }
 
     /**

@@ -42,16 +42,14 @@ class RequirementParserTest {
 
     @BeforeEach
     void beforeEach() {
-        Configuration configuration = mock(Configuration.class);
         requirementFactory = mock(RequirementFactory.class);
         when(requirementFactory.meta()).thenReturn(mock(ArtObjectMeta.class));
 
         RequirementProvider requirementProvider = mock(RequirementProvider.class);
-        when(configuration.requirements()).thenReturn(requirementProvider);
         when(requirementProvider.get(anyString())).thenReturn(Optional.of(requirementFactory));
         when(requirementFactory.create(anyMap())).thenReturn(mock(RequirementContext.class));
 
-        this.parser = new RequirementParser(configuration);
+        this.parser = new RequirementParser(Scope.of(configurationBuilder -> configurationBuilder.requirements(requirementProvider)));
     }
 
     @Nested

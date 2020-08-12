@@ -17,9 +17,9 @@
 package io.artframework.parser.flow;
 
 import com.google.common.base.Strings;
-import io.artframework.Configuration;
 import io.artframework.ParseException;
 import io.artframework.Scope;
+import io.artframework.Scoped;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
@@ -33,16 +33,16 @@ import java.util.regex.Pattern;
 @Accessors(fluent = true)
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public abstract class LineParser<TResult> implements Scope {
+public abstract class LineParser<TResult> implements Scoped {
 
-    private final Configuration configuration;
+    private final Scope scope;
     private final Pattern pattern;
     private Matcher matcher;
     private String input;
 
     @Override
-    public @NonNull Configuration configuration() {
-        return configuration;
+    public @NonNull Scope scope() {
+        return scope;
     }
 
     public boolean accept(String line) {

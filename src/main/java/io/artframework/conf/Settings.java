@@ -38,7 +38,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 public class Settings extends SettingsBase implements Serializable, Cloneable {
 
-    public static Settings getDefault() {
+    public static Settings defaultSettings() {
 
         return Settings.builder().build();
     }

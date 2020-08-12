@@ -20,8 +20,8 @@ import io.artframework.impl.DefaultActionProvider;
 
 public interface ActionProvider extends ArtProvider, FactoryProvider<ActionFactory<?>> {
 
-    static ActionProvider of(Configuration configuration) {
-        return new DefaultActionProvider(configuration);
+    static ActionProvider of(Scope scope) {
+        return new DefaultActionProvider(scope);
     }
 
     ActionProvider add(ArtObjectMeta<Action<?>> actionInformation);

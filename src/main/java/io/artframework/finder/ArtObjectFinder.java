@@ -29,8 +29,8 @@ import java.util.List;
 
 public final class ArtObjectFinder extends AbstractFinder {
 
-    public ArtObjectFinder(Configuration configuration) {
-        super(configuration);
+    public ArtObjectFinder(Scope scope) {
+        super(scope);
     }
 
     @Override

@@ -16,17 +16,59 @@
 
 package io.artframework;
 
-/**
- * Scope implementations provide access to a variety of objects that are
- * available from a given scope.
- * <p>
- * The scope of the various objects contained in this type (e.g.
- * {@link #configuration()} is implementation dependent and will be specified by the concrete subtype of <code>Scope</code>.
- */
-public interface Scope {
+import io.artframework.conf.Settings;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
-    /**
-     * The configuration of the current scope.
-     */
-    Configuration configuration();
+import java.util.List;
+import java.util.function.Consumer;
+
+@Data
+@AllArgsConstructor
+@Accessors(fluent = true)
+public final class Scope {
+
+    public static Scope defaultScope() {
+
+        return new Scope();
+    }
+
+    public static Scope of(Consumer<Configuration.ConfigurationBuilder> config) {
+        return new Scope(config);
+    }
+
+    private Configuration.ConfigurationBuilder configurationBuilder(){
+        return Configuration.builder()
+                .actions(ActionProvider.of(this))
+                .art(ArtProvider.of(this))
+                .storage(StorageProvider.of(this))
+                .classLoader(getClass().getClassLoader())
+                .events(EventProvider.of(this))
+                .finder(FinderProvider.of(this))
+                .modules(ModuleProvider.of(this))
+                .parser(FlowParserProvider.of(this))
+                .requirements(RequirementProvider.of(this))
+                .settings(Settings.defaultSettings())
+                .targets(TargetProvider.of(this))
+                .trigger(TriggerProvider.of(this));
+    }
+
+    @Setter(AccessLevel.PACKAGE)
+    private Configuration configuration = configurationBuilder().build();
+
+    public Scope() {}
+
+    public Scope(Consumer<Configuration.ConfigurationBuilder> builder) {
+        Configuration.ConfigurationBuilder configurationBuilder = configurationBuilder();
+        builder.accept(configurationBuilder);
+        this.configuration = configurationBuilder.build();
+    }
+
+    public ArtContext load(List<String> list) {
+
+        return ArtLoader.of(this).parse(list).build();
+    }
 }

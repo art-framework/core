@@ -18,9 +18,9 @@ package io.artframework.impl;
 
 import com.google.common.collect.ImmutableList;
 import io.artframework.AbstractProvider;
-import io.artframework.Configuration;
 import io.artframework.FlowParser;
 import io.artframework.FlowParserProvider;
+import io.artframework.Scope;
 import lombok.NonNull;
 
 import java.util.ArrayList;
@@ -32,9 +32,9 @@ public class DefaultFlowParserProvider extends AbstractProvider implements FlowP
 
     private final List<FlowParser> flowParsers = new ArrayList<>();
 
-    public DefaultFlowParserProvider(@NonNull Configuration configuration) {
-        super(configuration);
-        Arrays.stream(FlowParser.defaults(configuration))
+    public DefaultFlowParserProvider(@NonNull Scope scope) {
+        super(scope);
+        Arrays.stream(FlowParser.defaults(scope))
                 .forEach(this::add);
     }
 

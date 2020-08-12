@@ -42,11 +42,11 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     private final TriggerConfig config;
 
     public DefaultTriggerContext(
-            @NonNull Configuration configuration,
+            @NonNull Scope scope,
             @NonNull ArtObjectMeta<Trigger> information,
             @NonNull TriggerConfig config
     ) {
-        super(configuration, information);
+        super(scope, information);
         this.config = config;
 
         configuration().events().register(this);
@@ -72,7 +72,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
         if (!event.getIdentifier().equalsIgnoreCase(meta().identifier())) return;
 
         ExecutionContext<?> executionContext = ExecutionContext.of(
-                configuration(),
+                scope(),
                 this,
                 Arrays.stream(event.getTargets()).map(TriggerTarget::target).toArray(Target[]::new)
         );

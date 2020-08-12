@@ -26,13 +26,13 @@ import java.util.Collection;
 
 public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFactory> implements TriggerProvider, CombinedResultCreator {
 
-    public DefaultTriggerProvider(Configuration configuration) {
-        super(configuration);
+    public DefaultTriggerProvider(Scope scope) {
+        super(scope);
     }
 
     @Override
     public TriggerProvider add(@NonNull ArtObjectMeta<Trigger> triggerInformation) {
-        addFactory(TriggerFactory.of(configuration(), triggerInformation));
+        addFactory(TriggerFactory.of(scope(), triggerInformation));
         return this;
     }
 

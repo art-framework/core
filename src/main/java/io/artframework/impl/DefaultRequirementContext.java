@@ -39,12 +39,12 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
     private final RequirementConfig config;
 
     public DefaultRequirementContext(
-            @NonNull Configuration configuration,
+            @NonNull Scope scope,
             @NonNull ArtObjectMeta<Requirement<TTarget>> information,
             @NonNull Requirement<TTarget> requirement,
             @NonNull RequirementConfig config
     ) {
-        super(configuration, information);
+        super(scope, information);
         this.requirement = requirement;
         this.config = config;
     }

@@ -16,18 +16,9 @@
 
 package io.artframework;
 
-import lombok.NonNull;
+public abstract class AbstractProvider extends AbstractScoped implements Provider {
 
-public abstract class AbstractProvider implements Provider {
-
-    private final Configuration configuration;
-
-    protected AbstractProvider(@NonNull Configuration configuration) {
-        this.configuration = configuration;
-    }
-
-    @Override
-    public Configuration configuration() {
-        return configuration;
+    protected AbstractProvider(Scope scope) {
+        super(scope);
     }
 }

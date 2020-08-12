@@ -35,11 +35,11 @@ public interface FinderProvider extends Provider {
     /**
      * Creates a new default finder provider with the given configuration.
      *
-     * @param configuration the configuration instance to use
+     * @param scope the scope of the provider
      * @return the default finder provider
      */
-    static FinderProvider of(Configuration configuration) {
-        return new DefaultFinderProvider(configuration);
+    static FinderProvider of(Scope scope) {
+        return new DefaultFinderProvider(scope);
     }
 
     /**

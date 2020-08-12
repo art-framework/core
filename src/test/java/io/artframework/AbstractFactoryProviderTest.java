@@ -32,7 +32,7 @@ class AbstractFactoryProviderTest {
 
     @BeforeEach
     void setUp() {
-        factory = new AbstractFactoryProvider<Factory<?, ?>>(mock(Configuration.class)) {};
+        factory = new AbstractFactoryProvider<Factory<?, ?>>(Scope.defaultScope()) {};
         mock = mock(Factory.class);
         factory.factories.put("foo", mock);
         factory.aliasMappings.put("bar", "foo");

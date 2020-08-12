@@ -27,8 +27,8 @@ public class DefaultArtBuilderParser<TParser extends Parser<TInput>, TInput> ext
     private final TParser parser;
     private final List<TInput> inputs = new ArrayList<>();
 
-    public DefaultArtBuilderParser(Configuration configuration, TParser parser) {
-        super(configuration);
+    public DefaultArtBuilderParser(Scope scope, TParser parser) {
+        super(scope);
         this.parser = parser;
     }
 

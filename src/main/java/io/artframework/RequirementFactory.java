@@ -22,9 +22,9 @@ import lombok.NonNull;
 public interface RequirementFactory<TTarget> extends Factory<RequirementContext<TTarget>, Requirement<TTarget>>
 {
     static <TTarget> RequirementFactory<TTarget> of(
-            @NonNull Configuration configuration,
+            @NonNull Scope scope,
             @NonNull ArtObjectMeta<Requirement<TTarget>> information
     ) {
-        return new DefaultRequirementFactory<>(configuration, information);
+        return new DefaultRequirementFactory<>(scope, information);
     }
 }

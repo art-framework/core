@@ -22,15 +22,15 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
 
-public interface Context extends Scope {
+public interface Context extends Scoped {
 
     /**
      * Get all custom data from this <code>Scope</code>.
-     * <p>All data set like this is non persistent and only exists for the lifetime of this {@link Scope}.
+     * <p>All data set like this is non persistent and only exists for the lifetime of this {@link Scoped}.
      * Use the {@link StorageProvider} to store persistent data.</p>
      * <p>This is custom data that was previously set to the context using
      * {@link #data(String, Object)}. Use custom data if you want to pass data
-     * to {@link Context} objects for a given {@link Scope}.</p>
+     * to {@link Context} objects for a given {@link Scoped}.</p>
      *
      * @return The custom data. This is never <code>null</code>
      */
@@ -39,7 +39,7 @@ public interface Context extends Scope {
 
     /**
      * Set some custom data to this <code>Scope</code>.
-     * <p>All data set like this is non persistent and only exists for the lifetime of this {@link Scope}.
+     * <p>All data set like this is non persistent and only exists for the lifetime of this {@link Scoped}.
      * Use the {@link StorageProvider} to store persistent data.</p>
      *
      * @param key A key to identify the custom data
@@ -70,11 +70,11 @@ public interface Context extends Scope {
 
     /**
      * Get some custom data from this <code>Scope</code>.
-     * <p>All data set like this is non persistent and only exists for the lifetime of this {@link Scope}.
+     * <p>All data set like this is non persistent and only exists for the lifetime of this {@link Scoped}.
      * Use the {@link StorageProvider} to store persistent data.</p>
      * <p>This is custom data that was previously set to the context using
      * {@link #data(String, Object)}. Use custom data if you want to pass data
-     * to {@link Context} objects for a given {@link Scope}</p>
+     * to {@link Context} objects for a given {@link Scoped}</p>
      *
      * @param key A key to identify the custom data
      * @param valueClass The type class of the requested value

@@ -23,10 +23,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.function.Predicate;
 
-public abstract class AbstractFinder extends AbstractScope implements Finder {
+public abstract class AbstractFinder extends AbstractScoped implements Finder {
 
-    protected AbstractFinder(Configuration configuration) {
-        super(configuration);
+    protected AbstractFinder(Scope scope) {
+        super(scope);
     }
 
     protected abstract FinderResult<?> findAllIn(File... files);

@@ -24,13 +24,13 @@ import java.util.Objects;
 
 public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory<?>> implements ActionProvider {
 
-    public DefaultActionProvider(Configuration configuration) {
-        super(configuration);
+    public DefaultActionProvider(Scope scope) {
+        super(scope);
     }
 
     @Override
     public ActionProvider add(@NonNull ArtObjectMeta<Action<?>> actionInformation) {
-        addFactory(ActionFactory.of(configuration(), actionInformation.get()));
+        addFactory(ActionFactory.of(scope(), actionInformation.get()));
         return this;
     }
 

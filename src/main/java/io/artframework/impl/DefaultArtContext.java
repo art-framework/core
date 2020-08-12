@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 
 import static io.artframework.util.ReflectionUtil.getEntryForTarget;
 
-public class DefaultArtContext extends AbstractScope implements ArtContext, TriggerListener<Object> {
+public class DefaultArtContext extends AbstractScoped implements ArtContext, TriggerListener<Object> {
 
     private final ArtSettings settings;
 
@@ -37,8 +37,8 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     private final Map<Class<?>, List<TriggerListener<?>>> triggerListeners = new HashMap<>();
     private final Map<String, Object> data = new HashMap<>();
 
-    public DefaultArtContext(Configuration configuration, ArtSettings settings, Collection<ArtObjectContext<?>> artContexts) {
-        super(configuration);
+    public DefaultArtContext(Scope scope, ArtSettings settings, Collection<ArtObjectContext<?>> artContexts) {
+        super(scope);
         this.settings = settings;
         this.artContexts = ImmutableList.copyOf(artContexts);
     }
@@ -60,7 +60,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     @Override
     public <TTarget> CombinedResult test(@NonNull Target<TTarget> target) {
 
-        return test(ExecutionContext.of(configuration(), this, target));
+        return test(ExecutionContext.of(scope(), this, target));
     }
 
     @SuppressWarnings("unchecked")
@@ -75,7 +75,7 @@ public class DefaultArtContext extends AbstractScope implements ArtContext, Trig
     @Override
     public FutureResult execute(@NonNull Target<?>... targets) {
 
-        return execute(ExecutionContext.of(configuration(), this, targets));
+        return execute(ExecutionContext.of(scope(), this, targets));
     }
 
     @SuppressWarnings("unchecked")

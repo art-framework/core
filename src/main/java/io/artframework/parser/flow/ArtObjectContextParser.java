@@ -34,11 +34,11 @@ public abstract class ArtObjectContextParser<TFactory extends Factory<?, ?>> ext
     @Getter
     private final FlowType flowType;
 
-    protected ArtObjectContextParser(Configuration configuration, FlowType flowType) {
+    protected ArtObjectContextParser(Scope scope, FlowType flowType) {
         // always edit the regexr link and update the link below!
         // the regexr link and the regex should always match
         // regexr.com/56s09
-        super(configuration, Pattern.compile("^" + flowType.typeIdentifier() + "(?<identifier>[\\w\\d:._-]+)([\\[\\(](?<config>[^\\]\\)]*?)[\\]\\)])?( (?<userConfig>.+))?$"));
+        super(scope, Pattern.compile("^" + flowType.typeIdentifier() + "(?<identifier>[\\w\\d:._-]+)([\\[\\(](?<config>[^\\]\\)]*?)[\\]\\)])?( (?<userConfig>.+))?$"));
         this.flowType = flowType;
     }
 
@@ -76,14 +76,14 @@ public abstract class ArtObjectContextParser<TFactory extends Factory<?, ?>> ext
         Optional<String> config = getConfig();
         if (config.isPresent()) {
             ConfigMap configMap = configMap();
-            ConfigParser configParser = ConfigParser.of(this.configuration(), configMap);
+            ConfigParser configParser = ConfigParser.of(this.scope(), configMap);
             if (configParser.accept(config.get())) {
                 configMaps.put(configMap.type(), configParser.parse());
             }
         }
 
 
-        ConfigParser configParser = ConfigParser.of(this.configuration(), ConfigMap.of(ConfigMapType.ART_CONFIG, factory.meta().configMap()));
+        ConfigParser configParser = ConfigParser.of(this.scope(), ConfigMap.of(ConfigMapType.ART_CONFIG, factory.meta().configMap()));
         if (configParser.accept(userConfig())) {
             configMaps.put(ConfigMapType.ART_CONFIG, configParser.parse());
         }

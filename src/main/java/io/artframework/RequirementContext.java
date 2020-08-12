@@ -30,12 +30,12 @@ import lombok.NonNull;
 public interface RequirementContext<TTarget> extends Requirement<TTarget>, ArtObjectContext<Requirement<TTarget>> {
 
     static <TTarget> RequirementContext<TTarget> of(
-            @NonNull Configuration configuration,
+            @NonNull Scope scope,
             @NonNull ArtObjectMeta<Requirement<TTarget>> information,
             @NonNull Requirement<TTarget> requirement,
             @NonNull RequirementConfig config
     ) {
-        return new DefaultRequirementContext<>(configuration, information, requirement, config);
+        return new DefaultRequirementContext<>(scope, information, requirement, config);
     }
 
     /**

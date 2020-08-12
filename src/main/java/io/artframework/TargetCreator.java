@@ -21,7 +21,7 @@ import java.util.Optional;
 /**
  * Provides an easy shortcut to get the target from the given configuration scope.
  */
-public interface TargetCreator extends Scope {
+public interface TargetCreator extends Scoped {
 
     /**
      * Tries to find a matching target for the given source.

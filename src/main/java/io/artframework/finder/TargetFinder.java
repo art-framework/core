@@ -31,8 +31,8 @@ import java.util.Optional;
 
 public class TargetFinder extends AbstractFinder {
 
-    public TargetFinder(Configuration configuration) {
-        super(configuration);
+    public TargetFinder(Scope scope) {
+        super(scope);
     }
 
     @Override

@@ -18,9 +18,9 @@ package io.artframework.parser.flow;
 
 import com.google.common.base.Strings;
 import io.artframework.ConfigMap;
-import io.artframework.Configuration;
 import io.artframework.ConfigurationException;
 import io.artframework.ParseException;
+import io.artframework.Scope;
 import io.artframework.conf.ConfigFieldInformation;
 import io.artframework.conf.KeyValuePair;
 import lombok.Getter;
@@ -36,18 +36,18 @@ import java.util.regex.Pattern;
 @Accessors(fluent = true)
 public class ConfigParser extends LineParser<ConfigMap> {
 
-    public static ConfigParser of(Configuration configuration, ConfigMap configMap) {
-        return new ConfigParser(configuration, configMap);
+    public static ConfigParser of(Scope scope, ConfigMap configMap) {
+        return new ConfigParser(scope, configMap);
     }
 
     @Getter
     private final ConfigMap configMap;
 
-    protected ConfigParser(Configuration configuration, ConfigMap configMap) {
+    protected ConfigParser(Scope scope, ConfigMap configMap) {
         // always edit the regexr link and update the link below!
         // the regexr link and the regex should always match
         // regexr.com/576km
-        super(configuration, Pattern.compile("^(?<keyValue>((?<key>[\\w\\d._-]+)?[:=])?((\"(?<quotedValue>.*?)\")|(\\[(?<array>.*?)\\])|(?<valueWithSpaces>(?<value>[^;, ]*)[,; ]?)))(?<config>.*)?$"));
+        super(scope, Pattern.compile("^(?<keyValue>((?<key>[\\w\\d._-]+)?[:=])?((\"(?<quotedValue>.*?)\")|(\\[(?<array>.*?)\\])|(?<valueWithSpaces>(?<value>[^;, ]*)[,; ]?)))(?<config>.*)?$"));
         this.configMap = configMap;
     }
 

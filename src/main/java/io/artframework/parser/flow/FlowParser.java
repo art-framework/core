@@ -17,7 +17,6 @@
 package io.artframework.parser.flow;
 
 import io.artframework.*;
-import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,15 +25,15 @@ import java.util.stream.Collectors;
 
 public class FlowParser implements Parser<Collection<String>> {
 
-    private final Configuration configuration;
+    private final Scope scope;
 
-    public FlowParser(Configuration configuration) {
-        this.configuration = configuration;
+    public FlowParser(Scope scope) {
+        this.scope = scope;
     }
 
     @Override
-    public @NonNull Configuration configuration() {
-        return configuration;
+    public Scope scope() {
+        return scope;
     }
 
     @Override
@@ -68,7 +67,7 @@ public class FlowParser implements Parser<Collection<String>> {
 
         contexts = sortAndCombineArtContexts(contexts.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 
-        return ArtContext.of(configuration, configuration.settings().artSettings(), contexts);
+        return ArtContext.of(scope, configuration().settings().artSettings(), contexts);
     }
 
     // rules for matching and combining actions, requirements and trigger
