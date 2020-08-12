@@ -16,6 +16,7 @@
 
 package io.artframework;
 
+import io.artframework.annotations.ArtModule;
 import io.artframework.events.Event;
 import io.artframework.events.EventManager;
 import lombok.Getter;
@@ -29,14 +30,34 @@ public final class ART {
     @Getter
     private static final Scope globalScope = Scope.defaultScope();
 
+    /**
+     * Bootstraps the global scope with the given module initializing the art-framework.
+     * <p>
+     * Bootstrapping is only required by the root module that implements and ships the art-framework.
+     * Normal modules should not use this bootstrap method, but instead tag their class with @{@link ArtModule}
+     * and use the respective tagged methods to load themselves into the scope.
+     * <p>
+     * Only one module can ever bootstrap the global scope.
+     * Use the {@link #bootstrap(Scope, Object)} method to use your own scope
+     * or do not bootstrap your module at all and wait for it to be loaded by the bootstrap module.
+     *
+     * @param module the root module that is used to bootstrap the art-framework
+     * @return the global scope used to bootstrap the module
+     */
     public static Scope bootstrap(Object module) {
+
         return bootstrap(globalScope(), module);
     }
 
     public static Scope bootstrap(Scope scope, Object module) {
+
+        if (scope.bootstrapped()) {
+            throw new RuntimeException("Cannot bootstrap the scope a second time! Use your own scope or remove the module that bootstrapped the scope.");
+        }
+
         try {
             scope.configuration().modules().enable(module);
-            return scope;
+            return scope.bootstrapped(true);
         } catch (ModuleRegistrationException e) {
             throw new RuntimeException(e);
         }
