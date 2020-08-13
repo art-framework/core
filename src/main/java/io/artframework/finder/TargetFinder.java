@@ -25,9 +25,9 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class TargetFinder extends AbstractFinder {
 
@@ -37,14 +37,17 @@ public class TargetFinder extends AbstractFinder {
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    protected TargetFinderResult findAllIn(File... files) {
+    public TargetFinderResult findAllIn(File file, Predicate<Class<?>> predicate) {
 
         final Collection<TargetClassWrapper<?>> targets = new ArrayList<>();
         final Collection<ArtObjectError> errors = new ArrayList<>();
 
-        Arrays.stream(files)
-                .flatMap(file -> FileUtil.findClasses(configuration().classLoader(), file, Target.class).stream())
+        FileUtil.findClasses(configuration().classLoader(), file, Target.class)
+                .stream().filter(predicate)
                 .forEach(targetClass -> {
+                    // TODO: fix type argument inheritance
+                    // the util method only works with direct interfaces
+                    // but not with abstract classes that pass the type to the implementing class
                     Optional<Class<?>> sourceClass = ReflectionUtil.getInterfaceTypeArgument(targetClass, Target.class, 0);
                     if (sourceClass.isPresent()) {
                         try {
@@ -72,13 +75,13 @@ public class TargetFinder extends AbstractFinder {
 
         @Override
         @SuppressWarnings({"unchecked", "rawtypes"})
-        public FinderResult<TargetClassWrapper<?>> load(Configuration configuration) {
+        public FinderResult<TargetClassWrapper<?>> load(Scope scope) {
             for (final TargetClassWrapper<?> result : results()) {
-                configuration.targets().add(result.targetClass, o -> {
+                scope.configuration().targets().add(result.targetClass, o -> {
                     try {
                         return (Target) result.constructor.newInstance(o);
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-                        configuration.targets().remove(result.targetClass);
+                        scope.configuration().targets().remove(result.targetClass);
                         throw new RuntimeException(e);
                     }
                 });

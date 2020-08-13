@@ -69,4 +69,14 @@ public interface ModuleMeta {
      * @return a list of module identifiers this module depends on
      */
     String[] dependencies();
+
+    /**
+     * @return the prefix that should be used on all art objects
+     */
+    String prefix();
+
+    /**
+     * @return a list of packages to search recursively for art objects
+     */
+    String[] packages();
 }

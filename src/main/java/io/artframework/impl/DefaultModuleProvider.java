@@ -19,11 +19,11 @@ package io.artframework.impl;
 import io.artframework.*;
 import io.artframework.annotations.OnDisable;
 import io.artframework.annotations.OnEnable;
-import io.artframework.annotations.OnBootstrap;
+import io.artframework.annotations.OnLoad;
 import io.artframework.annotations.OnReload;
 import io.artframework.events.ModuleDisabledEvent;
 import io.artframework.events.ModuleEnabledEvent;
-import io.artframework.events.ModuleRegisteredEvent;
+import io.artframework.events.ModuleLoadedEvent;
 import io.artframework.util.graphs.CycleSearch;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,9 +32,11 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.CodeSource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -129,6 +131,10 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
     private ModuleInformation registerModule(Class<?> moduleClass) throws ModuleRegistrationException {
 
+        if (modules.containsKey(moduleClass)) {
+            return modules.get(moduleClass);
+        }
+
         try {
             ModuleMeta moduleMeta = ModuleMeta.of(moduleClass);
 
@@ -151,7 +157,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         }
     }
 
-    private ModuleInformation registerModule(Object module) throws ModuleRegistrationException {
+    private ModuleInformation registerModule(@NonNull Object module) throws ModuleRegistrationException {
 
         try {
             return registerModule(ModuleMeta.of(module.getClass()), module);
@@ -160,7 +166,8 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         }
     }
 
-    private ModuleInformation registerModule(ModuleMeta moduleMeta, @Nullable Object module) throws ModuleRegistrationException {
+    private ModuleInformation registerModule(@NonNull ModuleMeta moduleMeta, @NonNull Object module) throws ModuleRegistrationException {
+
         Optional<ModuleMeta> existingModule = modules.values().stream().map(ModuleInformation::moduleMeta)
                 .filter(meta -> meta.identifier().equals(moduleMeta.identifier()) && !meta.moduleClass().equals(moduleMeta.moduleClass())).findAny();
         if (existingModule.isPresent()) {
@@ -173,8 +180,10 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             moduleInformation = this.modules.get(moduleMeta.moduleClass());
         } else {
             moduleInformation = updateModuleCache(new ModuleInformation(moduleMeta, module).state(ModuleState.REGISTERED));
-            moduleInformation.onBootstrap(scope());
-            ART.callEvent(new ModuleRegisteredEvent(moduleMeta));
+            modules.put(moduleMeta.moduleClass(), moduleInformation);
+
+            loadModule(moduleInformation);
+
             cycleSearcher = CycleSearch.of(modules.values().stream().map(ModuleInformation::moduleMeta).collect(Collectors.toList()));
 
             Optional<List<ModuleMeta>> dependencyGraph = getDependencyGraph(moduleInformation);
@@ -190,7 +199,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
     private void enable(ModuleInformation moduleInformation) throws ModuleRegistrationException {
 
-        if (moduleInformation.state() == ModuleState.ENABLED) return;
+        if (!moduleInformation.state().canEnable()) return;
 
         if (hasMissingDependencies(moduleInformation)) {
             updateModuleCache(moduleInformation.state(ModuleState.MISSING_DEPENDENCIES));
@@ -215,7 +224,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         } catch (Exception e) {
             updateModuleCache(moduleInformation.state(ModuleState.ERROR));
             throw new ModuleRegistrationException(moduleInformation.moduleMeta(), ModuleState.ERROR,
-                    "An error occured when trying to enable the module \"" + moduleInformation.moduleMeta().identifier() + "\": " + e.getMessage(), e);
+                    "Encountered an error while enabling the module \"" + moduleInformation.moduleMeta().identifier() + "\": " + e.getMessage(), e);
         }
     }
 
@@ -223,6 +232,26 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
         module.onDisable(scope());
         ART.callEvent(new ModuleDisabledEvent(module.moduleMeta()));
+    }
+
+    private void loadModule(ModuleInformation module) throws ModuleRegistrationException {
+
+        if (!module.state().canLoad()) return;
+
+        try {
+            CodeSource codeSource = module.moduleMeta().moduleClass().getProtectionDomain().getCodeSource();
+            if (codeSource != null) {
+                configuration().finder().findAllAndLoadIn(new File(codeSource.getLocation().toURI()));
+            }
+
+            module.onLoad(scope());
+            updateModuleCache(module.state(ModuleState.LOADED));
+            ART.callEvent(new ModuleLoadedEvent(module.moduleMeta()));
+        } catch (Exception e) {
+            updateModuleCache(module.state(ModuleState.ERROR));
+            throw new ModuleRegistrationException(module.moduleMeta(), ModuleState.ERROR,
+                    "An error occured when trying to enable the module \"" + module.moduleMeta().identifier() + "\": " + e.getMessage(), e);
+        }
     }
 
     private Optional<List<ModuleMeta>> getDependencyGraph(ModuleInformation information) {
@@ -306,7 +335,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
         private final ModuleMeta moduleMeta;
         @Nullable private final Object module;
-        @Nullable private final Method onBootstrap;
+        @Nullable private final Method onLoad;
         @Nullable private final Method onEnable;
         @Nullable private final Method onDisable;
         @Nullable private final Method onReload;
@@ -316,7 +345,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         public ModuleInformation(ModuleMeta moduleMeta, @Nullable Object module) {
             this.moduleMeta = moduleMeta;
             this.module = module;
-            onBootstrap = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnBootstrap.class)).stream().findFirst().orElse(null);
+            onLoad = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnLoad.class)).stream().findFirst().orElse(null);
             onEnable = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnEnable.class)).stream().findFirst().orElse(null);
             onDisable = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnDisable.class)).stream().findFirst().orElse(null);
             onReload = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnReload.class)).stream().findFirst().orElse(null);
@@ -327,9 +356,9 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             return Optional.ofNullable(module);
         }
 
-        public void onBootstrap(Scope scope) {
-            if (onBootstrap == null) return;
-            invokeMethod(onBootstrap, scope);
+        public void onLoad(Scope scope) {
+            if (onLoad == null) return;
+            invokeMethod(onLoad, scope);
         }
 
         public void onEnable(Scope scope) {

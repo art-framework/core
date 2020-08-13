@@ -20,6 +20,8 @@ import io.artframework.impl.DefaultTargetProvider;
 import lombok.NonNull;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -36,6 +38,11 @@ public interface TargetProvider extends Provider {
     static TargetProvider of(Scope scope) {
         return new DefaultTargetProvider(scope);
     }
+
+    /**
+     * @return a list of all registered target types
+     */
+    Collection<Class<?>> all();
 
     /**
      * Tries to wrap the given target source into a {@link Target}.
@@ -76,6 +83,14 @@ public interface TargetProvider extends Provider {
      * @return this {@link TargetProvider}
      */
     <TTarget> TargetProvider add(@NonNull Class<TTarget> sourceClass, @NonNull Function<TTarget, Target<TTarget>> targetProvider);
+
+    /**
+     * Adds all provided targets to this provider.
+     *
+     * @param targets the target types that should be added
+     * @return this provider
+     */
+    TargetProvider addAll(@NonNull Map<Class<?>, Function<?, Target<?>>> targets);
 
     /**
      * Removes the given source type as a {@link Target} provider.

@@ -21,7 +21,6 @@ import io.artframework.finder.ModuleFinder;
 import io.artframework.finder.TargetFinder;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.function.Predicate;
 
 public interface Finder extends Scoped {
@@ -34,9 +33,18 @@ public interface Finder extends Scoped {
         };
     }
 
-    default FinderResult<?> findAllIn(Path path) {
-        return findAllIn(path, file -> true);
+    /**
+     * Tries to find and load classes from the given files our source root.
+     * <p>
+     * Use the {@link FinderResult#load(Scope)} method to load all found classes
+     * and to register them with the {@link Scope}.
+     *
+     * @param file the jar file or sources root to search for classes
+     * @return the result of the find operation
+     */
+    default FinderResult<?> findAllIn(File file) {
+        return findAllIn(file, aClass -> true);
     }
 
-    FinderResult<?> findAllIn(Path path, Predicate<File> predicate);
+    FinderResult<?> findAllIn(File file, Predicate<Class<?>> predicate);
 }

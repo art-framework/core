@@ -16,36 +16,9 @@
 
 package io.artframework;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.function.Predicate;
-
 public abstract class AbstractFinder extends AbstractScoped implements Finder {
 
     protected AbstractFinder(Scope scope) {
         super(scope);
-    }
-
-    protected abstract FinderResult<?> findAllIn(File... files);
-
-    @Override
-    public final FinderResult<?> findAllIn(Path path, Predicate<File> predicate) {
-        if (Files.isRegularFile(path)) {
-            return findAllIn(path.toFile());
-        } else {
-            try {
-                return findAllIn(Files.walk(Paths.get(path.toUri()))
-                        .filter(Files::isRegularFile)
-                        .map(Path::toFile)
-                        .filter(predicate)
-                        .toArray(File[]::new));
-            } catch (IOException e) {
-                e.printStackTrace();
-                return FinderResult.empty();
-            }
-        }
     }
 }

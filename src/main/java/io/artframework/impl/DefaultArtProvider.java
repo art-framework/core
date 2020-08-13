@@ -34,7 +34,7 @@ public class DefaultArtProvider extends AbstractProvider implements ArtProvider 
             if (Action.class.isAssignableFrom(artObject.artObjectClass())) {
                 actions().add(artObject.get());
             } else if (Requirement.class.isAssignableFrom(artObject.artObjectClass())) {
-                actions().add(artObject.get());
+                requirements().add(artObject.get());
             } else if (Trigger.class.isAssignableFrom(artObject.artObjectClass())) {
                 trigger().add(artObject.get());
             }

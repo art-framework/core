@@ -16,6 +16,7 @@
 
 package io.artframework.impl;
 
+import com.google.common.collect.ImmutableList;
 import io.artframework.AbstractProvider;
 import io.artframework.Scope;
 import io.artframework.Target;
@@ -24,6 +25,7 @@ import io.artframework.util.ReflectionUtil;
 import lombok.NonNull;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -36,6 +38,11 @@ public class DefaultTargetProvider extends AbstractProvider implements TargetPro
 
     public DefaultTargetProvider(@NonNull Scope scope) {
         super(scope);
+    }
+
+    @Override
+    public Collection<Class<?>> all() {
+        return ImmutableList.copyOf(targetProviders.keySet());
     }
 
     @SuppressWarnings("unchecked")
@@ -55,6 +62,14 @@ public class DefaultTargetProvider extends AbstractProvider implements TargetPro
     @Override
     public <TTarget> TargetProvider add(@NonNull Class<TTarget> sourceClass, @NonNull Function<TTarget, Target<TTarget>> targetProvider) {
         targetProviders.put(sourceClass, targetProvider);
+        return this;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public TargetProvider addAll(@NonNull Map<Class<?>, Function<?, Target<?>>> targets) {
+
+        targets.forEach((key, value) -> add((Class) key, (Function) value));
         return this;
     }
 

@@ -23,7 +23,7 @@ import java.util.Optional;
 
 public interface FactoryProvider<TFactory extends Factory<?, ?>> extends Provider {
 
-    Map<String, TFactory> factories();
+    Map<String, TFactory> all();
 
     Map<String, String> aliasMappings();
 

@@ -49,7 +49,7 @@ class AbstractFactoryProviderTest {
     @DisplayName("getFactories is immutable")
     void factoriesShouldBeImmutable() {
         assertThatExceptionOfType(RuntimeException.class)
-                .isThrownBy(() -> factory.factories().put("foo", null));
+                .isThrownBy(() -> factory.all().put("foo", null));
     }
 
     @Nested

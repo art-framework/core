@@ -19,7 +19,6 @@ package io.artframework;
 import io.artframework.impl.DefaultFinderProvider;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.Collection;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -79,62 +78,37 @@ public interface FinderProvider extends Provider {
     /**
      * Aggregates the find results of all finders registered in this provider.
      * <p>
-     * This will call the {@link Finder#findAllIn(Path)} method on all registered finders and return all results.
+     * This will call the {@link Finder#findAllIn(File)} method on all registered finders and return all results.
      *
-     * @param path the path or file to search in
+     * @param file the jar file or sources root to search for classes
      * @return a list of all finder results. this is never null but may be empty.
      */
-    default Collection<FinderResult<?>> findAllIn(Path path) {
+    default Collection<FinderResult<?>> findAllIn(File file) {
+        return findAllIn(file, aClass -> true);
+    }
+
+    default Collection<FinderResult<?>> findAllIn(File file, Predicate<Class<?>> predicate) {
         return all().stream()
-                .map(finder -> finder.findAllIn(path))
+                .map(finder -> finder.findAllIn(file, predicate))
                 .collect(Collectors.toList());
     }
 
     /**
      * Aggregates the find results of all finders registered in this provider and calls the load method on all results.
      * <p>
-     * This will call the {@link Finder#findAllIn(Path)} method on all registered finders
-     * and then call {@link FinderResult#load(Configuration)} on all of them returning the result.
+     * This will call the {@link Finder#findAllIn(File)} method on all registered finders
+     * and then call {@link FinderResult#load(Scope)} on all of them returning the result.
      *
-     * @param path the path or file to search in
+     * @param file the jar file or sources root to search for classes
      * @return a list of all finder results. this is never null but may be empty.
      */
-    default Collection<FinderResult<?>> findAllAndLoadIn(Path path) {
-        Collection<FinderResult<?>> results = findAllIn(path);
-        results.forEach(result -> result.load(configuration()));
-        return results;
+    default Collection<FinderResult<?>> findAllAndLoadIn(File file) {
+        return findAllAndLoadIn(file, aClass -> true);
     }
 
-    /**
-     * Aggregates the find results of all finders registered in this provider
-     * filtering the files based on the given predicate.
-     * <p>
-     * This will call the {@link Finder#findAllIn(Path)} method on all registered finders and return all results.
-     *
-     * @param path the path or file to search in
-     * @param predicate the predicate used to filter the files
-     * @return a list of all finder results. this is never null but may be empty.
-     */
-    default Collection<FinderResult<?>> findAllIn(Path path, Predicate<File> predicate) {
-        return all().stream()
-                .map(finder -> finder.findAllIn(path, predicate))
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Aggregates the find results of all finders registered in this provider and calls the load method on all results
-     * filtering the files based on the given predicate.
-     * <p>
-     * This will call the {@link Finder#findAllIn(Path)} method on all registered finders
-     * and then call {@link FinderResult#load(Configuration)} on all of them returning the result.
-     *
-     * @param path the path or file to search in
-     * @param predicate the predicate used to filter the files
-     * @return a list of all finder results. this is never null but may be empty.
-     */
-    default Collection<FinderResult<?>> findAllAndLoadIn(Path path, Predicate<File> predicate) {
-        Collection<FinderResult<?>> results = findAllIn(path, predicate);
-        results.forEach(result -> result.load(configuration()));
+    default Collection<FinderResult<?>> findAllAndLoadIn(File file, Predicate<Class<?>> predicate) {
+        Collection<FinderResult<?>> results = findAllIn(file, predicate);
+        results.forEach(result -> result.load(scope()));
         return results;
     }
 }

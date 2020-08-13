@@ -60,17 +60,32 @@ public final class Scope {
 
     private final Collection<Consumer<Scope>> updateListeners = new ArrayList<>();
 
-    public Scope() {}
     @Setter(AccessLevel.PACKAGE)
     private Configuration configuration = configurationBuilder().build();
 
-    @Setter(AccessLevel.PACKAGE)
+    @Setter(AccessLevel.PRIVATE)
     private boolean bootstrapped = false;
+
+    public Scope() {}
 
     public Scope(Consumer<Configuration.ConfigurationBuilder> builder) {
         Configuration.ConfigurationBuilder configurationBuilder = configurationBuilder();
         builder.accept(configurationBuilder);
         this.configuration = configurationBuilder.build();
+    }
+
+    public Scope bootstrap(Object module) {
+
+        if (bootstrapped) return this;
+
+        try {
+            configuration().modules().enable(module);
+            bootstrapped(true);
+        } catch (ModuleRegistrationException e) {
+            throw new RuntimeException(e);
+        }
+
+        return this;
     }
 
     public Scope update(Consumer<Configuration.ConfigurationBuilder> configuration) {

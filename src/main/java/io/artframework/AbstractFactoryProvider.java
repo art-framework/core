@@ -46,7 +46,7 @@ public abstract class AbstractFactoryProvider<TFactory extends Factory<?, ?>> im
     }
 
     @Override
-    public Map<String, TFactory> factories() {
+    public Map<String, TFactory> all() {
         return ImmutableMap.copyOf(factories);
     }
 

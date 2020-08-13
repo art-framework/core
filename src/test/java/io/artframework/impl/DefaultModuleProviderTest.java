@@ -208,7 +208,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "foo", dependencies = "bar")
+    @ArtModule(value = "foo", depends = "bar")
     static class FooModule {
         @OnEnable
         public void onEnable(Configuration configuration) {
@@ -234,7 +234,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "module 1", dependencies = {"module 2", "foo"})
+    @ArtModule(value = "module 1", depends = {"module 2", "foo"})
     static class Module1 {
 
         @OnEnable
@@ -248,7 +248,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "module 2", dependencies = "module 3")
+    @ArtModule(value = "module 2", depends = "module 3")
     static class Module2 {
 
         @OnEnable

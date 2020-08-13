@@ -23,9 +23,9 @@ import io.artframework.util.FileUtil;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 public final class ArtObjectFinder extends AbstractFinder {
 
@@ -34,32 +34,32 @@ public final class ArtObjectFinder extends AbstractFinder {
     }
 
     @Override
-    protected ArtObjectFinderResult findAllIn(File... files) {
+    public FinderResult<?> findAllIn(File file, Predicate<Class<?>> predicate) {
 
         final List<ArtObjectMeta<?>> artObjectMetas = new ArrayList<>();
         final List<ArtObjectError> errors = new ArrayList<>();
 
-        Arrays.stream(files)
-                .flatMap(file -> FileUtil.findClasses(configuration().classLoader(), file, ArtObject.class).stream())
+        FileUtil.findClasses(configuration().classLoader(), file, ArtObject.class)
+                .stream().filter(predicate)
                 .forEach(artClass -> {
-                    if (Trigger.class.isAssignableFrom(artClass)) {
-                        for (Method method : artClass.getDeclaredMethods()) {
-                            if (method.isAnnotationPresent(ART.class)) {
-                                try {
-                                    artObjectMetas.add(ArtObjectMeta.of(artClass, method));
-                                } catch (ArtMetaDataException e) {
-                                    errors.add(e.error());
-                                }
-                            }
-                        }
-                    } else {
+            if (Trigger.class.isAssignableFrom(artClass)) {
+                for (Method method : artClass.getDeclaredMethods()) {
+                    if (method.isAnnotationPresent(ART.class)) {
                         try {
-                            artObjectMetas.add(ArtObjectMeta.of(artClass));
+                            artObjectMetas.add(ArtObjectMeta.of(artClass, method));
                         } catch (ArtMetaDataException e) {
                             errors.add(e.error());
                         }
                     }
-                });
+                }
+            } else {
+                try {
+                    artObjectMetas.add(ArtObjectMeta.of(artClass));
+                } catch (ArtMetaDataException e) {
+                    errors.add(e.error());
+                }
+            }
+        });
 
         return new ArtObjectFinderResult(artObjectMetas, errors);
     }
@@ -75,9 +75,9 @@ public final class ArtObjectFinder extends AbstractFinder {
         }
 
         @Override
-        public FinderResult<ArtObjectMeta<?>> load(Configuration configuration) {
+        public FinderResult<ArtObjectMeta<?>> load(Scope scope) {
 
-            configuration.art().addAll(results());
+            scope.configuration().art().addAll(results());
             return this;
         }
     }
