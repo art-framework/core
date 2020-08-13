@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * <p>
  * You can then mark individual methods in the module class with one of the following annotations:
  * <ul>
- *     <li>@{@link OnLoad} - the load method is called when the module is loaded and before it is enabled.
+ *     <li>@{@link OnBootstrap} - the load method is called when the module is loaded and before it is enabled.
  *     It also takes an optional config class to load config data from a file.
  *     <li>@{@link OnEnable} - the enable method is called when the module gets enabled and all dependencies are resolved.
  *     <li>@{@link OnDisable} - the disable method is called when the module is disabled and unloaded.
@@ -46,7 +46,7 @@ public @interface ArtModule {
      *
      * @return the unique identifier of this module
      */
-    String identifier() default "";
+    String value() default "";
 
     /**
      * An optional prefix that is applied to all art objects that are found inside this module.

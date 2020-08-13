@@ -23,6 +23,8 @@ import lombok.Data;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -56,17 +58,40 @@ public final class Scope {
                 .trigger(TriggerProvider.of(this));
     }
 
-    @Setter(AccessLevel.PACKAGE)
-    private Configuration configuration = configurationBuilder().build();
-    @Setter(AccessLevel.PACKAGE)
-    private boolean bootstrapped = false;
+    private final Collection<Consumer<Scope>> updateListeners = new ArrayList<>();
 
     public Scope() {}
+    @Setter(AccessLevel.PACKAGE)
+    private Configuration configuration = configurationBuilder().build();
+
+    @Setter(AccessLevel.PACKAGE)
+    private boolean bootstrapped = false;
 
     public Scope(Consumer<Configuration.ConfigurationBuilder> builder) {
         Configuration.ConfigurationBuilder configurationBuilder = configurationBuilder();
         builder.accept(configurationBuilder);
         this.configuration = configurationBuilder.build();
+    }
+
+    public Scope update(Consumer<Configuration.ConfigurationBuilder> configuration) {
+
+        Configuration.ConfigurationBuilder builder = this.configuration.toBuilder();
+        configuration.accept(builder);
+        configuration(builder.build());
+
+        updateListeners.forEach(scopeConsumer -> scopeConsumer.accept(this));
+
+        if (bootstrapped()) {
+            configuration().modules().reloadAll();
+        }
+
+        return this;
+    }
+
+    public Scope onUpdate(Consumer<Scope> update) {
+
+        this.updateListeners.add(update);
+        return this;
     }
 
     public ArtContext load(List<String> list) {

@@ -16,15 +16,9 @@
 
 package io.artframework.integration;
 
-import io.artframework.Configuration;
 import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.OnLoad;
 
-@ArtModule
+@ArtModule("test")
 public class TestModule {
 
-    @OnLoad
-    public Configuration onLoad(Configuration configuration) {
-        return configuration.withStorage(null);
-    }
 }

@@ -56,7 +56,7 @@ public class DefaultModuleMeta implements ModuleMeta {
     public DefaultModuleMeta(@NonNull Class<?> moduleClass,
                              @NonNull ArtModule annotation) {
         this(
-                annotation.identifier(),
+                annotation.value(),
                 annotation.prefix(),
                 moduleClass,
                 annotation.version(),

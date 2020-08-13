@@ -161,7 +161,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(identifier = "test")
+    @ArtModule(value = "test")
     static class TestModule {
 
         private boolean created = false;
@@ -182,7 +182,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(identifier = "test")
+    @ArtModule(value = "test")
     static class DuplicateModule {
 
         @OnEnable
@@ -208,7 +208,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(identifier = "foo", dependencies = "bar")
+    @ArtModule(value = "foo", dependencies = "bar")
     static class FooModule {
         @OnEnable
         public void onEnable(Configuration configuration) {
@@ -221,7 +221,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(identifier = "bar")
+    @ArtModule(value = "bar")
     static class BarModule {
         @OnEnable
         public void onEnable(Configuration configuration) {
@@ -234,7 +234,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(identifier = "module 1", dependencies = {"module 2", "foo"})
+    @ArtModule(value = "module 1", dependencies = {"module 2", "foo"})
     static class Module1 {
 
         @OnEnable
@@ -248,7 +248,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(identifier = "module 2", dependencies = "module 3")
+    @ArtModule(value = "module 2", dependencies = "module 3")
     static class Module2 {
 
         @OnEnable
@@ -262,7 +262,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(identifier = "module 3", description = "module 1")
+    @ArtModule(value = "module 3", description = "module 1")
     static class Module3 {
 
         @OnEnable
@@ -276,7 +276,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(identifier = "foobar")
+    @ArtModule(value = "foobar")
     static class RandomModule {
 
     }

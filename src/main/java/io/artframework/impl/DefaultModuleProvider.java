@@ -19,7 +19,8 @@ package io.artframework.impl;
 import io.artframework.*;
 import io.artframework.annotations.OnDisable;
 import io.artframework.annotations.OnEnable;
-import io.artframework.annotations.OnLoad;
+import io.artframework.annotations.OnBootstrap;
+import io.artframework.annotations.OnReload;
 import io.artframework.events.ModuleDisabledEvent;
 import io.artframework.events.ModuleEnabledEvent;
 import io.artframework.events.ModuleRegisteredEvent;
@@ -48,6 +49,11 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
     public DefaultModuleProvider(@NonNull Scope scope) {
         super(scope);
+    }
+
+    public Optional<ModuleInformation> get(Class<?> moduleClass) {
+
+        return Optional.ofNullable(modules.get(moduleClass));
     }
 
     @Override
@@ -103,6 +109,24 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         return this;
     }
 
+    @Override
+    public ModuleProvider reload(@NonNull Class<?> moduleClass) {
+
+        get(moduleClass)
+                .filter(moduleInformation -> moduleInformation.state == ModuleState.ENABLED)
+                .ifPresent(moduleInformation -> moduleInformation.onReload(scope()));
+
+        return this;
+    }
+
+    @Override
+    public ModuleProvider reloadAll() {
+
+        modules.keySet().forEach(this::reload);
+
+        return this;
+    }
+
     private ModuleInformation registerModule(Class<?> moduleClass) throws ModuleRegistrationException {
 
         try {
@@ -149,6 +173,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             moduleInformation = this.modules.get(moduleMeta.moduleClass());
         } else {
             moduleInformation = updateModuleCache(new ModuleInformation(moduleMeta, module).state(ModuleState.REGISTERED));
+            moduleInformation.onBootstrap(scope());
             ART.callEvent(new ModuleRegisteredEvent(moduleMeta));
             cycleSearcher = CycleSearch.of(modules.values().stream().map(ModuleInformation::moduleMeta).collect(Collectors.toList()));
 
@@ -184,7 +209,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         }
 
         try {
-            moduleInformation.onEnable(configuration());
+            moduleInformation.onEnable(scope());
             updateModuleCache(moduleInformation.state(ModuleState.ENABLED));
             ART.callEvent(new ModuleEnabledEvent(moduleInformation.moduleMeta()));
         } catch (Exception e) {
@@ -196,7 +221,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
     private void disable(ModuleInformation module) {
 
-        module.onDisable(configuration());
+        module.onDisable(scope());
         ART.callEvent(new ModuleDisabledEvent(module.moduleMeta()));
     }
 
@@ -281,18 +306,20 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
         private final ModuleMeta moduleMeta;
         @Nullable private final Object module;
-        @Nullable private final Method onLoad;
+        @Nullable private final Method onBootstrap;
         @Nullable private final Method onEnable;
         @Nullable private final Method onDisable;
+        @Nullable private final Method onReload;
         private ModuleState state;
 
         @SuppressWarnings("unchecked")
         public ModuleInformation(ModuleMeta moduleMeta, @Nullable Object module) {
             this.moduleMeta = moduleMeta;
             this.module = module;
-            onLoad = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnLoad.class)).stream().findFirst().orElse(null);
+            onBootstrap = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnBootstrap.class)).stream().findFirst().orElse(null);
             onEnable = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnEnable.class)).stream().findFirst().orElse(null);
             onDisable = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnDisable.class)).stream().findFirst().orElse(null);
+            onReload = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnReload.class)).stream().findFirst().orElse(null);
         }
 
         public Optional<Object> module() {
@@ -300,43 +327,41 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             return Optional.ofNullable(module);
         }
 
-        public Configuration onLoad(Configuration configuration) {
-            if (onLoad == null) return configuration;
-
-            Object invokeMethod = invokeMethod(onLoad, configuration);
-            if (invokeMethod instanceof Configuration) {
-                return (Configuration) invokeMethod;
-            }
-
-            return configuration;
+        public void onBootstrap(Scope scope) {
+            if (onBootstrap == null) return;
+            invokeMethod(onBootstrap, scope);
         }
 
-        public void onEnable(Configuration configuration) {
+        public void onEnable(Scope scope) {
             if (onEnable == null) return;
-            invokeMethod(onEnable, configuration);
+            invokeMethod(onEnable, scope);
         }
 
-        public void onDisable(Configuration configuration) {
+        public void onDisable(Scope scope) {
             if (onDisable == null) return;
-            invokeMethod(onDisable, configuration);
+            invokeMethod(onDisable, scope);
         }
 
-        private Object invokeMethod(@NonNull Method method, Configuration configuration) {
+        public void onReload(Scope scope) {
+            if (onReload == null) return;
+            invokeMethod(onReload, scope);
+        }
+
+        private void invokeMethod(@NonNull Method method, Scope scope) {
             try {
                 Class<?>[] parameterTypes = method.getParameterTypes();
                 Object[] parameters = new Object[parameterTypes.length];
                 for (int i = 0; i < parameterTypes.length; i++) {
-                    if (parameterTypes[i].isInstance(configuration)) {
-                        parameters[i] = configuration;
+                    if (parameterTypes[i].isInstance(scope)) {
+                        parameters[i] = scope;
                     } else {
                         parameters[i] = null;
                     }
                 }
                 method.setAccessible(true);
-                return method.invoke(module, parameters);
+                method.invoke(module, parameters);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
-                return null;
             }
         }
     }
