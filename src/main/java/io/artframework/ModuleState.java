@@ -37,6 +37,10 @@ public enum ModuleState {
      */
     DISABLED,
     /**
+     * The module has been loaded.
+     */
+    LOADED,
+    /**
      * The module has been registered but is not loaded or enabled.
      */
     REGISTERED,
@@ -67,5 +71,35 @@ public enum ModuleState {
     /**
      * The module is invalid and does not contain a valid annotation.
      */
-    INVALID_MODULE
+    INVALID_MODULE;
+
+    public boolean error() {
+        return this == INVALID_MODULE
+                || this == DUPLICATE_MODULE
+                || this == DEPENDENCY_ERROR
+                || this == CYCLIC_DEPENDENCIES
+                || this == MISSING_DEPENDENCIES
+                || this == ERROR
+                || this == UNKNOWN;
+    }
+
+    public boolean loaded() {
+        return this == LOADED;
+    }
+
+    public boolean canLoad() {
+        return this == REGISTERED;
+    }
+
+    public boolean enabled() {
+        return this == ENABLED;
+    }
+
+    public boolean canEnable() {
+        return !enabled() && loaded() && !error();
+    }
+
+    public boolean disabled() {
+        return this == DISABLED;
+    }
 }

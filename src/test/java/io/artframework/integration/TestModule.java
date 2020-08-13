@@ -16,9 +16,29 @@
 
 package io.artframework.integration;
 
-import io.artframework.annotations.ArtModule;
+import io.artframework.Scope;
+import io.artframework.annotations.*;
 
 @ArtModule("test")
 public class TestModule {
 
+    @OnLoad
+    public void onBootstrap(Scope scope) {
+
+    }
+
+    @OnReload
+    public void onReload(Scope scope) {
+
+    }
+
+    @OnEnable
+    public void onEnable(Scope scope) {
+
+    }
+
+    @OnDisable
+    public void onDisable(Scope scope) {
+
+    }
 }

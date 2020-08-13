@@ -21,6 +21,7 @@ import lombok.NonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -31,6 +32,19 @@ import java.util.jar.JarInputStream;
 import java.util.stream.Collectors;
 
 public class FileUtil {
+
+    @SuppressWarnings("unchecked")
+    public static <T> List<Class<? extends T>> findClasses(
+            @NonNull final ClassLoader classLoader,
+            @NonNull final File file,
+            @NonNull final Class<T> clazz,
+            @NonNull final Predicate<Class<T>> predicate
+    ) {
+
+        return findClasses(classLoader, file, clazz).stream()
+                .filter(aClass -> predicate.test((Class<T>) aClass))
+                .collect(Collectors.toList());
+    }
 
     @SuppressWarnings("unchecked")
     public static <T> List<Class<? extends T>> findClasses(
@@ -50,7 +64,13 @@ public class FileUtil {
             @NonNull final Predicate<Class<?>> predicate
             ) {
 
-        if (!file.exists() || !file.getName().endsWith(".jar")) {
+        if (!file.exists()) {
+            return new ArrayList<>();
+        }
+
+        if (file.isDirectory()) {
+            return findClassesInSourceRoot(classLoader, file, predicate);
+        } else if (!file.getName().endsWith(".jar")) {
             return new ArrayList<>();
         }
 
@@ -91,5 +111,53 @@ public class FileUtil {
         }
 
         return ImmutableList.copyOf(classes);
+    }
+
+    private static List<Class<?>> findClassesInSourceRoot(
+            @NonNull final ClassLoader classLoader,
+            @NonNull final File sourceRoot,
+            @NonNull final Predicate<Class<?>> predicate
+    ) {
+        File[] files = sourceRoot.listFiles();
+
+        if (files == null) return new ArrayList<>();
+
+        ArrayList<Class<?>> classes = new ArrayList<>();
+
+        List<String> classNames = getClassNames("", sourceRoot, sourceRoot);
+        try {
+            URLClassLoader loader = new URLClassLoader(new URL[]{sourceRoot.toURI().toURL()}, classLoader);
+
+            for (String className : classNames) {
+                try {
+                    Class<?> aClass = loader.loadClass(className);
+                    if (predicate.test(aClass)) {
+                        classes.add(aClass);
+                    }
+                } catch (ClassNotFoundException ignored) {
+                }
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        return classes;
+    }
+
+    private static List<String> getClassNames(String basePath, File sourceRoot, File file) {
+
+        ArrayList<String> classNames = new ArrayList<>();
+        if (file.isFile() && file.getName().endsWith(".class")) {
+            classNames.add(basePath + file.getName().replace(".class", ""));
+        } else if (file.isDirectory()) {
+            File[] files = file.listFiles();
+            if (files != null) {
+                for (File subFile : files) {
+                    classNames.addAll(getClassNames(file.equals(sourceRoot) ? "" : basePath + file.getName() + ".", sourceRoot, subFile));
+                }
+            }
+        }
+
+        return classNames;
     }
 }

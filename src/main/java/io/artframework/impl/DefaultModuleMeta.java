@@ -16,6 +16,7 @@
 
 package io.artframework.impl;
 
+import com.google.common.base.Strings;
 import io.artframework.ModuleMeta;
 import io.artframework.annotations.ArtModule;
 import lombok.EqualsAndHashCode;
@@ -44,7 +45,7 @@ public class DefaultModuleMeta implements ModuleMeta {
                       @NonNull String[] dependencies,
                       @NonNull String[] packages) {
 
-        this.identifier = identifier;
+        this.identifier = Strings.isNullOrEmpty(identifier) ? moduleClass.getCanonicalName() : identifier;
         this.prefix = prefix;
         this.moduleClass = moduleClass;
         this.version = version;
@@ -61,7 +62,7 @@ public class DefaultModuleMeta implements ModuleMeta {
                 moduleClass,
                 annotation.version(),
                 annotation.description(),
-                annotation.dependencies(),
+                annotation.depends(),
                 annotation.packages()
         );
     }

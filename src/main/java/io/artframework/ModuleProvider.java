@@ -17,7 +17,7 @@
 package io.artframework;
 
 import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.OnBootstrap;
+import io.artframework.annotations.OnLoad;
 import io.artframework.annotations.OnReload;
 import io.artframework.impl.DefaultModuleProvider;
 import lombok.NonNull;
@@ -109,7 +109,7 @@ public interface ModuleProvider extends Provider {
      *                                     or if one of the annotated methods encountered an exception.
      * @see io.artframework.annotations.OnEnable
      * @see io.artframework.annotations.OnDisable
-     * @see OnBootstrap
+     * @see OnLoad
      */
     ModuleProvider enable(@NonNull Object module) throws ModuleRegistrationException;
 
@@ -134,7 +134,7 @@ public interface ModuleProvider extends Provider {
      *                                     or if one of the annotated methods encountered an exception.
      * @see io.artframework.annotations.OnEnable
      * @see io.artframework.annotations.OnDisable
-     * @see OnBootstrap
+     * @see OnLoad
      */
     ModuleProvider enable(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
 

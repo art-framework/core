@@ -20,6 +20,7 @@ import io.artframework.annotations.ArtModule;
 import io.artframework.events.Event;
 import io.artframework.events.EventManager;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 @Accessors(fluent = true)
@@ -28,7 +29,11 @@ public final class ART {
     private ART() {}
 
     @Getter
-    private static final Scope globalScope = Scope.defaultScope();
+    private static Scope globalScope = Scope.defaultScope();
+
+    static void globalScope(Scope scope) {
+        globalScope = scope;
+    }
 
     /**
      * Bootstraps the global scope with the given module initializing the art-framework.
@@ -44,23 +49,14 @@ public final class ART {
      * @param module the root module that is used to bootstrap the art-framework
      * @return the global scope used to bootstrap the module
      */
-    public static Scope bootstrap(Object module) {
+    public static Scope bootstrap(@NonNull Object module) {
 
         return bootstrap(globalScope(), module);
     }
 
-    public static Scope bootstrap(Scope scope, Object module) {
+    public static Scope bootstrap(@NonNull Scope scope, @NonNull Object module) {
 
-        if (scope.bootstrapped()) {
-            throw new RuntimeException("Cannot bootstrap the scope a second time! Use your own scope or remove the module that bootstrapped the scope.");
-        }
-
-        try {
-            scope.configuration().modules().enable(module);
-            return scope.bootstrapped(true);
-        } catch (ModuleRegistrationException e) {
-            throw new RuntimeException(e);
-        }
+        return scope.bootstrap(module);
     }
 
     public static <TEvent extends Event> TEvent callEvent(TEvent event) {

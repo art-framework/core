@@ -26,7 +26,7 @@ import java.lang.annotation.Target;
  * <p>
  * You can then mark individual methods in the module class with one of the following annotations:
  * <ul>
- *     <li>@{@link OnBootstrap} - the load method is called when the module is loaded and before it is enabled.
+ *     <li>@{@link OnLoad} - the load method is called when the module is loaded and before it is enabled.
  *     It also takes an optional config class to load config data from a file.
  *     <li>@{@link OnEnable} - the enable method is called when the module gets enabled and all dependencies are resolved.
  *     <li>@{@link OnDisable} - the disable method is called when the module is disabled and unloaded.
@@ -97,14 +97,13 @@ public @interface ArtModule {
      * The best match will be used if no prefix for the dependency is found.
      * <p>
      * Here is an example of a module that depends on the Vault plugin and on the art-commons module.
-     * <p>
-     * {@code
+     * <p><pre>{@code
      * @Module(
      *      dependencies = {"plugin:Vault", "module:art-commons"}
      * )
-     * }
+     * }</pre>
      *
      * @return a list of dependencies
      */
-    String[] dependencies() default {};
+    String[] depends() default {};
 }

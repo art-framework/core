@@ -136,7 +136,10 @@ public final class ReflectionUtil {
             if (genericInterface instanceof ParameterizedType && ((ParameterizedType) genericInterface).getRawType().equals(interfaceType)) {
                 Type[] genericTypes = ((ParameterizedType) genericInterface).getActualTypeArguments();
                 if (genericTypes.length > position) {
-                    foundClass = (Class<?>) genericTypes[position];
+                    try {
+                        foundClass = (Class<?>) genericTypes[position];
+                    } catch (ClassCastException ignored) {
+                    }
                     break;
                 }
             }

@@ -35,7 +35,7 @@ public interface FinderResult<TResult> extends Iterable<TResult> {
     static FinderResult<?> empty() {
         return new AbstractFinderResult<Object>(new ArrayList<>(), new ArrayList<>()) {
             @Override
-            public FinderResult<Object> load(Configuration configuration) {
+            public FinderResult<Object> load(Scope scope) {
                 return this;
             }
         };
@@ -46,10 +46,10 @@ public interface FinderResult<TResult> extends Iterable<TResult> {
      * <p>
      * Depending on the finder, this might register new modules or load ART objects, etc.
      *
-     * @param configuration the configuration instance to load the results into
+     * @param scope the configuration instance to load the results into
      * @return this finder result
      */
-    FinderResult<TResult> load(Configuration configuration);
+    FinderResult<TResult> load(Scope scope);
 
     /**
      * Returns a list of all classes excluding any classes that had errors.

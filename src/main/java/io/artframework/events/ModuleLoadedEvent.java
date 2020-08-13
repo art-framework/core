@@ -23,7 +23,7 @@ import lombok.Value;
 
 @Value
 @EqualsAndHashCode(callSuper = true)
-public class ModuleRegisteredEvent extends Event {
+public class ModuleLoadedEvent extends Event {
 
     ModuleMeta moduleMeta;
 

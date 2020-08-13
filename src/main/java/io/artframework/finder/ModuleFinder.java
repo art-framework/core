@@ -22,9 +22,9 @@ import io.artframework.util.FileUtil;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class ModuleFinder extends AbstractFinder {
 
@@ -34,21 +34,21 @@ public class ModuleFinder extends AbstractFinder {
     }
 
     @Override
-    protected FinderResult<?> findAllIn(File... files) {
+    public FinderResult<?> findAllIn(File file, Predicate<Class<?>> predicate) {
 
         final List<Class<?>> moduleClasses = new ArrayList<>();
         final List<ArtObjectError> errors = new ArrayList<>();
 
-        Arrays.stream(files)
-                .flatMap(file -> FileUtil.findClasses(configuration().classLoader(), file, aClass -> aClass.isAnnotationPresent(ArtModule.class)).stream())
+        FileUtil.findClasses(configuration().classLoader(), file, aClass -> aClass.isAnnotationPresent(ArtModule.class))
+                .stream().filter(predicate)
                 .forEach(moduleClass -> {
-                    try {
-                        configuration().modules().register(moduleClass);
-                        moduleClasses.add(moduleClass);
-                    } catch (ModuleRegistrationException e) {
-                        errors.add(ArtObjectError.of(moduleClass, e));
-                    }
-                });
+            try {
+                configuration().modules().register(moduleClass);
+                moduleClasses.add(moduleClass);
+            } catch (ModuleRegistrationException e) {
+                errors.add(ArtObjectError.of(moduleClass, e));
+            }
+        });
 
         return new ModuleFinderResult(moduleClasses, errors);
     }
@@ -61,11 +61,11 @@ public class ModuleFinder extends AbstractFinder {
         }
 
         @Override
-        public FinderResult<Class<?>> load(Configuration configuration) {
+        public FinderResult<Class<?>> load(Scope scope) {
 
             for (Class<?> result : results()) {
                 try {
-                    configuration.modules().enable(result);
+                    scope.configuration().modules().enable(result);
                 } catch (ModuleRegistrationException e) {
                     e.printStackTrace();
                 }
