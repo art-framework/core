@@ -17,6 +17,8 @@
 package io.artframework;
 
 import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.OnBootstrap;
+import io.artframework.annotations.OnReload;
 import io.artframework.impl.DefaultModuleProvider;
 import lombok.NonNull;
 
@@ -107,7 +109,7 @@ public interface ModuleProvider extends Provider {
      *                                     or if one of the annotated methods encountered an exception.
      * @see io.artframework.annotations.OnEnable
      * @see io.artframework.annotations.OnDisable
-     * @see io.artframework.annotations.OnLoad
+     * @see OnBootstrap
      */
     ModuleProvider enable(@NonNull Object module) throws ModuleRegistrationException;
 
@@ -132,7 +134,7 @@ public interface ModuleProvider extends Provider {
      *                                     or if one of the annotated methods encountered an exception.
      * @see io.artframework.annotations.OnEnable
      * @see io.artframework.annotations.OnDisable
-     * @see io.artframework.annotations.OnLoad
+     * @see OnBootstrap
      */
     ModuleProvider enable(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
 
@@ -143,4 +145,20 @@ public interface ModuleProvider extends Provider {
      * @return this module provider
      */
     ModuleProvider disable(@NonNull Object module);
+
+    /**
+     * Reloads the module with the given class if it exists and is enabled.
+     * <p>The module also must have a method tagged with the @{@link OnReload} annotation.
+     *
+     * @param moduleClass the class of the module that should be reloaded
+     * @return this module provider
+     */
+    ModuleProvider reload(@NonNull Class<?> moduleClass);
+
+    /**
+     * Reloads all enabled modules calling the tagged reload method if it is present.
+     *
+     * @return this module provider
+     */
+    ModuleProvider reloadAll();
 }

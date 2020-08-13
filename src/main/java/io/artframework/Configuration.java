@@ -20,13 +20,11 @@ import io.artframework.conf.Settings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
-import lombok.With;
 import lombok.experimental.Accessors;
 
 import java.util.Optional;
 
 @Value
-@With
 @Builder(toBuilder = true)
 @AllArgsConstructor
 @Accessors(fluent = true)
