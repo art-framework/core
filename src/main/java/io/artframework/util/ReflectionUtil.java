@@ -145,6 +145,19 @@ public final class ReflectionUtil {
             }
         }
 
+        if (foundClass == null &&
+                clazz.getGenericSuperclass() instanceof ParameterizedType
+                && interfaceType.isAssignableFrom((Class<?>) ((ParameterizedType) clazz.getGenericSuperclass()).getRawType())) {
+            final ParameterizedType type = (ParameterizedType) clazz.getGenericSuperclass();
+            Type[] genericTypes = type.getActualTypeArguments();
+            if (genericTypes.length > position) {
+                try {
+                    foundClass = (Class<?>) genericTypes[position];
+                } catch (ClassCastException ignored) {
+                }
+            }
+        }
+
         if (foundClass == null && clazz.getSuperclass() != null) {
             return getInterfaceTypeArgument(clazz.getSuperclass(), interfaceType, position);
         }
