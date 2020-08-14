@@ -45,9 +45,6 @@ public class TargetFinder extends AbstractFinder {
         FileUtil.findClasses(configuration().classLoader(), file, Target.class)
                 .stream().filter(predicate)
                 .forEach(targetClass -> {
-                    // TODO: fix type argument inheritance
-                    // the util method only works with direct interfaces
-                    // but not with abstract classes that pass the type to the implementing class
                     Optional<Class<?>> sourceClass = ReflectionUtil.getInterfaceTypeArgument(targetClass, Target.class, 0);
                     if (sourceClass.isPresent()) {
                         try {
