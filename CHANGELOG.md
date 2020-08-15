@@ -1,3 +1,30 @@
+# [1.0.0-beta.10](https://github.com/art-framework/art-core/compare/v1.0.0-beta.9...v1.0.0-beta.10) (2020-08-15)
+
+
+### Bug Fixes
+
+* targets extending AbstractTarget are not detected ([32f3ba4](https://github.com/art-framework/art-core/commit/32f3ba437144814914c1ef4c3fd283b7cf889373))
+
+
+### Code Refactoring
+
+* make Configuration immutable and only creatable by a builder ([c2a8686](https://github.com/art-framework/art-core/commit/c2a86863345a146d47234cd5d787f93bff19862f))
+
+
+### Features
+
+* implement dynamic module loading system ([119b68e](https://github.com/art-framework/art-core/commit/119b68eb8582271581269799e89ec5b29daba6ca))
+* **modules:** add bootstrap lifecycle method ([f931936](https://github.com/art-framework/art-core/commit/f931936b5b767325945b8bb3e04bc2a5e3c3ae13))
+* refactor Configuration to live in a Scope ([8aa171b](https://github.com/art-framework/art-core/commit/8aa171b2f619fe6efd3da229698556f27b2b2597))
+
+
+### BREAKING CHANGES
+
+* every art class now takes a scope instead of a configuration. The scope is now the main entry point into the art-framework.
+
+Signed-off-by: Michael Reichenbach <michael@reichenbach.in>
+* the Configuration, Settings and ArtSettings can now only be created with their respective builder.
+
 # [1.0.0-beta.9](https://github.com/art-framework/art-core/compare/v1.0.0-beta.8...v1.0.0-beta.9) (2020-08-11)
 
 
