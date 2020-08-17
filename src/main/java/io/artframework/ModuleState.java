@@ -112,7 +112,15 @@ public enum ModuleState {
         return !loaded() && !enabled() && !disabled() && !error();
     }
 
+    public boolean canReload() {
+        return enabled();
+    }
+
     public boolean canEnable() {
         return !enabled() && !disabled() && !error();
+    }
+
+    public boolean canDisable() {
+        return !disabled() && !error();
     }
 }

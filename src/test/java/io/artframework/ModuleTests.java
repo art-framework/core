@@ -16,13 +16,11 @@
 
 package io.artframework;
 
-import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.OnLoad;
-import io.artframework.annotations.OnReload;
 import io.artframework.integration.BootstrapTestModule;
 import io.artframework.integration.data.Block;
 import io.artframework.integration.data.Entity;
 import io.artframework.integration.data.Player;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,58 +31,41 @@ import static org.mockito.Mockito.*;
 public class ModuleTests {
 
     private BootstrapTestModule module;
+    private BootstrapScope bootstrapScope;
 
     @BeforeEach
     void setUp() {
         ART.globalScope(Scope.defaultScope());
         module = spy(new BootstrapTestModule());
+        bootstrapScope = spy(BootstrapScope.of(module));
     }
 
+    @SneakyThrows
     @Test
     @DisplayName("should bootstrap module")
     void shouldBootstrapModule() {
 
-        Scope scope = ART.bootstrap(module);
+        ART.bootstrap(bootstrapScope);
 
-        verify(module, times(1)).onBootstrap(scope);
+        verify(module, times(1)).onBootstrap(bootstrapScope);
     }
 
+    @SneakyThrows
     @Test
     @DisplayName("should enable module")
     void shouldEnableModule() {
 
-        Scope scope = ART.bootstrap(module);
+        ART.bootstrap(bootstrapScope);
 
-        verify(module, times(1)).enable(scope);
+        verify(module, times(1)).onEnable(any(Scope.class));
     }
 
-    @Test
-    @DisplayName("should reload module if configuration changes")
-    void shouldReloadModule() {
-
-        Scope scope = ART.bootstrap(module);
-
-        verify(module, never()).onReload(any());
-
-        scope.update(configurationBuilder -> configurationBuilder.storage(null));
-        verify(module, times(1)).onReload(scope);
-    }
-
-    @Test
-    @DisplayName("should not reload the module before bootstrapping finished")
-    void shouldNotReloadModuleBeforeBootstrapFinished() {
-
-        BootstrapModule module = spy(new BootstrapModule());
-        ART.bootstrap(module);
-
-        verify(module, never()).reload();
-    }
-
+    @SneakyThrows
     @Test
     @DisplayName("should find and register all art in sub packages")
     void shouldFindAndRegisterAllArtInSubPackages() {
 
-        Scope scope = ART.bootstrap(module);
+        Scope scope = ART.bootstrap(bootstrapScope);
 
         assertThat(scope.configuration().actions().all())
                 .hasSizeGreaterThanOrEqualTo(2)
@@ -101,19 +82,5 @@ public class ModuleTests {
         assertThat(scope.configuration().targets().all())
                 .hasSizeGreaterThanOrEqualTo(3)
                 .contains(Block.class, Entity.class, Player.class);
-    }
-
-    @ArtModule
-    public static class BootstrapModule {
-
-        @OnLoad
-        public void onBootstrap(Scope scope) {
-            scope.update(configurationBuilder -> configurationBuilder.storage(null));
-        }
-
-        @OnReload
-        public void reload() {
-
-        }
     }
 }

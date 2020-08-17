@@ -39,26 +39,26 @@ public final class ART {
     }
 
     /**
-     * Initializes the art-framework using the given bootstrap module.
+     * Initializes the art-framework using the given bootstrap scope.
      * <p>
      * Bootstrapping is only required by the root module that implements and ships the art-framework.
      * Normal modules should not use this bootstrap method, but instead tag their class with @{@link ArtModule}
      * and use the respective tagged methods ({@link OnBootstrap}, {@link OnLoad} and{@link OnEnable}) to load themselves into the scope.
      * <p>
      * By default the module will be bootstrapped into its own scope.
-     * Use the {@link #bootstrap(BootstrapModule, boolean)} method with true to bootstrap the global scope.
+     * Use the {@link #bootstrap(BootstrapScope, boolean)} method with true to bootstrap the global scope.
      *
-     * @param module the root module that is used to bootstrap the art-framework
+     * @param bootstrapScope the bootstrap scope containing the bootstrap module used to start the bootstrap process
      * @return the scope created by the bootstrap process
      * @throws BootstrapException if an error occurred while bootstrapping the module
      */
-    public static Scope bootstrap(@NonNull BootstrapModule module) throws BootstrapException {
+    public static Scope bootstrap(@NonNull BootstrapScope bootstrapScope) throws BootstrapException {
 
-        return bootstrap(module, false);
+        return bootstrap(bootstrapScope, false);
     }
 
     /**
-     * Initializes the art-framework using the given bootstrap module.
+     * Initializes the art-framework using the given bootstrap scope.
      * <p>
      * Bootstrapping is only required by the root module that implements and ships the art-framework.
      * Normal modules should not use this bootstrap method, but instead tag their class with @{@link ArtModule}
@@ -66,16 +66,14 @@ public final class ART {
      * <p>
      * Set the boolean switch to true to set the resulting scope of the bootstrap process as the global scope.
      *
-     * @param module the root module that is used to bootstrap the art-framework
+     * @param bootstrapScope the bootstrap scope containing the bootstrap module used to start the bootstrap process
      * @param global true if the result scope of the bootstrap process should be set as the global scope
      * @return the scope created by the bootstrap process
      * @throws BootstrapException if an error occurred while bootstrapping the module
      */
-    public static Scope bootstrap(@NonNull BootstrapModule module, boolean global) throws BootstrapException {
+    public static Scope bootstrap(@NonNull BootstrapScope bootstrapScope, boolean global) throws BootstrapException {
 
         try {
-            BootstrapScope bootstrapScope = BootstrapScope.of(module);
-            module.enable(bootstrapScope);
             Scope scope = bootstrapScope.bootstrap();
 
             if (global) globalScope(scope);

@@ -17,8 +17,6 @@
 package io.artframework.impl;
 
 import io.artframework.BootstrapModule;
-import io.artframework.BootstrapScope;
-import io.artframework.Scope;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,16 +27,5 @@ public class DefaultBootstrapModule implements BootstrapModule {
     public Collection<Object> modules() {
 
         return new ArrayList<>();
-    }
-
-    @Override
-    public void enable(BootstrapScope scope) {
-
-
-    }
-
-    @Override
-    public void disable(Scope scope) {
-
     }
 }

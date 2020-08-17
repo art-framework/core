@@ -38,6 +38,13 @@ public interface BootstrapScope extends Scope {
     }
 
     /**
+     * Gets the module that initiated the bootstrap process.
+     *
+     * @return the bootstrap module
+     */
+    BootstrapModule bootstrapModule();
+
+    /**
      * Configures this bootstrap scopes configuration.
      * <p>
      * Use it to provide your own implementations of the art-framework,

@@ -20,11 +20,13 @@ import io.artframework.*;
 import io.artframework.conf.Settings;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import lombok.extern.java.Log;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 @Getter
+@Log
 @Accessors(fluent = true)
 public final class DefaultScope implements BootstrapScope {
 
@@ -79,10 +81,13 @@ public final class DefaultScope implements BootstrapScope {
     }
 
     @Override
-    public Scope bootstrap() {
+    public Scope bootstrap() throws BootstrapException {
         if (bootstrapped()) {
-            throw new UnsupportedOperationException("Cannot bootstrap the scope a second time.");
+            log.warning("Tried to bootstrap " + bootstrapModule().getClass().getCanonicalName() + " after it was already bootstrapped!");
+            return this;
         }
+
+        this.configuration.modules().bootstrap(this);
 
         this.configuration = configurationBuilder().build();
         this.bootstrapped = true;
