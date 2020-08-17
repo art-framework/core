@@ -18,10 +18,12 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import lombok.NonNull;
+import lombok.extern.java.Log;
 
 import java.util.Collection;
 import java.util.Objects;
 
+@Log
 public class DefaultRequirementProvider extends AbstractFactoryProvider<RequirementFactory<?>> implements RequirementProvider {
 
     public DefaultRequirementProvider(Scope scope) {
@@ -31,6 +33,7 @@ public class DefaultRequirementProvider extends AbstractFactoryProvider<Requirem
     @Override
     public RequirementProvider add(@NonNull ArtObjectMeta<Requirement<?>> information) {
         addFactory(RequirementFactory.of(scope(), information.get()));
+        log.info("[REQUIREMENT][REGISTERED] " + information.identifier());
         return this;
     }
 
@@ -48,7 +51,7 @@ public class DefaultRequirementProvider extends AbstractFactoryProvider<Requirem
         try {
             return add(Objects.requireNonNull(ArtObjectMeta.of(aClass).get()));
         } catch (ArtMetaDataException e) {
-            // TODO: error handling
+            log.severe("[REQUIREMENT] failed to add " + aClass.getCanonicalName() + ": " + e.getMessage());
             e.printStackTrace();
         }
         return this;
@@ -58,7 +61,7 @@ public class DefaultRequirementProvider extends AbstractFactoryProvider<Requirem
         try {
             return add(Objects.requireNonNull(ArtObjectMeta.of(aClass, artObjectProvider).get()));
         } catch (ArtMetaDataException e) {
-            // TODO: error handling
+            log.severe("[REQUIREMENT] failed to add " + aClass.getCanonicalName() + ": " + e.getMessage());
             e.printStackTrace();
         }
         return this;

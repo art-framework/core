@@ -20,10 +20,13 @@ import io.artframework.*;
 import io.artframework.annotations.ART;
 import io.artframework.events.TriggerEvent;
 import lombok.NonNull;
+import lombok.extern.java.Log;
+import org.reflections.ReflectionUtils;
 
 import java.lang.reflect.Method;
 import java.util.Collection;
 
+@Log
 public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFactory> implements TriggerProvider, CombinedResultCreator {
 
     public DefaultTriggerProvider(Scope scope) {
@@ -33,19 +36,19 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
     @Override
     public TriggerProvider add(@NonNull ArtObjectMeta<Trigger> triggerInformation) {
         addFactory(TriggerFactory.of(scope(), triggerInformation));
+        log.info("[TRIGGER][REGISTERED] " + triggerInformation.identifier());
         return this;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public TriggerProvider add(Class<? extends Trigger> triggerClass) {
-        for (Method method : triggerClass.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(ART.class)) {
-                try {
-                    add((ArtObjectMeta<Trigger>) ArtObjectMeta.of(triggerClass, method));
-                } catch (ArtMetaDataException e) {
-                    e.printStackTrace();
-                }
+        for (Method method : ReflectionUtils.getAllMethods(triggerClass, method -> method.isAnnotationPresent(ART.class))) {
+            try {
+                add((ArtObjectMeta<Trigger>) ArtObjectMeta.of(triggerClass, method));
+            } catch (ArtMetaDataException e) {
+                log.severe("[TRIGGER] failed to add " + triggerClass.getCanonicalName() + " -> " + method.getName() + ": " + e.getMessage());
+                e.printStackTrace();
             }
         }
         return this;
@@ -55,13 +58,12 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
     @SuppressWarnings("unchecked")
     public <TTrigger extends Trigger> TriggerProvider add(Class<TTrigger> triggerClass, ArtObjectProvider<TTrigger> supplier) {
 
-        for (Method method : triggerClass.getDeclaredMethods()) {
-            if (method.isAnnotationPresent(ART.class)) {
-                try {
-                    add((ArtObjectMeta<Trigger>) ArtObjectMeta.of(triggerClass, supplier, method));
-                } catch (ArtMetaDataException e) {
-                    e.printStackTrace();
-                }
+        for (Method method : ReflectionUtils.getAllMethods(triggerClass, method -> method.isAnnotationPresent(ART.class))) {
+            try {
+                add((ArtObjectMeta<Trigger>) ArtObjectMeta.of(triggerClass, supplier, method));
+            } catch (ArtMetaDataException e) {
+                log.severe("[TRIGGER] failed to add " + triggerClass.getCanonicalName() + " -> " + method.getName() + ": " + e.getMessage());
+                e.printStackTrace();
             }
         }
         return this;

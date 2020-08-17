@@ -23,6 +23,7 @@ import io.artframework.Target;
 import io.artframework.TargetProvider;
 import io.artframework.util.ReflectionUtil;
 import lombok.NonNull;
+import lombok.extern.java.Log;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -31,6 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
+@Log
 public class DefaultTargetProvider extends AbstractProvider implements TargetProvider {
 
     @SuppressWarnings("rawtypes")
@@ -62,6 +64,7 @@ public class DefaultTargetProvider extends AbstractProvider implements TargetPro
     @Override
     public <TTarget> TargetProvider add(@NonNull Class<TTarget> sourceClass, @NonNull Function<TTarget, Target<TTarget>> targetProvider) {
         targetProviders.put(sourceClass, targetProvider);
+        log.info("[TARGET][REGISTERED] " + sourceClass.getSimpleName());
         return this;
     }
 

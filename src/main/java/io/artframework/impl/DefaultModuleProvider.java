@@ -72,6 +72,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     public ModuleProvider bootstrap(BootstrapScope bootstrapScope) throws BootstrapException {
 
         try {
+            log.fine("Starting bootstrap process with: " + bootstrapScope.bootstrapModule().getClass().getSimpleName());
             ModuleInformation bootstrapModule = registerModule(bootstrapScope.bootstrapModule());
             bootstrapModule(bootstrapScope, bootstrapModule);
 
@@ -95,6 +96,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             enableModule(bootstrapModule);
             enableAll();
 
+            log.fine("Successfully bootstrapped the art-framework with: " + bootstrapScope.bootstrapModule().getClass().getSimpleName());
         } catch (ModuleRegistrationException e) {
             disableAll();
             throw new BootstrapException(e);
@@ -224,11 +226,13 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
                 Object artModule = constructor.newInstance();
                 return registerModule(moduleMeta, artModule);
             } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                String errorMessage = "Unable to create a new instance of the ArtModule " + moduleClass.getSimpleName() + ". " +
+                        "Does it have a parameterless public constructor?";
+                log.severe(errorMessage);
                 throw new ModuleRegistrationException(
                         moduleMeta,
                         ModuleState.INVALID_MODULE,
-                        "Unable to create a new instance of the ArtModule " + moduleClass.getSimpleName() + ". " +
-                                "Does it have a parameterless public constructor?",
+                        errorMessage,
                         e
                 );
             }
@@ -261,6 +265,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         } else {
             moduleInformation = updateModuleCache(new ModuleInformation(moduleMeta, module).state(ModuleState.REGISTERED));
             modules.put(moduleMeta.moduleClass(), moduleInformation);
+            logState(moduleInformation);
 
             cycleSearcher = CycleSearch.of(modules.values().stream().map(ModuleInformation::moduleMeta).collect(Collectors.toList()));
 
@@ -283,6 +288,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             module.onBootstrap(scope);
             updateModuleCache(module.state(ModuleState.BOOTSTRAPPED));
             ART.callEvent(new ModuleBootstrappedEvent(module.moduleMeta()));
+            logState(module);
         } catch (Exception exception) {
             throw new ModuleRegistrationException(module.moduleMeta(), ModuleState.ERROR, exception);
         }
@@ -299,8 +305,10 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             module.onLoad(scope());
             updateModuleCache(module.state(ModuleState.LOADED));
             ART.callEvent(new ModuleLoadedEvent(module.moduleMeta()));
+            logState(module);
         } catch (Exception e) {
             updateModuleCache(module.state(ModuleState.ERROR));
+            logState(module, e.getMessage());
             throw new ModuleRegistrationException(module.moduleMeta(), ModuleState.ERROR,
                     "An error occured when trying to load the module \"" + module.moduleMeta().identifier() + "\": " + e.getMessage(), e);
         }
@@ -318,27 +326,23 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         }
     }
 
-    private void enableModule(ModuleInformation moduleInformation) throws ModuleRegistrationException {
+    private void enableModule(ModuleInformation module) throws ModuleRegistrationException {
 
-        if (!moduleInformation.state().canEnable()) return;
+        if (!module.state().canEnable()) return;
 
-        if (hasMissingDependencies(moduleInformation)) {
-            updateModuleCache(moduleInformation.state(ModuleState.MISSING_DEPENDENCIES));
-            throw new ModuleRegistrationException(moduleInformation.moduleMeta(), moduleInformation.state(),
-                    "The module \"" + moduleInformation.moduleMeta().identifier() + "\" is missing the following dependencies: " + String.join(",", getMissingDependencies(moduleInformation)));
-        }
-
-        loadModule(moduleInformation);
-        checkDependencies(moduleInformation, this::enableModule);
+        loadModule(module);
+        checkDependencies(module, this::enableModule);
 
         try {
-            moduleInformation.onEnable(scope());
-            updateModuleCache(moduleInformation.state(ModuleState.ENABLED));
-            ART.callEvent(new ModuleEnabledEvent(moduleInformation.moduleMeta()));
+            module.onEnable(scope());
+            updateModuleCache(module.state(ModuleState.ENABLED));
+            ART.callEvent(new ModuleEnabledEvent(module.moduleMeta()));
+            logState(module);
         } catch (Exception e) {
-            updateModuleCache(moduleInformation.state(ModuleState.ERROR));
-            throw new ModuleRegistrationException(moduleInformation.moduleMeta(), ModuleState.ERROR,
-                    "Encountered an error while enabling the module \"" + moduleInformation.moduleMeta().identifier() + "\": " + e.getMessage(), e);
+            updateModuleCache(module.state(ModuleState.ERROR));
+            logState(module, e.getMessage());
+            throw new ModuleRegistrationException(module.moduleMeta(), ModuleState.ERROR,
+                    "Encountered an error while enabling the module \"" + module.moduleMeta().identifier() + "\": " + e.getMessage(), e);
         }
     }
 
@@ -350,8 +354,10 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             module.onDisable(scope());
             updateModuleCache(module.state(ModuleState.DISABLED));
             ART.callEvent(new ModuleDisabledEvent(module.moduleMeta()));
+            logState(module);
         } catch (Exception e) {
             updateModuleCache(module.state(ModuleState.ERROR));
+            logState(module, e.getMessage());
             throw new ModuleRegistrationException(module.moduleMeta(), ModuleState.ERROR,
                     "Encountered an error while disabling the module \"" + module.moduleMeta().identifier() + "\": " + e.getMessage(), e);
         }
@@ -360,8 +366,10 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     private void checkDependencies(ModuleInformation module, ChildModuleLoader childModuleAction) throws ModuleRegistrationException {
         if (hasMissingDependencies(module)) {
             updateModuleCache(module.state(ModuleState.MISSING_DEPENDENCIES));
+            String missingDeps = " missing the following dependencies: " + String.join(",", getMissingDependencies(module));
+            logState(module, missingDeps);
             throw new ModuleRegistrationException(module.moduleMeta(), module.state(),
-                    "The module \"" + module.moduleMeta().identifier() + "\" is missing the following dependencies: " + String.join(",", getMissingDependencies(module)));
+                    "The module \"" + module.moduleMeta().identifier() + "\" is" + missingDeps);
         }
 
         for (ModuleInformation childModule : getModules(module.moduleMeta().dependencies())) {
@@ -369,6 +377,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
                 childModuleAction.accept(childModule);
             } catch (ModuleRegistrationException e) {
                 updateModuleCache(module.state(ModuleState.DEPENDENCY_ERROR));
+                logState(module, e.getMessage());
                 throw new ModuleRegistrationException(module.moduleMeta(), ModuleState.DEPENDENCY_ERROR,
                         "Failed to enable the module \"" + module.moduleMeta().identifier() + "\" because a child module could not be enabled: " + e.getMessage(), e);
             }
@@ -385,6 +394,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             }
         } catch (URISyntaxException e) {
             updateModuleCache(module.state(ModuleState.ERROR));
+            logState(module, e.getMessage());
             throw new ModuleRegistrationException(module.moduleMeta(), ModuleState.ERROR,
                     "An error occured when trying to load the art in module \"" + module.moduleMeta().identifier() + "\": " + e.getMessage(), e);
         }
@@ -461,6 +471,16 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     private ModuleInformation updateModuleCache(ModuleInformation moduleInformation) {
         this.modules.put(moduleInformation.moduleMeta().moduleClass(), moduleInformation);
         return moduleInformation;
+    }
+
+    private static void logState(ModuleInformation module, String... messages) {
+        String msg = "[" + module.state().name() + "] " + module.moduleMeta().identifier() + " - " + module.moduleMeta().moduleClass().getSimpleName()
+                + (messages.length > 0 ? ": " + String.join(";", messages) : "");
+        if (module.state().error()) {
+            log.severe(msg);
+        } else {
+            log.info(msg);
+        }
     }
 
     @Getter
