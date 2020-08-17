@@ -26,7 +26,7 @@ import org.reflections.ReflectionUtils;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-@Log
+@Log(topic = "art-framework:trigger")
 public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFactory> implements TriggerProvider, CombinedResultCreator {
 
     public DefaultTriggerProvider(Scope scope) {
@@ -40,7 +40,7 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
         }
 
         addFactory(TriggerFactory.of(scope(), triggerInformation));
-        log.info("[TRIGGER][REGISTERED] " + triggerInformation.identifier());
+        log.info("[REGISTERED] " + triggerInformation.identifier());
         return this;
     }
 
@@ -51,7 +51,7 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
             try {
                 add((ArtObjectMeta<Trigger>) ArtObjectMeta.of(triggerClass, method));
             } catch (ArtMetaDataException e) {
-                log.severe("[TRIGGER] failed to add " + triggerClass.getCanonicalName() + " -> " + method.getName() + ": " + e.getMessage());
+                log.severe("failed to add " + triggerClass.getCanonicalName() + " -> " + method.getName() + ": " + e.getMessage());
                 e.printStackTrace();
             }
         }
@@ -66,7 +66,7 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
             try {
                 add((ArtObjectMeta<Trigger>) ArtObjectMeta.of(triggerClass, supplier, method));
             } catch (ArtMetaDataException e) {
-                log.severe("[TRIGGER] failed to add " + triggerClass.getCanonicalName() + " -> " + method.getName() + ": " + e.getMessage());
+                log.severe("failed to add " + triggerClass.getCanonicalName() + " -> " + method.getName() + ": " + e.getMessage());
                 e.printStackTrace();
             }
         }

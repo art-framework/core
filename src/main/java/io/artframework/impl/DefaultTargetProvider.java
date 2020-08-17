@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-@Log
+@Log(topic = "art-framework:targets")
 public class DefaultTargetProvider extends AbstractProvider implements TargetProvider {
 
     @SuppressWarnings("rawtypes")
@@ -63,8 +63,11 @@ public class DefaultTargetProvider extends AbstractProvider implements TargetPro
 
     @Override
     public <TTarget> TargetProvider add(@NonNull Class<TTarget> sourceClass, @NonNull Function<TTarget, Target<TTarget>> targetProvider) {
+        if (exists(sourceClass)) {
+            log.warning("overwriting existing target registration for " + sourceClass.getCanonicalName());
+        }
         targetProviders.put(sourceClass, targetProvider);
-        log.info("[TARGET][REGISTERED] " + sourceClass.getSimpleName());
+        log.info("[REGISTERED] " + sourceClass.getCanonicalName());
         return this;
     }
 

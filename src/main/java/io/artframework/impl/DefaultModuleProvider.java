@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 import static org.reflections.ReflectionUtils.getAllMethods;
 import static org.reflections.ReflectionUtils.withAnnotation;
 
-@Log
+@Log(topic = "art-framework:modules")
 public class DefaultModuleProvider extends AbstractProvider implements ModuleProvider {
 
     final Map<Class<?>, ModuleInformation> modules = new HashMap<>();
@@ -72,7 +72,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     public ModuleProvider bootstrap(BootstrapScope bootstrapScope) throws BootstrapException {
 
         try {
-            log.fine("[MODULE] Starting bootstrap process with: " + bootstrapScope.bootstrapModule().getClass().getSimpleName());
+            log.fine("Starting bootstrap process with: " + bootstrapScope.bootstrapModule().getClass().getSimpleName());
             ModuleInformation bootstrapModule = registerModule(bootstrapScope.bootstrapModule());
             bootstrapModule(bootstrapScope, bootstrapModule);
 
@@ -96,7 +96,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             enableModule(bootstrapModule);
             enableAll();
 
-            log.fine("[MODULE] Successfully bootstrapped the art-framework with: " + bootstrapScope.bootstrapModule().getClass().getSimpleName());
+            log.fine("Successfully bootstrapped the art-framework with: " + bootstrapScope.bootstrapModule().getClass().getSimpleName());
         } catch (ModuleRegistrationException e) {
             disableAll();
             throw new BootstrapException(e);
@@ -474,7 +474,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     }
 
     private static void logState(ModuleInformation module, String... messages) {
-        String msg = "[MODULE][" + module.state().name() + "] " + module.moduleMeta().identifier() + " - " + module.moduleMeta().moduleClass().getCanonicalName()
+        String msg = "[" + module.state().name() + "] " + module.moduleMeta().identifier() + " - " + module.moduleMeta().moduleClass().getCanonicalName()
                 + (messages.length > 0 ? ": " + String.join(";", messages) : "");
         if (module.state().error()) {
             log.severe(msg);
