@@ -1,3 +1,10 @@
+# [1.0.0-beta.12](https://github.com/art-framework/art-core/compare/v1.0.0-beta.11...v1.0.0-beta.12) (2020-08-17)
+
+
+### Bug Fixes
+
+* do not register duplicate trigger ([ae19358](https://github.com/art-framework/art-core/commit/ae19358e09921d855987e251024999b068fb1ec8))
+
 # [1.0.0-beta.11](https://github.com/art-framework/art-core/compare/v1.0.0-beta.10...v1.0.0-beta.11) (2020-08-17)
 
 
