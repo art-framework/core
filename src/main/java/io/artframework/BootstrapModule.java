@@ -14,31 +14,25 @@
  * limitations under the License.
  */
 
-package io.artframework.integration;
+package io.artframework;
 
-import io.artframework.Scope;
-import io.artframework.annotations.*;
+import io.artframework.annotations.ArtModule;
 
-@ArtModule("test")
-public class TestModule {
+import java.util.Collection;
 
-    @OnLoad
-    public void onBootstrap(Scope scope) {
+public interface BootstrapModule {
 
-    }
+    /**
+     * Gets a list of submodules that should be bootstrapped together with this module.
+     * <p>
+     * The list may contained mixed objects and classes, but all must be annotated with the {@link ArtModule} annotation.
+     * An empty list must be returned if no modules exist.
+     *
+     * @return a list of submodules in this module
+     */
+    Collection<Object> modules();
 
-    @OnReload
-    public void onReload(Scope scope) {
+    void enable(BootstrapScope scope);
 
-    }
-
-    @OnEnable
-    public void onEnable(Scope scope) {
-
-    }
-
-    @OnDisable
-    public void onDisable(Scope scope) {
-
-    }
+    void disable(Scope scope);
 }

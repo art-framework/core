@@ -25,8 +25,10 @@ import java.lang.annotation.Target;
  * Marks the given method as the reload method for an art module.
  * The class must be annotated with the @{@link ArtModule} annotation for the method to be called.
  * <p>
- * The method will be called everytime the scope configuration changes and when modules should be reloaded.
- * Use it to reload your configuration, clear the cache and reinitialize your module if needed.
+ * The method will be called everytime an reload of the art-framework is requested.
+ * Use it to reload your configurations and services. You should also clear any cached data to avoid memory leaks.
+ * <p>
+ * The reload lifecycle method may be called multiple times during the lifecycle of a module.
  * <p>
  * The annotated method can take any of the following parameters, but most not take any other parameters.
  * <ul>

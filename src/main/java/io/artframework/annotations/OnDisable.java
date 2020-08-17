@@ -25,9 +25,17 @@ import java.lang.annotation.Target;
  * Marks the given method as the disable method for an art module.
  * The class must be annotated with the @{@link ArtModule} annotation for the method to be called.
  * <p>
+ * The disable method is called when your module was removed from the art-framework and gets disabled.
+ * Use it to cleanup any connections, cached data, and so on to prevent memory leaks.
+ * <p>
+ * The disable lifecycle method is called exactly once in the lifecycle of the module.
+ * Any reloading will happen with the @{@link OnReload} method.
+ * <p>
+ * Any modules that depend on this module will be disabled before disabling this module.
+ * <p>
  * The annotated method can take any of the following parameters, but most not take any other parameters.
  * <ul>
- *     <li>{@link io.artframework.Configuration} - the configuration scope of the module
+ *     <li>{@link io.artframework.Scope} - the scope of the module
  * </ul>
  * <p>
  * Here is an example of how such a method can look like:
@@ -36,7 +44,7 @@ import java.lang.annotation.Target;
  * @ArtModule("my-module")
  * public class MyModule {
  *      @OnDisable
- *      public void onDisable(Configuration art) {
+ *      public void onDisable(Scope scope) {
  *          ...
  *      }
  * }

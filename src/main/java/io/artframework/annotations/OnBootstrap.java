@@ -22,25 +22,26 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Marks the given method as the load method for an art module.
+ * Marks the given method as the bootstrap method for an art module.
  * The class must be annotated with the @{@link ArtModule} annotation for the method to be called.
  * <p>
- * The module is loaded after bootstrapping has finished and all configurations have been loaded and injected.
- * Use it to read values from your configuration, register your ART and setup your module.
+ * The bootstrap method is called once on all modules before any module is loaded or enabled.
+ * You can configure the {@link io.artframework.BootstrapScope} provide your own provider implementations.
  * <p>
- * Do not use it to start background jobs, open database connections or anything else that should
- * be running when your module is enabled.
- * Use the {@link OnEnable} lifecycle method for that.
+ * Loading modules that require bootstrapping after the bootstrap stage is finished will fail.
+ * Removing bootstrap modules and then reloading the art-framework will fail also. A complete restart is needed.
  * <p>
- * The load lifecycle method is called exactly once in the lifecycle of the module.
- * Any reloading will happen with the @{@link OnReload} method.
+ * Make sure you only use this method if you really need it and are configuring parts of the art-framework.
+ * If you do not use this method your module will be hot pluggable and can be loaded and unloaded on the fly without a restart.
  * <p>
- * Any dependencies of this module will be loaded before this module.
+ * The bootstrap lifecycle method is called exactly once in the lifecycle of the module.
+ * <p>
+ * Any dependencies of this module will be bootstrapped before this module.
  * The lifecycle methods of this module will never be called if this module has missing dependencies.
  * <p>
  * The annotated method can take any of the following parameters, but most not take any other parameters.
  * <ul>
- *     <li>{@link io.artframework.Scope} - the scope of the module
+ *     <li>{@link io.artframework.BootstrapScope} - the bootstrap scope of the current lifecycle
  * </ul>
  * <p>
  * Here is an example of how such a method can look like:
@@ -49,13 +50,13 @@ import java.lang.annotation.Target;
  *  @ArtModule("my-module")
  *  public class MyModule {
  *       @OnBootstrap
- *       public void onLoad(Scope scope) {
- *           ...
+ *       public void onBootstrap(BootstrapScope scope) {
+ *           scope.configure(config -> config.scheduler(new MyCustomScheduler());
  *       }
  *  }
  * }</pre>
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-public @interface OnLoad {
+public @interface OnBootstrap {
 }

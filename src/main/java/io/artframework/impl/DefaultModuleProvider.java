@@ -16,11 +16,9 @@
 
 package io.artframework.impl;
 
+import io.artframework.ART;
 import io.artframework.*;
-import io.artframework.annotations.OnDisable;
-import io.artframework.annotations.OnEnable;
-import io.artframework.annotations.OnLoad;
-import io.artframework.annotations.OnReload;
+import io.artframework.annotations.*;
 import io.artframework.events.ModuleDisabledEvent;
 import io.artframework.events.ModuleEnabledEvent;
 import io.artframework.events.ModuleLoadedEvent;
@@ -67,6 +65,24 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     @Override
     public Optional<ArtModuleDependencyResolver> resolver() {
         return Optional.ofNullable(resolver);
+    }
+
+    @Override
+    public ModuleProvider bootstrap(BootstrapScope scope, BootstrapModule bootstrapModule) {
+
+        for (Object module : bootstrapModule.modules()) {
+            try {
+                if (module instanceof Class) {
+                    bootstrap(scope, register((Class<?>) module));
+                } else {
+                    bootstrap(scope, register(module));
+                }
+            } catch (ModuleRegistrationException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return this;
     }
 
     @Override
@@ -195,6 +211,18 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         }
 
         return moduleInformation;
+    }
+
+    private void bootstrapModule(@NonNull BootstrapScope scope, @NonNull ModuleInformation moduleInformation) throws ModuleRegistrationException {
+
+        if (!moduleInformation.state().canBootstrap() || moduleInformation.onBootstrap() == null) return;
+
+        try {
+            moduleInformation.onBootstrap(scope);
+            updateModuleCache(moduleInformation.state(ModuleState.BOOTSTRAPPED));
+        } catch (Exception exception) {
+            throw new ModuleRegistrationException(moduleInformation.moduleMeta(), ModuleState.ERROR, exception);
+        }
     }
 
     private void enable(ModuleInformation moduleInformation) throws ModuleRegistrationException {
@@ -335,6 +363,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
         private final ModuleMeta moduleMeta;
         @Nullable private final Object module;
+        @Nullable private final Method onBootstrap;
         @Nullable private final Method onLoad;
         @Nullable private final Method onEnable;
         @Nullable private final Method onDisable;
@@ -345,6 +374,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         public ModuleInformation(ModuleMeta moduleMeta, @Nullable Object module) {
             this.moduleMeta = moduleMeta;
             this.module = module;
+            onBootstrap = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnBootstrap.class)).stream().findFirst().orElse(null);
             onLoad = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnLoad.class)).stream().findFirst().orElse(null);
             onEnable = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnEnable.class)).stream().findFirst().orElse(null);
             onDisable = getAllMethods(moduleMeta.moduleClass(), withAnnotation(OnDisable.class)).stream().findFirst().orElse(null);
@@ -354,6 +384,11 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         public Optional<Object> module() {
 
             return Optional.ofNullable(module);
+        }
+
+        public void onBootstrap(BootstrapScope scope) {
+            if (onBootstrap == null) return;
+            invokeMethod(onBootstrap, scope);
         }
 
         public void onLoad(Scope scope) {

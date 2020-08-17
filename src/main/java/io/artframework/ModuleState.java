@@ -29,6 +29,18 @@ public enum ModuleState {
      */
     UNKNOWN,
     /**
+     * The module has been registered but is not loaded or enabled.
+     */
+    REGISTERED,
+    /**
+     * The module has been registered and bootstrapping is complete.
+     */
+    BOOTSTRAPPED,
+    /**
+     * The module has been loaded.
+     */
+    LOADED,
+    /**
      * The module is successfully enabled and running.
      */
     ENABLED,
@@ -37,13 +49,9 @@ public enum ModuleState {
      */
     DISABLED,
     /**
-     * The module has been loaded.
+     * The enabling or loading of the module has been delayed.
      */
-    LOADED,
-    /**
-     * The module has been registered but is not loaded or enabled.
-     */
-    REGISTERED,
+    DELAYED,
     /**
      * The module encountered an error during load or initialization.
      */
@@ -60,10 +68,6 @@ public enum ModuleState {
      * One of the dependencies could not be enabled.
      */
     DEPENDENCY_ERROR,
-    /**
-     * The enabling or loading of the module has been delayed.
-     */
-    DELAYED,
     /**
      * A duplicate module with the same identifier but different class exists.
      */
@@ -83,23 +87,32 @@ public enum ModuleState {
                 || this == UNKNOWN;
     }
 
-    public boolean loaded() {
-        return this == LOADED;
+    public boolean bootstrapped() {
+        return this == BOOTSTRAPPED;
     }
 
-    public boolean canLoad() {
-        return this == REGISTERED;
+    public boolean loaded() {
+        return this == LOADED;
     }
 
     public boolean enabled() {
         return this == ENABLED;
     }
 
-    public boolean canEnable() {
-        return !enabled() && loaded() && !error();
-    }
-
     public boolean disabled() {
         return this == DISABLED;
+    }
+
+    public boolean canBootstrap() {
+
+        return !bootstrapped() && !loaded() && !enabled() && !disabled() && !error() ;
+    }
+
+    public boolean canLoad() {
+        return !loaded() && !enabled() && !disabled() && !error();
+    }
+
+    public boolean canEnable() {
+        return !enabled() && !disabled() && !error();
     }
 }

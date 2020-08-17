@@ -59,6 +59,15 @@ public interface ModuleProvider extends Provider {
     Optional<ArtModuleDependencyResolver> resolver();
 
     /**
+     * Bootstraps the given module and all of the supplied sub modules.
+     *
+     * @param module
+     * @param moduleSupplier
+     * @return
+     */
+    ModuleProvider bootstrap(BootstrapModule module);
+
+    /**
      * Registers the given module with the provider, but does not enable it.
      * <p>
      * This is useful if you need to load multiple modules that depend upon each other

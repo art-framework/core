@@ -16,7 +16,11 @@
 
 package io.artframework.parser.flow;
 
-import io.artframework.*;
+import io.artframework.ActionContext;
+import io.artframework.ActionFactory;
+import io.artframework.ActionProvider;
+import io.artframework.ArtObjectMeta;
+import io.artframework.impl.DefaultScope;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +53,7 @@ class ActionParserTest {
         when(actionProvider.get(anyString())).thenReturn(Optional.of(actionFactory));
         when(actionFactory.create(anyMap())).thenReturn(mock(ActionContext.class));
 
-        this.parser = new ActionParser(new Scope(configurationBuilder -> configurationBuilder.actions(actionProvider)));
+        this.parser = new ActionParser(new DefaultScope(configurationBuilder -> configurationBuilder.actions(actionProvider)));
     }
 
     @Nested
