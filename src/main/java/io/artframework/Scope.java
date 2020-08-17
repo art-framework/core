@@ -16,101 +16,38 @@
 
 package io.artframework;
 
-import io.artframework.conf.Settings;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import io.artframework.impl.DefaultScope;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
-@Data
-@AllArgsConstructor
-@Accessors(fluent = true)
-public final class Scope {
+public interface Scope {
 
-    public static Scope defaultScope() {
+    static Scope defaultScope() {
 
-        return new Scope();
+        return new DefaultScope();
     }
 
-    public static Scope of(Consumer<Configuration.ConfigurationBuilder> config) {
-        return new Scope(config);
+    static Scope of(Consumer<Configuration.ConfigurationBuilder> config) {
+        return new DefaultScope(config);
     }
 
-    private Configuration.ConfigurationBuilder configurationBuilder(){
-        return Configuration.builder()
-                .actions(ActionProvider.of(this))
-                .art(ArtProvider.of(this))
-                .storage(StorageProvider.of(this))
-                .classLoader(getClass().getClassLoader())
-                .events(EventProvider.of(this))
-                .finder(FinderProvider.of(this))
-                .modules(ModuleProvider.of(this))
-                .parser(FlowParserProvider.of(this))
-                .requirements(RequirementProvider.of(this))
-                .settings(Settings.defaultSettings())
-                .targets(TargetProvider.of(this))
-                .trigger(TriggerProvider.of(this));
+    static Scope of(Configuration configuration) {
+        return new DefaultScope(configuration);
     }
 
-    private final Collection<Consumer<Scope>> updateListeners = new ArrayList<>();
+    /**
+     * The current configuration of this scope.
+     * <p>
+     * The configuration is never null but may change during the lifetime of the scope.
+     * Directly access the configuration from the scope when you need it and do not cache it in a variable.
+     * <p>
+     * The configuration may change when the scope is being bootstrapped, but should stay the same after
+     * bootstrapping has finished.
+     *
+     * @return the current configuration of this scope
+     */
+    Configuration configuration();
 
-    @Setter(AccessLevel.PACKAGE)
-    private Configuration configuration = configurationBuilder().build();
-
-    @Setter(AccessLevel.PRIVATE)
-    private boolean bootstrapped = false;
-
-    public Scope() {}
-
-    public Scope(Consumer<Configuration.ConfigurationBuilder> builder) {
-        Configuration.ConfigurationBuilder configurationBuilder = configurationBuilder();
-        builder.accept(configurationBuilder);
-        this.configuration = configurationBuilder.build();
-    }
-
-    public Scope bootstrap(Object module) {
-
-        if (bootstrapped) return this;
-
-        try {
-            configuration().modules().enable(module);
-            bootstrapped(true);
-        } catch (ModuleRegistrationException e) {
-            throw new RuntimeException(e);
-        }
-
-        return this;
-    }
-
-    public Scope update(Consumer<Configuration.ConfigurationBuilder> configuration) {
-
-        Configuration.ConfigurationBuilder builder = this.configuration.toBuilder();
-        configuration.accept(builder);
-        configuration(builder.build());
-
-        updateListeners.forEach(scopeConsumer -> scopeConsumer.accept(this));
-
-        if (bootstrapped()) {
-            configuration().modules().reloadAll();
-        }
-
-        return this;
-    }
-
-    public Scope onUpdate(Consumer<Scope> update) {
-
-        this.updateListeners.add(update);
-        return this;
-    }
-
-    public ArtContext load(List<String> list) {
-
-        return ArtLoader.of(this).parse(list).build();
-    }
+    ArtContext load(List<String> list);
 }

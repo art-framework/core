@@ -19,7 +19,7 @@ package io.artframework;
 import io.artframework.annotations.ArtModule;
 import io.artframework.annotations.OnLoad;
 import io.artframework.annotations.OnReload;
-import io.artframework.integration.TestModule;
+import io.artframework.integration.BootstrapTestModule;
 import io.artframework.integration.data.Block;
 import io.artframework.integration.data.Entity;
 import io.artframework.integration.data.Player;
@@ -32,12 +32,12 @@ import static org.mockito.Mockito.*;
 
 public class ModuleTests {
 
-    private TestModule module;
+    private BootstrapTestModule module;
 
     @BeforeEach
     void setUp() {
         ART.globalScope(Scope.defaultScope());
-        module = spy(new TestModule());
+        module = spy(new BootstrapTestModule());
     }
 
     @Test
@@ -55,7 +55,7 @@ public class ModuleTests {
 
         Scope scope = ART.bootstrap(module);
 
-        verify(module, times(1)).onEnable(scope);
+        verify(module, times(1)).enable(scope);
     }
 
     @Test
