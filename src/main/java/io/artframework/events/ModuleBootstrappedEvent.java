@@ -14,11 +14,28 @@
  * limitations under the License.
  */
 
-package io.artframework.integration;
+package io.artframework.events;
 
-import io.artframework.BootstrapModule;
-import io.artframework.annotations.ArtModule;
+import io.artframework.ModuleMeta;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Value;
 
-@ArtModule("test")
-public class BootstrapTestModule implements BootstrapModule {
+@Value
+@EqualsAndHashCode(callSuper = true)
+public class ModuleBootstrappedEvent extends Event {
+
+    ModuleMeta moduleMeta;
+
+    ///
+    /// Required Event internal HandlerList
+    ///
+
+    @Getter
+    private static final HandlerList handlerList = new HandlerList();
+
+    @Override
+    protected HandlerList getHandlers() {
+        return handlerList;
+    }
 }

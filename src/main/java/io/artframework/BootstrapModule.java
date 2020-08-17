@@ -16,8 +16,9 @@
 
 package io.artframework;
 
-import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.*;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public interface BootstrapModule {
@@ -30,9 +31,22 @@ public interface BootstrapModule {
      *
      * @return a list of submodules in this module
      */
-    Collection<Object> modules();
+    default Collection<Object> modules() {
+        return new ArrayList<>();
+    }
 
-    void enable(BootstrapScope scope);
+    @OnBootstrap
+    default void onBootstrap(BootstrapScope scope) {}
 
-    void disable(Scope scope);
+    @OnLoad
+    default void onLoad(Scope scope) {}
+
+    @OnReload
+    default void onReload(Scope scope) {}
+
+    @OnEnable
+    default void onEnable(Scope scope) {}
+
+    @OnDisable
+    default void onDisable(Scope scope) {}
 }
