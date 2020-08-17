@@ -35,6 +35,10 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
 
     @Override
     public TriggerProvider add(@NonNull ArtObjectMeta<Trigger> triggerInformation) {
+        if (exists(triggerInformation.identifier())) {
+            return this;
+        }
+
         addFactory(TriggerFactory.of(scope(), triggerInformation));
         log.info("[TRIGGER][REGISTERED] " + triggerInformation.identifier());
         return this;
