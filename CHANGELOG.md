@@ -1,3 +1,11 @@
+# [1.0.0-beta.11](https://github.com/art-framework/art-core/compare/v1.0.0-beta.10...v1.0.0-beta.11) (2020-08-17)
+
+
+### Features
+
+* **modules:** create bootstrap lifecycle for modules ([5767233](https://github.com/art-framework/art-core/commit/57672339c9ee56166da1d980d1cd767e7ae5a309))
+* split bootstrapping from primary scope ([9040b2a](https://github.com/art-framework/art-core/commit/9040b2a0152134dddf5e23bc36f84f3214ca7cd1))
+
 # [1.0.0-beta.10](https://github.com/art-framework/art-core/compare/v1.0.0-beta.9...v1.0.0-beta.10) (2020-08-15)
 
 
