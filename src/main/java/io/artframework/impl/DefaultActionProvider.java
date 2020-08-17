@@ -18,10 +18,12 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import lombok.NonNull;
+import lombok.extern.java.Log;
 
 import java.util.Collection;
 import java.util.Objects;
 
+@Log
 public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory<?>> implements ActionProvider {
 
     public DefaultActionProvider(Scope scope) {
@@ -31,6 +33,7 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
     @Override
     public ActionProvider add(@NonNull ArtObjectMeta<Action<?>> actionInformation) {
         addFactory(ActionFactory.of(scope(), actionInformation.get()));
+        log.info("[ACTION][REGISTERED] " + actionInformation.identifier());
         return this;
     }
 
@@ -48,7 +51,7 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
         try {
             return add(Objects.requireNonNull(ArtObjectMeta.of(aClass).get()));
         } catch (ArtMetaDataException e) {
-            // TODO: error handling
+            log.severe("[ACTION] failed to add " + aClass.getCanonicalName() + ": " + e.getMessage());
             e.printStackTrace();
         }
         return this;
@@ -58,7 +61,7 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
         try {
             return add(Objects.requireNonNull(ArtObjectMeta.of(aClass, artObjectProvider).get()));
         } catch (ArtMetaDataException e) {
-            // TODO: error handling
+            log.severe("[ACTION] failed to add " + aClass.getCanonicalName() + ": " + e.getMessage());
             e.printStackTrace();
         }
         return this;
