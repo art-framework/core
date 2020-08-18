@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 
 /**
  * Marks the given method as the bootstrap method for an art module.
- * The class must be annotated with the @{@link Module} annotation for the method to be called.
+ * The class must be annotated with the @{@link ArtModule} annotation for the method to be called.
  * <p>
  * The bootstrap method is called once on all modules before any module is loaded or enabled.
  * You can configure the {@link io.artframework.BootstrapScope} provide your own provider implementations.

@@ -389,7 +389,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             CodeSource codeSource = module.moduleMeta().moduleClass().getProtectionDomain().getCodeSource();
             if (codeSource != null) {
                 configuration().finder().findAllAndLoadIn(new File(codeSource.getLocation().toURI()),
-                        aClass -> !BootstrapModule.class.isAssignableFrom(aClass) && !aClass.isAnnotationPresent(Module.class)
+                        aClass -> !BootstrapModule.class.isAssignableFrom(aClass) && !aClass.isAnnotationPresent(ArtModule.class)
                 );
             }
         } catch (URISyntaxException e) {

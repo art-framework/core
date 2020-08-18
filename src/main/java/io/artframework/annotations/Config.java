@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
  * Specify a path to your config file as the value. The base of the path is the base path configured in the global art config.
  * One use case for this would be inside a class that implements the {@link Configurable} interface.
  * <p>
- * If you do not specify this annotation on the config and the configurable class is a {@link Module}, the identifier of the module will be used as the config name.
+ * If you do not specify this annotation on the config and the configurable class is a {@link ArtModule}, the identifier of the module will be used as the config name.
  * <p>
  * You can either annotate the parameter of the {@code load(...)} method, the method itself, or the config or art class.
  * <p>

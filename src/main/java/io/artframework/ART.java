@@ -16,7 +16,7 @@
 
 package io.artframework;
 
-import io.artframework.annotations.Module;
+import io.artframework.annotations.ArtModule;
 import io.artframework.annotations.OnBootstrap;
 import io.artframework.annotations.OnEnable;
 import io.artframework.annotations.OnLoad;
@@ -42,7 +42,7 @@ public final class ART {
      * Initializes the art-framework using the given bootstrap scope.
      * <p>
      * Bootstrapping is only required by the root module that implements and ships the art-framework.
-     * Normal modules should not use this bootstrap method, but instead tag their class with @{@link Module}
+     * Normal modules should not use this bootstrap method, but instead tag their class with @{@link ArtModule}
      * and use the respective tagged methods ({@link OnBootstrap}, {@link OnLoad} and{@link OnEnable}) to load themselves into the scope.
      * <p>
      * By default the module will be bootstrapped into its own scope.
@@ -61,7 +61,7 @@ public final class ART {
      * Initializes the art-framework using the given bootstrap scope.
      * <p>
      * Bootstrapping is only required by the root module that implements and ships the art-framework.
-     * Normal modules should not use this bootstrap method, but instead tag their class with @{@link Module}
+     * Normal modules should not use this bootstrap method, but instead tag their class with @{@link ArtModule}
      * and use the respective tagged methods ({@link OnBootstrap}, {@link OnLoad} and{@link OnEnable}) to load themselves into the scope.
      * <p>
      * Set the boolean switch to true to set the resulting scope of the bootstrap process as the global scope.

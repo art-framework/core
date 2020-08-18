@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 
 /**
  * Marks the given method as the disable method for an art module.
- * The class must be annotated with the @{@link Module} annotation for the method to be called.
+ * The class must be annotated with the @{@link ArtModule} annotation for the method to be called.
  * <p>
  * The disable method is called when your module was removed from the art-framework and gets disabled.
  * Use it to cleanup any connections, cached data, and so on to prevent memory leaks.

@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
  * Make sure that the provided identifier is unique across all ART. To do this it is highly recommended
  * to prefix your ART with a groupId (java) like prefix, e.g. <code>io.art-framework:my-action</code>.
  * <p>
- * Use this annotation to provide additional aliases and descriptions for your {@link ArtObject} and {@link Module}s.
+ * Use this annotation to provide additional aliases and descriptions for your {@link ArtObject} and {@link ArtModule}s.
  */
 @Target({ElementType.TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)

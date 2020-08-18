@@ -17,7 +17,7 @@
 package io.artframework.finder;
 
 import io.artframework.*;
-import io.artframework.annotations.Module;
+import io.artframework.annotations.ArtModule;
 import io.artframework.util.FileUtil;
 
 import java.io.File;
@@ -39,7 +39,7 @@ public class ModuleFinder extends AbstractFinder {
         final List<Class<?>> moduleClasses = new ArrayList<>();
         final List<ArtObjectError> errors = new ArrayList<>();
 
-        FileUtil.findClasses(configuration().classLoader(), file, aClass -> aClass.isAnnotationPresent(Module.class))
+        FileUtil.findClasses(configuration().classLoader(), file, aClass -> aClass.isAnnotationPresent(ArtModule.class))
                 .stream().filter(predicate)
                 .forEach(moduleClass -> {
             try {

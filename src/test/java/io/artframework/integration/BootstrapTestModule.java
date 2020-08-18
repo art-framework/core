@@ -17,8 +17,8 @@
 package io.artframework.integration;
 
 import io.artframework.BootstrapModule;
-import io.artframework.annotations.Module;
+import io.artframework.annotations.ArtModule;
 
-@Module("test")
+@ArtModule("test")
 public class BootstrapTestModule implements BootstrapModule {
 }
