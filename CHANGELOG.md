@@ -1,3 +1,22 @@
+# [1.0.0-beta.14](https://github.com/art-framework/art-core/compare/v1.0.0-beta.13...v1.0.0-beta.14) (2020-08-18)
+
+
+### Code Refactoring
+
+* rename @ArtModule to @Module ([9dc8494](https://github.com/art-framework/art-core/commit/9dc84947302ad1e8bc989bd67892b8ebe819093e))
+
+
+### Features
+
+* add fasterxml jackson yaml config provider ([4f5e742](https://github.com/art-framework/art-core/commit/4f5e7424c965914f3045f790e70be593b83d10a3))
+
+
+### BREAKING CHANGES
+
+* @ArtModule is now called @Module
+
+Signed-off-by: Michael Reichenbach <michael@reichenbach.in>
+
 # [1.0.0-beta.13](https://github.com/art-framework/art-core/compare/v1.0.0-beta.12...v1.0.0-beta.13) (2020-08-18)
 
 
