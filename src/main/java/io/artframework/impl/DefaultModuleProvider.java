@@ -282,7 +282,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
     private void bootstrapModule(@NonNull BootstrapScope scope, @NonNull ModuleInformation module) throws ModuleRegistrationException {
 
-        if (!module.state().canBootstrap() || module.onBootstrap() == null) return;
+        if (!module.state().canBootstrap()) return;
 
         try {
             module.onBootstrap(scope);
