@@ -38,7 +38,7 @@ import java.lang.annotation.Target;
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface ArtModule {
+public @interface Module {
 
     /**
      * An unique identifier of your module.

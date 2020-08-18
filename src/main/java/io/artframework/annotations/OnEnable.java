@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 
 /**
  * Marks the given method as the enable method for an art module.
- * The class must be annotated with the @{@link ArtModule} annotation for the method to be called.
+ * The class must be annotated with the @{@link Module} annotation for the method to be called.
  * <p>
  * The enable method is called after bootstrapping has finished and the @{@link OnLoad} method was called.
  * Use it to do the core tasks of your module, e.g. open a database connection, start services, and so on.

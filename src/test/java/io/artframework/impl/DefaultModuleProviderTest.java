@@ -19,7 +19,7 @@ package io.artframework.impl;
 import io.artframework.Configuration;
 import io.artframework.ModuleRegistrationException;
 import io.artframework.Scope;
-import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.Module;
 import io.artframework.annotations.OnDisable;
 import io.artframework.annotations.OnEnable;
 import lombok.SneakyThrows;
@@ -161,7 +161,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "test")
+    @Module(value = "test")
     static class TestModule {
 
         private boolean created = false;
@@ -182,7 +182,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "test")
+    @Module(value = "test")
     static class DuplicateModule {
 
         @OnEnable
@@ -208,7 +208,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "foo", depends = "bar")
+    @Module(value = "foo", depends = "bar")
     static class FooModule {
         @OnEnable
         public void onEnable(Configuration configuration) {
@@ -221,7 +221,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "bar")
+    @Module(value = "bar")
     static class BarModule {
         @OnEnable
         public void onEnable(Configuration configuration) {
@@ -234,7 +234,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "module 1", depends = {"module 2", "foo"})
+    @Module(value = "module 1", depends = {"module 2", "foo"})
     static class Module1 {
 
         @OnEnable
@@ -248,7 +248,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "module 2", depends = "module 3")
+    @Module(value = "module 2", depends = "module 3")
     static class Module2 {
 
         @OnEnable
@@ -262,7 +262,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "module 3", description = "module 1")
+    @Module(value = "module 3", description = "module 1")
     static class Module3 {
 
         @OnEnable
@@ -276,7 +276,7 @@ class DefaultModuleProviderTest {
         }
     }
 
-    @ArtModule(value = "foobar")
+    @Module(value = "foobar")
     static class RandomModule {
 
     }

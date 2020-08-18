@@ -26,7 +26,7 @@ public interface BootstrapModule {
     /**
      * Gets a list of submodules that should be bootstrapped together with this module.
      * <p>
-     * The list may contained mixed objects and classes, but all must be annotated with the {@link ArtModule} annotation.
+     * The list may contained mixed objects and classes, but all must be annotated with the {@link Module} annotation.
      * An empty list must be returned if no modules exist.
      *
      * @return a list of submodules in this module

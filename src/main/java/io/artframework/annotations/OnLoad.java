@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
 
 /**
  * Marks the given method as the load method for an art module.
- * The class must be annotated with the @{@link ArtModule} annotation for the method to be called.
+ * The class must be annotated with the @{@link Module} annotation for the method to be called.
  * <p>
  * The module is loaded after bootstrapping has finished and all configurations have been loaded and injected.
  * Use it to read values from your configuration, register your ART and setup your module.

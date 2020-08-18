@@ -16,7 +16,7 @@
 
 package io.artframework;
 
-import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.Module;
 import io.artframework.annotations.OnLoad;
 import io.artframework.annotations.OnReload;
 import io.artframework.impl.DefaultModuleProvider;
@@ -28,7 +28,7 @@ import java.util.Optional;
 /**
  * The module provider handles the registration and creation of all art modules.
  * <p>
- * Use it to add your modules that are annotated with the @{@link ArtModule} annotation.
+ * Use it to add your modules that are annotated with the @{@link Module} annotation.
  */
 public interface ModuleProvider extends Provider {
 
@@ -72,7 +72,7 @@ public interface ModuleProvider extends Provider {
      * This is useful if you need to load multiple modules that depend upon each other
      * and do not want to directly enable them.
      * <p>
-     * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
+     * Make sure the class is annotated with @{@link Module} or the registration will fail with an exception.
      * <p>
      * If you want to directly load and enable your module, call {@link #enable(Object)} instead.
      * And if you don't have an instance of your module use the {@link #register(Class)} method instead.
@@ -91,7 +91,7 @@ public interface ModuleProvider extends Provider {
      * This could be the case if the module was loaded from a classpath search inside one of the module JAR files.
      * <p>
      * The class must provide a parameterless public constructor or the module won't be registered.
-     * Also make sure it is annotated with @{@link ArtModule} or else the registration will fail also.
+     * Also make sure it is annotated with @{@link Module} or else the registration will fail also.
      * <p>
      * Use {@link #register(Object)} if you already have an instance of your module, e.g. it was loaded as a plugin.
      *
@@ -108,7 +108,7 @@ public interface ModuleProvider extends Provider {
      * <p>
      * This will call any methods inside the module that are annotated with one of the {@code On...} annotations.
      * <p>
-     * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
+     * Make sure the class is annotated with @{@link Module} or the registration will fail with an exception.
      *
      * @param module the module that should be loaded
      * @return this module provider
@@ -128,7 +128,7 @@ public interface ModuleProvider extends Provider {
      * This could be the case if the module was loaded from a classpath search inside one of the module JAR files.
      * <p>
      * The class must provide a parameterless public constructor or the module won't be registered.
-     * Also make sure it is annotated with @{@link ArtModule} or else the registration will fail also.
+     * Also make sure it is annotated with @{@link Module} or else the registration will fail also.
      * <p>
      * This will then call any methods inside the module that are annotated with one of the {@code On...} annotations.
      * <p>

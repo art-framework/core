@@ -16,13 +16,13 @@
 
 package io.artframework;
 
-import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.Module;
 import io.artframework.impl.DefaultModuleMeta;
 
 /**
  * The module meta provides meta information about a loaded module.
  * <p>
- * Every {@link ArtModule} creates meta data on initialization from the annotations attached to the module.
+ * Every {@link Module} creates meta data on initialization from the annotations attached to the module.
  */
 public interface ModuleMeta {
 
@@ -34,7 +34,7 @@ public interface ModuleMeta {
      */
     static ModuleMeta of(Class<?> moduleClass) throws ArtMetaDataException {
 
-        if (!moduleClass.isAnnotationPresent(ArtModule.class)) {
+        if (!moduleClass.isAnnotationPresent(Module.class)) {
             throw new ArtMetaDataException(ArtObjectError.of(
                     moduleClass.getCanonicalName() + " is missing the required @Module annotation.",
                     ArtObjectError.Reason.NO_ANNOTATION,
@@ -42,7 +42,7 @@ public interface ModuleMeta {
             );
         }
 
-        return new DefaultModuleMeta(moduleClass, moduleClass.getAnnotation(ArtModule.class));
+        return new DefaultModuleMeta(moduleClass, moduleClass.getAnnotation(Module.class));
     }
 
     /**
