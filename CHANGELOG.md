@@ -1,3 +1,10 @@
+# [1.0.0-beta.13](https://github.com/art-framework/art-core/compare/v1.0.0-beta.12...v1.0.0-beta.13) (2020-08-18)
+
+
+### Features
+
+* allow @Config tag on fields ([f339193](https://github.com/art-framework/art-core/commit/f339193127390c3978dc93838b9259983ec06b8a))
+
 # [1.0.0-beta.12](https://github.com/art-framework/art-core/compare/v1.0.0-beta.11...v1.0.0-beta.12) (2020-08-17)
 
 
