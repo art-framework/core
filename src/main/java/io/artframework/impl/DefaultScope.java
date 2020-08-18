@@ -44,7 +44,8 @@ public final class DefaultScope implements BootstrapScope {
             .requirements(RequirementProvider.of(this))
             .settings(Settings.defaultSettings())
             .targets(TargetProvider.of(this))
-            .trigger(TriggerProvider.of(this));
+            .trigger(TriggerProvider.of(this))
+            .configs(ConfigProvider.of(this));
 
     private Configuration configuration = configurationBuilder().build();
     private boolean bootstrapped = false;

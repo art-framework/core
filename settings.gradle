@@ -15,4 +15,5 @@
  */
 
 rootProject.name = 'art-core'
+include 'jackson-config-provider'
 

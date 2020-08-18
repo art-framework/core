@@ -47,6 +47,7 @@ public class Configuration {
     FlowParserProvider parser;
     ModuleProvider modules;
     FinderProvider finder;
+    ConfigProvider configs;
     ClassLoader classLoader;
 
     public Optional<Scheduler> scheduler() {

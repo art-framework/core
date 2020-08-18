@@ -45,6 +45,9 @@ dependencies {
     implementation group: "com.google.guava", name: "guava", version: "29.0-jre"
     implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
     implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.9.2'
 
     //Test dependencies
     testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
@@ -61,10 +64,13 @@ shadowJar {
         include(dependency('org.apache.commons:commons-lang3:'))
         include(dependency('com.google.guava:guava:'))
         include(dependency('org.reflections:reflections:'))
+        include(dependency('com.fasterxml.jackson.core::'))
+        include(dependency('com.fasterxml.jackson.dataformat::'))
     }
     relocate 'org.apache.commons', "shadow.${packageName}.commonslang"
     relocate 'com.google', "shadow.${packageName}.guava"
     relocate 'org.reflections', "shadow.${packageName}.reflections"
+    relocate 'com.fasterxml.jackson', "shadow.${packageName}.jackson"
 }
 
 tasks.build.dependsOn(shadowJar)
