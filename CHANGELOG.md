@@ -1,3 +1,15 @@
+# [1.0.0-beta.15](https://github.com/art-framework/art-core/compare/v1.0.0-beta.14...v1.0.0-beta.15) (2020-08-19)
+
+
+### Features
+
+* create and inject config fields on module creation ([dadcbb5](https://github.com/art-framework/art-core/commit/dadcbb5b43858b88f309ed0829c1057911f44ef3))
+
+
+### Reverts
+
+* "refactor: rename @ArtModule to @Module" ([f37b23e](https://github.com/art-framework/art-core/commit/f37b23ee3d7208fa9f9ac3066c767997c672a6e6))
+
 # [1.0.0-beta.14](https://github.com/art-framework/art-core/compare/v1.0.0-beta.13...v1.0.0-beta.14) (2020-08-18)
 
 
