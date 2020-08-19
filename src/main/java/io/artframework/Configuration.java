@@ -48,6 +48,7 @@ public class Configuration {
     ModuleProvider modules;
     FinderProvider finder;
     ConfigProvider configs;
+    InjectionProvider injector;
     ClassLoader classLoader;
 
     public Optional<Scheduler> scheduler() {

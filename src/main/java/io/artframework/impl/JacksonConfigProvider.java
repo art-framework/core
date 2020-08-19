@@ -38,6 +38,15 @@ public class JacksonConfigProvider extends AbstractScoped implements ConfigProvi
     @Override
     public <TConfig> Optional<TConfig> load(Class<TConfig> configClass, File file) {
 
+        if (!file.exists()) {
+            try {
+                save(scope().configuration().injector().create(configClass, scope()), file, false);
+            } catch (ReflectiveOperationException e) {
+                e.printStackTrace();
+                return Optional.empty();
+            }
+        }
+
         try {
             return Optional.of(objectMapper.readValue(file, configClass));
         } catch (IOException e) {
@@ -49,6 +58,13 @@ public class JacksonConfigProvider extends AbstractScoped implements ConfigProvi
 
     @Override
     public <TConfig> void save(TConfig config, File file) {
+
+        save(config, file, true);
+    }
+
+    private <TConfig> void save(TConfig config, File file, boolean overwrite) {
+
+        if (file.exists() && !overwrite) return;
 
         try {
             objectMapper.writeValue(file, config);

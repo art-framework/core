@@ -17,19 +17,23 @@
 package io.artframework.util;
 
 import com.google.common.base.Strings;
+import io.artframework.Scope;
 import io.artframework.Target;
+import io.artframework.annotations.Config;
 import lombok.NonNull;
+import lombok.extern.java.Log;
+import org.reflections.ReflectionUtils;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Array;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+@Log(topic = "art-framework:util")
 public final class ReflectionUtil {
 
     // always edit the regexr link and update the link below!
@@ -186,5 +190,31 @@ public final class ReflectionUtil {
             return isTargetType(targetClass, ((Target<?>) target).source());
         }
         return targetClass.isInstance(target);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <TObject> TObject loadConfigFields(@NonNull Scope scope, @NonNull TObject object) {
+        Set<Field> configFields = ReflectionUtils.getAllFields(object.getClass(), field ->
+                !Modifier.isStatic(field.getModifiers())
+                        && !Modifier.isFinal(field.getModifiers())
+                        && field.isAnnotationPresent(Config.class)
+
+        );
+
+        for (Field configField : configFields) {
+            String configName = configField.getAnnotation(Config.class).value();
+            Optional<?> config = scope.configuration().configs().load(configField.getType(), configName);
+            if (config.isPresent()) {
+                try {
+                    configField.setAccessible(true);
+                    configField.set(object, config.get());
+                    log.info("injected config " + configName + " into " + configField.getName() + " of " + object.getClass().getCanonicalName());
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return object;
     }
 }

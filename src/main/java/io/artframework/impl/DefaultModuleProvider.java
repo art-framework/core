@@ -20,6 +20,7 @@ import io.artframework.ART;
 import io.artframework.*;
 import io.artframework.annotations.*;
 import io.artframework.events.*;
+import io.artframework.util.ReflectionUtil;
 import io.artframework.util.graphs.CycleSearch;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -30,7 +31,6 @@ import lombok.extern.java.Log;
 
 import javax.annotation.Nullable;
 import java.io.File;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
@@ -221,11 +221,9 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             ModuleMeta moduleMeta = ModuleMeta.of(moduleClass);
 
             try {
-                Constructor<?> constructor = moduleClass.getDeclaredConstructor();
-                constructor.setAccessible(true);
-                Object artModule = constructor.newInstance();
+                Object artModule = scope().configuration().injector().create(moduleClass, scope());
                 return registerModule(moduleMeta, artModule);
-            } catch (NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            } catch (ReflectiveOperationException e) {
                 String errorMessage = "Unable to create a new instance of the ArtModule " + moduleClass.getSimpleName() + ". " +
                         "Does it have a parameterless public constructor?";
                 log.severe(errorMessage);
@@ -244,6 +242,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     private ModuleInformation registerModule(@NonNull Object module) throws ModuleRegistrationException {
 
         try {
+            ReflectionUtil.loadConfigFields(scope(), module);
             return registerModule(ModuleMeta.of(module.getClass()), module);
         } catch (ArtMetaDataException e) {
             throw new ModuleRegistrationException(null, ModuleState.INVALID_MODULE, e);
