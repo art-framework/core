@@ -36,12 +36,12 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
         return of(new ArrayList<>());
     }
 
-    static ArtContext of(Scope scope, ArtSettings settings, Collection<ArtObjectContext<?>> art) {
+        static ArtContext of(Scope scope, ArtSettings settings, Collection<ArtObjectContext<?>> art) {
         return new DefaultArtContext(scope, settings, art);
     }
 
     static ArtContext of(Scope scope, Collection<ArtObjectContext<?>> art) {
-        return of(scope, scope.configuration().settings().artSettings(), art);
+        return of(scope, scope.settings().artSettings(), art);
     }
 
     static ArtContext of(ArtSettings settings, Collection<ArtObjectContext<?>> art) {
@@ -57,7 +57,7 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
      * Use these settings to fine tune the executing and testing
      * of {@link ArtObject}s in this {@link ArtContext}.
      * <br>
-     * By default the {@link Configuration#settings()} will be used
+     * By default the {@link Scope#settings()} will be used
      * you can override those settings by updating the underlying object.
      *
      * @return settings that control the behaviour of this {@link ArtContext}

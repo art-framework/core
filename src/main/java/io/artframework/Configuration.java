@@ -16,7 +16,6 @@
 
 package io.artframework;
 
-import io.artframework.conf.Settings;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -35,7 +34,6 @@ public class Configuration {
      */
     private static final long serialVersionUID = 4296025820492453890L;
 
-    Settings settings;
     ArtProvider art;
     ActionProvider actions;
     RequirementProvider requirements;

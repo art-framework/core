@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 public final class DefaultScope implements BootstrapScope {
 
     private final BootstrapModule bootstrapModule;
+    private final Settings settings;
 
     private final Configuration.ConfigurationBuilder configurationBuilder = Configuration.builder()
             .actions(ActionProvider.of(this))
@@ -42,7 +43,6 @@ public final class DefaultScope implements BootstrapScope {
             .modules(ModuleProvider.of(this))
             .parser(FlowParserProvider.of(this))
             .requirements(RequirementProvider.of(this))
-            .settings(Settings.defaultSettings())
             .targets(TargetProvider.of(this))
             .trigger(TriggerProvider.of(this))
             .configs(ConfigProvider.of(this))
@@ -52,12 +52,14 @@ public final class DefaultScope implements BootstrapScope {
     private boolean bootstrapped = false;
 
     public DefaultScope() {
+        this.settings = Settings.defaultSettings();
         this.bootstrapModule = null;
         this.bootstrapped = true;
     }
 
-    public DefaultScope(BootstrapModule module) {
+    public DefaultScope(BootstrapModule module, Settings settings) {
         this.bootstrapModule = module;
+        this.settings = settings;
     }
 
     public DefaultScope(Consumer<Configuration.ConfigurationBuilder> config) {

@@ -16,6 +16,7 @@
 
 package io.artframework;
 
+import io.artframework.conf.Settings;
 import io.artframework.impl.DefaultScope;
 
 import java.util.function.Consumer;
@@ -33,8 +34,34 @@ import java.util.function.Consumer;
  */
 public interface BootstrapScope extends Scope {
 
+    /**
+     * Creates a new bootstrap scope with the given root module using the default settings.
+     * <p>
+     * Use the bootstrap scope to start the bootstrap phase by calling {@link ART#bootstrap(BootstrapScope)}.
+     * <p>
+     * You can also provide your own settings, e.g. load them from a file by using the {@link #of(BootstrapModule, Settings)} method.
+     *
+     * @param module the bootstrap module
+     * @return the create bootstrap scope
+     */
     static BootstrapScope of(BootstrapModule module) {
-        return new DefaultScope(module);
+        return new DefaultScope(module, Settings.defaultSettings());
+    }
+
+    /**
+     * Creates a new bootstrap scope with the given root module and settings.
+     * <p>
+     * Use the bootstrap scope to start the bootstrap phase by calling {@link ART#bootstrap(BootstrapScope)}.
+     * <p>
+     * Use this to customize the settings that are used for the scope. Otherwise use the default settings
+     * and call {@link #of(BootstrapModule)} directly.
+     *
+     * @param module the bootstrap module
+     * @param settings the settings that should be used for the scope
+     * @return the create bootstrap scope
+     */
+    static BootstrapScope of(BootstrapModule module, Settings settings) {
+        return new DefaultScope(module, settings);
     }
 
     /**

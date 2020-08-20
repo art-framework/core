@@ -41,7 +41,7 @@ public interface ConfigProvider extends Scoped {
      * @return the loaded config file or the created default config if it did not exist
      */
     default <TConfig> Optional<TConfig> load(Class<TConfig> configClass, String file) {
-        return load(configClass, new File(scope().configuration().settings().basePath(), file));
+        return load(configClass, new File(scope().settings().basePath(), file));
     }
 
     /**

@@ -16,6 +16,7 @@
 
 package io.artframework;
 
+import io.artframework.conf.Settings;
 import io.artframework.impl.DefaultScope;
 
 import java.util.List;
@@ -35,6 +36,16 @@ public interface Scope {
     static Scope of(Configuration configuration) {
         return new DefaultScope(configuration);
     }
+
+    /**
+     * Gets the current settings of this scope.
+     * <p>
+     * The scope is initialized with its settings upon creation and will read them from a config file.
+     * The settings can be modified by any service during the lifetime of the scope.
+     *
+     * @return the current scope settings
+     */
+    Settings settings();
 
     /**
      * The current configuration of this scope.
