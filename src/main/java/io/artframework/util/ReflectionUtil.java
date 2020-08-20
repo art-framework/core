@@ -208,7 +208,7 @@ public final class ReflectionUtil {
                 try {
                     configField.setAccessible(true);
                     configField.set(object, config.get());
-                    log.info("injected config " + configName + " into " + configField.getName() + " of " + object.getClass().getCanonicalName());
+                    log.info("injected " + configName + " config into field " + configField.getName() + " of " + object.getClass().getCanonicalName());
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }

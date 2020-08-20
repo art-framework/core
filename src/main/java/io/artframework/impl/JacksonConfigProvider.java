@@ -16,7 +16,10 @@
 
 package io.artframework.impl;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator;
 import io.artframework.AbstractScoped;
@@ -29,7 +32,10 @@ import java.util.Optional;
 
 public class JacksonConfigProvider extends AbstractScoped implements ConfigProvider {
 
-    private final ObjectMapper objectMapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER));
+    private final ObjectMapper mapper = new ObjectMapper(new YAMLFactory().disable(YAMLGenerator.Feature.WRITE_DOC_START_MARKER))
+            .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+            .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE);
 
     public JacksonConfigProvider(Scope scope) {
         super(scope);
@@ -48,7 +54,7 @@ public class JacksonConfigProvider extends AbstractScoped implements ConfigProvi
         }
 
         try {
-            return Optional.of(objectMapper.readValue(file, configClass));
+            return Optional.of(mapper.readValue(file, configClass));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -67,7 +73,7 @@ public class JacksonConfigProvider extends AbstractScoped implements ConfigProvi
         if (file.exists() && !overwrite) return;
 
         try {
-            objectMapper.writeValue(file, config);
+            mapper.writeValue(file, config);
         } catch (IOException e) {
             e.printStackTrace();
         }
