@@ -1,3 +1,22 @@
+# [1.0.0-beta.16](https://github.com/art-framework/art-core/compare/v1.0.0-beta.15...v1.0.0-beta.16) (2020-08-20)
+
+
+### Bug Fixes
+
+* ignore unknown fields on config deserialization ([a1b43e3](https://github.com/art-framework/art-core/commit/a1b43e3f298ccac0b77ce192211503cb8e56dcf1))
+
+
+### Code Refactoring
+
+* migrate settings into the Scope ([e57cf17](https://github.com/art-framework/art-core/commit/e57cf17b2e152d27f4e46a6538a5ee5c163579b4))
+
+
+### BREAKING CHANGES
+
+* settings are no longer inside the configuration and must be accessed directly from the scope
+
+Signed-off-by: Michael Reichenbach <michael@reichenbach.in>
+
 # [1.0.0-beta.15](https://github.com/art-framework/art-core/compare/v1.0.0-beta.14...v1.0.0-beta.15) (2020-08-19)
 
 
