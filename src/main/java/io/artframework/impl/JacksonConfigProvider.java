@@ -73,6 +73,7 @@ public class JacksonConfigProvider extends AbstractScoped implements ConfigProvi
         if (file.exists() && !overwrite) return;
 
         try {
+            file.mkdirs();
             mapper.writeValue(file, config);
         } catch (IOException e) {
             e.printStackTrace();
