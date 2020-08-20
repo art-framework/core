@@ -1,3 +1,10 @@
+# [1.0.0-beta.17](https://github.com/art-framework/art-core/compare/v1.0.0-beta.16...v1.0.0-beta.17) (2020-08-20)
+
+
+### Bug Fixes
+
+* create dirs before saving config ([b64beac](https://github.com/art-framework/art-core/commit/b64beac61bd6a7375b1f1524e0779db25c1de932))
+
 # [1.0.0-beta.16](https://github.com/art-framework/art-core/compare/v1.0.0-beta.15...v1.0.0-beta.16) (2020-08-20)
 
 
