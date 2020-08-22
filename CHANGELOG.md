@@ -1,3 +1,10 @@
+# [1.0.0-beta.19](https://github.com/art-framework/art-core/compare/v1.0.0-beta.18...v1.0.0-beta.19) (2020-08-22)
+
+
+### Bug Fixes
+
+* make module path sub path of basePath ([3fbb777](https://github.com/art-framework/art-core/commit/3fbb77747c1e8b163272963a3dcd919fa7185fa8))
+
 # [1.0.0-beta.18](https://github.com/art-framework/art-core/compare/v1.0.0-beta.17...v1.0.0-beta.18) (2020-08-22)
 
 
