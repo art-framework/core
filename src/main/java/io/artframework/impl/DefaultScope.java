@@ -81,6 +81,8 @@ public final class DefaultScope implements BootstrapScope {
         }
 
         builder.accept(configurationBuilder());
+        this.configuration = configurationBuilder().build();
+
         return this;
     }
 

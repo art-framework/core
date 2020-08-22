@@ -76,7 +76,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             ModuleInformation bootstrapModule = registerModule(bootstrapScope.bootstrapModule());
             bootstrapModule(bootstrapScope, bootstrapModule);
 
-            for (Object module : bootstrapScope.bootstrapModule().modules()) {
+            for (Object module : bootstrapScope.bootstrapModule().modules(bootstrapScope)) {
                 try {
                     if (module instanceof Class) {
                         registerModule((Class<?>) module);

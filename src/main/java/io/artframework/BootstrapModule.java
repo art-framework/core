@@ -29,9 +29,10 @@ public interface BootstrapModule {
      * The list may contained mixed objects and classes, but all must be annotated with the {@link ArtModule} annotation.
      * An empty list must be returned if no modules exist.
      *
+     * @param scope the scope that is used to bootstrap this module
      * @return a list of submodules in this module
      */
-    default Collection<Object> modules() {
+    default Collection<Object> modules(BootstrapScope scope) {
         return new ArrayList<>();
     }
 
