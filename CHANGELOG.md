@@ -1,3 +1,10 @@
+# [1.0.0-beta.18](https://github.com/art-framework/art-core/compare/v1.0.0-beta.17...v1.0.0-beta.18) (2020-08-22)
+
+
+### Bug Fixes
+
+* update configuration of scope in bootstrapping phase after each module ([eb72cd2](https://github.com/art-framework/art-core/commit/eb72cd234cc41fe37070b12b8068b1ed75999e3a))
+
 # [1.0.0-beta.17](https://github.com/art-framework/art-core/compare/v1.0.0-beta.16...v1.0.0-beta.17) (2020-08-20)
 
 
