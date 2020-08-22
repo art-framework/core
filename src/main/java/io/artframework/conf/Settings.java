@@ -25,6 +25,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.File;
 import java.io.Serializable;
 
 /**
@@ -62,5 +63,13 @@ public class Settings extends SettingsBase implements Serializable, Cloneable {
 
     @Builder.Default
     private ArtSettings artSettings = ArtSettings.getDefault();
+
+    public File basePath() {
+        return new File(basePath);
+    }
+
+    public File modulePath() {
+        return new File(basePath(), modulePath);
+    }
 }
 
