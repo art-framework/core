@@ -71,12 +71,12 @@ class DefaultModuleProviderTest {
         }
 
         @Test
-        @DisplayName("should throw if module is missing @ART annotation")
+        @DisplayName("should throw if module is missing @ArtModule annotation")
         void shouldThrowIfModuleIsMissingAnnotation() {
 
             assertThatExceptionOfType(ModuleRegistrationException.class)
                     .isThrownBy(() -> provider.enable(new MissingAnnotationModule()))
-                    .withMessageContaining("missing the required @Module annotation");
+                    .withMessageContaining("missing the required @ArtModule annotation");
         }
 
         @Test
