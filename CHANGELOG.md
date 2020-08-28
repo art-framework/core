@@ -1,3 +1,10 @@
+# [1.0.0-beta.21](https://github.com/art-framework/art-core/compare/v1.0.0-beta.20...v1.0.0-beta.21) (2020-08-28)
+
+
+### Features
+
+* provide a way for modules to store data ([45743a3](https://github.com/art-framework/art-core/commit/45743a3fce16a2065d09f82b88fba9185b3e0a82))
+
 # [1.0.0-beta.20](https://github.com/art-framework/art-core/compare/v1.0.0-beta.19...v1.0.0-beta.20) (2020-08-28)
 
 
