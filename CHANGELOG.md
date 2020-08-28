@@ -1,3 +1,10 @@
+# [1.0.0-beta.20](https://github.com/art-framework/art-core/compare/v1.0.0-beta.19...v1.0.0-beta.20) (2020-08-28)
+
+
+### Features
+
+* load all art from modules that are not explicitly tagged with @ArtModule ([5d592be](https://github.com/art-framework/art-core/commit/5d592be0bc1ac7b81a266dac8a86edb9e7c2bacf))
+
 # [1.0.0-beta.19](https://github.com/art-framework/art-core/compare/v1.0.0-beta.18...v1.0.0-beta.19) (2020-08-22)
 
 
