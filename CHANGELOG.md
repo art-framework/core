@@ -1,3 +1,10 @@
+# [1.0.0-beta.22](https://github.com/art-framework/art-core/compare/v1.0.0-beta.21...v1.0.0-beta.22) (2020-08-28)
+
+
+### Features
+
+* add temporary data storage provider ([7cbbba9](https://github.com/art-framework/art-core/commit/7cbbba92dd0514a73948edef987e182abeaf8f9e))
+
 # [1.0.0-beta.21](https://github.com/art-framework/art-core/compare/v1.0.0-beta.20...v1.0.0-beta.21) (2020-08-28)
 
 
