@@ -36,7 +36,7 @@ public interface ModuleMeta {
 
         if (!moduleClass.isAnnotationPresent(ArtModule.class)) {
             throw new ArtMetaDataException(ArtObjectError.of(
-                    moduleClass.getCanonicalName() + " is missing the required @Module annotation.",
+                    moduleClass.getCanonicalName() + " is missing the required @ArtModule annotation.",
                     ArtObjectError.Reason.NO_ANNOTATION,
                     moduleClass)
             );

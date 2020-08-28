@@ -79,11 +79,19 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             for (Object module : bootstrapScope.bootstrapModule().modules(bootstrapScope)) {
                 try {
                     if (module instanceof Class) {
-                        registerModule((Class<?>) module);
+                        if (((Class<?>) module).isAnnotationPresent(ArtModule.class)) {
+                            registerModule((Class<?>) module);
+                        } else {
+                            findAndLoadAllArt(((Class<?>) module).getProtectionDomain().getCodeSource());
+                        }
                     } else {
-                        registerModule(module);
+                        if (module.getClass().isAnnotationPresent(ArtModule.class)) {
+                            registerModule(module);
+                        } else {
+                            findAndLoadAllArt(module.getClass().getProtectionDomain().getCodeSource());
+                        }
                     }
-                } catch (ModuleRegistrationException e) {
+                } catch (URISyntaxException | ModuleRegistrationException e) {
                     e.printStackTrace();
                 }
             }
@@ -386,16 +394,20 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     private void findAndLoadAllArt(ModuleInformation module) throws ModuleRegistrationException {
         try {
             CodeSource codeSource = module.moduleMeta().moduleClass().getProtectionDomain().getCodeSource();
-            if (codeSource != null) {
-                configuration().finder().findAllAndLoadIn(new File(codeSource.getLocation().toURI()),
-                        aClass -> !BootstrapModule.class.isAssignableFrom(aClass) && !aClass.isAnnotationPresent(ArtModule.class)
-                );
-            }
+            findAndLoadAllArt(codeSource);
         } catch (URISyntaxException e) {
             updateModuleCache(module.state(ModuleState.ERROR));
             logState(module, e.getMessage());
             throw new ModuleRegistrationException(module.moduleMeta(), ModuleState.ERROR,
                     "An error occured when trying to load the art in module \"" + module.moduleMeta().identifier() + "\": " + e.getMessage(), e);
+        }
+    }
+
+    private void findAndLoadAllArt(CodeSource codeSource) throws URISyntaxException {
+        if (codeSource != null) {
+            configuration().finder().findAllAndLoadIn(new File(codeSource.getLocation().toURI()),
+                    aClass -> !BootstrapModule.class.isAssignableFrom(aClass) && !aClass.isAnnotationPresent(ArtModule.class)
+            );
         }
     }
 
