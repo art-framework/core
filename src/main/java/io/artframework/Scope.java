@@ -22,7 +22,7 @@ import io.artframework.impl.DefaultScope;
 import java.util.List;
 import java.util.function.Consumer;
 
-public interface Scope {
+public interface Scope extends DataProvider {
 
     static Scope defaultScope() {
 

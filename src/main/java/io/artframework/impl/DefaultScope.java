@@ -22,7 +22,9 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 @Getter
@@ -30,6 +32,7 @@ import java.util.function.Consumer;
 @Accessors(fluent = true)
 public final class DefaultScope implements BootstrapScope {
 
+    private final Map<Object, Object> data = new HashMap<>();
     private final BootstrapModule bootstrapModule;
     private final Settings settings;
 
