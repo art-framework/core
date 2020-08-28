@@ -60,5 +60,19 @@ public interface Scope {
      */
     Configuration configuration();
 
+    /**
+     * Gets the storage provider of this scope.
+     * <p>
+     * Use the {@link StorageProvider} to store persistent data for your module or targets.
+     * <p>
+     * This is just a shortcut to {@link #configuration()#store()}.
+     *
+     * @return the storage provider
+     * @see StorageProvider
+     */
+    default StorageProvider store() {
+        return configuration().storage();
+    }
+
     ArtContext load(List<String> list);
 }

@@ -19,6 +19,7 @@ package io.artframework;
 import io.artframework.impl.DefaultMapStorageProvider;
 import lombok.NonNull;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 /**
@@ -44,6 +45,22 @@ public interface StorageProvider extends Scoped, AutoCloseable {
 
     static StorageProvider of(Scope scope) {
         return new DefaultMapStorageProvider(scope);
+    }
+
+    /**
+     * Stores value for the module into the persistent metadata store and returns the value that was previously stored.
+     * If no value was stored previously and empty optional will be returned.
+     *
+     * @param module the module that is used to store the value. can be null.
+     * @param key the key to store the value under
+     * @param value the value to store
+     * @param <TValue> the type of the value
+     * @return the previously stored value or an empty optional
+     */
+    default <TValue> Optional<TValue> set(@Nullable Object module, @NonNull String key, @NonNull TValue value) {
+        return scope().configuration().modules().get(module)
+                .map(info -> "module#" + info.identifier() + "#" + key)
+                .flatMap(storageKey -> set(storageKey, value));
     }
 
     /**
@@ -73,7 +90,22 @@ public interface StorageProvider extends Scoped, AutoCloseable {
      * @see #set(String, Object)
      */
     default <TValue> Optional<TValue> set(@NonNull Target<?> target, @NonNull String key, @NonNull TValue value) {
-        return set(target.uniqueId() + "#" + key, value);
+        return set("target#" + target.uniqueId() + "#" + key, value);
+    }
+
+    /**
+     * Gets a value stored for the given module under the given key.
+     *
+     * @param module the module to get data for
+     * @param key the key of the storage
+     * @param valueClass the class of the data
+     * @param <TValue> the type of the data
+     * @return the stored value or an empty optional
+     */
+    default <TValue> Optional<TValue> get(@Nullable Object module, @NonNull String key, @NonNull Class<TValue> valueClass) {
+        return scope().configuration().modules().get(module)
+                .map(info -> "module#" + info.identifier() + "#" + key)
+                .flatMap(storageKey -> get(storageKey, valueClass));
     }
 
     /**
@@ -86,7 +118,7 @@ public interface StorageProvider extends Scoped, AutoCloseable {
      * @param <TValue> type of the value
      * @return stored value or empty result if the value does not exist or cannot be cast into the value type.
      */
-    <TValue> Optional<TValue> get(String key, Class<TValue> valueClass);
+    <TValue> Optional<TValue> get(@NonNull String key, @NonNull Class<TValue> valueClass);
 
     /**
      * Retrieves a value stored for the given target.
@@ -99,7 +131,7 @@ public interface StorageProvider extends Scoped, AutoCloseable {
      * @param valueClass class of the value
      * @return stored value or empty result if the value does not exist or cannot be cast into the value type.
      */
-    default <TValue> Optional<TValue> get(Target<?> target, String key, Class<TValue> valueClass) {
-        return get(target.uniqueId() + "#" + key, valueClass);
+    default <TValue> Optional<TValue> get(@NonNull Target<?> target, @NonNull String key, @NonNull Class<TValue> valueClass) {
+        return get("target#" + target.uniqueId() + "#" + key, valueClass);
     }
 }

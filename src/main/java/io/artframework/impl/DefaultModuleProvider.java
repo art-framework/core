@@ -58,6 +58,14 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     }
 
     @Override
+    public Optional<ModuleMeta> get(@Nullable Object module) {
+        if (module == null) return Optional.empty();
+
+        return Optional.ofNullable(modules.get(module.getClass()))
+                .map(ModuleInformation::moduleMeta);
+    }
+
+    @Override
     public ModuleProvider resolver(@Nullable ArtModuleDependencyResolver resolver) {
         this.resolver = resolver;
         return this;

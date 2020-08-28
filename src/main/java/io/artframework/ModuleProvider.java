@@ -169,4 +169,12 @@ public interface ModuleProvider extends Provider {
      * @return this module provider
      */
     ModuleProvider reloadAll();
+
+    /**
+     * Tries to find the metadata of the given module.
+     *
+     * @param module the module to get data for
+     * @return the metadata of the module or an empty optional if the provided object is not an module
+     */
+    Optional<ModuleMeta> get(@Nullable Object module);
 }
