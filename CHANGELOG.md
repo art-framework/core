@@ -1,3 +1,10 @@
+# [1.0.0-beta.23](https://github.com/art-framework/art-core/compare/v1.0.0-beta.22...v1.0.0-beta.23) (2020-08-30)
+
+
+### Features
+
+* add autoRegister option to @ART annotation ([e5f5911](https://github.com/art-framework/art-core/commit/e5f591136320a814623f5d8057c2208a70b4239d))
+
 # [1.0.0-beta.22](https://github.com/art-framework/art-core/compare/v1.0.0-beta.21...v1.0.0-beta.22) (2020-08-28)
 
 
