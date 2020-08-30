@@ -83,4 +83,15 @@ public class ModuleTests {
                 .hasSizeGreaterThanOrEqualTo(3)
                 .contains(Block.class, Entity.class, Player.class);
     }
+
+    @SneakyThrows
+    @Test
+    @DisplayName("should not register art that has autoRegister=false")
+    void shouldNotRegisterArtWithAutoRegisterFalse() {
+
+        Scope scope = ART.bootstrap(bootstrapScope);
+
+        assertThat(scope.configuration().actions().all())
+                .doesNotContainKey("no-autoregister");
+    }
 }

@@ -54,6 +54,8 @@ public interface ArtObjectMeta<TArtObject extends ArtObject> {
 
     String[] alias();
 
+    boolean autoRegister();
+
     Optional<Class<?>> configClass();
 
     Class<?> targetClass();

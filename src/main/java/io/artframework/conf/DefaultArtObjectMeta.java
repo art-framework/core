@@ -46,6 +46,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
     private final String identifier;
     private final String[] description;
     private final String[] alias;
+    private final boolean autoRegister;
     private final Class<?> configClass;
     private final Class<?> targetClass;
     private final Map<String, ConfigFieldInformation> configMap;
@@ -61,6 +62,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
             @NonNull String identifier,
             @NonNull String[] description,
             @NonNull String[] alias,
+            boolean autoRegister,
             @Nullable Class<?> configClass,
             @NonNull Class<?> targetClass,
             @NonNull Map<String, ConfigFieldInformation> configMap,
@@ -69,6 +71,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
         this.identifier = identifier;
         this.description = description;
         this.alias = alias;
+        this.autoRegister = autoRegister;
         this.configClass = configClass;
         this.targetClass = targetClass;
         this.configMap = configMap;
@@ -87,6 +90,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
         this.identifier = "";
         this.description = new String[0];
         this.alias = new String[0];
+        this.autoRegister = false;
         this.configClass = null;
         this.targetClass = null;
         this.configMap = new HashMap<>();
@@ -115,6 +119,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
         this.identifier = identifier;
         this.description = new String[0];
         this.alias = new String[0];
+        this.autoRegister = false;
         this.configClass = null;
         this.targetClass = targetClass;
         this.configMap = new HashMap<>();
@@ -144,6 +149,14 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
             throw new UnsupportedOperationException("You must initialize() the ArtObjectInformation object before you can use it!");
         }
         return alias;
+    }
+
+    @Override
+    public boolean autoRegister() {
+        if (!this.initialized()) {
+            throw new UnsupportedOperationException("You must initialize() the ArtObjectInformation object before you can use it!");
+        }
+        return autoRegister;
     }
 
     @Override
@@ -207,6 +220,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
             String[] alias = tryGetAlias(methods);
             Class<?> targetClass = tryGetTargetClass();
             Class<?> configClass = findConfigClass();
+            boolean autoRegister = tryGetAutoRegister(methods);
             Map<String, ConfigFieldInformation> configMap = tryGetConfigMap(configClass);
             ArtObjectProvider<TArtObject> provider = tryGetArtObjectProvider();
 
@@ -218,7 +232,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
                 ));
             }
 
-            return new DefaultArtObjectMeta<>(artObjectClass, identifier, description, alias, configClass, targetClass, configMap, provider);
+            return new DefaultArtObjectMeta<>(artObjectClass, identifier, description, alias, autoRegister, configClass, targetClass, configMap, provider);
         } catch (ConfigurationException e) {
             throw new ArtMetaDataException(ArtObjectError.of(e.getMessage(), ArtObjectError.Reason.INVALID_CONFIG, artObjectClass()), e);
         }
@@ -234,6 +248,10 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
 
     private String[] tryGetDescription(Method... methods) {
         return getAnnotation(ART.class, methods).map(ART::description).orElse(new String[0]);
+    }
+
+    private boolean tryGetAutoRegister(Method... methods) {
+        return getAnnotation(ART.class, methods).map(ART::autoRegister).orElse(true);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})

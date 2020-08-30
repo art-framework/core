@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public final class ArtObjectFinder extends AbstractFinder {
 
@@ -77,7 +78,9 @@ public final class ArtObjectFinder extends AbstractFinder {
         @Override
         public FinderResult<ArtObjectMeta<?>> load(Scope scope) {
 
-            scope.configuration().art().addAll(results());
+            scope.configuration().art().addAll(results().stream()
+                    .filter(ArtObjectMeta::autoRegister)
+                    .collect(Collectors.toList()));
             return this;
         }
     }

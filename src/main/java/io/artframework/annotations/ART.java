@@ -61,4 +61,14 @@ public @interface ART {
      * @return detailed description
      */
     String[] description() default {};
+
+    /**
+     * The tagged art-object will be automatically discovered and registered if this is true.
+     * <p>
+     * Set it to false if you need custom constructor parameters or want to register your
+     * art manually through the art-provider.
+     *
+     * @return true if this art-object should be automatically registered with the provider
+     */
+    boolean autoRegister() default true;
 }
