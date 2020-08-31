@@ -19,13 +19,18 @@ package io.artframework.util;
 import com.google.common.base.Strings;
 import io.artframework.ConfigurationException;
 import io.artframework.FieldNameFormatter;
+import io.artframework.Scope;
+import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.Config;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.annotations.Ignore;
 import io.artframework.conf.ConfigFieldInformation;
 import io.artframework.conf.FieldNameFormatters;
 import io.artframework.conf.KeyValuePair;
 import lombok.NonNull;
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.reflections.ReflectionUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -36,6 +41,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Log(topic = "art-framework:util")
 public final class ConfigUtil {
 
     public static Map<String, ConfigFieldInformation> getConfigFields(Class<?> configClass, FieldNameFormatter formatter) throws ConfigurationException {
@@ -231,5 +237,42 @@ public final class ConfigUtil {
         }
 
         return fieldValueMap;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <TObject> TObject loadConfigFields(@NonNull Scope scope, @NonNull TObject object) {
+
+        File basePath;
+        if (object.getClass().isAnnotationPresent(ArtModule.class)) {
+            basePath = scope.settings().modulePath(object.getClass().getAnnotation(ArtModule.class).value());
+        } else {
+            basePath = scope.settings().configPath();
+        }
+
+        basePath.mkdirs();
+
+        Set<Field> configFields = ReflectionUtils.getAllFields(object.getClass(), field ->
+                !Modifier.isStatic(field.getModifiers())
+                        && !Modifier.isFinal(field.getModifiers())
+                        && field.isAnnotationPresent(Config.class)
+
+        );
+
+        for (Field configField : configFields) {
+            String configName = configField.getAnnotation(Config.class).value();
+            File configFile = new File(basePath, configName);
+            Optional<?> config = scope.configuration().configs().load(configField.getType(), configFile);
+            if (config.isPresent()) {
+                try {
+                    configField.setAccessible(true);
+                    configField.set(object, config.get());
+                    log.info("injected " + configName + " config into field " + configField.getName() + " of " + object.getClass().getCanonicalName());
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return object;
     }
 }

@@ -20,7 +20,7 @@ import io.artframework.ART;
 import io.artframework.*;
 import io.artframework.annotations.*;
 import io.artframework.events.*;
-import io.artframework.util.ReflectionUtil;
+import io.artframework.util.ConfigUtil;
 import io.artframework.util.graphs.CycleSearch;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -258,7 +258,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     private ModuleInformation registerModule(@NonNull Object module) throws ModuleRegistrationException {
 
         try {
-            ReflectionUtil.loadConfigFields(scope(), module);
+            ConfigUtil.loadConfigFields(scope(), module);
             return registerModule(ModuleMeta.of(module.getClass()), module);
         } catch (ArtMetaDataException e) {
             throw new ModuleRegistrationException(null, ModuleState.INVALID_MODULE, e);
@@ -334,6 +334,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         if (!module.state().canReload()) return;
 
         try {
+            module.module().ifPresent(o -> ConfigUtil.loadConfigFields(scope(), o));
             module.onReload(scope());
             ART.callEvent(new ModuleReloadedEvent(module.moduleMeta()));
         } catch (Exception e) {

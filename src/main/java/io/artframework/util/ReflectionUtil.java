@@ -17,21 +17,17 @@
 package io.artframework.util;
 
 import com.google.common.base.Strings;
-import io.artframework.Scope;
 import io.artframework.Target;
-import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.Config;
 import lombok.NonNull;
 import lombok.extern.java.Log;
-import org.reflections.ReflectionUtils;
 
 import javax.annotation.Nullable;
-import java.io.File;
-import java.lang.reflect.*;
+import java.lang.reflect.Array;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -194,40 +190,4 @@ public final class ReflectionUtil {
         return targetClass.isInstance(target);
     }
 
-    @SuppressWarnings("unchecked")
-    public static <TObject> TObject loadConfigFields(@NonNull Scope scope, @NonNull TObject object) {
-
-        File basePath;
-        if (object.getClass().isAnnotationPresent(ArtModule.class)) {
-            basePath = scope.settings().modulePath(object.getClass().getAnnotation(ArtModule.class).value());
-        } else {
-            basePath = scope.settings().configPath();
-        }
-
-        basePath.mkdirs();
-
-        Set<Field> configFields = ReflectionUtils.getAllFields(object.getClass(), field ->
-                !Modifier.isStatic(field.getModifiers())
-                        && !Modifier.isFinal(field.getModifiers())
-                        && field.isAnnotationPresent(Config.class)
-
-        );
-
-        for (Field configField : configFields) {
-            String configName = configField.getAnnotation(Config.class).value();
-            File configFile = new File(basePath, configName);
-            Optional<?> config = scope.configuration().configs().load(configField.getType(), configFile);
-            if (config.isPresent()) {
-                try {
-                    configField.setAccessible(true);
-                    configField.set(object, config.get());
-                    log.info("injected " + configName + " config into field " + configField.getName() + " of " + object.getClass().getCanonicalName());
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        return object;
-    }
 }

@@ -22,7 +22,7 @@ import io.artframework.Scope;
 
 import java.lang.reflect.Constructor;
 
-import static io.artframework.util.ReflectionUtil.loadConfigFields;
+import static io.artframework.util.ConfigUtil.loadConfigFields;
 
 public class DefaultInjectionProvider extends AbstractProvider implements InjectionProvider {
 
