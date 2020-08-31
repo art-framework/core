@@ -68,7 +68,8 @@ public class JacksonConfigProvider extends AbstractScoped implements ConfigProvi
         save(config, file, true);
     }
 
-    private <TConfig> void save(TConfig config, File file, boolean overwrite) {
+    @Override
+    public <TConfig> void save(TConfig config, File file, boolean overwrite) {
 
         if (file.exists() && !overwrite) return;
 

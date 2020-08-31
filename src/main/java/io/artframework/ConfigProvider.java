@@ -56,5 +56,27 @@ public interface ConfigProvider extends Scoped {
      */
     <TConfig> Optional<TConfig> load(Class<TConfig> configClass, File file);
 
+    /**
+     * Serializes the given object as a config and saves it into the given file.
+     * <p>
+     * This will override any existing file with the given config.
+     * Use the {@link #save(Object, File, boolean)} method with the override false flag to not overwrite any existing file.
+     *
+     * @param config the config to save
+     * @param file the target to save to
+     * @param <TConfig> type of the config
+     */
     <TConfig> void save(TConfig config, File file);
+
+    /**
+     * Serializes the given object as a config and saves it into the given file.
+     * <p>
+     * Will overwrite the file if overwrite is set to true.
+     *
+     * @param config the config to save
+     * @param file the target to save to
+     * @param overwrite true to overwrite any existing file
+     * @param <TConfig> type of the config
+     */
+    <TConfig> void save(TConfig config, File file, boolean overwrite);
 }

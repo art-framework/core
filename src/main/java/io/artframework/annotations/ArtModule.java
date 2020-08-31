@@ -46,7 +46,7 @@ public @interface ArtModule {
      *
      * @return the unique identifier of this module
      */
-    String value() default "";
+    String value();
 
     /**
      * An optional prefix that is applied to all art objects that are found inside this module.

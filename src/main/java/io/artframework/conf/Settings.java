@@ -48,7 +48,10 @@ public class Settings extends SettingsBase implements Serializable, Cloneable {
     private String basePath = "./";
 
     @Builder.Default
-    private String modulePath = "modules/";
+    private String modulePath = "modules";
+
+    @Builder.Default
+    private String configPath = "configs";
 
     /**
      * If this is set to true, the ART-Framework will automatically scan the whole
@@ -68,8 +71,17 @@ public class Settings extends SettingsBase implements Serializable, Cloneable {
         return new File(basePath);
     }
 
+    public File configPath() {
+
+        return new File(basePath(), configPath);
+    }
+
     public File modulePath() {
         return new File(basePath(), modulePath);
+    }
+
+    public File modulePath(String identifier) {
+        return new File(modulePath(), identifier);
     }
 }
 
