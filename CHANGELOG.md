@@ -1,3 +1,15 @@
+# [1.0.0-beta.24](https://github.com/art-framework/art-core/compare/v1.0.0-beta.23...v1.0.0-beta.24) (2020-08-31)
+
+
+### Bug Fixes
+
+* reload configs from disk when module is reloaded ([8974391](https://github.com/art-framework/art-core/commit/89743914db2bc93f78d25a1d6a6c403a87afee96))
+
+
+### Features
+
+* create and load the config from the module directory ([461f6fd](https://github.com/art-framework/art-core/commit/461f6fd620406c48a9fc43ff12fe4eed98ce2a57))
+
 # [1.0.0-beta.23](https://github.com/art-framework/art-core/compare/v1.0.0-beta.22...v1.0.0-beta.23) (2020-08-30)
 
 
