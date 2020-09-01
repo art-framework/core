@@ -16,7 +16,16 @@
 
 package io.artframework.impl;
 
-import io.artframework.*;
+import io.artframework.AbstractFactoryProvider;
+import io.artframework.ArtMetaDataException;
+import io.artframework.ArtObjectMeta;
+import io.artframework.ArtObjectProvider;
+import io.artframework.GenericRequirement;
+import io.artframework.Requirement;
+import io.artframework.RequirementFactory;
+import io.artframework.RequirementProvider;
+import io.artframework.Scope;
+import io.artframework.util.ConfigUtil;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 
@@ -33,7 +42,7 @@ public class DefaultRequirementProvider extends AbstractFactoryProvider<Requirem
     @Override
     public RequirementProvider add(@NonNull ArtObjectMeta<Requirement<?>> information) {
         addFactory(RequirementFactory.of(scope(), information.get()));
-        log.info("[REGISTERED] " + information.identifier());
+        log.info("[REGISTERED] ?" + information.identifier()+ " " + ConfigUtil.toConfigString(information.configMap()));
         return this;
     }
 

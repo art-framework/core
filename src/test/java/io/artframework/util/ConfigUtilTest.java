@@ -20,14 +20,39 @@ import io.artframework.ConfigurationException;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.annotations.Ignore;
 import io.artframework.conf.ConfigFieldInformation;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SuppressWarnings("ALL")
 class ConfigUtilTest {
+
+    @Nested
+    @DisplayName("toConfigString()")
+    class toConfigString {
+
+        @SneakyThrows
+        @Test
+        @DisplayName("should return an empty string if no config fields exist")
+        void shouldReturnEmptyStringIfConfigIsEmpty() {
+
+            assertThat(ConfigUtil.toConfigString(ConfigUtil.getConfigFields(FinalConfigDefaultIgnore.class))).isEmpty();
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should return sorted and formatted config string")
+        void shouldFormattedAndStoredString() {
+
+            assertThat(ConfigUtil.toConfigString(ConfigUtil.getConfigFields(TestConfig.class)))
+                    .isEqualTo("parent_field=foobar, required*=0, all_annotations*=2.0, default_field=world, nested.nested_field=foobar");
+        }
+    }
 
     @Nested
     class ConfigMap {

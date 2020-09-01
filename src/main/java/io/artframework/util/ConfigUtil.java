@@ -275,4 +275,14 @@ public final class ConfigUtil {
 
         return object;
     }
+
+    public static String toConfigString(Map<String, ConfigFieldInformation> configMap) {
+
+        return configMap.values().stream().sorted()
+                .map(info -> info.identifier()
+                        + (info.required() ? "*" : "")
+                        + "="
+                        + info.defaultValue())
+                .collect(Collectors.joining(", "));
+    }
 }

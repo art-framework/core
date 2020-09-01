@@ -16,9 +16,21 @@
 
 package io.artframework.impl;
 
-import io.artframework.*;
+import io.artframework.AbstractFactoryProvider;
+import io.artframework.ArtMetaDataException;
+import io.artframework.ArtObjectMeta;
+import io.artframework.ArtObjectProvider;
+import io.artframework.ArtProvider;
+import io.artframework.CombinedResult;
+import io.artframework.CombinedResultCreator;
+import io.artframework.Scope;
+import io.artframework.Trigger;
+import io.artframework.TriggerFactory;
+import io.artframework.TriggerProvider;
+import io.artframework.TriggerTarget;
 import io.artframework.annotations.ART;
 import io.artframework.events.TriggerEvent;
+import io.artframework.util.ConfigUtil;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 import org.reflections.ReflectionUtils;
@@ -40,7 +52,7 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
         }
 
         addFactory(TriggerFactory.of(scope(), triggerInformation));
-        log.info("[REGISTERED] " + triggerInformation.identifier());
+        log.info("[REGISTERED] @" + triggerInformation.identifier() + " " + ConfigUtil.toConfigString(triggerInformation.configMap()));
         return this;
     }
 

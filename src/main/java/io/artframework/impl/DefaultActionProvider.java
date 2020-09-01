@@ -17,6 +17,7 @@
 package io.artframework.impl;
 
 import io.artframework.*;
+import io.artframework.util.ConfigUtil;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 
@@ -33,7 +34,7 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
     @Override
     public ActionProvider add(@NonNull ArtObjectMeta<Action<?>> actionInformation) {
         addFactory(ActionFactory.of(scope(), actionInformation.get()));
-        log.info("[REGISTERED] " + actionInformation.identifier());
+        log.info("[REGISTERED] !" + actionInformation.identifier() + " " + ConfigUtil.toConfigString(actionInformation.configMap()));
         return this;
     }
 
