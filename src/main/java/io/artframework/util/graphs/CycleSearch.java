@@ -33,17 +33,17 @@ import java.util.Vector;
  * graph. It then calculates based on the adjacency-matrix the elementary
  * cycles and returns a list, which contains lists itself with the objects of the 
  * concrete graphnodes-implementation. Each of these lists represents an
- * elementary cycle.<br><br>
+ * elementary cycle.<p><p>
  *
  * The implementation uses the algorithm of Donald B. Johnson for the search of
- * the elementary cycles. For a description of the algorithm see:<br>
+ * the elementary cycles. For a description of the algorithm see:<p>
  * Donald B. Johnson: Finding All the Elementary Circuits of a Directed Graph.
- * SIAM Journal on Computing. Volumne 4, Nr. 1 (1975), pp. 77-84.<br><br>
+ * SIAM Journal on Computing. Volumne 4, Nr. 1 (1975), pp. 77-84.<p><p>
  *
  * The algorithm of Johnson is based on the search for strong connected
- * components in a graph. For a description of this part see:<br>
+ * components in a graph. For a description of this part see:<p>
  * Robert Tarjan: Depth-first search and linear graph algorithms. In: SIAM
- * Journal on Computing. Volume 1, Nr. 2 (1972), pp. 146-160.<br>
+ * Journal on Computing. Volume 1, Nr. 2 (1972), pp. 146-160.<p>
  * 
  * @author Frank Meyer, web_at_normalisiert_dot_de
  * @version 1.2, 22.03.2009

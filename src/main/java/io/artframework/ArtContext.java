@@ -56,7 +56,7 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
      * Provides settings used in this {@link ArtContext}.
      * Use these settings to fine tune the executing and testing
      * of {@link ArtObject}s in this {@link ArtContext}.
-     * <br>
+     * <p>
      * By default the {@link Scope#settings()} will be used
      * you can override those settings by updating the underlying object.
      *
@@ -75,7 +75,7 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
      * Tests if all requirements for the given target pass.
      * Will return false if any requirement or global filter fail.
      * Will return true if requirements are empty after filtering for the target type.
-     * <br>
+     * <p>
      * Global filters are always checked before checking requirements.
      * This means that persistent counted requirements will never be checked and increased.
      *
@@ -104,7 +104,7 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
     /**
      * Executes all {@link Action}s and child actions of actions against the given target.
      * Will do nothing if the target type does not match the target type of the action.
-     * <br>
+     * <p>
      * Any {@link Requirement}s will be checked before executing
      * the actions. No action will be executed if any filter or requirement fails.
      *
@@ -128,7 +128,7 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
      * Listens on all {@link Trigger}s in the {@link ArtContext} for the given target type.
      * You can add multiple {@link TriggerListener}s of the same target type
      * and all of them will get informed.
-     * <br>
+     * <p>
      * You will only get informed of the trigger execution after all previous
      * checks have passed and after all {@link Action}s of this {@link ArtContext}
      * have been executed.

@@ -38,7 +38,7 @@ public @interface ART {
     /**
      * An identifier for your actions, requirements and trigger is always needed.
      * Use this annotation to provide a unique identifier.
-     * <br>
+     * <p>
      * Make sure that the provided identifier is unique across all ART. To do this it is highly recommended
      * to prefix your ART with a groupId (java) like prefix, e.g. <code>io.art-framework:my-action</code>.
      *

@@ -48,10 +48,10 @@ public interface TargetProvider extends Provider {
      * Tries to wrap the given target source into a {@link Target}.
      * The source can only be wrapped if an appropriate {@link Target} type
      * provider has been added with the {@link #add(Class, Function)} method.
-     * <br>
+     * <p>
      * Will return an {@link Optional#empty()} if no matching target for the given source type is found
      * or if the provided target source is null.
-     * <br>
+     * <p>
      * The target provider will try to select the nearest possible match for the given source types.
      * This means that if you register a generic fallback provider of type Object, every target source
      * will get wrapped by that provider if no other provider is found.

@@ -20,19 +20,19 @@ package io.artframework;
  * The {@link Target} is a wrapper around the different target types used by all ART objects.
  * It is needed to provide a consistent way to get a unique identifier
  * for every target type. Target types could be players, entities, chests, etc.
- * <br>
+ * <p>
  * It is recommended that you create your own target types by extending {@link AbstractTarget}
  * which already has the correct equals and hashcode implementation.
  * Make sure that your equal and hashcode is only scoped to the {@link #uniqueId()} method,
  * if you directly implement the {@link Target}.
- * <br>
+ * <p>
  * Register your target type with the {@link Configuration} on startup by calling
  * {@link Configuration#targets()} and provide a function that is used as a factory
  * to create new {@link Target} instances from the given source type.
- * <br>
+ * <p>
  * You can also extend your {@link Target} by implementing one or more of the following interfaces:
  *      - {@link MessageSender}: allows your target to receive messages
- * <br>
+ * <p>
  * All {@link Target} implementations must be immutable and the source and unique id must not change.
  *
  * @param <TTarget> type of the underlying target
@@ -42,10 +42,10 @@ public interface Target<TTarget> extends ArtObject {
     /**
      * Gets a unique identifier of the wrapped target object.
      * The identifier must be consistent across instances of the same object.
-     * <br>
+     * <p>
      * For example: the same player should always have the same unique identifier.
      * For a player this is easy, just use the Player#getUniqueId().toString() method.
-     * <br>
+     * <p>
      * If you want to target more abstract objects, e.g. a chest, then you need to compose
      * a consistent unique identifier yourself. This could be the location of the chest or
      * the unique id of the inventory holder paired with the location and chest type.

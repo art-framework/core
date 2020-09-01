@@ -57,7 +57,7 @@ public class Settings extends SettingsBase implements Serializable, Cloneable {
      * If this is set to true, the ART-Framework will automatically scan the whole
      * classpath to find and register any {@link ArtObject}s that
      * have a parameterless public constructor.
-     * <br>
+     * <p>
      * Use the {@link ArtProvider} methods to register {@link ArtObject}s
      * that cannot be constructed so easily.
      */

@@ -49,9 +49,9 @@ public interface ArtObjectContext<TArtObject extends ArtObject> extends Context,
      * Stores a value for the given {@link Target} and this {@link ArtObjectContext}.
      * This means a unique key is generated from the {@link Target#uniqueId()} and
      * {@link ArtObjectContext#uniqueId()} and will be appended by your key.
-     * <br>
+     * <p>
      * Then the {@link StorageProvider#set(String, Object)} method is called and the data is persisted.
-     * <br>
+     * <p>
      * Use the {@link #data()} methods to store data that is only available in this scope
      * and not persisted to the database.
      *
@@ -68,10 +68,10 @@ public interface ArtObjectContext<TArtObject extends ArtObject> extends Context,
      * Retrieves a persistently stored value from the {@link StorageProvider} and returns
      * it cast to the given type. Will return an empty {@link Optional} if casting
      * fails or the data does not exist.
-     * <br>
+     * <p>
      * The data that is fetched will be stored under a unique key combination of
      * {@link ArtObjectContext#uniqueId()} and {@link Target#uniqueId()}.
-     * <br>
+     * <p>
      * Use the {@link #data()} methods to store data that is only available in this scope
      * and not persisted to the database.
      *

@@ -43,7 +43,7 @@ public class ArtSettings extends SettingsBase {
      * defined in this {@link ArtContext} event if there are no listeners
      * subscribed to this result.
      * Defaults to true.
-     * <br>
+     * <p>
      * As an alternative you can subscribe to this {@link ArtContext} by using the
      * {@link ArtContext#onTrigger(Class, TriggerListener)} method. Then all actions defined in the
      * config will be executed, unless {@link #executeActions()} is false.
@@ -59,7 +59,7 @@ public class ArtSettings extends SettingsBase {
      * executed when a {@link Trigger} fires and a {@link TriggerListener} is attached
      * or {@link #autoTrigger()} is set to true.
      * Defaults to true.
-     * <br>
+     * <p>
      * You can always bypass this by directly calling one of the {@link ArtContext} methods.
      */
     @Builder.Default

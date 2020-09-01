@@ -27,7 +27,7 @@ import java.util.Optional;
  * The <pre>ExecutionContext</pre> holds a hierarchical order of execution
  * for all {@link Action}s, {@link Requirement}s and {@link Trigger} that were
  * involved in the execution chain of the root {@link ArtContext}.
- * <br>
+ * <p>
  * The <pre>ExecutionContext</pre> is disposed once the last {@link ArtObject}
  * was executed or tested. You can use the {@link #data()} map to store data that is
  * shared among all {@link ArtObject}s involved in the execution of this context.
@@ -116,9 +116,9 @@ public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends 
      * Stores a value for the {@link Target} of this {@link ExecutionContext} and the current {@link ArtObjectContext}.
      * This means a unique key is generated from the {@link Target#uniqueId()} and
      * {@link ArtObjectContext#uniqueId()} and will be appended by your key.
-     * <br>
+     * <p>
      * Then the {@link StorageProvider#set(String, Object)} method is called and the data is persisted.
-     * <br>
+     * <p>
      * Use the {@link #data()} methods to store data that is only available in this scope
      * and not persisted to the database.
      *
@@ -135,10 +135,10 @@ public interface ExecutionContext<TContext extends ArtObjectContext<?>> extends 
      * Retrieves a persistently stored value from the {@link StorageProvider} and returns
      * it cast to the given type. Will return an empty {@link Optional} if casting
      * fails or the data does not exist.
-     * <br>
+     * <p>
      * The data that is fetched will be stored under a unique key combination of
      * {@link ArtObjectContext#uniqueId()} and {@link Target#uniqueId()}.
-     * <br>
+     * <p>
      * Use the {@link #data()} methods to store data that is only available in this scope
      * and not persisted to the database.
      *

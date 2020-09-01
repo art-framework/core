@@ -24,11 +24,11 @@ import java.util.Collection;
 /**
  * The {@link ArtProvider} holds and handles all ART that is registered.
  * Use it to register your ART or to retrieve registered implementations for a given identifier.
- * <br>
+ * <p>
  * You can also scan a path or JAR file and automatically register all ART that is found.
  * Use the {@link #find()} and the {@link AbstractFinder} to find specific ART in your files
  * and load the {@link FinderResult} with the {@link FinderResult#load(Configuration)} ()} method.
- * <br>
+ * <p>
  * By default the ART-Framework will scan the whole classpath. You can disable this by
  * setting {@link Settings#autoRegisterAllArt(boolean)} to <pre>false</pre>.
  */

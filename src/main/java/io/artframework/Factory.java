@@ -25,7 +25,7 @@ import java.util.Map;
  * The {@link Factory} is used to create new instances of {@link ArtObject}s which
  * are wrapped inside an {@link ArtObjectContext}.
  * The created context and art object is initialized with its configuration and properties.
- * <br>
+ * <p>
  * Every {@link ArtObject} must have exactly one {@link ArtObjectContext} and an {@link Factory}
  * that knows how to create the context, a new instance of the art object and how to load the configuration
  * of the art object.

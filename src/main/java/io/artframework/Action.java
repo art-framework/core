@@ -25,10 +25,10 @@ import lombok.NonNull;
  * The implementing class must have a public parameterless constructor or you need
  * to provide a {@link ArtObjectProvider} for the type and register it with the
  * {@link ActionProvider#add(Class, ArtObjectProvider)}.
- * <br>
+ * <p>
  * The {@link Trigger} source and action target must match or the action will not be executed.
  * Make the {@link TTarget} as broad as possible to allow the action to be executed by as many triggers as possible.
- * <br>
+ * <p>
  * You can use any field in this class as a config option as long as you annotate it with @{@link ConfigOption}.
  *
  * @param <TTarget> the target this action applies to.
@@ -43,7 +43,7 @@ public interface Action<TTarget> extends ArtObject, ResultCreator {
      * All filtering is done beforehand and by the means of attached {@link Requirement}s.
      * Use the @{@link ConfigOption} annotation on fields of this class
      * to provide configuration options for users of this action.
-     * <br>
+     * <p>
      * Make sure to annotate this {@link Action} with a @{@link ART}
      * and optionally provide a config class and implement {@link Configurable}.
      *

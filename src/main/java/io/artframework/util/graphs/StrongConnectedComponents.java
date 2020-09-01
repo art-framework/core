@@ -29,16 +29,16 @@ import java.util.Vector;
  * graph (e.g. it builds a subgraph with all nodes with higher or same
  * nodenumbers like the given node s). It returns the strong connected
  * component of this subgraph which contains the lowest nodenumber of all
- * nodes in the subgraph.<br><br>
+ * nodes in the subgraph.<p><p>
  *
  * For a description of the algorithm for calculating the strong connected
- * components see:<br>
+ * components see:<p>
  * Robert Tarjan: Depth-first search and linear graph algorithms. In: SIAM
- * Journal on Computing. Volume 1, Nr. 2 (1972), pp. 146-160.<br>
+ * Journal on Computing. Volume 1, Nr. 2 (1972), pp. 146-160.<p>
  * For a description of the algorithm for searching all elementary cycles in
- * a directed graph see:<br>
+ * a directed graph see:<p>
  * Donald B. Johnson: Finding All the Elementary Circuits of a Directed Graph.
- * SIAM Journal on Computing. Volumne 4, Nr. 1 (1975), pp. 77-84.<br><br>
+ * SIAM Journal on Computing. Volumne 4, Nr. 1 (1975), pp. 77-84.<p><p>
  *
  * @author Frank Meyer, web_at_normalisiert_dot_de
  * @version 1.1, 22.03.2009

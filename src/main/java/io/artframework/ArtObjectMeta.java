@@ -74,7 +74,7 @@ public interface ArtObjectMeta<TArtObject extends ArtObject> {
      * Tries to cast this {@link ArtObjectMeta} into the target type.
      * You should only use this method if you are sure that the {@link #artObjectClass()}
      * matches the required target class. If that is not the case, null will be returned.
-     * <br>
+     * <p>
      * This is useful if you have collections of <pre>ArtObjectInformation<?></pre> and want to
      * pass individual types of the object to other methods like {@link ActionProvider#add(ArtObjectMeta)}.
      * Make sure you do a <pre>YourTargetArtObject.class.isAssignableFrom(this.getArtObjectClass)</pre> check
@@ -89,7 +89,7 @@ public interface ArtObjectMeta<TArtObject extends ArtObject> {
     /**
      * Initializes the {@link Factory}, loads all annotations and checks
      * if the {@link ArtObject} is configured correctly.
-     * <br>
+     * <p>
      * If everything looks good the {@link ArtObject} is registered for execution.
      * If not a {@link ArtMetaDataException} is thrown.
      *
