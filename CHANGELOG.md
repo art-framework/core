@@ -1,3 +1,10 @@
+# [1.0.0-beta.25](https://github.com/art-framework/art-core/compare/v1.0.0-beta.24...v1.0.0-beta.25) (2020-09-01)
+
+
+### Features
+
+* log registered art and config at registration ([ddce31b](https://github.com/art-framework/art-core/commit/ddce31b42cc122b26de208bea148cc3991144d29))
+
 # [1.0.0-beta.24](https://github.com/art-framework/art-core/compare/v1.0.0-beta.23...v1.0.0-beta.24) (2020-08-31)
 
 
