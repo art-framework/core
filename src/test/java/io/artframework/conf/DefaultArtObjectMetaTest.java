@@ -62,6 +62,30 @@ class DefaultArtObjectMetaTest {
         }
 
         @Test
+        @DisplayName("should use Object as target if it is a GenericAction")
+        void shouldUseObjectTargetForGenericAction() {
+
+            DefaultArtObjectMeta<MyGenericAction> objectMeta = new DefaultArtObjectMeta<>(MyGenericAction.class);
+
+            assertThatCode(() -> assertThat(objectMeta.initialize())
+                    .extracting(ArtObjectMeta::targetClass)
+                    .isEqualTo(Object.class)
+                ).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("should use Object as target if it is a GenericRequirement")
+        void shouldUseObjectTargetForGenericRequirement() {
+
+            DefaultArtObjectMeta<MyGenericRequirement> objectMeta = new DefaultArtObjectMeta<>(MyGenericRequirement.class);
+
+            assertThatCode(() -> assertThat(objectMeta.initialize())
+                    .extracting(ArtObjectMeta::targetClass)
+                    .isEqualTo(Object.class)
+            ).doesNotThrowAnyException();
+        }
+
+        @Test
         @SneakyThrows
         @DisplayName("should extract information from method")
         void shouldExtractOptionsFromMethod() {
@@ -82,6 +106,8 @@ class DefaultArtObjectMetaTest {
                         Optional.of(MyMethodOptions.class),
                         Player.class
             );
+
+
         }
 
         @SneakyThrows
@@ -120,6 +146,24 @@ class DefaultArtObjectMetaTest {
             return success();
         }
     }
+
+    @ART("generic-action")
+    public static class MyGenericAction implements GenericAction {
+        @Override
+        public Result execute(@NonNull Target<Object> target, @NonNull ExecutionContext<ActionContext<Object>> context) {
+            return success();
+        }
+    }
+
+    @ART("generic-requirement")
+    public static class MyGenericRequirement implements GenericRequirement {
+        @Override
+        public Result test(@NonNull Target<Object> target, @NonNull ExecutionContext<RequirementContext<Object>> context) {
+            return success();
+        }
+    }
+
+
 
     public static class AlternateConfig {
 

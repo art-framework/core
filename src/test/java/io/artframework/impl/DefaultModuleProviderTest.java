@@ -24,7 +24,10 @@ import io.artframework.annotations.OnDisable;
 import io.artframework.annotations.OnEnable;
 import lombok.SneakyThrows;
 import org.assertj.core.api.AbstractObjectAssert;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.mockito.InOrder;
 
 import java.util.Optional;
@@ -102,21 +105,6 @@ class DefaultModuleProviderTest {
             InOrder inOrder = inOrder(barModule, fooModule);
             inOrder.verify(barModule, times(1)).onEnable(any());
             inOrder.verify(fooModule, times(1)).onEnable(any());
-        }
-
-        @SneakyThrows
-        @Test
-        @Disabled
-        @DisplayName("should throw if a module has cyclic dependencies")
-        void shouldThrowIfCyclicDependenciesExist() {
-
-            assertThatCode(() -> provider.register(new FooModule())).doesNotThrowAnyException();
-            assertThatCode(() -> provider.register(new BarModule())).doesNotThrowAnyException();
-            assertThatCode(() -> provider.register(new Module1())).doesNotThrowAnyException();
-            assertThatCode(() -> provider.register(new Module2())).doesNotThrowAnyException();
-
-            assertThatThrownBy(() -> provider.register(new Module3()))
-                    .hasMessageContaining("cyclic dependencies");
         }
 
         @Test

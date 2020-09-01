@@ -279,6 +279,8 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
     private Class<?> tryGetTargetClass() throws ArtMetaDataException {
         if (targetClass != null) return targetClass;
         if (Trigger.class.isAssignableFrom(artObjectClass)) return Object.class;
+        if (GenericAction.class.isAssignableFrom(artObjectClass)) return Object.class;
+        if (GenericRequirement.class.isAssignableFrom(artObjectClass)) return Object.class;
         if (ReflectionUtil.isLambda(artObjectClass)) {
             throw new ArtMetaDataException(ArtObjectError.of(
                     "Unable to infer target type from a lambda expression." +

@@ -40,6 +40,7 @@ public class DefaultTargetProvider extends AbstractProvider implements TargetPro
 
     public DefaultTargetProvider(@NonNull Scope scope) {
         super(scope);
+        add(Object.class, ObjectTarget::new);
     }
 
     @Override
