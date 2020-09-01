@@ -1,3 +1,13 @@
+# [1.0.0-beta.26](https://github.com/art-framework/art-core/compare/v1.0.0-beta.25...v1.0.0-beta.26) (2020-09-01)
+
+
+### Bug Fixes
+
+* create configs parent dir and not config as dir ([4be0e68](https://github.com/art-framework/art-core/commit/4be0e6811626278778e2c07cd3811b816637561f))
+* **modules:** catch all module errors inside downstream methods ([f5d46b4](https://github.com/art-framework/art-core/commit/f5d46b4885d147c0f14e7fef79ea86017d41b121))
+* add default object target for generic action and requirements ([4d954df](https://github.com/art-framework/art-core/commit/4d954df943f3d5d3997c5867452b18da9032afbf))
+* use art object provider to create config instance for mapping fields ([6e3dfb2](https://github.com/art-framework/art-core/commit/6e3dfb22ddd60fbc47d4d2ef2de7ccdbc829bbf6))
+
 # [1.0.0-beta.25](https://github.com/art-framework/art-core/compare/v1.0.0-beta.24...v1.0.0-beta.25) (2020-09-01)
 
 
