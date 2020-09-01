@@ -20,6 +20,7 @@ import io.artframework.events.EventHandler;
 import io.artframework.events.EventListener;
 import io.artframework.events.TriggerEvent;
 import io.artframework.integration.actions.DamageAction;
+import io.artframework.integration.actions.TestGenericAction;
 import io.artframework.integration.actions.TextAction;
 import io.artframework.integration.data.Entity;
 import io.artframework.integration.data.Player;
@@ -119,7 +120,7 @@ public class ArtIntegrationTest {
             }
 
             @Test
-            @DisplayName("should register actions")
+            @DisplayName("should register requirements")
             void shouldRegisterRequirements() {
 
                 scope.configuration().requirements().add(HealthRequirement.class);
@@ -129,7 +130,16 @@ public class ArtIntegrationTest {
                         .extracting(Factory::meta)
                         .extracting(ArtObjectMeta::identifier, ArtObjectMeta::alias, ArtObjectMeta::artObjectClass)
                         .contains("health", new String[0], HealthRequirement.class);
+            }
 
+            @Test
+            @DisplayName("should register generic actions")
+            void shouldRegisterGenericAction() {
+
+                scope.configuration().actions().add(TestGenericAction.class);
+
+                assertThat(scope.configuration().actions().get("test-generic-action"))
+                        .isNotEmpty();
             }
 
             @Test

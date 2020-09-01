@@ -30,6 +30,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.InstanceOfAssertFactories.map;
 
 @DisplayName("ArtInformationTest")
 class DefaultArtObjectMetaTest {
@@ -86,6 +87,19 @@ class DefaultArtObjectMetaTest {
         }
 
         @Test
+        @DisplayName("should use provider for creating the art object when extracting config fields")
+        void shouldUseObjectProviderForConfigFieldExtraction() {
+
+            DefaultArtObjectMeta<MyProvidedAction> objectMeta = new DefaultArtObjectMeta<>(MyProvidedAction.class, () -> new MyProvidedAction(new AlternateConfig()));
+
+            assertThatCode(() -> assertThat(objectMeta.initialize())
+                    .extracting(ArtObjectMeta::configMap)
+                    .asInstanceOf(map(String.class, ConfigFieldInformation.class))
+                    .containsKey("alt_config")
+            ).doesNotThrowAnyException();
+        }
+
+        @Test
         @SneakyThrows
         @DisplayName("should extract information from method")
         void shouldExtractOptionsFromMethod() {
@@ -106,8 +120,6 @@ class DefaultArtObjectMetaTest {
                         Optional.of(MyMethodOptions.class),
                         Player.class
             );
-
-
         }
 
         @SneakyThrows
@@ -163,7 +175,22 @@ class DefaultArtObjectMetaTest {
         }
     }
 
+    @ART("provider")
+    public static class MyProvidedAction implements GenericAction {
 
+        private final AlternateConfig config;
+        @ConfigOption
+        private boolean altConfig;
+
+        public MyProvidedAction(AlternateConfig config) {
+            this.config = config;
+        }
+
+        @Override
+        public Result execute(@NonNull Target<Object> target, @NonNull ExecutionContext<ActionContext<Object>> context) {
+            return success();
+        }
+    }
 
     public static class AlternateConfig {
 

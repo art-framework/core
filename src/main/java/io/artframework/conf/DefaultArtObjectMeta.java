@@ -221,8 +221,8 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
             Class<?> targetClass = tryGetTargetClass();
             Class<?> configClass = findConfigClass();
             boolean autoRegister = tryGetAutoRegister(methods);
-            Map<String, ConfigFieldInformation> configMap = tryGetConfigMap(configClass);
             ArtObjectProvider<TArtObject> provider = tryGetArtObjectProvider();
+            Map<String, ConfigFieldInformation> configMap = tryGetConfigMap(configClass);
 
             if (Strings.isNullOrEmpty(identifier)) {
                 throw new ArtMetaDataException(ArtObjectError.of(
@@ -331,7 +331,11 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
     private Map<String, ConfigFieldInformation> tryGetConfigMap(Class<?> configClass) throws ConfigurationException {
         if (configClass == null) return new HashMap<>();
 
-        return ConfigUtil.getConfigFields(configClass);
+        if (artObjectProvider != null && configClass == artObjectClass) {
+            return ConfigUtil.getConfigFields(artObjectClass, artObjectProvider.create());
+        } else {
+            return ConfigUtil.getConfigFields(configClass);
+        }
     }
 
     private <TAnnotation extends Annotation> Optional<TAnnotation> getAnnotation(Class<TAnnotation> annotationClass, Method... methods) {
