@@ -23,6 +23,7 @@ import io.artframework.impl.DefaultModuleProvider;
 import lombok.NonNull;
 
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.Optional;
 
 /**
@@ -177,4 +178,11 @@ public interface ModuleProvider extends Provider {
      * @return the metadata of the module or an empty optional if the provided object is not an module
      */
     Optional<ModuleMeta> get(@Nullable Object module);
+
+    /**
+     * Gets all registered modules regardless of their current state.
+     *
+     * @return all registered modules
+     */
+    Collection<ModuleMeta> all();
 }

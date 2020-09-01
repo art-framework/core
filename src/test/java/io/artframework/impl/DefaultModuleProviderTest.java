@@ -22,6 +22,7 @@ import io.artframework.Scope;
 import io.artframework.annotations.ArtModule;
 import io.artframework.annotations.OnDisable;
 import io.artframework.annotations.OnEnable;
+import io.artframework.annotations.OnLoad;
 import lombok.SneakyThrows;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,6 +91,14 @@ class DefaultModuleProviderTest {
                     .isThrownBy(() -> provider.enable(new FooModule()))
                     .withMessageContaining("is missing the following dependencies: bar");
 
+        }
+
+        @Test
+        @DisplayName("should throw if module throws exception when initializing")
+        void shouldThrowIfModuleThrowsException() {
+
+            assertThatExceptionOfType(ModuleRegistrationException.class)
+                    .isThrownBy(() -> provider.enable(new ErrorModule()));
         }
 
         @Test
@@ -193,6 +202,15 @@ class DefaultModuleProviderTest {
         @OnDisable
         public void onDisable(Configuration configuration) {
 
+        }
+    }
+
+    @ArtModule("error")
+    static class ErrorModule {
+
+        @OnLoad
+        public void onLoad(Scope scope) throws Exception {
+            throw new Exception("foo");
         }
     }
 

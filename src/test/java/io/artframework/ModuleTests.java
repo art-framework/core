@@ -21,6 +21,7 @@ import io.artframework.integration.data.Block;
 import io.artframework.integration.data.Entity;
 import io.artframework.integration.data.Player;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,6 +39,15 @@ public class ModuleTests {
         ART.globalScope(Scope.defaultScope());
         module = spy(new BootstrapTestModule());
         bootstrapScope = spy(BootstrapScope.of(module));
+    }
+
+    @AfterEach
+    void tearDown() {
+        BootstrapTestModule.EnableModule.called = false;
+        BootstrapTestModule.BootstrapModule.called = false;
+        BootstrapTestModule.LoadModule.called = false;
+        BootstrapTestModule.ErrorBootstrapModule.called = false;
+        BootstrapTestModule.ErrorLoadModule.called = false;
     }
 
     @SneakyThrows
@@ -58,6 +68,33 @@ public class ModuleTests {
         ART.bootstrap(bootstrapScope);
 
         verify(module, times(1)).onEnable(any(Scope.class));
+    }
+
+    @Test
+    @SneakyThrows
+    @DisplayName("should load and enable all provided modules")
+    void shouldLoadAllProvidedModules() {
+
+        Scope scope = ART.bootstrap(bootstrapScope);
+
+        assertThat(scope.configuration().modules().all())
+                .extracting(ModuleMeta::identifier)
+                .contains("test", "bootstrap", "enable", "load");
+
+        assertThat(BootstrapTestModule.BootstrapModule.called).isTrue();
+        assertThat(BootstrapTestModule.EnableModule.called).isTrue();
+        assertThat(BootstrapTestModule.LoadModule.called).isTrue();
+    }
+
+    @SneakyThrows
+    @Test
+    @DisplayName("should not call other module methods if an error occured")
+    void shouldNotCallMethodsAfterError() {
+
+        ART.bootstrap(bootstrapScope);
+
+        assertThat(BootstrapTestModule.ErrorLoadModule.called).isFalse();
+        assertThat(BootstrapTestModule.ErrorBootstrapModule.called).isFalse();
     }
 
     @SneakyThrows

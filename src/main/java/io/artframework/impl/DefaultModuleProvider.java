@@ -58,6 +58,13 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     }
 
     @Override
+    public Collection<ModuleMeta> all() {
+        return modules.values().stream()
+                .map(ModuleInformation::moduleMeta)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public Optional<ModuleMeta> get(@Nullable Object module) {
         if (module == null) return Optional.empty();
 
@@ -100,6 +107,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
                         }
                     }
                 } catch (URISyntaxException | ModuleRegistrationException e) {
+                    log.warning("failed to load module " + module.getClass().getCanonicalName() + ": " + e.getMessage());
                     e.printStackTrace();
                 }
             }
@@ -586,7 +594,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
                 method.setAccessible(true);
                 method.invoke(module, parameters);
             } catch (IllegalAccessException | InvocationTargetException e) {
-                e.printStackTrace();
+                throw new RuntimeException(e);
             }
         }
     }
