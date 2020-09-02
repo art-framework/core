@@ -1,3 +1,10 @@
+# [1.0.0-beta.28](https://github.com/art-framework/art-core/compare/v1.0.0-beta.27...v1.0.0-beta.28) (2020-09-02)
+
+
+### Bug Fixes
+
+* create bootstrap config inside base dir ([1a4067b](https://github.com/art-framework/art-core/commit/1a4067b05d975a22be2fcf6a6d6f0a1126004ae1))
+
 # [1.0.0-beta.27](https://github.com/art-framework/art-core/compare/v1.0.0-beta.26...v1.0.0-beta.27) (2020-09-02)
 
 
