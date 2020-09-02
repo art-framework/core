@@ -25,9 +25,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 
 @SuppressWarnings("ALL")
 class ConfigUtilTest {
@@ -51,6 +49,15 @@ class ConfigUtilTest {
 
             assertThat(ConfigUtil.toConfigString(ConfigUtil.getConfigFields(TestConfig.class)))
                     .isEqualTo("parent_field=foobar, required*=0, all_annotations*=2.0, default_field=world, nested.nested_field=foobar");
+        }
+
+        @Test
+        @SneakyThrows
+        @DisplayName("should pretty print array variable as String...")
+        void shouldPrintArrayAsVargs() {
+
+            assertThat(ConfigUtil.toConfigString(ConfigUtil.getConfigFields(ArrayConfig.class)))
+                    .isEqualTo("array=String..., foo=0");
         }
     }
 

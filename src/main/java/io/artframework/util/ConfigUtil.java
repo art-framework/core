@@ -30,6 +30,7 @@ import io.artframework.conf.KeyValuePair;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.reflect.FieldUtils;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.reflections.ReflectionUtils;
 
 import java.io.File;
@@ -39,6 +40,7 @@ import java.lang.reflect.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Log(topic = "art-framework:util")
@@ -278,11 +280,20 @@ public final class ConfigUtil {
 
     public static String toConfigString(Map<String, ConfigFieldInformation> configMap) {
 
+        final Function<Object, @Nullable String> convertToString = (input) -> {
+            if (input == null) return "";
+            if (input.getClass().isArray()) {
+                return input.getClass().getComponentType().getSimpleName() + "...";
+            } else {
+                return input.toString();
+            }
+        };
+
         return configMap.values().stream().sorted()
                 .map(info -> info.identifier()
                         + (info.required() ? "*" : "")
                         + "="
-                        + info.defaultValue())
+                        + convertToString.apply(info.defaultValue()))
                 .collect(Collectors.joining(", "));
     }
 }
