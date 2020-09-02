@@ -1,3 +1,10 @@
+# [1.0.0-beta.29](https://github.com/art-framework/art-core/compare/v1.0.0-beta.28...v1.0.0-beta.29) (2020-09-02)
+
+
+### Bug Fixes
+
+* register bootstrap module as global scope ([7963d1d](https://github.com/art-framework/art-core/commit/7963d1d9a795d2f73b9c8482a171530fd911a232))
+
 # [1.0.0-beta.28](https://github.com/art-framework/art-core/compare/v1.0.0-beta.27...v1.0.0-beta.28) (2020-09-02)
 
 
