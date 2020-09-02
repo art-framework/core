@@ -83,8 +83,9 @@ public final class DefaultScope implements BootstrapScope {
             throw new UnsupportedOperationException("Cannot configure the scope after bootstrapping has finished.");
         }
 
-        builder.accept(configurationBuilder());
-        this.configuration = configurationBuilder().build();
+        Configuration.ConfigurationBuilder configurationBuilder = configuration.toBuilder();
+        builder.accept(configurationBuilder);
+        this.configuration = configurationBuilder.build();
 
         return this;
     }
@@ -97,8 +98,6 @@ public final class DefaultScope implements BootstrapScope {
         }
 
         this.configuration.modules().bootstrap(this);
-
-        this.configuration = configurationBuilder().build();
         this.bootstrapped = true;
 
         return this;
