@@ -1,3 +1,10 @@
+# [1.0.0-beta.27](https://github.com/art-framework/art-core/compare/v1.0.0-beta.26...v1.0.0-beta.27) (2020-09-02)
+
+
+### Bug Fixes
+
+* pretty print array config string ([ed726cb](https://github.com/art-framework/art-core/commit/ed726cb22449c056f090db52fa7774fbaf8ccb93))
+
 # [1.0.0-beta.26](https://github.com/art-framework/art-core/compare/v1.0.0-beta.25...v1.0.0-beta.26) (2020-09-01)
 
 
