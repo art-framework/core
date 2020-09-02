@@ -16,14 +16,22 @@
 
 package io.artframework.util;
 
+import io.artframework.BootstrapModule;
 import io.artframework.ConfigurationException;
+import io.artframework.Scope;
+import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.Config;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.annotations.Ignore;
 import io.artframework.conf.ConfigFieldInformation;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
+
+import java.io.File;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -196,6 +204,60 @@ class ConfigUtilTest {
                     .containsOnlyKeys("foo", "array")
             ).doesNotThrowAnyException();
         }
+    }
+
+    @Nested
+    @DisplayName("injectConfigFields(...)")
+    class InjectConfigFields {
+
+        private Scope scope;
+        private File basePath;
+
+        @BeforeEach
+        void setUp(@TempDir File tempDir) {
+
+            scope = Scope.defaultScope();
+            scope.settings().basePath(tempDir);
+            basePath = tempDir;
+        }
+
+        @Test
+        @DisplayName("should create config inside module directory")
+        void shouldCreateConfigInsideModuleDir() {
+
+            ConfigUtil.injectConfigFields(scope, new FakeModule());
+
+            File config = new File(basePath, "modules/fake/config.yml");
+            assertThat(config)
+                    .exists()
+                    .isFile();
+        }
+
+        @Test
+        @DisplayName("should create configs of bootstrap module in root")
+        void shouldCreateBootstrapConfigInRoot() {
+
+            ConfigUtil.injectConfigFields(scope, new FakeBootstrapModule());
+
+            File file = new File(basePath, "config.yml");
+            assertThat(file)
+                    .exists()
+                    .isFile();
+        }
+    }
+
+    @ArtModule("fake")
+    public static class FakeModule {
+
+        @Config("config.yml")
+        private TestConfig config;
+    }
+
+    @ArtModule("bootstrap")
+    public static class FakeBootstrapModule implements BootstrapModule {
+
+        @Config("config.yml")
+        private TestConfig config;
     }
 
     public static class SamePositionConfig {

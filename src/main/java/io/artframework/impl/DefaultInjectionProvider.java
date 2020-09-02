@@ -22,7 +22,7 @@ import io.artframework.Scope;
 
 import java.lang.reflect.Constructor;
 
-import static io.artframework.util.ConfigUtil.loadConfigFields;
+import static io.artframework.util.ConfigUtil.injectConfigFields;
 
 public class DefaultInjectionProvider extends AbstractProvider implements InjectionProvider {
 
@@ -50,7 +50,7 @@ public class DefaultInjectionProvider extends AbstractProvider implements Inject
             throw new ReflectiveOperationException("Unable to find a valid constructor to create a new instance of " + objectClass.getCanonicalName());
         }
 
-        loadConfigFields(scope, object);
+        injectConfigFields(scope, object);
 
         return object;
     }

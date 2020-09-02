@@ -67,6 +67,11 @@ public class Settings extends SettingsBase implements Serializable, Cloneable {
     @Builder.Default
     private ArtSettings artSettings = ArtSettings.getDefault();
 
+    public Settings basePath(File file) {
+        this.basePath = file.getAbsolutePath();
+        return this;
+    }
+
     public File basePath() {
         return new File(basePath);
     }

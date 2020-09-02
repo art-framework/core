@@ -17,6 +17,7 @@
 package io.artframework.util;
 
 import com.google.common.base.Strings;
+import io.artframework.BootstrapModule;
 import io.artframework.ConfigurationException;
 import io.artframework.FieldNameFormatter;
 import io.artframework.Scope;
@@ -242,10 +243,12 @@ public final class ConfigUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static <TObject> TObject loadConfigFields(@NonNull Scope scope, @NonNull TObject object) {
+    public static <TObject> TObject injectConfigFields(@NonNull Scope scope, @NonNull TObject object) {
 
         File basePath;
-        if (object.getClass().isAnnotationPresent(ArtModule.class)) {
+        if (BootstrapModule.class.isAssignableFrom(object.getClass())) {
+            basePath = scope.settings().basePath();
+        } else if (object.getClass().isAnnotationPresent(ArtModule.class)) {
             basePath = scope.settings().modulePath(object.getClass().getAnnotation(ArtModule.class).value());
         } else {
             basePath = scope.settings().configPath();
