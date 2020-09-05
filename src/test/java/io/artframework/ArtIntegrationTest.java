@@ -34,6 +34,7 @@ import org.junit.jupiter.api.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static io.artframework.Result.success;
@@ -50,6 +51,9 @@ public class ArtIntegrationTest {
     void setUp() {
 
         scope = Scope.defaultScope();
+        scope.configuration().targets()
+                .add(Player.class, PlayerTarget::new)
+                .add(Entity.class, EntityTarget::new);
     }
 
     @Nested
@@ -218,6 +222,32 @@ public class ArtIntegrationTest {
             trigger.onMove(new Player());
 
             verify(eventListener, times(1)).onTrigger(any());
+        }
+
+        @Test
+        @DisplayName("should call registered triggers")
+        void shouldCallRegisteredTrigger() {
+
+            PlayerTrigger trigger = new PlayerTrigger(scope);
+            scope.configuration().trigger().add(trigger);
+
+            ArtContext context = scope.load(Arrays.asList("@move"));
+            context.enableTrigger();
+
+            Player player = new Player("foo");
+            Optional<Target<Player>> playerTarget = scope.configuration().targets().get(player);
+
+            TriggerListener<Player> triggerListener = spy(new TriggerListener<Player>() {
+                @Override
+                public void onTrigger(Target<Player>[] targets, ExecutionContext<TriggerContext> context) {
+                    assertThat(targets).contains(playerTarget.get());
+                }
+            });
+
+            context.onTrigger(Player.class, triggerListener);
+
+            trigger.onMove(player);
+            verify(triggerListener, times(1)).onTrigger(any(), any());
         }
     }
 
