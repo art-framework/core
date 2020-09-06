@@ -60,7 +60,7 @@ public class DefaultArtContext extends AbstractScoped implements ArtContext, Tri
     @Override
     public <TTarget> CombinedResult test(@NonNull Target<TTarget> target) {
 
-        return test(ExecutionContext.of(scope(), this, target));
+        return test(target, ExecutionContext.of(scope(), this, target));
     }
 
     @SuppressWarnings("unchecked")
