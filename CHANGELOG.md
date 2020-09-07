@@ -1,3 +1,10 @@
+# [1.0.0-beta.30](https://github.com/art-framework/art-core/compare/v1.0.0-beta.29...v1.0.0-beta.30) (2020-09-07)
+
+
+### Bug Fixes
+
+* **art-context:** stackoverflow in test method ([e19a289](https://github.com/art-framework/art-core/commit/e19a289e375b07c382a06a5bfb8fd5c48459ef54))
+
 # [1.0.0-beta.29](https://github.com/art-framework/art-core/compare/v1.0.0-beta.28...v1.0.0-beta.29) (2020-09-02)
 
 
