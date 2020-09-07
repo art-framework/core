@@ -51,9 +51,6 @@ public class ArtIntegrationTest {
     void setUp() {
 
         scope = Scope.defaultScope();
-        scope.configuration().targets()
-                .add(Player.class, PlayerTarget::new)
-                .add(Entity.class, EntityTarget::new);
     }
 
     @Nested
@@ -227,6 +224,8 @@ public class ArtIntegrationTest {
         @Test
         @DisplayName("should call registered triggers")
         void shouldCallRegisteredTrigger() {
+
+            scope.configuration().targets().add(Player.class, PlayerTarget::new);
 
             PlayerTrigger trigger = new PlayerTrigger(scope);
             scope.configuration().trigger().add(trigger);
