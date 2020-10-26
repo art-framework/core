@@ -1,0 +1,4 @@
+foo: false
+number: 1337
+text: "foobar"
+extra_prop: bar

@@ -17,24 +17,51 @@
 package io.artframework.impl;
 
 import io.artframework.Scope;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import java.io.File;
+import java.nio.file.Files;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@SuppressWarnings("ALL")
 class JacksonConfigProviderTest {
 
     private JacksonConfigProvider provider;
+    private File tempDir;
 
+    @SneakyThrows
     @BeforeEach
-    void setUp() {
+    void setUp(@TempDir File tempDir) {
+        this.tempDir = tempDir;
         provider = new JacksonConfigProvider(Scope.defaultScope());
+
+        Files.copy(new File(new File("src/test/resources"), "test-config.yml").toPath(), new File(tempDir, "test-config.yml").toPath());
+    }
+
+    @Test
+    @DisplayName("should load an existing config from disk and map it to the class")
+    void shouldLoadFileFromDisk() {
+
+        File configFile = new File(tempDir, "test-config.yml");
+        assertThat(configFile).hasContent("foo: false\n" +
+                "number: 1337\n" +
+                "text: \"foobar\"\n" +
+                "extra_prop: bar");
+
+        Optional<TestConfig> config = provider.load(TestConfig.class, configFile);
+
+        assertThat(config).isNotEmpty().get()
+                .extracting(TestConfig::isFoo, TestConfig::getNumber, TestConfig::getText)
+                .contains(false, 1337, "foobar");
     }
 
     @Test
@@ -48,6 +75,8 @@ class JacksonConfigProviderTest {
                 .isEqualTo(1230);
     }
 
+    @Getter
+    @Setter
     public static class TestConfig {
 
         private boolean foo = true;
