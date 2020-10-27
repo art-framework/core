@@ -14,10 +14,23 @@
  * limitations under the License.
  */
 
-rootProject.name = 'art-core'
+package io.artframework;
 
-new File(rootDir, 'modules').listFiles().each {
-    if (it.directory && new File(it, 'build.gradle').exists()) {
-        include "modules:${it.name}"
+import java.util.Map;
+
+public interface DataProvider {
+
+    Map<Object, Object> data();
+
+    @SuppressWarnings("unchecked")
+    default <TValue> TValue data(Object key) {
+
+        return (TValue) data().get(key);
+    }
+
+    default <TValue> DataProvider data(Object key, TValue data) {
+
+        data().put(key, data);
+        return this;
     }
 }

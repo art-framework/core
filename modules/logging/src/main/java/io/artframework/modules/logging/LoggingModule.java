@@ -14,10 +14,17 @@
  * limitations under the License.
  */
 
-rootProject.name = 'art-core'
+package io.artframework.modules.logging;
 
-new File(rootDir, 'modules').listFiles().each {
-    if (it.directory && new File(it, 'build.gradle').exists()) {
-        include "modules:${it.name}"
+import io.artframework.Scope;
+import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.OnEnable;
+
+@ArtModule("art:logging")
+public class LoggingModule {
+
+    @OnEnable
+    public void onEnable(Scope scope) {
+
     }
 }

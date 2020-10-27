@@ -1,0 +1,45 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+apply plugin: 'com.github.johnrengelman.shadow'
+
+dependencies {
+    implementation group: "com.google.guava", name: "guava", version: "29.0-jre"
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.9.2'
+}
+
+shadowJar {
+    classifier = ''
+    dependencies {
+        include(dependency('org.apache.commons:commons-lang3:'))
+        include(dependency('com.google.guava:guava:'))
+        include(dependency('org.reflections:reflections:'))
+        include(dependency('com.fasterxml.jackson.core::'))
+        include(dependency('com.fasterxml.jackson.dataformat::'))
+    }
+    relocate 'org.apache.commons', "shadow.${packageName}.commonslang"
+    relocate 'com.google', "shadow.${packageName}.guava"
+    relocate 'org.reflections', "shadow.${packageName}.reflections"
+    relocate 'com.fasterxml.jackson', "shadow.${packageName}.jackson"
+}
+
+tasks.build.dependsOn(shadowJar)
+tasks.publish.dependsOn(shadowJar)

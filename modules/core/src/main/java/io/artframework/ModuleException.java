@@ -14,10 +14,32 @@
  * limitations under the License.
  */
 
-rootProject.name = 'art-core'
+package io.artframework;
 
-new File(rootDir, 'modules').listFiles().each {
-    if (it.directory && new File(it, 'build.gradle').exists()) {
-        include "modules:${it.name}"
+public class ModuleException extends ArtException {
+
+    private final ModuleMeta moduleMeta;
+
+    public ModuleException(ModuleMeta moduleMeta) {
+
+        this.moduleMeta = moduleMeta;
+    }
+
+    public ModuleException(ModuleMeta moduleMeta, String message) {
+
+        super(message);
+        this.moduleMeta = moduleMeta;
+    }
+
+    public ModuleException(ModuleMeta moduleMeta, String message, Throwable cause) {
+
+        super(message, cause);
+        this.moduleMeta = moduleMeta;
+    }
+
+    public ModuleException(ModuleMeta moduleMeta, Throwable cause) {
+
+        super(cause);
+        this.moduleMeta = moduleMeta;
     }
 }
