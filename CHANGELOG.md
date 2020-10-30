@@ -1,3 +1,10 @@
+# [1.0.0-beta.31](https://github.com/art-framework/art-core/compare/v1.0.0-beta.30...v1.0.0-beta.31) (2020-10-30)
+
+
+### Features
+
+* **module:** add basic action logging module ([ad15ee1](https://github.com/art-framework/art-core/commit/ad15ee18f16cdc11f09a60ca376b9bfc5e4d6c66))
+
 # [1.0.0-beta.30](https://github.com/art-framework/art-core/compare/v1.0.0-beta.29...v1.0.0-beta.30) (2020-09-07)
 
 
