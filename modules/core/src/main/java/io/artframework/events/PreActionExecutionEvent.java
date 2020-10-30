@@ -16,10 +16,7 @@
 
 package io.artframework.events;
 
-import io.artframework.Action;
-import io.artframework.ActionContext;
-import io.artframework.ArtObject;
-import io.artframework.ExecutionContext;
+import io.artframework.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -31,7 +28,7 @@ public class PreActionExecutionEvent<TTarget> extends ExecutionContextEvent<Acti
 
     private boolean cancelled;
 
-    public PreActionExecutionEvent(ArtObject artObject, ExecutionContext<ActionContext<TTarget>> executionContext) {
+    public PreActionExecutionEvent(ArtObjectMeta<Action<TTarget>> artObject, ExecutionContext<ActionContext<TTarget>> executionContext) {
         super(artObject, executionContext);
     }
 

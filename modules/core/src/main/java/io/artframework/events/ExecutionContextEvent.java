@@ -18,17 +18,18 @@ package io.artframework.events;
 
 import io.artframework.ArtObject;
 import io.artframework.ArtObjectContext;
+import io.artframework.ArtObjectMeta;
 import io.artframework.ExecutionContext;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public abstract class ExecutionContextEvent<TArtObject extends ArtObject, TContext extends ArtObjectContext<TArtObject>> extends ArtObjectEvent<ArtObject> {
+public abstract class ExecutionContextEvent<TArtObject extends ArtObject, TContext extends ArtObjectContext<?>> extends ArtObjectEvent<TArtObject> {
 
     private final ExecutionContext<TContext> executionContext;
 
-    public ExecutionContextEvent(ArtObject artObject, ExecutionContext<TContext> executionContext) {
+    public ExecutionContextEvent(ArtObjectMeta<TArtObject> artObject, ExecutionContext<TContext> executionContext) {
         super(artObject);
         this.executionContext = executionContext;
     }

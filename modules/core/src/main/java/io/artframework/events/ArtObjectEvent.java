@@ -17,6 +17,7 @@
 package io.artframework.events;
 
 import io.artframework.ArtObject;
+import io.artframework.ArtObjectMeta;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -24,9 +25,9 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 public abstract class ArtObjectEvent<TArtObject extends ArtObject> extends Event {
 
-    private final TArtObject artObject;
+    private final ArtObjectMeta<TArtObject> artObject;
 
-    public ArtObjectEvent(TArtObject artObject) {
+    public ArtObjectEvent(ArtObjectMeta<TArtObject> artObject) {
         this.artObject = artObject;
     }
 }

@@ -74,7 +74,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     @Override
     public FutureResult execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
 
-        if (ART.callEvent(new PreActionExecutionEvent<>(action(), context)).isCancelled()) {
+        if (ART.callEvent(new PreActionExecutionEvent(meta(), context)).isCancelled()) {
             return cancelled(target, this);
         }
 
@@ -88,14 +88,14 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
         Runnable runnable = () -> {
 
-            if (ART.callEvent(new ActionExecutionEvent<>(action(), context)).isCancelled()) {
+            if (ART.callEvent(new ActionExecutionEvent<>(meta(), context)).isCancelled()) {
                 result.complete(cancelled(target, this));
                 return;
             }
 
             Result actionResult = action().execute(target, context).with(target, this);
 
-            ART.callEvent(new ActionExecutedEvent<>(action(), context));
+            ART.callEvent(new ActionExecutedEvent<>(meta(), context));
 
             store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
