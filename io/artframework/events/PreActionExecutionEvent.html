@@ -125,7 +125,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="Event.html" title="class in io.artframework.events">io.artframework.events.Event</a></li>
 <li>
 <ul class="inheritance">
-<li><a href="ArtObjectEvent.html" title="class in io.artframework.events">io.artframework.events.ArtObjectEvent</a>&lt;<a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&gt;</li>
+<li><a href="ArtObjectEvent.html" title="class in io.artframework.events">io.artframework.events.ArtObjectEvent</a>&lt;TArtObject&gt;</li>
 <li>
 <ul class="inheritance">
 <li><a href="ExecutionContextEvent.html" title="class in io.artframework.events">io.artframework.events.ExecutionContextEvent</a>&lt;<a href="../Action.html" title="interface in io.artframework">Action</a>&lt;TTarget&gt;,&#8203;<a href="../ActionContext.html" title="interface in io.artframework">ActionContext</a>&lt;TTarget&gt;&gt;</li>
@@ -172,7 +172,7 @@ implements <a href="Cancellable.html" title="interface in io.artframework.events
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(io.artframework.ArtObject,io.artframework.ExecutionContext)">PreActionExecutionEvent</a></span>&#8203;(<a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&nbsp;artObject,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(io.artframework.ArtObjectMeta,io.artframework.ExecutionContext)">PreActionExecutionEvent</a></span>&#8203;(<a href="../ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a>&lt;<a href="../Action.html" title="interface in io.artframework">Action</a>&lt;<a href="PreActionExecutionEvent.html" title="type parameter in PreActionExecutionEvent">TTarget</a>&gt;&gt;&nbsp;artObject,
                        <a href="../ExecutionContext.html" title="interface in io.artframework">ExecutionContext</a>&lt;<a href="../ActionContext.html" title="interface in io.artframework">ActionContext</a>&lt;<a href="PreActionExecutionEvent.html" title="type parameter in PreActionExecutionEvent">TTarget</a>&gt;&gt;&nbsp;executionContext)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -264,13 +264,13 @@ implements <a href="Cancellable.html" title="interface in io.artframework.events
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(io.artframework.ArtObject,io.artframework.ExecutionContext)">
+<a id="&lt;init&gt;(io.artframework.ArtObjectMeta,io.artframework.ExecutionContext)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>PreActionExecutionEvent</h4>
-<pre>public&nbsp;PreActionExecutionEvent&#8203;(<a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&nbsp;artObject,
+<pre>public&nbsp;PreActionExecutionEvent&#8203;(<a href="../ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a>&lt;<a href="../Action.html" title="interface in io.artframework">Action</a>&lt;<a href="PreActionExecutionEvent.html" title="type parameter in PreActionExecutionEvent">TTarget</a>&gt;&gt;&nbsp;artObject,
                                <a href="../ExecutionContext.html" title="interface in io.artframework">ExecutionContext</a>&lt;<a href="../ActionContext.html" title="interface in io.artframework">ActionContext</a>&lt;<a href="PreActionExecutionEvent.html" title="type parameter in PreActionExecutionEvent">TTarget</a>&gt;&gt;&nbsp;executionContext)</pre>
 </li>
 </ul>

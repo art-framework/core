@@ -115,7 +115,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <main role="main">
 <div class="header">
 <div class="subTitle"><span class="packageLabelInType">Package</span>&nbsp;<a href="package-summary.html">io.artframework.events</a></div>
-<h2 title="Class ExecutionContextEvent" class="title">Class ExecutionContextEvent&lt;TArtObject extends <a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>,&#8203;TContext extends <a href="../ArtObjectContext.html" title="interface in io.artframework">ArtObjectContext</a>&lt;TArtObject&gt;&gt;</h2>
+<h2 title="Class ExecutionContextEvent" class="title">Class ExecutionContextEvent&lt;TArtObject extends <a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>,&#8203;TContext extends <a href="../ArtObjectContext.html" title="interface in io.artframework">ArtObjectContext</a>&lt;?&gt;&gt;</h2>
 </div>
 <div class="contentContainer">
 <ul class="inheritance">
@@ -125,7 +125,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="Event.html" title="class in io.artframework.events">io.artframework.events.Event</a></li>
 <li>
 <ul class="inheritance">
-<li><a href="ArtObjectEvent.html" title="class in io.artframework.events">io.artframework.events.ArtObjectEvent</a>&lt;<a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&gt;</li>
+<li><a href="ArtObjectEvent.html" title="class in io.artframework.events">io.artframework.events.ArtObjectEvent</a>&lt;TArtObject&gt;</li>
 <li>
 <ul class="inheritance">
 <li>io.artframework.events.ExecutionContextEvent&lt;TArtObject,&#8203;TContext&gt;</li>
@@ -144,8 +144,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd><code><a href="ActionExecutedEvent.html" title="class in io.artframework.events">ActionExecutedEvent</a></code>, <code><a href="ActionExecutionEvent.html" title="class in io.artframework.events">ActionExecutionEvent</a></code>, <code><a href="PreActionExecutionEvent.html" title="class in io.artframework.events">PreActionExecutionEvent</a></code></dd>
 </dl>
 <hr>
-<pre>public abstract class <span class="typeNameLabel">ExecutionContextEvent&lt;TArtObject extends <a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>,&#8203;TContext extends <a href="../ArtObjectContext.html" title="interface in io.artframework">ArtObjectContext</a>&lt;TArtObject&gt;&gt;</span>
-extends <a href="ArtObjectEvent.html" title="class in io.artframework.events">ArtObjectEvent</a>&lt;<a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&gt;</pre>
+<pre>public abstract class <span class="typeNameLabel">ExecutionContextEvent&lt;TArtObject extends <a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>,&#8203;TContext extends <a href="../ArtObjectContext.html" title="interface in io.artframework">ArtObjectContext</a>&lt;?&gt;&gt;</span>
+extends <a href="ArtObjectEvent.html" title="class in io.artframework.events">ArtObjectEvent</a>&lt;TArtObject&gt;</pre>
 </li>
 </ul>
 </div>
@@ -166,7 +166,7 @@ extends <a href="ArtObjectEvent.html" title="class in io.artframework.events">Ar
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(io.artframework.ArtObject,io.artframework.ExecutionContext)">ExecutionContextEvent</a></span>&#8203;(<a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&nbsp;artObject,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(io.artframework.ArtObjectMeta,io.artframework.ExecutionContext)">ExecutionContextEvent</a></span>&#8203;(<a href="../ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a>&lt;<a href="ExecutionContextEvent.html" title="type parameter in ExecutionContextEvent">TArtObject</a>&gt;&nbsp;artObject,
                      <a href="../ExecutionContext.html" title="interface in io.artframework">ExecutionContext</a>&lt;<a href="ExecutionContextEvent.html" title="type parameter in ExecutionContextEvent">TContext</a>&gt;&nbsp;executionContext)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -246,13 +246,13 @@ extends <a href="ArtObjectEvent.html" title="class in io.artframework.events">Ar
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(io.artframework.ArtObject,io.artframework.ExecutionContext)">
+<a id="&lt;init&gt;(io.artframework.ArtObjectMeta,io.artframework.ExecutionContext)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ExecutionContextEvent</h4>
-<pre>public&nbsp;ExecutionContextEvent&#8203;(<a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&nbsp;artObject,
+<pre>public&nbsp;ExecutionContextEvent&#8203;(<a href="../ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a>&lt;<a href="ExecutionContextEvent.html" title="type parameter in ExecutionContextEvent">TArtObject</a>&gt;&nbsp;artObject,
                              <a href="../ExecutionContext.html" title="interface in io.artframework">ExecutionContext</a>&lt;<a href="ExecutionContextEvent.html" title="type parameter in ExecutionContextEvent">TContext</a>&gt;&nbsp;executionContext)</pre>
 </li>
 </ul>
@@ -284,7 +284,7 @@ extends <a href="ArtObjectEvent.html" title="class in io.artframework.events">Ar
 <pre class="methodSignature">public&nbsp;boolean&nbsp;equals&#8203;(java.lang.Object&nbsp;o)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="ArtObjectEvent.html#equals(java.lang.Object)">equals</a></code>&nbsp;in class&nbsp;<code><a href="ArtObjectEvent.html" title="class in io.artframework.events">ArtObjectEvent</a>&lt;<a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&gt;</code></dd>
+<dd><code><a href="ArtObjectEvent.html#equals(java.lang.Object)">equals</a></code>&nbsp;in class&nbsp;<code><a href="ArtObjectEvent.html" title="class in io.artframework.events">ArtObjectEvent</a>&lt;<a href="ExecutionContextEvent.html" title="type parameter in ExecutionContextEvent">TArtObject</a> extends <a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -297,7 +297,7 @@ extends <a href="ArtObjectEvent.html" title="class in io.artframework.events">Ar
 <pre class="methodSignature">protected&nbsp;boolean&nbsp;canEqual&#8203;(java.lang.Object&nbsp;other)</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="ArtObjectEvent.html#canEqual(java.lang.Object)">canEqual</a></code>&nbsp;in class&nbsp;<code><a href="ArtObjectEvent.html" title="class in io.artframework.events">ArtObjectEvent</a>&lt;<a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&gt;</code></dd>
+<dd><code><a href="ArtObjectEvent.html#canEqual(java.lang.Object)">canEqual</a></code>&nbsp;in class&nbsp;<code><a href="ArtObjectEvent.html" title="class in io.artframework.events">ArtObjectEvent</a>&lt;<a href="ExecutionContextEvent.html" title="type parameter in ExecutionContextEvent">TArtObject</a> extends <a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&gt;</code></dd>
 </dl>
 </li>
 </ul>
@@ -310,7 +310,7 @@ extends <a href="ArtObjectEvent.html" title="class in io.artframework.events">Ar
 <pre class="methodSignature">public&nbsp;int&nbsp;hashCode()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="ArtObjectEvent.html#hashCode()">hashCode</a></code>&nbsp;in class&nbsp;<code><a href="ArtObjectEvent.html" title="class in io.artframework.events">ArtObjectEvent</a>&lt;<a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&gt;</code></dd>
+<dd><code><a href="ArtObjectEvent.html#hashCode()">hashCode</a></code>&nbsp;in class&nbsp;<code><a href="ArtObjectEvent.html" title="class in io.artframework.events">ArtObjectEvent</a>&lt;<a href="ExecutionContextEvent.html" title="type parameter in ExecutionContextEvent">TArtObject</a> extends <a href="../ArtObject.html" title="interface in io.artframework">ArtObject</a>&gt;</code></dd>
 </dl>
 </li>
 </ul>
