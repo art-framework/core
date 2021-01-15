@@ -20,6 +20,10 @@ import io.artframework.BootstrapModule;
 import io.artframework.BootstrapScope;
 import io.artframework.Scope;
 import io.artframework.annotations.ArtModule;
+import io.artframework.bukkit.actions.CancelBukkitEventAction;
+import io.artframework.bukkit.actions.DamageLivingEntityAction;
+import io.artframework.bukkit.actions.SendMessageAction;
+import io.artframework.bukkit.requirements.HealthRequirement;
 import io.artframework.bukkit.trigger.EntityTrigger;
 import io.artframework.bukkit.trigger.PlayerServerTrigger;
 import io.artframework.util.FileUtil;
@@ -88,9 +92,15 @@ public class ArtBukkitModule implements BootstrapModule {
         Bukkit.getPluginManager().registerEvents(entityTrigger, plugin);
 
         scope.configuration()
+                .actions()
+                    .add(CancelBukkitEventAction.class)
+                    .add(DamageLivingEntityAction.class)
+                    .add(SendMessageAction.class)
+                .requirements()
+                    .add(HealthRequirement.class)
                 .trigger()
-                .add(playerServerTrigger)
-                .add(entityTrigger);
+                    .add(playerServerTrigger)
+                    .add(entityTrigger);
     }
 
     @Override
