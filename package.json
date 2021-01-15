@@ -27,7 +27,7 @@
       [
         "@semantic-release/github",
         {
-          "assets": [["art-bukkit/build/libs/*.jar", "!**/*(sources|javadoc).jar"]]
+          "assets": [["**/build/libs/*.jar", "!**/*(sources|javadoc).jar"]]
         }
       ],
       [

@@ -22,72 +22,77 @@ buildscript {
 }
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '6.0.0'
-    id 'java-library'
-    id 'jacoco'
-    id 'idea'
-    id "io.freefair.lombok" version "5.1.0"
+    id 'com.github.johnrengelman.shadow' version '6.0.0' apply false
+    id "io.freefair.lombok" version "5.1.0" apply false
 }
 
-apply from: "$rootDir/gradle/jacoco.gradle"
-apply from: "$rootDir/gradle/publish.gradle"
+allprojects {
+    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'java-library'
+    apply plugin: 'jacoco'
+    apply plugin: 'idea'
+    apply plugin: 'io.freefair.lombok'
 
-sourceCompatibility = 11
-targetCompatibility = 11
+    apply from: "$rootDir/gradle/jacoco.gradle"
+    apply from: "$rootDir/gradle/publish.gradle"
 
-repositories {
-    mavenCentral()
-    jcenter()
-}
+    sourceCompatibility = 11
+    targetCompatibility = 11
 
-dependencies {
-    implementation group: "com.google.guava", name: "guava", version: "29.0-jre"
-    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
-    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.2'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.2'
-    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
-    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.9.2'
+    repositories {
+        mavenCentral()
+        jcenter()
+    }
 
-    //Test dependencies
-    testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
-    testImplementation "org.mockito:mockito-core:3.+"
-    testImplementation 'org.assertj:assertj-core:3.+'
-    testImplementation 'org.awaitility:awaitility:4.0.3'
-    testImplementation group: 'com.google.jimfs', name: 'jimfs', version: '1.+'
-    testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
-}
-
-shadowJar {
-    classifier = ''
     dependencies {
-        include(dependency('org.apache.commons:commons-lang3:'))
-        include(dependency('com.google.guava:guava:'))
-        include(dependency('org.reflections:reflections:'))
-        include(dependency('com.fasterxml.jackson.core::'))
-        include(dependency('com.fasterxml.jackson.dataformat::'))
+        implementation group: "com.google.guava", name: "guava", version: "29.0-jre"
+        implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+        implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.2'
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.2'
+        implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+        implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.9.2'
+
+        //Test dependencies
+        testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
+        testImplementation "org.mockito:mockito-core:3.+"
+        testImplementation 'org.assertj:assertj-core:3.+'
+        testImplementation 'org.awaitility:awaitility:4.0.3'
+        testImplementation group: 'com.google.jimfs', name: 'jimfs', version: '1.+'
+        testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
     }
-    relocate 'org.apache.commons', "shadow.${packageName}.commonslang"
-    relocate 'com.google', "shadow.${packageName}.guava"
-    relocate 'org.reflections', "shadow.${packageName}.reflections"
-    relocate 'com.fasterxml.jackson', "shadow.${packageName}.jackson"
-}
 
-tasks.build.dependsOn(shadowJar)
-tasks.publish.dependsOn(shadowJar)
-
-test {
-    useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
+    shadowJar {
+        classifier = ''
+        dependencies {
+            include(dependency('org.apache.commons:commons-lang3:'))
+            include(dependency('com.google.guava:guava:'))
+            include(dependency('org.reflections:reflections:'))
+            include(dependency('com.fasterxml.jackson.core::'))
+            include(dependency('com.fasterxml.jackson.dataformat::'))
+        }
+        relocate 'org.apache.commons', "shadow.${packageName}.commonslang"
+        relocate 'com.google', "shadow.${packageName}.guava"
+        relocate 'org.reflections', "shadow.${packageName}.reflections"
+        relocate 'com.fasterxml.jackson', "shadow.${packageName}.jackson"
     }
-}
 
-tasks.withType(Javadoc) {
-    failOnError false
-    options.addStringOption('Xdoclint:none', '-quiet')
-    options.addStringOption('encoding', 'UTF-8')
-    options.addStringOption('charSet', 'UTF-8')
-}
+    tasks.build.dependsOn(shadowJar)
+    tasks.publish.dependsOn(shadowJar)
 
-defaultTasks 'build'
+    test {
+        useJUnitPlatform()
+        testLogging {
+            events "passed", "skipped", "failed"
+        }
+    }
+
+    tasks.withType(Javadoc) {
+        failOnError false
+        options.addStringOption('Xdoclint:none', '-quiet')
+        options.addStringOption('encoding', 'UTF-8')
+        options.addStringOption('charSet', 'UTF-8')
+    }
+
+    defaultTasks 'build'
+}

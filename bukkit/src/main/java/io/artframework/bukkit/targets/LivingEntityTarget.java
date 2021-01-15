@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
-rootProject.name = 'art-core'
-include 'bukkit'
+package io.artframework.bukkit.targets;
 
+import io.artframework.AbstractTarget;
+import org.bukkit.entity.LivingEntity;
+
+public class LivingEntityTarget extends AbstractTarget<LivingEntity> {
+
+    public LivingEntityTarget(LivingEntity source) {
+        super(source);
+    }
+
+    @Override
+    public String uniqueId() {
+        return source().getUniqueId().toString();
+    }
+}

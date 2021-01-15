@@ -14,6 +14,14 @@
  * limitations under the License.
  */
 
-rootProject.name = 'art-core'
-include 'bukkit'
+package io.artframework.bukkit.util;
 
+public final class TimeUtil {
+
+    private TimeUtil() {}
+
+    public static long millisToTicks(long milliseconds) {
+
+        return Math.round((milliseconds * 20.0) / 1000.0);
+    }
+}

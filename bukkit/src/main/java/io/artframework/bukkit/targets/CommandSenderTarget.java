@@ -14,6 +14,27 @@
  * limitations under the License.
  */
 
-rootProject.name = 'art-core'
-include 'bukkit'
+package io.artframework.bukkit.targets;
 
+import io.artframework.AbstractTarget;
+import io.artframework.MessageSender;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+public class CommandSenderTarget extends AbstractTarget<CommandSender> implements MessageSender {
+
+    public CommandSenderTarget(CommandSender source) {
+        super(source);
+    }
+
+    @Override
+    public String uniqueId() {
+        return source() instanceof Player ? ((Player) source()).getUniqueId().toString() : source().getName();
+    }
+
+    @Override
+    public void sendMessage(String... strings) {
+
+        source().sendMessage(strings);
+    }
+}

@@ -14,6 +14,19 @@
  * limitations under the License.
  */
 
-rootProject.name = 'art-core'
-include 'bukkit'
+package util;
 
+import io.artframework.bukkit.util.TimeUtil;
+import org.assertj.core.api.AssertionsForClassTypes;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+class TimeUtilTest {
+
+    @Test
+    @DisplayName("should convert 1000 milliseconds to 20 ticks")
+    void shouldConvertMillisecondsToTicks() {
+
+        AssertionsForClassTypes.assertThat(TimeUtil.millisToTicks(1000)).isEqualTo(20);
+    }
+}
