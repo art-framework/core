@@ -75,6 +75,17 @@ public interface Scope extends DataProvider {
     }
 
     /**
+     * Use the {@link ArtProvider} to register your art objects,
+     * like actions, requirements and trigger.
+     *
+     * @return the art provider to register art objects
+     */
+    default ArtProvider register() {
+
+        return configuration().art();
+    }
+
+    /**
      * Loads the given string list and tries to parse each line
      * into a valid art object.
      * <p>Use the resulting {@link ArtContext} to {@link ArtContext#execute(Object...)},

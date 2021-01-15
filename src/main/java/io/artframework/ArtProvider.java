@@ -29,8 +29,8 @@ import java.util.Collection;
  * Use the {@link #find()} and the {@link AbstractFinder} to find specific ART in your files
  * and load the {@link FinderResult} with the {@link FinderResult#load(Scope)} method.
  * <p>
- * By default the ART-Framework will scan the whole classpath. You can disable this by
- * setting {@link Settings#autoRegisterAllArt(boolean)} to <pre>false</pre>.
+ * By default the ART-Framework will not scan the whole classpath. You can enable this by
+ * setting {@link Settings#autoRegisterAllArt(boolean)} to <pre>true</pre>.
  */
 public interface ArtProvider extends Provider {
 
