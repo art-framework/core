@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/art-framework/art-core/compare/v1.0.1...v1.0.2) (2021-01-15)
+
+
+### Bug Fixes
+
+* **build:** use jdk11 for jitpack builds ([dd2342d](https://github.com/art-framework/art-core/commit/dd2342d1fd7e77b79a459c64182c8494eea544d7))
+
 ## [1.0.1](https://github.com/art-framework/art-core/compare/v1.0.0...v1.0.1) (2021-01-15)
 
 
