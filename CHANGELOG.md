@@ -1,3 +1,11 @@
+## [1.0.1](https://github.com/art-framework/art-core/compare/v1.0.0...v1.0.1) (2021-01-15)
+
+
+### Bug Fixes
+
+* auto loading art in modules causes security conflicts with class loader ([e0a2ab1](https://github.com/art-framework/art-core/commit/e0a2ab11a758be2468f4a33f20ca00587e9abe6d))
+* autoload all art setting does nothing ([b3c8fdc](https://github.com/art-framework/art-core/commit/b3c8fdc422640a3f0a3c341dea0d9c46e4cb96b2))
+
 # 1.0.0 (2021-01-15)
 
 
