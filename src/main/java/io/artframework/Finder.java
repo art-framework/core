@@ -39,12 +39,25 @@ public interface Finder extends Scoped {
      * Use the {@link FinderResult#load(Scope)} method to load all found classes
      * and to register them with the {@link Scope}.
      *
+     * @param classLoader the classloader that is used to load the classes
      * @param file the jar file or sources root to search for classes
      * @return the result of the find operation
      */
-    default FinderResult<?> findAllIn(File file) {
-        return findAllIn(file, aClass -> true);
+    default FinderResult<?> findAllIn(ClassLoader classLoader, File file) {
+        return findAllIn(classLoader, file, aClass -> true);
     }
 
-    FinderResult<?> findAllIn(File file, Predicate<Class<?>> predicate);
+    /**
+     * Finds all classes inside the given path or jar file and loads them
+     * using the provided class loading.
+     * <p>Use the predicate to filter the classes that are loaded.
+     * <p>Use the {@link FinderResult#load(Scope)} method to load all found classes
+     * and to register them with the {@link Scope}.
+     *
+     * @param classLoader the classloader that is used to load the classes
+     * @param file the jar file or sources root to search for classes
+     * @param predicate the predicate to filter the loaded classes on
+     * @return the result of the find operation
+     */
+    FinderResult<?> findAllIn(ClassLoader classLoader, File file, Predicate<Class<?>> predicate);
 }

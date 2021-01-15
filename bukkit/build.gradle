@@ -18,6 +18,10 @@ plugins {
     id 'kr.entree.spigradle' version '2.1.1'
 }
 
+if (project.hasProperty("local_script")) {
+    apply from: file(local_script + "/build.local.gradle")
+}
+
 ext {
     mcVersion = project.property("mcVersion")
 }
