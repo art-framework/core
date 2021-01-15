@@ -15,9 +15,5 @@
  */
 
 rootProject.name = 'art-core'
+include 'jackson-config-provider'
 
-new File(rootDir, 'modules').listFiles().each {
-    if (it.directory && new File(it, 'build.gradle').exists()) {
-        include "modules:${it.name}"
-    }
-}

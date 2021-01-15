@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-import com.github.jengelman.gradle.plugins.shadow.tasks.ConfigureShadowRelocation
-
 buildscript {
     repositories {
         jcenter()
@@ -24,14 +22,19 @@ buildscript {
 }
 
 plugins {
-    id 'com.github.johnrengelman.shadow' version '6.1.0'
+    id 'com.github.johnrengelman.shadow' version '6.0.0'
     id 'java-library'
+    id 'jacoco'
+    id 'idea'
+    id "io.freefair.lombok" version "5.1.0"
 }
 
+apply from: "$rootDir/gradle/jacoco.gradle"
 apply from: "$rootDir/gradle/publish.gradle"
 
-sourceCompatibility = 11
-targetCompatibility = 11
+sourceCompatibility = 8
+targetCompatibility = 8
+
 
 repositories {
     mavenCentral()
@@ -39,20 +42,37 @@ repositories {
 }
 
 dependencies {
-    compile project(':modules:core')
-    compile project(':modules:logging')
+    implementation group: "com.google.guava", name: "guava", version: "29.0-jre"
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.10'
+    implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: '2.11.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-annotations', version: '2.11.2'
+    implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
+    implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.9.2'
+
+    //Test dependencies
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
+    testImplementation "org.mockito:mockito-core:3.+"
+    testImplementation 'org.assertj:assertj-core:3.+'
+    testImplementation 'org.awaitility:awaitility:4.0.3'
+    testImplementation group: 'com.google.jimfs', name: 'jimfs', version: '1.+'
+    testImplementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.+'
 }
 
 shadowJar {
     classifier = ''
-    relocate('io.artframework', 'io.artframework')
+    dependencies {
+        include(dependency('org.apache.commons:commons-lang3:'))
+        include(dependency('com.google.guava:guava:'))
+        include(dependency('org.reflections:reflections:'))
+        include(dependency('com.fasterxml.jackson.core::'))
+        include(dependency('com.fasterxml.jackson.dataformat::'))
+    }
+    relocate 'org.apache.commons', "shadow.${packageName}.commonslang"
+    relocate 'com.google', "shadow.${packageName}.guava"
+    relocate 'org.reflections', "shadow.${packageName}.reflections"
+    relocate 'com.fasterxml.jackson', "shadow.${packageName}.jackson"
 }
-
-task relocateShadowJar(type: ConfigureShadowRelocation) {
-    target = tasks.shadowJar
-}
-
-tasks.shadowJar.dependsOn tasks.relocateShadowJar
 
 tasks.build.dependsOn(shadowJar)
 tasks.publish.dependsOn(shadowJar)
