@@ -1,0 +1,17 @@
+```xml
+<project>
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+    <dependencies>
+        <dependency>
+            <groupId>io.art-framework</groupId>
+            <artifactId>art-core</artifactId>
+            <version>1.0.0-beta.31</version>
+        </dependency>
+    </dependencies>
+</project>
+```

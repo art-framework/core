@@ -1,4 +1,21 @@
+/*
+ * Copyright 2020 ART-Framework Contributors (https://github.com/Silthus/art-framework)
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 apply plugin: 'maven-publish'
+apply plugin: 'signing'
 
 def getBranch() {
     def process = 'git branch --show-current'.execute()
@@ -24,7 +41,7 @@ jar {
                 'Created-By': "Gradle ${gradle.gradleVersion}",
                 'Git-Branch': getBranch(),
                 'Git-Hash': getHash()
-                )
+        )
     }
 }
 
@@ -32,12 +49,44 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+            versionMapping {
+                usage('java-api') {
+                    fromResolutionOf('runtimeClasspath')
+                }
+                usage('java-runtime') {
+                    fromResolutionResult()
+                }
+            }
+            pom {
+                name = 'ART-Framework'
+                description = 'A minecraft plugin framework for providing reusable and configurable actions, requirements and triggers across plugins without the need to depend on them.'
+                url = 'https://art-framework.io'
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        id = 'silthus'
+                        name = 'Michael Reichenbach'
+                        email = 'michael@eichenbach.in'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/art-framework/art-core.git'
+                    developerConnection = 'scm:git:ssh://github.com/art-framework/art-core.git'
+                    url = 'https://github.com/art-framework/art-core/'
+                }
+            }
         }
     }
+
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/${project.findProperty("GITHUB_REPOSITORY")?: System.getenv("GITHUB_REPOSITORY")}")
+            url = uri("https://maven.pkg.github.com/${project.findProperty("GITHUB_REPOSITORY") ?: System.getenv("GITHUB_REPOSITORY")}")
             credentials {
                 username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
                 password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
