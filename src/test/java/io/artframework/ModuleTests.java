@@ -102,6 +102,7 @@ public class ModuleTests {
     @DisplayName("should find and register all art in sub packages")
     void shouldFindAndRegisterAllArtInSubPackages() {
 
+        bootstrapScope.settings().autoRegisterAllArt(true);
         Scope scope = ART.bootstrap(bootstrapScope);
 
         assertThat(scope.configuration().actions().all())
