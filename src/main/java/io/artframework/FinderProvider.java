@@ -78,7 +78,7 @@ public interface FinderProvider extends Provider {
     /**
      * Aggregates the find results of all finders registered in this provider.
      * <p>
-     * This will call the {@link Finder#findAllIn(File)} method on all registered finders and return all results.
+     * This will call the {@link Finder#findAllIn(ClassLoader, File)} method on all registered finders and return all results.
      *
      * @param file the jar file or sources root to search for classes
      * @return a list of all finder results. this is never null but may be empty.
@@ -87,16 +87,42 @@ public interface FinderProvider extends Provider {
         return findAllIn(file, aClass -> true);
     }
 
+    /**
+     * Aggregates the find results of all finders registered in this provider.
+     * <p>Use the predicate to filter the loaded classes before returning them.
+     * <p>This will call the {@link Finder#findAllIn(ClassLoader, File)} method on all registered finders and return all results.
+     *
+     * @param file the jar file or sources root to search for classes
+     * @param predicate the predicate to filter the loaded classes on
+     * @return a list of all finder results. this is never null but may be empty.
+     */
     default Collection<FinderResult<?>> findAllIn(File file, Predicate<Class<?>> predicate) {
+
+        return findAllIn(configuration().classLoader(), file, predicate);
+    }
+
+    /**
+     * Aggregates the find results of all finders registered in this provider.
+     * <p>The provided class loader is used to load the found classes.
+     * <p>Use the predicate to filter the loaded classes before returning them.
+     * <p>This will call the {@link Finder#findAllIn(ClassLoader, File)} method on all registered finders and return all results.
+     *
+     * @param file the jar file or sources root to search for classes
+     * @param predicate the predicate to filter the loaded classes on
+     * @param classLoader the classloader used to load the classes inside the file
+     * @return a list of all finder results. this is never null but may be empty.
+     */
+    default Collection<FinderResult<?>> findAllIn(ClassLoader classLoader, File file, Predicate<Class<?>> predicate) {
+
         return all().stream()
-                .map(finder -> finder.findAllIn(file, predicate))
+                .map(finder -> finder.findAllIn(classLoader, file, predicate))
                 .collect(Collectors.toList());
     }
 
     /**
      * Aggregates the find results of all finders registered in this provider and calls the load method on all results.
      * <p>
-     * This will call the {@link Finder#findAllIn(File)} method on all registered finders
+     * This will call the {@link Finder#findAllIn(ClassLoader, File)} method on all registered finders
      * and then call {@link FinderResult#load(Scope)} on all of them returning the result.
      *
      * @param file the jar file or sources root to search for classes
@@ -106,8 +132,36 @@ public interface FinderProvider extends Provider {
         return findAllAndLoadIn(file, aClass -> true);
     }
 
+    /**
+     * Aggregates the find results of all finders registered in this provider and calls the load method on all results.
+     * <p>The loaded classes can be filtered using the predicate before the load method is called on them.
+     * <p>This will call the {@link Finder#findAllIn(ClassLoader, File)} method on all registered finders
+     * and then call {@link FinderResult#load(Scope)} on all of them returning the result.
+     *
+     * @param file the jar file or sources root to search for classes
+     * @param predicate the predicate to filter the loaded classes on
+     * @return a list of all finder results. this is never null but may be empty.
+     */
     default Collection<FinderResult<?>> findAllAndLoadIn(File file, Predicate<Class<?>> predicate) {
-        Collection<FinderResult<?>> results = findAllIn(file, predicate);
+
+        return findAllAndLoadIn(configuration().classLoader(), file, predicate);
+    }
+
+    /**
+     * Aggregates the find results of all finders registered in this provider and calls the load method on all results.
+     * <p>The provided classloader is used to load the classes inside the file.
+     * <p>The loaded classes can be filtered using the predicate before the load method is called on them.
+     * <p>This will call the {@link Finder#findAllIn(ClassLoader, File)} method on all registered finders
+     * and then call {@link FinderResult#load(Scope)} on all of them returning the result.
+     *
+     * @param classLoader the classloader used to load the classes from the file
+     * @param file the jar file or sources root to search for classes
+     * @param predicate the predicate to filter the loaded classes on
+     * @return a list of all finder results. this is never null but may be empty.
+     */
+    default Collection<FinderResult<?>> findAllAndLoadIn(ClassLoader classLoader, File file, Predicate<Class<?>> predicate) {
+
+        Collection<FinderResult<?>> results = findAllIn(classLoader, file, predicate);
         results.forEach(result -> result.load(scope()));
         return results;
     }

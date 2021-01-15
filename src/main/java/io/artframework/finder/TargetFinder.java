@@ -19,6 +19,7 @@ package io.artframework.finder;
 import io.artframework.*;
 import io.artframework.util.FileUtil;
 import io.artframework.util.ReflectionUtil;
+import javassist.bytecode.ClassFile;
 import lombok.Value;
 
 import java.io.File;
@@ -37,12 +38,12 @@ public class TargetFinder extends AbstractFinder {
 
     @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public TargetFinderResult findAllIn(File file, Predicate<Class<?>> predicate) {
+    public TargetFinderResult findAllIn(ClassLoader classLoader, File file, Predicate<Class<?>> predicate) {
 
         final Collection<TargetClassWrapper<?>> targets = new ArrayList<>();
         final Collection<ArtObjectError> errors = new ArrayList<>();
 
-        FileUtil.findClasses(configuration().classLoader(), file, Target.class)
+        FileUtil.findClasses(classLoader, file, Target.class)
                 .stream().filter(predicate)
                 .forEach(targetClass -> {
                     Optional<Class<?>> sourceClass = ReflectionUtil.getInterfaceTypeArgument(targetClass, Target.class, 0);

@@ -25,6 +25,9 @@ package io.artframework;
  */
 public interface Scoped {
 
+    /**
+     * @return the scope of this object
+     */
     Scope scope();
 
     /**

@@ -35,12 +35,12 @@ public final class ArtObjectFinder extends AbstractFinder {
     }
 
     @Override
-    public FinderResult<?> findAllIn(File file, Predicate<Class<?>> predicate) {
+    public FinderResult<?> findAllIn(ClassLoader classLoader, File file, Predicate<Class<?>> predicate) {
 
         final List<ArtObjectMeta<?>> artObjectMetas = new ArrayList<>();
         final List<ArtObjectError> errors = new ArrayList<>();
 
-        FileUtil.findClasses(configuration().classLoader(), file, ArtObject.class)
+        FileUtil.findClasses(classLoader, file, ArtObject.class)
                 .stream().filter(predicate)
                 .forEach(artClass -> {
             if (Trigger.class.isAssignableFrom(artClass)) {

@@ -96,17 +96,13 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
                     if (module instanceof Class) {
                         if (((Class<?>) module).isAnnotationPresent(ArtModule.class)) {
                             registerModule((Class<?>) module);
-                        } else {
-                            findAndLoadAllArt(((Class<?>) module).getProtectionDomain().getCodeSource());
                         }
                     } else {
                         if (module.getClass().isAnnotationPresent(ArtModule.class)) {
                             registerModule(module);
-                        } else {
-                            findAndLoadAllArt(module.getClass().getProtectionDomain().getCodeSource());
                         }
                     }
-                } catch (URISyntaxException | ModuleRegistrationException e) {
+                } catch (ModuleRegistrationException e) {
                     log.warning("failed to load module " + module.getClass().getCanonicalName() + ": " + e.getMessage());
                     e.printStackTrace();
                 }
@@ -322,7 +318,6 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         if (!module.state().canLoad()) return;
 
         checkDependencies(module, this::loadModule);
-        findAndLoadAllArt(module);
 
         try {
             module.onLoad(scope());
@@ -411,7 +406,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     private void findAndLoadAllArt(ModuleInformation module) throws ModuleRegistrationException {
         try {
             CodeSource codeSource = module.moduleMeta().moduleClass().getProtectionDomain().getCodeSource();
-            findAndLoadAllArt(codeSource);
+            findAndLoadAllArt(module.moduleMeta().moduleClass().getClassLoader(), codeSource);
         } catch (URISyntaxException e) {
             updateModuleCache(module.state(ModuleState.ERROR));
             logState(module, e.getMessage());
@@ -420,9 +415,9 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         }
     }
 
-    private void findAndLoadAllArt(CodeSource codeSource) throws URISyntaxException {
+    private void findAndLoadAllArt(ClassLoader classLoader, CodeSource codeSource) throws URISyntaxException {
         if (codeSource != null) {
-            configuration().finder().findAllAndLoadIn(new File(codeSource.getLocation().toURI()),
+            configuration().finder().findAllAndLoadIn(classLoader, new File(codeSource.getLocation().toURI()),
                     aClass -> !BootstrapModule.class.isAssignableFrom(aClass) && !aClass.isAnnotationPresent(ArtModule.class)
             );
         }
@@ -507,7 +502,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         if (module.state().error()) {
             log.severe(msg);
         } else {
-            log.info(msg);
+            log.finest(msg);
         }
     }
 

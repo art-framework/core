@@ -34,12 +34,12 @@ public class ModuleFinder extends AbstractFinder {
     }
 
     @Override
-    public FinderResult<?> findAllIn(File file, Predicate<Class<?>> predicate) {
+    public FinderResult<?> findAllIn(ClassLoader classLoader, File file, Predicate<Class<?>> predicate) {
 
         final List<Class<?>> moduleClasses = new ArrayList<>();
         final List<ArtObjectError> errors = new ArrayList<>();
 
-        FileUtil.findClasses(configuration().classLoader(), file, aClass -> aClass.isAnnotationPresent(ArtModule.class))
+        FileUtil.findClasses(classLoader, file, aClass -> aClass.isAnnotationPresent(ArtModule.class))
                 .stream().filter(predicate)
                 .forEach(moduleClass -> {
             try {
