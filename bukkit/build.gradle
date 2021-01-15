@@ -32,7 +32,7 @@ spigot {
     //    depends = ['']
 }
 
-archivesBaseName = project.property("pluginName")
+archivesBaseName = "${project.property("pluginName")}-bukkit"
 
 repositories {
     jitpack()
