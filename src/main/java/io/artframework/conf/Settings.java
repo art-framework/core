@@ -62,7 +62,7 @@ public class Settings extends SettingsBase implements Serializable, Cloneable {
      * that cannot be constructed so easily.
      */
     @Builder.Default
-    private boolean autoRegisterAllArt = true;
+    private boolean autoRegisterAllArt = false;
 
     @Builder.Default
     private ArtSettings artSettings = ArtSettings.getDefault();

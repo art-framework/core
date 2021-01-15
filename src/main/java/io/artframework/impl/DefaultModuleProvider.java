@@ -318,6 +318,9 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         if (!module.state().canLoad()) return;
 
         checkDependencies(module, this::loadModule);
+        if (scope().settings().autoRegisterAllArt()) {
+            findAndLoadAllArt(module);
+        }
 
         try {
             module.onLoad(scope());
