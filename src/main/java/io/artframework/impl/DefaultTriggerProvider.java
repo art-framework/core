@@ -38,7 +38,7 @@ import org.reflections.ReflectionUtils;
 import java.lang.reflect.Method;
 import java.util.Collection;
 
-@Log(topic = "art-framework:trigger")
+@Log(topic = "art-framework")
 public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFactory> implements TriggerProvider, CombinedResultCreator {
 
     public DefaultTriggerProvider(Scope scope) {

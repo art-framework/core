@@ -44,7 +44,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Log(topic = "art-framework:util")
+@Log(topic = "art-framework")
 public final class ConfigUtil {
 
     public static Map<String, ConfigFieldInformation> getConfigFields(Class<?> configClass, FieldNameFormatter formatter) throws ConfigurationException {

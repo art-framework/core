@@ -28,7 +28,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 @Getter
-@Log
+@Log(topic = "art-framework")
 @Accessors(fluent = true)
 public final class DefaultScope implements BootstrapScope {
 

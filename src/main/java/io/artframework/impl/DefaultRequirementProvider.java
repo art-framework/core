@@ -32,7 +32,7 @@ import lombok.extern.java.Log;
 import java.util.Collection;
 import java.util.Objects;
 
-@Log(topic = "art-framework:requirements")
+@Log(topic = "art-framework")
 public class DefaultRequirementProvider extends AbstractFactoryProvider<RequirementFactory<?>> implements RequirementProvider {
 
     public DefaultRequirementProvider(Scope scope) {

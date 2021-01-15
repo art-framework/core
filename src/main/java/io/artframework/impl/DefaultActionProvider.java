@@ -24,7 +24,7 @@ import lombok.extern.java.Log;
 import java.util.Collection;
 import java.util.Objects;
 
-@Log(topic = "art-framework:actions")
+@Log(topic = "art-framework")
 public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory<?>> implements ActionProvider {
 
     public DefaultActionProvider(Scope scope) {

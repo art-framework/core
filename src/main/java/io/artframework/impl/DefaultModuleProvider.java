@@ -41,7 +41,7 @@ import java.util.stream.Collectors;
 import static org.reflections.ReflectionUtils.getAllMethods;
 import static org.reflections.ReflectionUtils.withAnnotation;
 
-@Log(topic = "art-framework:modules")
+@Log(topic = "art-framework")
 public class DefaultModuleProvider extends AbstractProvider implements ModuleProvider {
 
     final Map<Class<?>, ModuleInformation> modules = new HashMap<>();

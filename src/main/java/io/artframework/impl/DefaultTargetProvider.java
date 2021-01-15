@@ -32,7 +32,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-@Log(topic = "art-framework:targets")
+@Log(topic = "art-framework")
 public class DefaultTargetProvider extends AbstractProvider implements TargetProvider {
 
     @SuppressWarnings("rawtypes")

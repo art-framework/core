@@ -31,7 +31,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@Log(topic = "art-framework:util")
+@Log(topic = "art-framework")
 public final class ReflectionUtil {
 
     // always edit the regexr link and update the link below!
