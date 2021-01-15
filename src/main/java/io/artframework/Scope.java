@@ -74,5 +74,14 @@ public interface Scope extends DataProvider {
         return configuration().storage();
     }
 
+    /**
+     * Loads the given string list and tries to parse each line
+     * into a valid art object.
+     * <p>Use the resulting {@link ArtContext} to {@link ArtContext#execute(Object...)},
+     * {@link ArtContext#test(Object)} or listen {@link ArtContext#onTrigger(Class, TriggerListener)}.
+     *
+     * @param list the list of valid art that is parsed into an art context
+     * @return the parsed art context
+     */
     ArtContext load(List<String> list);
 }

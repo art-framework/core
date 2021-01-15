@@ -74,7 +74,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     @Override
     public FutureResult execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
 
-        if (ART.callEvent(new PreActionExecutionEvent(meta(), context)).isCancelled()) {
+        if (ART.callEvent(new PreActionExecutionEvent<>(meta(), context)).isCancelled()) {
             return cancelled(target, this);
         }
 

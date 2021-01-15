@@ -26,6 +26,8 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
+import java.util.List;
+
 @Accessors(fluent = true)
 public final class ART {
 
@@ -84,7 +86,30 @@ public final class ART {
         }
     }
 
+    /**
+     * Calls the given event on all registered scopes.
+     * <p>Use the {@link io.artframework.events.EventListener} to listen on events fired by this.
+     *
+     * @param event the event that is called
+     * @param <TEvent> the type of the event
+     * @return the passed event
+     */
     public static <TEvent extends Event> TEvent callEvent(TEvent event) {
         return EventManager.callEvent(event);
+    }
+
+    /**
+     * Loads the given string list and tries to parse each line
+     * into a valid art object.
+     * <p>Use the resulting {@link ArtContext} to {@link ArtContext#execute(Object...)},
+     * {@link ArtContext#test(Object)} or listen {@link ArtContext#onTrigger(Class, TriggerListener)}.
+     *
+     * @param list the list of valid art that is parsed into an art context
+     * @return the parsed art context
+     * @see Scope#load(List)
+     */
+    public static ArtContext load(List<String> list) {
+
+        return globalScope().load(list);
     }
 }
