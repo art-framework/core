@@ -37,7 +37,7 @@ public class PlayerServerTrigger implements Trigger, Listener, ResultCreator {
 
     @ART(
             value = PLAYER_JOIN,
-            alias = "join",
+            alias = {"join", "player.login", "login"},
             description = "The trigger is fired when a player joins the server."
     )
     @EventHandler(ignoreCancelled = true)

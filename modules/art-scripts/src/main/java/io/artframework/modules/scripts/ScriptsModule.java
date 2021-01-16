@@ -1,5 +1,6 @@
 package io.artframework.modules.scripts;
 
+import io.artframework.ArtContext;
 import io.artframework.ArtException;
 import io.artframework.ParseException;
 import io.artframework.Scope;
@@ -30,7 +31,13 @@ public class ScriptsModule {
     private ScriptModuleConfig config = new ScriptModuleConfig();
 
     @OnLoad
-    public void onLoad(Scope scope) throws ArtException {
+    public void onLoad(Scope scope) {
+
+        scope.register().actions().add(() -> new ExecuteScriptAction(this));
+    }
+
+    @OnEnable
+    public void onEnable(Scope scope) throws ArtException {
 
         try {
             File scriptsDir = new File(scope.settings().basePath(), "scripts");
@@ -43,16 +50,18 @@ public class ScriptsModule {
                     .map(file -> scope.configuration().configs()
                             .load(ScriptConfig.class, file)
                             .map(scriptConfig -> {
-                                scriptConfig.setIdentifier(file.getName().toLowerCase().replace(".yml", "").replace(".yaml", ""));
+                                scriptConfig.setIdentifier(getFileIdentifier(scriptsDir.toPath(), file));
                                 return scriptConfig;
                             })
                     )
                     .flatMap(Optional::stream)
                     .map(scriptConfig -> {
                         try {
-                            return new Script(scriptConfig, scope.load(scriptConfig.getArt()));
+                            ArtContext context = scope.load(scriptConfig.getIdentifier(), scriptConfig.getArt());
+                            log.info("loaded art-script: " + scriptConfig.getIdentifier());
+                            return new Script(scriptConfig, context);
                         } catch (ParseException e) {
-                            log.severe("failed to load script " + scriptConfig.getIdentifier() + ": " + e.getMessage());
+                            log.severe("failed to load art-script " + scriptConfig.getIdentifier() + ": " + e.getMessage());
                             return null;
                         }
                     }).filter(Objects::nonNull)
@@ -62,19 +71,32 @@ public class ScriptsModule {
         } catch (IOException e) {
             throw new ArtException(e);
         }
-    }
-
-    @OnEnable
-    public void onEnable(Scope scope) {
 
         loadedScripts.forEach(Script::enable);
-
-        scope.configuration().actions().add(() -> new ExecuteScriptAction(this));
     }
 
     @OnDisable
     public void onDisable(Scope scope) {
 
         loadedScripts.clear();
+    }
+
+    /**
+     * Extracts a file identifier from the two gives paths based on the relative path.
+     * The identifier will be lowercased and every subdirectly is split by a dot.
+     *
+     * @param base the base path
+     * @param file the file
+     * @return the file identifier
+     */
+    public static String getFileIdentifier(Path base, File file) {
+
+        Path relativePath = base.relativize(file.toPath());
+        return relativePath.toString()
+                .replace("/", ".")
+                .replace("\\", ".")
+                .toLowerCase()
+                .replace(".yml", "")
+                .replace(".yaml", "");
     }
 }
