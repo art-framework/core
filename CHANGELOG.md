@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/art-framework/art-core/compare/v1.4.1...v1.5.0) (2021-01-16)
+
+
+### Features
+
+* split metadata persistence table into separate columns ([255e0e2](https://github.com/art-framework/art-core/commit/255e0e2efda6e767c0061b134e5cec7b6c2f4c5d))
+
 ## [1.4.1](https://github.com/art-framework/art-core/compare/v1.4.0...v1.4.1) (2021-01-16)
 
 
