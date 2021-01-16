@@ -17,6 +17,7 @@
 package io.artframework.util;
 
 import io.artframework.Target;
+import io.artframework.TriggerTarget;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -107,6 +108,20 @@ class ReflectionUtilTest {
             assertThat(entryForTarget)
                     .isNotEmpty();
             assertThat(entryForTarget.get().apply(target))
+                    .isInstanceOf(MyTargetWrapper.class);
+        }
+
+        @Test
+        @DisplayName("should unwrap optional target")
+        void shouldUnwrapOptionalTarget() {
+
+            map.put(MyTarget.class, o -> new MyTargetWrapper((MyTarget) o));
+
+            Optional<MyTarget> target = Optional.of(new MyTarget());
+            Optional<Function> entryForTarget = ReflectionUtil.getEntryForTarget(target, map);
+            assertThat(entryForTarget)
+                    .isNotEmpty();
+            assertThat(entryForTarget.get().apply(new MyTarget()))
                     .isInstanceOf(MyTargetWrapper.class);
         }
 

@@ -18,9 +18,13 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import lombok.NonNull;
+import lombok.extern.java.Log;
 
+import java.io.File;
+import java.net.URISyntaxException;
 import java.util.Collection;
 
+@Log(topic = "art-framework")
 public class DefaultArtProvider extends AbstractProvider implements ArtProvider {
 
     public DefaultArtProvider(@NonNull Scope scope) {

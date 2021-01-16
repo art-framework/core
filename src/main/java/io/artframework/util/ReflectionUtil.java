@@ -18,6 +18,7 @@ package io.artframework.util;
 
 import com.google.common.base.Strings;
 import io.artframework.Target;
+import io.artframework.TriggerTarget;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 
@@ -102,11 +103,16 @@ public final class ReflectionUtil {
      * @param <TResult> result type of the map
      * @return extracted map value if the target type matched and was found
      */
-    @SuppressWarnings("unchecked")
     public static <TTarget, TResult> Optional<TResult> getEntryForTarget(@NonNull TTarget target, @NonNull Map<Class<?>, TResult> map) {
 
         if (target instanceof Target) {
-            target = ((Target<TTarget>) target).source();
+            return getEntryForTarget(((Target<?>) target).source(), map);
+        } else if (target instanceof Optional) {
+            if (((Optional<?>) target).isEmpty()) {
+                return Optional.empty();
+            } else {
+                return getEntryForTarget(((Optional<?>) target).get(), map);
+            }
         }
 
         return getEntryForTargetClass(target.getClass(), map);
@@ -136,11 +142,6 @@ public final class ReflectionUtil {
                     result = entry.getValue();
                 }
             }
-        }
-
-        if (result == null) {
-            log.severe("unable to find a valid target wrapper for " + targetClass.getCanonicalName()
-                    + "! Make sure to register your target wrapper with the scope onLoad().");
         }
 
         return Optional.ofNullable(result);

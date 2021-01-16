@@ -17,10 +17,7 @@
 package io.artframework.impl;
 
 import com.google.common.collect.ImmutableList;
-import io.artframework.AbstractProvider;
-import io.artframework.Scope;
-import io.artframework.Target;
-import io.artframework.TargetProvider;
+import io.artframework.*;
 import io.artframework.util.ReflectionUtil;
 import lombok.NonNull;
 import lombok.extern.java.Log;
@@ -50,14 +47,30 @@ public class DefaultTargetProvider extends AbstractProvider implements TargetPro
     @SuppressWarnings("unchecked")
     @Override
     public <TTarget> Optional<Target<TTarget>> get(@Nullable TTarget source) {
-        if (source == null) return Optional.empty();
 
-        return ReflectionUtil.getEntryForTarget(source, targetProviders)
+        if (source == null) return Optional.empty();
+        if (source instanceof TriggerTarget) {
+            return Optional.of((Target<TTarget>) ((TriggerTarget<?>) source).target());
+        }
+
+        Optional<Target<TTarget>> target = ReflectionUtil.getEntryForTarget(source, targetProviders)
                 .map(targetFunction -> (Target<TTarget>) targetFunction.apply(source));
+
+        if (target.isEmpty()) {
+            log.severe("unable to find a valid target wrapper for " + source.getClass().getCanonicalName()
+                    + "! Make sure to register your target wrapper with the scope onLoad().");
+        }
+
+        return target;
     }
 
     @Override
     public <TTarget> boolean exists(@Nullable TTarget source) {
+
+        if (source instanceof Class) {
+            return targetProviders.containsKey(source);
+        }
+
         return get(source).isPresent();
     }
 

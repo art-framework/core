@@ -108,8 +108,6 @@ public class ArtBukkitModule implements BootstrapModule {
                 .scheduler(new BukkitScheduler(plugin, Bukkit.getScheduler()))
                 .storage(storageProvider)
         );
-
-
     }
 
     @Override
@@ -118,7 +116,7 @@ public class ArtBukkitModule implements BootstrapModule {
         Bukkit.getPluginManager().registerEvents(playerServerTrigger, plugin);
         Bukkit.getPluginManager().registerEvents(entityTrigger, plugin);
 
-        scope.configuration()
+        scope.register()
                 .actions()
                     .add(CancelBukkitEventAction.class)
                     .add(DamageLivingEntityAction.class)

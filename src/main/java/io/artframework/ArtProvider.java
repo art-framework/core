@@ -18,7 +18,11 @@ package io.artframework;
 
 import io.artframework.conf.Settings;
 import io.artframework.impl.DefaultArtProvider;
+import lombok.extern.java.Log;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.security.CodeSource;
 import java.util.Collection;
 
 /**
@@ -58,6 +62,27 @@ public interface ArtProvider extends Provider {
      * @return this {@link ArtProvider}
      */
     ArtProvider addAll(Collection<ArtObjectMeta<?>> artObjects);
+
+    /**
+     * Takes given class finds it code source and adds all art-objects inside it to the scope.
+     * <p>The classloader of the given class will be used to load any unloaded classes.
+     * <p>This is an easy method to load all art inside the own plugin as art-objects.
+     *
+     * @param codeSource a class inside the jar file that should be scanned
+     * @return this art provider
+     */
+    default ArtProvider addAllOf(Class<?> codeSource) {
+
+        try {
+            ClassLoader classLoader = codeSource.getClassLoader();
+            File file = new File(codeSource.getProtectionDomain().getCodeSource().getLocation().toURI());
+            find().findAllAndLoadIn(classLoader, file, aClass -> true);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
+        return this;
+    }
 
     default ActionProvider actions() {
         return configuration().actions();
