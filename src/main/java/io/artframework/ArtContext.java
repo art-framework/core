@@ -119,7 +119,9 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
     default FutureResult execute(@NonNull Object... targets) {
         return execute(Arrays.stream(targets)
                 .map(target -> configuration().targets().get(target))
-                .flatMap(target -> target.map(Stream::of).orElseGet(Stream::empty)).toArray(Target[]::new));
+                .flatMap(Optional::stream)
+                .toArray(Target[]::new)
+        );
     }
 
     /**

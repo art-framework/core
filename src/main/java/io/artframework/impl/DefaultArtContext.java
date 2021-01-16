@@ -22,6 +22,7 @@ import io.artframework.conf.ArtSettings;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
+import lombok.extern.java.Log;
 
 import java.util.*;
 import java.util.function.Function;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 import static io.artframework.util.ReflectionUtil.getEntryForTarget;
 
 @Accessors(fluent = true)
+@Log(topic = "art-framework")
 public class DefaultArtContext extends AbstractScoped implements ArtContext, TriggerListener<Object> {
 
     private final ArtSettings settings;
@@ -76,6 +78,11 @@ public class DefaultArtContext extends AbstractScoped implements ArtContext, Tri
 
     @Override
     public FutureResult execute(@NonNull Target<?>... targets) {
+
+        if (targets.length < 1) {
+            log.warning("skipping execution of art-context with 0 targets");
+            return FutureResult.empty();
+        }
 
         return execute(ExecutionContext.of(scope(), this, targets));
     }

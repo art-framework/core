@@ -47,6 +47,7 @@ repositories {
 dependencies {
     implementation spigot(mcVersion)
     implementation 'net.silthus:ebean-wrapper:2.8.1'
+    implementation 'com.google.code.gson:gson:2.8.6'
 
     api project(':')
 
@@ -64,7 +65,9 @@ shadowJar {
     classifier = ''
     dependencies {
         include(project(':'))
+        include(dependency('com.google.code.gson:gson:'))
     }
+    relocate 'com.google.gson', "shadow.${packageName}.gson"
 }
 
 tasks.prepareSpigotPlugins.dependsOn(shadowJar)

@@ -72,7 +72,7 @@ allprojects {
             include(dependency('com.fasterxml.jackson.dataformat::'))
         }
         relocate 'org.apache.commons', "shadow.${packageName}.commonslang"
-        relocate 'com.google', "shadow.${packageName}.guava"
+        relocate 'com.google.guava', "shadow.${packageName}.guava"
         relocate 'org.reflections', "shadow.${packageName}.reflections"
         relocate 'com.fasterxml.jackson', "shadow.${packageName}.jackson"
     }

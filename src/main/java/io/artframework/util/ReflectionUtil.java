@@ -138,6 +138,11 @@ public final class ReflectionUtil {
             }
         }
 
+        if (result == null) {
+            log.severe("unable to find a valid target wrapper for " + targetClass.getCanonicalName()
+                    + "! Make sure to register your target wrapper with the scope onLoad().");
+        }
+
         return Optional.ofNullable(result);
     }
 
