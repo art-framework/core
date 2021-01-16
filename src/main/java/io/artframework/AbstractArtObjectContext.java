@@ -16,16 +16,24 @@
 
 package io.artframework;
 
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
+@Accessors(fluent = true)
 public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> extends AbstractScoped implements ArtObjectContext<TArtObject> {
 
     private final ArtObjectMeta<TArtObject> information;
     private final Map<String, Object> data = new HashMap<>();
+    @Getter
+    @Setter
+    private String storageKey = UUID.randomUUID().toString();
 
     public AbstractArtObjectContext(@NonNull Scope scope, ArtObjectMeta<TArtObject> information) {
         super(scope);
@@ -53,6 +61,6 @@ public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> ext
     }
 
     private String getStorageKey(Target<?> target, String key) {
-        return uniqueId() + "#" + target.uniqueId() + "#" + key;
+        return storageKey() + "#" + uniqueId() + "#" + target.uniqueId() + "#" + key;
     }
 }

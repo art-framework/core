@@ -103,13 +103,25 @@ public final class ReflectionUtil {
      * @return extracted map value if the target type matched and was found
      */
     @SuppressWarnings("unchecked")
-    public static <TTarget, TResult> Optional<TResult> getEntryForTarget(TTarget target, Map<Class<?>, TResult> map) {
+    public static <TTarget, TResult> Optional<TResult> getEntryForTarget(@NonNull TTarget target, @NonNull Map<Class<?>, TResult> map) {
 
         if (target instanceof Target) {
             target = ((Target<TTarget>) target).source();
         }
 
-        Class<?> targetClass = target.getClass();
+        return getEntryForTargetClass(target.getClass(), map);
+    }
+
+    /**
+     * Takes the given map and class and tries to extract the nearest possible type match for the class in the map.
+     *
+     * @param targetClass the target class and matching key of the map
+     * @param map the map to extract
+     * @param <TResult> the type of the result
+     * @return the matched target result if found
+     */
+    public static <TResult> Optional<TResult> getEntryForTargetClass(@NonNull Class<?> targetClass, @NonNull Map<Class<?>, TResult> map) {
+
         if (map.containsKey(targetClass)) {
             return Optional.ofNullable(map.get(targetClass));
         }

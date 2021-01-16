@@ -22,6 +22,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -104,8 +105,14 @@ public final class DefaultScope implements BootstrapScope {
     }
 
     @Override
-    public ArtContext load(List<String> list) {
+    public ArtContext load(String key, Collection<String> list) throws ParseException {
 
-        return ArtLoader.of(this).parse(list).build();
+        return ArtLoader.of(this).parser().storageKey(key).parse(list);
+    }
+
+    @Override
+    public ArtContext load(Collection<String> list) throws ParseException {
+
+        return ArtLoader.of(this).parse(list);
     }
 }

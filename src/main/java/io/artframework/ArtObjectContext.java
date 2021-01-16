@@ -38,12 +38,33 @@ public interface ArtObjectContext<TArtObject extends ArtObject> extends Context,
         return meta().identifier();
     }
 
+    /**
+     * @return the meta data object information for this context and art object
+     */
     ArtObjectMeta<TArtObject> meta();
 
+    /**
+     * @return the target class of this context
+     */
     @Override
     default Class<?> targetClass() {
         return meta().targetClass();
     }
+
+    /**
+     * @return the configured storage key of this art object context
+     */
+    String storageKey();
+
+    /**
+     * Sets the unique storage key used to identify the context from which this art object was loaded.
+     * <p>The key should be generated when the art object context is created and must stay the same
+     * to retrieve the stored data.
+     *
+     * @param key the unique key of the load operation
+     * @return this art object context
+     */
+    ArtObjectContext<TArtObject> storageKey(String key);
 
     /**
      * Stores a value for the given {@link Target} and this {@link ArtObjectContext}.

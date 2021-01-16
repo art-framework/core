@@ -16,16 +16,23 @@
 
 package io.artframework.parser.flow;
 
+import com.google.common.base.Strings;
 import io.artframework.*;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
+@Accessors(fluent = true)
 public class FlowParser implements Parser<Collection<String>> {
 
     private final Scope scope;
+    @Setter
+    @Getter
+    private String storageKey = UUID.randomUUID().toString();
 
     public FlowParser(Scope scope) {
         this.scope = scope;
@@ -37,7 +44,11 @@ public class FlowParser implements Parser<Collection<String>> {
     }
 
     @Override
-    public ArtContext parse(Collection<String> input) throws ParseException {
+    public ArtContext parse(@NonNull Collection<String> input) throws ParseException {
+
+        if (input.isEmpty()) {
+            throw new ParseException("Cannot parse an empty list into an art context!");
+        }
 
         Collection<ArtObjectContext<?>> contexts = new ArrayList<>();
 
@@ -50,7 +61,7 @@ public class FlowParser implements Parser<Collection<String>> {
                 try {
                     if (parser.accept(line)) {
                         matched = true;
-                        contexts.add(parser.parse());
+                        contexts.add(parser.parse().storageKey(storageKey()));
                         break;
                     }
                 } catch (ParseException e) {

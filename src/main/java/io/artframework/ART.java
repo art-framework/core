@@ -26,6 +26,7 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
+import java.util.Collection;
 import java.util.List;
 
 @Accessors(fluent = true)
@@ -99,6 +100,24 @@ public final class ART {
     }
 
     /**
+     * Loads the given string list and tries to parse each line into a valid art object.
+     * <p>Uses the provided storage key to store the data of the context and reference it in future uses.
+     * Make sure to pass in the same storage key for all loads that need to persist data across sessions.
+     * <p>Use the resulting {@link ArtContext} to {@link ArtContext#execute(Object...)},
+     * {@link ArtContext#test(Object)} or listen {@link ArtContext#onTrigger(Class, TriggerListener)}.
+     *
+     * @param key the unique storage key for this provided input
+     * @param list the list of valid art that is parsed into an art context
+     * @return the parsed art context
+     * @throws ParseException if the parse operation of the input fails
+     * @see Scope#load(String, Collection)
+     */
+    public static ArtContext load(String key, Collection<String> list) throws ParseException {
+
+        return globalScope().load(key, list);
+    }
+
+    /**
      * Loads the given string list and tries to parse each line
      * into a valid art object.
      * <p>Use the resulting {@link ArtContext} to {@link ArtContext#execute(Object...)},
@@ -106,9 +125,10 @@ public final class ART {
      *
      * @param list the list of valid art that is parsed into an art context
      * @return the parsed art context
-     * @see Scope#load(List)
+     * @throws ParseException if the parse operation of the input fails
+     * @see Scope#load(Collection)
      */
-    public static ArtContext load(List<String> list) {
+    public static ArtContext load(Collection<String> list) throws ParseException {
 
         return globalScope().load(list);
     }

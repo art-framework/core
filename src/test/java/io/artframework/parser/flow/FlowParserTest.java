@@ -19,18 +19,16 @@ package io.artframework.parser.flow;
 import io.artframework.*;
 import io.artframework.conf.ActionConfig;
 import lombok.SneakyThrows;
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.stubbing.Answer;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Optional;
+import java.util.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
@@ -39,6 +37,7 @@ class FlowParserTest {
 
     private FlowParser parser;
     private ArtObjectContextParser<?> flowParser;
+    private String storageKey;
 
     @BeforeEach
     @SneakyThrows
@@ -55,6 +54,11 @@ class FlowParserTest {
                 when(factory.meta()).thenReturn(artObjectMeta);
                 ArtObjectContext context = mock(ArtObjectContext.class);
                 when(factory.create(anyMap())).thenReturn(context);
+                doAnswer(invocation -> {
+                    storageKey = invocation.getArgument(0);
+                    return invocation.getMock();
+                }).when(context).storageKey(anyString());
+                when(context.storageKey()).thenAnswer(invocation -> storageKey);
                 return Optional.of(factory);
             }
 
@@ -71,7 +75,7 @@ class FlowParserTest {
     }
 
     @Nested
-    @DisplayName("parse(ArtConfig)")
+    @DisplayName("parse(...)")
     class parse {
 
         @Test
@@ -109,7 +113,7 @@ class FlowParserTest {
                     "and more",
                     "foo",
                     "---"
-            ))).extracting(ArtContext::getArtContexts)
+            ))).extracting(ArtContext::artContexts)
                     .asList().hasSize(6);
         }
 
@@ -152,6 +156,30 @@ class FlowParserTest {
                             "no-match"
                     )))
                     .withMessage("Unable to find matching FlowParser for \"no-match\" on line 3/3");
+        }
+
+        @SneakyThrows
+        @Test
+        @DisplayName("should set the cache key in the art object context")
+        void shouldSetTheCacheKeyInTheArtContext() {
+
+            parser.storageKey("5cbc288b-4066-4302-9a30-a48375b0ceba");
+            assertThat(parser.parse(Arrays.asList(
+                    "!foo"
+            ))).extracting(ArtContext::artContexts)
+                    .asList()
+                    .hasSize(1)
+                    .first().asInstanceOf(InstanceOfAssertFactories.type(ArtObjectContext.class))
+                    .extracting(ArtObjectContext::storageKey)
+                    .isEqualTo("5cbc288b-4066-4302-9a30-a48375b0ceba");
+        }
+
+        @Test
+        @DisplayName("should throw if input is empty list")
+        void shouldThrowIfInputListIsEmpty() {
+
+            assertThatExceptionOfType(ParseException.class)
+                    .isThrownBy(() -> parser.parse(new ArrayList<>()));
         }
     }
 }

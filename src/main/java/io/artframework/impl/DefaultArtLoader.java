@@ -18,34 +18,50 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import io.artframework.parser.flow.FlowParser;
+import io.artframework.util.ReflectionUtil;
+import lombok.Getter;
+import lombok.experimental.Accessors;
+import lombok.extern.java.Log;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
+@Log(topic = "art-framework")
 public class DefaultArtLoader implements ArtLoader {
 
+    @Getter
+    @Accessors(fluent = true)
     private final Scope scope;
+    private final Map<Class<?>, Function<Scope, ? extends Parser<?>>> parsers = new HashMap<>();
 
     public DefaultArtLoader(Scope scope) {
         this.scope = scope;
+
+        parser(FlowParser.class, FlowParser::new);
     }
 
     @Override
-    public Scope scope() {
-        return scope;
+    public <TParser extends Parser<TInput>, TInput> ArtLoader parser(Class<TParser> parserClass, Function<Scope, TParser> parser) {
+
+        parsers.put(parserClass, parser);
+        log.info("registered art-parser: " + parserClass.getCanonicalName());
+
+        return this;
     }
 
     @Override
-    public <TParser extends Parser<TInput>, TInput> ArtBuilderParser<TParser, TInput> parser(TParser parser) {
-        return null;
-    }
+    @SuppressWarnings("unchecked")
+    public <TParser extends Parser<TInput>, TInput> TParser parser(Class<TParser> parserClass) {
 
-    @Override
-    public ArtBuilderParser<FlowParser, Collection<String>> parser() {
-        return new DefaultArtBuilderParser<>(scope(), new FlowParser(scope()));
-    }
+        Parser<?> parser = ReflectionUtil.getEntryForTargetClass(parserClass, parsers)
+                .map(scopeFunction -> scopeFunction.apply(scope))
+                .orElse(null);
 
-    @Override
-    public ArtContext build() {
-        return null;
+        if (parser == null) return null;
+
+        return (TParser) parser;
     }
 }

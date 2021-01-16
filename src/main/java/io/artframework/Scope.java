@@ -19,6 +19,7 @@ package io.artframework;
 import io.artframework.conf.Settings;
 import io.artframework.impl.DefaultScope;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -86,6 +87,21 @@ public interface Scope extends DataProvider {
     }
 
     /**
+     * Loads the given string list and tries to parse each line into a valid art object.
+     * <p>Uses the provided storage key to store the data of the context and reference it in future uses.
+     * Make sure to pass in the same storage key for all loads that need to persist data across sessions.
+     * <p>Use the resulting {@link ArtContext} to {@link ArtContext#execute(Object...)},
+     * {@link ArtContext#test(Object)} or listen {@link ArtContext#onTrigger(Class, TriggerListener)}.
+     *
+     * @param key the unique storage key for this provided input
+     * @param list the list of valid art that is parsed into an art context
+     * @return the parsed art context
+     * @throws ParseException if the parse operation of the input fails
+     * @see Scope#load(String, Collection)
+     */
+    ArtContext load(String key, Collection<String> list) throws ParseException;
+
+    /**
      * Loads the given string list and tries to parse each line
      * into a valid art object.
      * <p>Use the resulting {@link ArtContext} to {@link ArtContext#execute(Object...)},
@@ -94,5 +110,5 @@ public interface Scope extends DataProvider {
      * @param list the list of valid art that is parsed into an art context
      * @return the parsed art context
      */
-    ArtContext load(List<String> list);
+    ArtContext load(Collection<String> list) throws ParseException;
 }

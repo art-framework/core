@@ -16,7 +16,16 @@
 
 package io.artframework;
 
-public interface ArtBuilderParser<TParser extends Parser<TInput>, TInput> extends ArtLoader {
+/**
+ * The art parser parses the given input into a valid art context.
+ * <p>You can create your own parser and register it with the art loader
+ * so others can use it: {@link ArtLoader}
+ * @param <TParser>
+ * @param <TInput>
+ */
+public interface ArtParser<TParser extends Parser<TInput>, TInput> extends ArtLoader {
 
-    ArtBuilderParser<TParser, TInput> parseArt(TInput input);
+    ArtParser<TParser, TInput> add(TInput input);
+
+    ArtContext parse();
 }

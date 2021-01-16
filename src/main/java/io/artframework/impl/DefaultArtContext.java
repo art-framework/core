@@ -21,6 +21,7 @@ import io.artframework.*;
 import io.artframework.conf.ArtSettings;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.experimental.Accessors;
 
 import java.util.*;
 import java.util.function.Function;
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
 
 import static io.artframework.util.ReflectionUtil.getEntryForTarget;
 
+@Accessors(fluent = true)
 public class DefaultArtContext extends AbstractScoped implements ArtContext, TriggerListener<Object> {
 
     private final ArtSettings settings;
@@ -68,7 +70,7 @@ public class DefaultArtContext extends AbstractScoped implements ArtContext, Tri
 
         return executeContext(RequirementContext.class, requirementContext ->
                 requirementContext.test(target, executionContext.next(requirementContext)),
-                getArtContexts()
+                artContexts()
         );
     }
 
@@ -82,7 +84,7 @@ public class DefaultArtContext extends AbstractScoped implements ArtContext, Tri
     private FutureResult execute(ExecutionContext<?> executionContext) {
         return executeContext(ActionContext.class, actionContext ->
                 actionContext.execute(executionContext.next(actionContext)),
-                getArtContexts()
+                artContexts()
         ).future();
     }
 
@@ -90,7 +92,7 @@ public class DefaultArtContext extends AbstractScoped implements ArtContext, Tri
     private <TTarget> void execute(Target<TTarget> target, ExecutionContext<?> context) {
         executeContext(ActionContext.class, actionContext ->
                         actionContext.execute(target, context.next(actionContext)),
-                getArtContexts()
+                artContexts()
         );
     }
 
@@ -159,7 +161,7 @@ public class DefaultArtContext extends AbstractScoped implements ArtContext, Tri
 
     @Override
     public ArtContext enableTrigger() {
-        getArtContexts().stream()
+        artContexts().stream()
                 .filter(artObjectContext -> artObjectContext instanceof TriggerContext)
                 .map(artObjectContext -> (TriggerContext) artObjectContext)
                 .forEach(context -> context.addListener(this));
@@ -168,7 +170,7 @@ public class DefaultArtContext extends AbstractScoped implements ArtContext, Tri
 
     @Override
     public ArtContext disableTrigger() {
-        getArtContexts().stream()
+        artContexts().stream()
                 .filter(artObjectContext -> artObjectContext instanceof TriggerContext)
                 .map(artObjectContext -> (TriggerContext) artObjectContext)
                 .forEach(context -> context.removeListener(this));

@@ -223,7 +223,7 @@ public class ArtIntegrationTest {
 
         @Test
         @DisplayName("should call registered triggers")
-        void shouldCallRegisteredTrigger() {
+        void shouldCallRegisteredTrigger() throws ParseException {
 
             scope.configuration().targets().add(Player.class, PlayerTarget::new);
 
@@ -282,7 +282,7 @@ public class ArtIntegrationTest {
 
             @Test
             @DisplayName("should create list of nested actions")
-            void shouldCreateListOfActions() {
+            void shouldCreateListOfActions() throws ParseException {
 
                 ArtContext context = scope.load(Arrays.asList(
                         "!damage 20",
@@ -309,7 +309,7 @@ public class ArtIntegrationTest {
 
             @Test
             @DisplayName("should execute actions for multiple targets")
-            void shouldCreateListOfActionsForMultipleTargets() {
+            void shouldCreateListOfActionsForMultipleTargets() throws ParseException {
 
                 ArtContext context = scope.load(Arrays.asList(
                         "!damage 20",
@@ -343,7 +343,7 @@ public class ArtIntegrationTest {
 
             @Test
             @DisplayName("should test requirements before executing actions")
-            void shouldTestRequirementsBeforeAction() {
+            void shouldTestRequirementsBeforeAction() throws ParseException {
 
                 ArtContext context = scope.load(Arrays.asList(
                         "?health >50",
@@ -362,7 +362,7 @@ public class ArtIntegrationTest {
 
             @Test
             @DisplayName("should test requirements of nested actions")
-            void shouldTestRequirementsOfNestedActions() {
+            void shouldTestRequirementsOfNestedActions() throws ParseException {
 
                 ArtContext context = scope.load(Arrays.asList(
                         "?health >50",
@@ -393,7 +393,7 @@ public class ArtIntegrationTest {
 
             @Test
             @DisplayName("should execute actions after trigger was called")
-            void shouldExecuteActionsIfTriggerWasCalled() {
+            void shouldExecuteActionsIfTriggerWasCalled() throws ParseException {
 
                 Player player = new Player();
                 player.setHealth(100);
@@ -410,7 +410,7 @@ public class ArtIntegrationTest {
 
             @Test
             @DisplayName("should execute trigger only once")
-            void shouldOnlyExecuteTriggerOnce() {
+            void shouldOnlyExecuteTriggerOnce() throws ParseException {
 
                 Player player = new Player();
                 player.setHealth(100);
@@ -429,7 +429,7 @@ public class ArtIntegrationTest {
 
             @Test
             @DisplayName("should execute actions on both triggers")
-            void shouldExecuteOneOrTheOtherTrigger() {
+            void shouldExecuteOneOrTheOtherTrigger() throws ParseException {
 
                 Player player = new Player();
                 player.setHealth(100);
@@ -448,7 +448,7 @@ public class ArtIntegrationTest {
 
             @Test
             @DisplayName("should call the listener in the art context")
-            void shouldCallTheListenerOfTheArtContext() {
+            void shouldCallTheListenerOfTheArtContext() throws ParseException {
 
                 Player player = new Player();
                 player.setHealth(100);

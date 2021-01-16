@@ -22,24 +22,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class DefaultArtBuilderParser<TParser extends Parser<TInput>, TInput> extends DefaultArtLoader implements ArtBuilderParser<TParser, TInput> {
+public class DefaultArtParser<TParser extends Parser<TInput>, TInput> extends DefaultArtLoader implements ArtParser<TParser, TInput> {
 
     private final TParser parser;
     private final List<TInput> inputs = new ArrayList<>();
 
-    public DefaultArtBuilderParser(Scope scope, TParser parser) {
+    public DefaultArtParser(Scope scope, TParser parser) {
         super(scope);
         this.parser = parser;
     }
 
     @Override
-    public ArtBuilderParser<TParser, TInput> parseArt(TInput input) {
+    public ArtParser<TParser, TInput> add(TInput input) {
         inputs.add(input);
         return this;
     }
 
     @Override
-    public ArtContext build() {
+    public ArtContext parse() {
 
         return inputs.stream()
                 .map(input -> {

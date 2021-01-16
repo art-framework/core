@@ -20,9 +20,7 @@ import io.artframework.conf.ArtSettings;
 import io.artframework.impl.DefaultArtContext;
 import lombok.NonNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 import java.util.stream.Stream;
 
 // TODO: javadoc
@@ -69,7 +67,7 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
      *
      * @return list of all contexts within this context
      */
-    Collection<ArtObjectContext<?>> getArtContexts();
+    Collection<ArtObjectContext<?>> artContexts();
 
     /**
      * Tests if all requirements for the given target pass.
