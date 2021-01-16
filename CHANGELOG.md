@@ -1,3 +1,15 @@
+# [1.3.0](https://github.com/art-framework/art-core/compare/v1.2.3...v1.3.0) (2021-01-16)
+
+
+### Bug Fixes
+
+* register scripts after loading ([dcc340d](https://github.com/art-framework/art-core/commit/dcc340db7b40e9f0029524ab5d2fa45e77f2def0))
+
+
+### Features
+
+* migrate the script module and include it in bukkit by default ([4b52b3e](https://github.com/art-framework/art-core/commit/4b52b3edc1829755ba37c46f31a34f2cfc37346b))
+
 ## [1.2.3](https://github.com/art-framework/art-core/compare/v1.2.2...v1.2.3) (2021-01-16)
 
 
