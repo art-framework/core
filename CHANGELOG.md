@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/art-framework/art-core/compare/v1.4.0...v1.4.1) (2021-01-16)
+
+
+### Bug Fixes
+
+* persistence cache not working ([b942d5a](https://github.com/art-framework/art-core/commit/b942d5a8d56780077d9f3be8c5455b4d3dc75d3c))
+
 # [1.4.0](https://github.com/art-framework/art-core/compare/v1.3.0...v1.4.0) (2021-01-16)
 
 
