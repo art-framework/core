@@ -1,3 +1,15 @@
+# [1.2.0](https://github.com/art-framework/art-core/compare/v1.1.0...v1.2.0) (2021-01-16)
+
+
+### Bug Fixes
+
+* add migrations ([595fd6a](https://github.com/art-framework/art-core/commit/595fd6a3798e7f4b9bf334be758b747cd408d9d1))
+
+
+### Features
+
+* integrate storage provider into bukkit module ([8838ff2](https://github.com/art-framework/art-core/commit/8838ff277378bad38fec33b4af40d5387402f3c3))
+
 # [1.1.0](https://github.com/art-framework/art-core/compare/v1.0.2...v1.1.0) (2021-01-16)
 
 
