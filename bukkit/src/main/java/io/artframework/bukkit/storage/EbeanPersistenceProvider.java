@@ -30,8 +30,8 @@ public class EbeanPersistenceProvider extends DefaultMapStorageProvider implemen
 
         MetadataStore entry = getDatabase().find(MetadataStore.class, key);
         if (entry != null) {
-            TValue existingValue = (TValue) gson.fromJson(entry.getValue(), value.getClass());
-            entry.setValue(json);
+            TValue existingValue = (TValue) gson.fromJson(entry.getMetaValue(), value.getClass());
+            entry.setMetaValue(json);
             getDatabase().save(entry);
             return Optional.ofNullable(existingValue);
         } else {
@@ -49,7 +49,7 @@ public class EbeanPersistenceProvider extends DefaultMapStorageProvider implemen
 
         try {
             Gson gson = new Gson();
-            return Optional.ofNullable(gson.fromJson(store.getValue(), valueClass));
+            return Optional.ofNullable(gson.fromJson(store.getMetaValue(), valueClass));
         } catch (JsonSyntaxException e) {
             e.printStackTrace();
             return Optional.empty();

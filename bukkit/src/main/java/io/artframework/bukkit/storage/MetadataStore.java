@@ -17,12 +17,12 @@ public class MetadataStore {
     public static final Finder<String, MetadataStore> find = new Finder<>(MetadataStore.class);
 
     @Id
-    private String key;
+    private String metaKey;
 
-    private String value;
+    private String metaValue;
 
-    public MetadataStore(String key, String value) {
-        this.key = key;
-        this.value = value;
+    public MetadataStore(String metaKey, String value) {
+        this.metaKey = metaKey;
+        this.metaValue = value;
     }
 }
