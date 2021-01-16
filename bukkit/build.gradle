@@ -33,7 +33,7 @@ spigot {
     authors = [project.property("author")]
     apiVersion = project.property("apiVersion")
     load = STARTUP
-    //    depends = ['']
+    depends = ['ebean-wrapper']
 }
 
 archivesBaseName = "${project.property("pluginName")}-bukkit"
@@ -45,6 +45,7 @@ repositories {
 
 dependencies {
     implementation spigot(mcVersion)
+    implementation 'net.silthus:ebean-wrapper:2.8.1'
 
     api project(':')
 }

@@ -24,9 +24,14 @@ import io.artframework.bukkit.actions.CancelBukkitEventAction;
 import io.artframework.bukkit.actions.DamageLivingEntityAction;
 import io.artframework.bukkit.actions.SendMessageAction;
 import io.artframework.bukkit.requirements.HealthRequirement;
+import io.artframework.bukkit.storage.EbeanPersistenceProvider;
+import io.artframework.bukkit.storage.MetadataStore;
 import io.artframework.bukkit.trigger.EntityTrigger;
 import io.artframework.bukkit.trigger.PlayerServerTrigger;
 import io.artframework.util.FileUtil;
+import io.ebean.Database;
+import net.silthus.ebean.Config;
+import net.silthus.ebean.EbeanWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
@@ -41,6 +46,7 @@ public class ArtBukkitModule implements BootstrapModule {
     private final PlayerServerTrigger playerServerTrigger = new PlayerServerTrigger();
     private final EntityTrigger entityTrigger = new EntityTrigger();
     private final ArtBukkitPlugin plugin;
+    private EbeanPersistenceProvider storageProvider;
 
     public ArtBukkitModule(ArtBukkitPlugin plugin) {
         this.plugin = plugin;
@@ -79,10 +85,21 @@ public class ArtBukkitModule implements BootstrapModule {
     @Override
     public void onBootstrap(BootstrapScope scope) {
 
+        Database database = new EbeanWrapper(Config.builder(plugin)
+                .entities(
+                    MetadataStore.class
+                )
+                .build()).connect();
+
+        storageProvider = new EbeanPersistenceProvider(scope, database);
+
         scope.configure(builder -> builder
                 .classLoader(plugin.getClass().getClassLoader())
                 .scheduler(new BukkitScheduler(plugin, Bukkit.getScheduler()))
+                .storage(storageProvider)
         );
+
+
     }
 
     @Override

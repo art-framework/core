@@ -20,7 +20,10 @@ import io.artframework.ART;
 import io.artframework.BootstrapException;
 import io.artframework.BootstrapScope;
 import io.artframework.conf.Settings;
+import io.ebean.Database;
 import kr.entree.spigradle.annotations.Plugin;
+import net.silthus.ebean.Config;
+import net.silthus.ebean.EbeanWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
