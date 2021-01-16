@@ -1,3 +1,15 @@
+# [1.1.0](https://github.com/art-framework/art-core/compare/v1.0.2...v1.1.0) (2021-01-16)
+
+
+### Bug Fixes
+
+* register basic bukkit art ([9ac32e7](https://github.com/art-framework/art-core/commit/9ac32e7c3996ba3ccb59ad879ff1c1024c0f2f01))
+
+
+### Features
+
+* add option to parse input and provide a storage key ([a204792](https://github.com/art-framework/art-core/commit/a204792c5f7f90d0eff787f94aeca9659e36e642))
+
 ## [1.0.2](https://github.com/art-framework/art-core/compare/v1.0.1...v1.0.2) (2021-01-15)
 
 
