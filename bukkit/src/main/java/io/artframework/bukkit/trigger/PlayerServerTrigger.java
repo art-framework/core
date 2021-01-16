@@ -43,7 +43,7 @@ public class PlayerServerTrigger implements Trigger, Listener, ResultCreator {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
-        trigger(PLAYER_JOIN, event, event.getPlayer());
+        trigger(PLAYER_JOIN, event.getPlayer());
     }
 
     private static final String PLAYER_QUIT = "player.quit";
@@ -56,7 +56,7 @@ public class PlayerServerTrigger implements Trigger, Listener, ResultCreator {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-        trigger(PLAYER_QUIT, event, event.getPlayer());
+        trigger(PLAYER_QUIT, event.getPlayer());
     }
 /// [demo]
     private static final String PLAYER_KICK = "player.kick";
@@ -72,7 +72,6 @@ public class PlayerServerTrigger implements Trigger, Listener, ResultCreator {
         Function<PlayerKickConfig, Result> predicate = (config) -> resultOf(config.getReasonPattern().matcher(event.getReason()).matches());
 
         trigger(PLAYER_KICK,
-                of(event, PlayerKickConfig.class, (target, context, playerKickConfig) -> predicate.apply(playerKickConfig)),
                 of(event.getPlayer(), PlayerKickConfig.class, (target, context, playerKickConfig) -> predicate.apply(playerKickConfig))
         );
     }

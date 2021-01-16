@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <addColumn tableName="art_metadata_store">
+            <column name="context_type" type="varchar"/>
+        </addColumn>
+        <createIndex indexName="ix_art_metadata_store_context_type" tableName="art_metadata_store" columns="context_type"/>
+    </changeSet>
+</migration>

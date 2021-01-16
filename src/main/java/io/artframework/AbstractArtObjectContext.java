@@ -52,15 +52,11 @@ public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> ext
 
     @Override
     public <TValue> Optional<TValue> store(@NonNull Target<?> target, @NonNull String key, @NonNull TValue value) {
-        return configuration().storage().set(getStorageKey(target, key), value);
+        return configuration().storage().set(this, target, key, value);
     }
 
     @Override
     public <TValue> Optional<TValue> store(@NonNull Target<?> target, @NonNull String key, @NonNull Class<TValue> valueClass) {
-        return configuration().storage().get(getStorageKey(target, key), valueClass);
-    }
-
-    private String getStorageKey(Target<?> target, String key) {
-        return storageKey() + "#" + uniqueId() + "#" + target.uniqueId() + "#" + key;
+        return configuration().storage().get(this, target, key, valueClass);
     }
 }

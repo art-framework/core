@@ -10,7 +10,7 @@ public class Migrations {
         DbMigration migration = DbMigration.create();
 
         // location of the migration changeSet and where ddl is generated to
-        migration.setPathToResources("src/main/resources");
+        migration.setPathToResources("bukkit/src/main/resources");
 
         // add a series of database platforms to generate the ddl for ...
         migration.addPlatform(Platform.POSTGRES, "postgres");

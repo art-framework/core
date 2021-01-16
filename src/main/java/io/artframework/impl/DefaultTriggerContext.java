@@ -16,6 +16,7 @@
 
 package io.artframework.impl;
 
+import com.google.common.base.Strings;
 import io.artframework.*;
 import io.artframework.conf.Constants;
 import io.artframework.conf.TriggerConfig;
@@ -54,6 +55,11 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
     @Override
     public @NonNull String uniqueId() {
+
+        if (Strings.isNullOrEmpty(config().identifier())) {
+            return super.uniqueId();
+        }
+
         return this.config().identifier();
     }
 
@@ -94,10 +100,12 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
                 if (testRequirements(context).success()) {
 
-                    store(target.target(), Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
+                    if (increaseAndCheckCount(target.target())) {
+                        store(target.target(), Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
-                    if (increaseAndCheckCount(target.target()) && config().executeActions()) {
-                        executeActions(target.target(), context);
+                        if (config().executeActions()) {
+                            executeActions(target.target(), context);
+                        }
                     }
                 }
             }

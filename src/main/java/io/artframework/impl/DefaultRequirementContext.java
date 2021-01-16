@@ -16,6 +16,7 @@
 
 package io.artframework.impl;
 
+import com.google.common.base.Strings;
 import io.artframework.*;
 import io.artframework.conf.Constants;
 import io.artframework.conf.RequirementConfig;
@@ -51,6 +52,11 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
 
     @Override
     public String uniqueId() {
+
+        if (Strings.isNullOrEmpty(config().identifier())) {
+            return super.uniqueId();
+        }
+
         return config().identifier();
     }
 

@@ -57,7 +57,7 @@ public class ScriptsModule {
                     .flatMap(Optional::stream)
                     .map(scriptConfig -> {
                         try {
-                            ArtContext context = scope.load(scriptConfig.getIdentifier(), scriptConfig.getArt());
+                            ArtContext context = scope.load("art-scripts:" + scriptConfig.getIdentifier(), scriptConfig.getArt());
                             log.info("loaded art-script: " + scriptConfig.getIdentifier());
                             return new Script(scriptConfig, context);
                         } catch (ParseException e) {

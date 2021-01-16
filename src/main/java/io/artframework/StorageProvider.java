@@ -76,11 +76,9 @@ public interface StorageProvider extends Scoped, AutoCloseable {
 
     /**
      * Stores a value for the given {@link Target}.
-     *
-     * Will override any existing value that has the same key
+     * <p>Will override any existing value that has the same key
      * and return that value.
-     *
-     * Will return an empty {@link Optional} if this is the first entry for the given key.
+     * <p>Will return an empty {@link Optional} if this is the first entry for the given key.
      *
      * @param target   target to store value for
      * @param key      storage key
@@ -91,6 +89,23 @@ public interface StorageProvider extends Scoped, AutoCloseable {
      */
     default <TValue> Optional<TValue> set(@NonNull Target<?> target, @NonNull String key, @NonNull TValue value) {
         return set("target#" + target.uniqueId() + "#" + key, value);
+    }
+
+    /**
+     * Stores a value for the given context and target under the given key.
+     * <p>The value will be scoped to the storage key and unique id of the context and target.
+     * <p>Returns any existing value that was replaced or an empty optional if no value existed.
+     *
+     * @param context the context that stores the data
+     * @param target the target to store the data for
+     * @param key the key to store the data under
+     * @param value the value to store
+     * @param <TValue> the type of the value
+     * @return the previously stored value if it existed and has the same type as the new value
+     */
+    default <TValue> Optional<TValue> set(@NonNull ArtObjectContext<?> context, @NonNull Target<?> target, @NonNull String key, TValue value) {
+
+        return set(context.uniqueId() + "#" + context.storageKey() + "#" + target.uniqueId() + "#" + key, value);
     }
 
     /**
@@ -129,9 +144,25 @@ public interface StorageProvider extends Scoped, AutoCloseable {
      * @param target     target to retrieve value for
      * @param key        storage key
      * @param valueClass class of the value
-     * @return stored value or empty result if the value does not exist or cannot be cast into the value type.
+     * @return stored value or empty result if the value does not exist or cannot be cast into the value type
      */
     default <TValue> Optional<TValue> get(@NonNull Target<?> target, @NonNull String key, @NonNull Class<TValue> valueClass) {
         return get("target#" + target.uniqueId() + "#" + key, valueClass);
+    }
+
+    /**
+     * Retrieves a value stored for the given context and target.
+     * <p>The storage provider will use the targets storage key and unique id combined
+     * with the target id and the provided key to get the unique entry.
+     *
+     * @param context the context that stores the information
+     * @param target the target to retrieve a value for
+     * @param key the key the value is stored under
+     * @param valueClass the class of the value
+     * @param <TValue> the type of the value
+     * @return stored value or empty result if the value does not exist or cannot be cast into the value type
+     */
+    default <TValue> Optional<TValue> get(@NonNull ArtObjectContext<?> context, @NonNull Target<?> target, @NonNull String key, @NonNull Class<TValue> valueClass) {
+        return get(context.uniqueId() + "#" + context.storageKey() + "#" + target.uniqueId() + "#" + key, valueClass);
     }
 }
