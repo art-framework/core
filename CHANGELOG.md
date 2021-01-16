@@ -1,3 +1,15 @@
+# [1.4.0](https://github.com/art-framework/art-core/compare/v1.3.0...v1.4.0) (2021-01-16)
+
+
+### Features
+
+* add count option to triggers ([3c6b64d](https://github.com/art-framework/art-core/commit/3c6b64d9919f2c42cae7e890fcdae11e138bff26))
+
+
+### Performance Improvements
+
+* cache counter and perform database update async ([3e44e1f](https://github.com/art-framework/art-core/commit/3e44e1f2a11d51bb70033ec50cc7d2d8c76d07d1))
+
 # [1.3.0](https://github.com/art-framework/art-core/compare/v1.2.3...v1.3.0) (2021-01-16)
 
 
