@@ -8,16 +8,16 @@ import io.artframework.impl.DefaultMapStorageProvider;
 import io.ebean.Database;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.val;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 public class EbeanPersistenceProvider extends DefaultMapStorageProvider implements StorageProvider {
 
     @Getter
     private final Database database;
-    private final Set<String> initializedKeys = new HashSet<>();
+    private final Map<String, Object> cache = new HashMap<>();
+    private final Gson gson = new Gson();
 
     public EbeanPersistenceProvider(Scope scope, Database database) {
         super(scope);
@@ -25,6 +25,7 @@ public class EbeanPersistenceProvider extends DefaultMapStorageProvider implemen
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <TValue> Optional<TValue> set(@NonNull String key, @NonNull TValue value) {
 
         final Runnable runnable = () -> {
@@ -45,32 +46,31 @@ public class EbeanPersistenceProvider extends DefaultMapStorageProvider implemen
                 runnable
         );
 
-        return super.set(key, value);
+        Object existingValue = cache.put(key, value);
+
+        if (value.getClass().isInstance(existingValue)) {
+            return Optional.of((TValue) existingValue);
+        }
+
+        return Optional.empty();
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <TValue> Optional<TValue> get(String key, Class<TValue> valueClass) {
 
-        if (initializedKeys.contains(key)) {
-            return super.get(key, valueClass);
-        } else {
-            initializedKeys.add(key);
-
+        return Optional.ofNullable((TValue) cache.computeIfAbsent(key, s -> {
             MetadataStore store = getDatabase().find(MetadataStore.class, key);
-            if (store == null){
-                return Optional.empty();
+            if (store == null) {
+                return null;
             }
 
             try {
-                Gson gson = new Gson();
-                TValue value = gson.fromJson(store.getMetaValue(), valueClass);
-                super.set(key, value);
-
-                return Optional.ofNullable(value);
+                return gson.fromJson(store.getMetaValue(), valueClass);
             } catch (JsonSyntaxException e) {
                 e.printStackTrace();
-                return Optional.empty();
+                return null;
             }
-        }
+        }));
     }
 }
