@@ -96,7 +96,9 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
                     store(target.target(), Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
-                    if (this.config().executeActions()) executeActions(target.target(), context);
+                    if (increaseAndCheckCount(target.target()) && config().executeActions()) {
+                        executeActions(target.target(), context);
+                    }
                 }
             }
 
@@ -159,6 +161,19 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
     private <TTarget> boolean cannotExecute(Target<TTarget> target) {
         return wasExecutedOnce(target) || isOnCooldown(target);
+    }
+
+    private <TTarget> boolean increaseAndCheckCount(Target<TTarget> target) {
+
+        int count = count(target) + 1;
+        store(target, Constants.Storage.COUNT, count);
+
+        return count >= config().count();
+    }
+
+    private <TTarget> int count(Target<TTarget> target) {
+
+        return store(target, Constants.Storage.COUNT, int.class).orElse(0);
     }
 
     /**
