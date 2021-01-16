@@ -9,12 +9,15 @@ import io.ebean.Database;
 import lombok.Getter;
 import lombok.NonNull;
 
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 public class EbeanPersistenceProvider extends DefaultMapStorageProvider implements StorageProvider {
 
     @Getter
     private final Database database;
+    private final Set<String> initializedKeys = new HashSet<>();
 
     public EbeanPersistenceProvider(Scope scope, Database database) {
         super(scope);
@@ -22,37 +25,52 @@ public class EbeanPersistenceProvider extends DefaultMapStorageProvider implemen
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <TValue> Optional<TValue> set(@NonNull String key, @NonNull TValue value) {
 
-        Gson gson = new Gson();
-        String json = gson.toJson(value);
+        final Runnable runnable = () -> {
+            Gson gson = new Gson();
+            String json = gson.toJson(value);
 
-        MetadataStore entry = getDatabase().find(MetadataStore.class, key);
-        if (entry != null) {
-            TValue existingValue = (TValue) gson.fromJson(entry.getMetaValue(), value.getClass());
-            entry.setMetaValue(json);
-            getDatabase().save(entry);
-            return Optional.ofNullable(existingValue);
-        } else {
-            getDatabase().save(new MetadataStore(key, json));
-        }
+            MetadataStore entry = getDatabase().find(MetadataStore.class, key);
+            if (entry != null) {
+                entry.setMetaValue(json);
+                getDatabase().save(entry);
+            } else {
+                getDatabase().save(new MetadataStore(key, json));
+            }
+        };
 
-        return Optional.empty();
+        scope().configuration().scheduler().ifPresentOrElse(
+                scheduler -> scheduler.runTaskAsynchronously(runnable),
+                runnable
+        );
+
+        return super.set(key, value);
     }
 
     @Override
     public <TValue> Optional<TValue> get(String key, Class<TValue> valueClass) {
 
-        MetadataStore store = getDatabase().find(MetadataStore.class, key);
-        if (store == null) return Optional.empty();
+        if (initializedKeys.contains(key)) {
+            return super.get(key, valueClass);
+        } else {
+            initializedKeys.add(key);
 
-        try {
-            Gson gson = new Gson();
-            return Optional.ofNullable(gson.fromJson(store.getMetaValue(), valueClass));
-        } catch (JsonSyntaxException e) {
-            e.printStackTrace();
-            return Optional.empty();
+            MetadataStore store = getDatabase().find(MetadataStore.class, key);
+            if (store == null){
+                return Optional.empty();
+            }
+
+            try {
+                Gson gson = new Gson();
+                TValue value = gson.fromJson(store.getMetaValue(), valueClass);
+                super.set(key, value);
+
+                return Optional.ofNullable(value);
+            } catch (JsonSyntaxException e) {
+                e.printStackTrace();
+                return Optional.empty();
+            }
         }
     }
 }
