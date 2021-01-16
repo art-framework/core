@@ -29,6 +29,7 @@ import io.artframework.bukkit.storage.MetadataStore;
 import io.artframework.bukkit.targets.*;
 import io.artframework.bukkit.trigger.EntityTrigger;
 import io.artframework.bukkit.trigger.PlayerServerTrigger;
+import io.artframework.modules.scripts.ScriptsModule;
 import io.artframework.util.FileUtil;
 import io.ebean.Database;
 import net.silthus.ebean.Config;
@@ -88,6 +89,9 @@ public class ArtBukkitModule implements BootstrapModule {
                 }
             }
         }
+
+        // add static modules that are included by default
+        modules.add(new ScriptsModule());
 
         return modules;
     }

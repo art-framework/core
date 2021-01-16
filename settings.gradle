@@ -16,4 +16,6 @@
 
 rootProject.name = 'art-core'
 include 'bukkit'
+include 'modules:art-scripts'
+findProject(':modules:art-scripts')?.name = 'art-scripts'
 
