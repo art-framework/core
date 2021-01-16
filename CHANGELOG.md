@@ -1,3 +1,11 @@
+## [1.2.2](https://github.com/art-framework/art-core/compare/v1.2.1...v1.2.2) (2021-01-16)
+
+
+### Bug Fixes
+
+* register targets with the art-framework ([17ea3d9](https://github.com/art-framework/art-core/commit/17ea3d98939d0f0915280886bf499d90f4bc0ab9))
+* unwrap trigger target into target ([66317ad](https://github.com/art-framework/art-core/commit/66317ad6b1c69297d0798880db430d50d7578fa9))
+
 ## [1.2.1](https://github.com/art-framework/art-core/compare/v1.2.0...v1.2.1) (2021-01-16)
 
 
