@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<migration xmlns="http://ebean-orm.github.io/xml/ns/dbmigration">
+    <changeSet type="apply">
+        <createTable name="art_metadata_store" identityType="external" pkName="pk_art_metadata_store">
+            <column name="key" type="varchar" primaryKey="true"/>
+            <column name="value" type="varchar"/>
+        </createTable>
+    </changeSet>
+</migration>
