@@ -51,13 +51,17 @@ public class DefaultTargetProvider extends AbstractProvider implements TargetPro
         if (source == null) return Optional.empty();
         if (source instanceof TriggerTarget) {
             return Optional.of((Target<TTarget>) ((TriggerTarget<?>) source).target());
+        } else if (source instanceof Optional
+                && ((Optional<?>) source).isPresent()
+                && ((Optional<?>) source).get() instanceof TriggerTarget) {
+            return Optional.of((Target<TTarget>) ((TriggerTarget<?>) ((Optional<?>) source).get()).target());
         }
 
         Optional<Target<TTarget>> target = ReflectionUtil.getEntryForTarget(source, targetProviders)
                 .map(targetFunction -> (Target<TTarget>) targetFunction.apply(source));
 
         if (target.isEmpty()) {
-            log.severe("unable to find a valid target wrapper for " + source.getClass().getCanonicalName()
+            log.severe("unable to find a valid target wrapper for " + source
                     + "! Make sure to register your target wrapper with the scope onLoad().");
         }
 
