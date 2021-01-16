@@ -26,6 +26,7 @@ import io.artframework.bukkit.actions.SendMessageAction;
 import io.artframework.bukkit.requirements.HealthRequirement;
 import io.artframework.bukkit.storage.EbeanPersistenceProvider;
 import io.artframework.bukkit.storage.MetadataStore;
+import io.artframework.bukkit.targets.*;
 import io.artframework.bukkit.trigger.EntityTrigger;
 import io.artframework.bukkit.trigger.PlayerServerTrigger;
 import io.artframework.util.FileUtil;
@@ -33,6 +34,15 @@ import io.ebean.Database;
 import net.silthus.ebean.Config;
 import net.silthus.ebean.EbeanWrapper;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Block;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 
@@ -117,7 +127,16 @@ public class ArtBukkitModule implements BootstrapModule {
                     .add(HealthRequirement.class)
                 .trigger()
                     .add(playerServerTrigger)
-                    .add(entityTrigger);
+                    .add(entityTrigger)
+                .targets()
+                    .add(Block.class, BlockTarget::new)
+                    .add(Cancellable.class, CancellableEventTarget::new)
+                    .add(CommandSender.class, CommandSenderTarget::new)
+                    .add(Entity.class, EntityTarget::new)
+                    .add(LivingEntity.class, LivingEntityTarget::new)
+                    .add(Location.class, LocationTarget::new)
+                    .add(Player.class, PlayerTarget::new)
+                    .add(OfflinePlayer.class, OfflinePlayerTarget::new);
     }
 
     @Override
