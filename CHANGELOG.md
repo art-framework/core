@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/art-framework/art-core/compare/v1.2.0...v1.2.1) (2021-01-16)
+
+
+### Bug Fixes
+
+* **db:** rename persistence columns ([cf1608b](https://github.com/art-framework/art-core/commit/cf1608b4eb75b6cee0af549978c9a92556b37c58))
+
 # [1.2.0](https://github.com/art-framework/art-core/compare/v1.1.0...v1.2.0) (2021-01-16)
 
 
