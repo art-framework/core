@@ -1,5 +1,3 @@
-archivesBaseName = „${project.property(„pluginName“)}-scripts“
-
 dependencies {
     implementation project(':')
 }
