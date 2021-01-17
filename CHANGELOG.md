@@ -36,7 +36,6 @@
 
 ## [1.2.3](https://github.com/art-framework/art-core/compare/v1.2.2...v1.2.3) (2021-01-16)
 
-
 ### Bug Fixes
 
 * unwrap optional trigger target ([4cfe479](https://github.com/art-framework/art-core/commit/4cfe47954791f0f0fe4f7363fcfa34e9715c9a6a))
