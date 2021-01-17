@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/art-framework/art-core/compare/v1.4.0...v1.5.0) (2021-01-17)
+
+
+### Features
+
+* **release:** bump version until 1.5.0 for a stable release ([5eb5309](https://github.com/art-framework/art-core/commit/5eb530913ac2a0592453a235ce3802694013a97d))
+
 # [1.4.0](https://github.com/art-framework/art-core/compare/v1.3.0...v1.4.0) (2021-01-17)
 
 
