@@ -23,7 +23,6 @@
 * migrate the script module and include it in bukkit by default ([4b52b3e](https://github.com/art-framework/art-core/commit/4b52b3edc1829755ba37c46f31a34f2cfc37346b))
 * split metadata persistence table into separate columns ([255e0e2](https://github.com/art-framework/art-core/commit/255e0e2efda6e767c0061b134e5cec7b6c2f4c5d))
 
-
 ### Performance Improvements
 
 * cache counter and perform database update async ([3e44e1f](https://github.com/art-framework/art-core/commit/3e44e1f2a11d51bb70033ec50cc7d2d8c76d07d1))
