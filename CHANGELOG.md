@@ -1,6 +1,5 @@
 # [1.3.0](https://github.com/art-framework/art-core/compare/v1.2.3...v1.3.0) (2021-01-17)
 
-
 ### Bug Fixes
 
 * **release:** cleanup changelog ([2c897e8](https://github.com/art-framework/art-core/commit/2c897e8b57cf9d82fec6f4a4a3cd4c78811f41d1))
