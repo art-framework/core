@@ -16,7 +16,9 @@
 
 package io.artframework.bukkit.trigger.configs;
 
+import com.google.common.base.Strings;
 import io.artframework.annotations.ConfigOption;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageEvent;
 
 @ConfigOption
@@ -32,6 +34,8 @@ public class EntityDamageConfig {
 //    )
 //    private String damage = ">0";
 
+    @ConfigOption(description = "Define the targets the event should fire for. Allowed values or PLAYER and ENTITY.", position = 0)
+    private String target = "PLAYER";
     @ConfigOption(description = {"Use the setting to define the required minimum damage.", "-1 will disable the setting."})
     private double minDamage = -1;
     @ConfigOption(description = {"Use the setting to define the required maximum damage.", "-1 will disable the setting."})
@@ -43,6 +47,16 @@ public class EntityDamageConfig {
     private boolean useFinalDamage = true;
 
     public boolean isApplicable(EntityDamageEvent event) {
+
+        if (target.equalsIgnoreCase("player")) {
+            if (!(event.getEntity() instanceof Player)) {
+                return false;
+            }
+        } else if (target.equalsIgnoreCase("entity")) {
+            if (event.getEntity() instanceof Player) {
+                return false;
+            }
+        }
 
         double damage = useFinalDamage ? event.getFinalDamage() : event.getDamage();
 

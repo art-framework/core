@@ -16,7 +16,6 @@
 
 package io.artframework.bukkit.trigger;
 
-import io.artframework.ResultCreator;
 import io.artframework.Trigger;
 import io.artframework.TriggerRequirement;
 import io.artframework.annotations.ART;
@@ -25,7 +24,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 
-public class EntityTrigger implements Trigger, Listener, ResultCreator {
+public class EntityTrigger implements Trigger, Listener {
 
     private static final String ENTITY_DAMAGE = "entity.damage";
 
@@ -40,7 +39,8 @@ public class EntityTrigger implements Trigger, Listener, ResultCreator {
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamage(EntityDamageEvent event) {
 
-        TriggerRequirement<Object, EntityDamageConfig> requirement = (target, context, damageConfig) -> resultOf(damageConfig.isApplicable(event));
+        TriggerRequirement<Object, EntityDamageConfig> requirement =
+                (target, context, damageConfig) -> resultOf(damageConfig.isApplicable(event));
 
         trigger(ENTITY_DAMAGE,
                 of(event, EntityDamageConfig.class, requirement),

@@ -17,7 +17,6 @@
 package io.artframework.bukkit.trigger;
 
 import io.artframework.Result;
-import io.artframework.ResultCreator;
 import io.artframework.Trigger;
 import io.artframework.annotations.ART;
 import io.artframework.annotations.ConfigOption;
@@ -31,7 +30,7 @@ import java.util.function.Function;
 import java.util.regex.Pattern;
 
 /// [demo]
-public class PlayerServerTrigger implements Trigger, Listener, ResultCreator {
+public class PlayerServerTrigger implements Trigger, Listener {
 
     private static final String PLAYER_JOIN = "player.join";
 
@@ -69,7 +68,8 @@ public class PlayerServerTrigger implements Trigger, Listener, ResultCreator {
     @EventHandler(ignoreCancelled = true)
     public void onPlayerKick(PlayerKickEvent event) {
 
-        Function<PlayerKickConfig, Result> predicate = (config) -> resultOf(config.getReasonPattern().matcher(event.getReason()).matches());
+        Function<PlayerKickConfig, Result> predicate =
+                (config) -> resultOf(config.getReasonPattern().matcher(event.getReason()).matches());
 
         trigger(PLAYER_KICK,
                 of(event.getPlayer(), PlayerKickConfig.class, (target, context, playerKickConfig) -> predicate.apply(playerKickConfig))
