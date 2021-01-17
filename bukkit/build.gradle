@@ -50,7 +50,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     api project(':')
-    implementation project(':modules:art-scripts')
+    implementation project(':art-scripts')
 
     testImplementation 'io.ebean:ebean-test:12.6.5'
 
@@ -66,7 +66,7 @@ shadowJar {
     classifier = ''
     dependencies {
         include(project(':'))
-        include(project(':modules:art-scripts'))
+        include(project(':art-scripts'))
         include(dependency('com.google.code.gson:gson:'))
     }
     relocate 'com.google.gson', "shadow.${packageName}.gson"
