@@ -7,7 +7,7 @@
     "@semantic-release/exec": "5.0.0",
     "@semantic-release/release-notes-generator": "9.0.1",
     "conventional-changelog-conventionalcommits": "4.2.3",
-    "gradle-semantic-release-plugin": "1.4.1"
+    "gradle-semantic-release-plugin": "1.4.14"
   },
   "scripts": {
     "semantic-release": "npx semantic-release"
@@ -27,7 +27,7 @@
       [
         "@semantic-release/github",
         {
-          "assets": [["bukkit/build/libs/*.jar", "!**/*(sources|javadoc).jar"]]
+          "assets": [["**/build/libs/*.jar", "!**/*(sources|javadoc).jar"]]
         }
       ],
       [

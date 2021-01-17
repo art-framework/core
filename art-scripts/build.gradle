@@ -1,3 +1,7 @@
+
+group project.property("group")
+archivesBaseName = "${project.property("pluginName")}-scripts"
+
 dependencies {
     implementation project(':')
 }
