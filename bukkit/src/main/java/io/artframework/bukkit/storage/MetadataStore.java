@@ -12,7 +12,6 @@ import net.silthus.ebean.BaseEntity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Optional;
-import java.util.UUID;
 
 @Getter
 @Setter

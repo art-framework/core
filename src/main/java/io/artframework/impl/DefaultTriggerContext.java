@@ -173,6 +173,8 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
     private <TTarget> boolean increaseAndCheckCount(Target<TTarget> target) {
 
+        if (config().count() < 1) return true;
+
         int count = count(target) + 1;
         store(target, Constants.Storage.COUNT, count);
 
@@ -181,7 +183,9 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
     private <TTarget> int count(Target<TTarget> target) {
 
-        return store(target, Constants.Storage.COUNT, int.class).orElse(0);
+        if (config().count() < 1) return 0;
+
+        return store(target, Constants.Storage.COUNT, Integer.class).orElse(0);
     }
 
     /**
