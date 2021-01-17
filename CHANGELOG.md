@@ -1,3 +1,10 @@
+## [1.6.3](https://github.com/art-framework/art-core/compare/v1.6.2...v1.6.3) (2021-01-17)
+
+
+### Bug Fixes
+
+* **release:** publish bukkit project ([d63a283](https://github.com/art-framework/art-core/commit/d63a283ba1ba62a91ac62fa5920b601b754450fe))
+
 ## [1.6.2](https://github.com/art-framework/art-core/compare/v1.6.1...v1.6.2) (2021-01-17)
 
 
