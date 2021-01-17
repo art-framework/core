@@ -3,6 +3,29 @@
 
 ### Bug Fixes
 
+* **release:** update publish config ([ab8dd02](https://github.com/art-framework/art-core/commit/ab8dd02a432f42abe1e89f7b298f479390d5e51f))
+* **store:** unboxing of int to Integer fails ([5f2100b](https://github.com/art-framework/art-core/commit/5f2100b872032b04b8c5f57d76fb9fdc0ea4337f))
+* persistence cache not working ([b942d5a](https://github.com/art-framework/art-core/commit/b942d5a8d56780077d9f3be8c5455b4d3dc75d3c))
+* register scripts after loading ([dcc340d](https://github.com/art-framework/art-core/commit/dcc340db7b40e9f0029524ab5d2fa45e77f2def0))
+
+
+### Features
+
+* **trigger:** add option to filter [@damage](https://github.com/damage) event by player or entity ([54477c9](https://github.com/art-framework/art-core/commit/54477c91e7d543395d864ce8ccc8eeeb0f811160))
+* add count option to triggers ([3c6b64d](https://github.com/art-framework/art-core/commit/3c6b64d9919f2c42cae7e890fcdae11e138bff26))
+* migrate the script module and include it in bukkit by default ([4b52b3e](https://github.com/art-framework/art-core/commit/4b52b3edc1829755ba37c46f31a34f2cfc37346b))
+* split metadata persistence table into separate columns ([255e0e2](https://github.com/art-framework/art-core/commit/255e0e2efda6e767c0061b134e5cec7b6c2f4c5d))
+
+
+### Performance Improvements
+
+* cache counter and perform database update async ([3e44e1f](https://github.com/art-framework/art-core/commit/3e44e1f2a11d51bb70033ec50cc7d2d8c76d07d1))
+
+# [1.3.0](https://github.com/art-framework/art-core/compare/v1.2.3...v1.3.0) (2021-01-17)
+
+
+### Bug Fixes
+
 * **store:** unboxing of int to Integer fails ([5f2100b](https://github.com/art-framework/art-core/commit/5f2100b872032b04b8c5f57d76fb9fdc0ea4337f))
 * persistence cache not working ([b942d5a](https://github.com/art-framework/art-core/commit/b942d5a8d56780077d9f3be8c5455b4d3dc75d3c))
 * register scripts after loading ([dcc340d](https://github.com/art-framework/art-core/commit/dcc340db7b40e9f0029524ab5d2fa45e77f2def0))
