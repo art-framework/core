@@ -145,6 +145,11 @@ jobs:
       - name: Grant execute permission for update-versions.sh
         run: chmod +x update-versions.sh
 
+      - name: Build
+        run: ./gradlew build -x test
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Release
         run: |
           yarn install
