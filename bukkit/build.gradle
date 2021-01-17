@@ -37,7 +37,7 @@ spigot {
     depends = ['ebean-wrapper']
 }
 
-archivesBaseName = „${project.property(„pluginName“)}-bukkit“
+archivesBaseName = "${project.property("pluginName")}-bukkit"
 
 repositories {
     jitpack()
