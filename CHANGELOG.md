@@ -1,3 +1,10 @@
+## [1.6.5](https://github.com/art-framework/art-core/compare/v1.6.4...v1.6.5) (2021-01-18)
+
+
+### Bug Fixes
+
+* **release:** move api into separate module ([81adf4b](https://github.com/art-framework/art-core/commit/81adf4b6d80302912f729efa2001e58e9a69baf6))
+
 ## [1.6.4](https://github.com/art-framework/art-core/compare/v1.6.3...v1.6.4) (2021-01-18)
 
 
