@@ -68,7 +68,7 @@ public class ModuleTests {
         Scope scope = ART.bootstrap(bootstrapScope);
 
         assertThat(scope.get(BootstrapTestModule.CustomProvider.class))
-                .isPresent();
+                .isNotNull();
     }
 
     @SneakyThrows

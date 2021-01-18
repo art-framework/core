@@ -69,9 +69,9 @@ public interface Scope extends DataProvider {
      *
      * @param providerClass the class of the provider that should be retrieved
      * @param <TProvider> the type of the provider
-     * @return the provider if it is registered
+     * @return the provider if it is registered else null
      */
-    <TProvider extends Provider> Optional<TProvider> get(Class<TProvider> providerClass);
+    <TProvider extends Provider> TProvider get(Class<TProvider> providerClass);
 
     /**
      * Gets the storage provider of this scope.

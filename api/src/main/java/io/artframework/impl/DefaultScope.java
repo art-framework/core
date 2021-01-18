@@ -39,6 +39,7 @@ import io.artframework.TargetProvider;
 import io.artframework.TriggerProvider;
 import io.artframework.conf.Settings;
 import io.artframework.parser.flow.FlowLineParserProvider;
+import io.artframework.util.ReflectionUtil;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
@@ -58,7 +59,7 @@ public final class DefaultScope implements BootstrapScope {
     private final Settings settings;
     private final BootstrapModule bootstrapModule;
     private final Map<Object, Object> data = new HashMap<>();
-    private final Map<Class<? extends Provider>, Provider> providers = new HashMap<>();
+    private final Map<Class<?>, Provider> providers = new HashMap<>();
     private final Map<Class<? extends Provider>, Function<Scope, ? extends Provider>> providerMap = new HashMap<>();
 
     private final Configuration.ConfigurationBuilder configurationBuilder = Configuration.builder()
@@ -115,11 +116,10 @@ public final class DefaultScope implements BootstrapScope {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <TProvider extends Provider> Optional<TProvider> get(Class<TProvider> providerClass) {
+    public <TProvider extends Provider> TProvider get(Class<TProvider> providerClass) {
 
-        if (!providers.containsKey(providerClass)) return Optional.empty();
-
-        return Optional.of((TProvider) providers.get(providerClass));
+        return (TProvider) ReflectionUtil.getEntryForTargetClass(providerClass, providers)
+                .orElse(null);
     }
 
     @Override
