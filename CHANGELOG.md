@@ -1,3 +1,15 @@
+# [2.2.0](https://github.com/art-framework/core/compare/v2.1.1...v2.2.0) (2021-01-18)
+
+
+### Bug Fixes
+
+* **ebean:** improve ebean persistence caching layer ([08f237e](https://github.com/art-framework/core/commit/08f237e454f2036bb6a5cfbe6dfc13b22907581a))
+
+
+### Features
+
+* add location trigger and requirement ([7f5b6bc](https://github.com/art-framework/core/commit/7f5b6bca60eb574162aa1771a48822f7d53a4343))
+
 ## [2.1.1](https://github.com/art-framework/core/compare/v2.1.0...v2.1.1) (2021-01-18)
 
 
