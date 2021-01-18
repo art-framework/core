@@ -60,6 +60,17 @@ public class ModuleTests {
         verify(module, times(1)).onBootstrap(bootstrapScope);
     }
 
+    @Test
+    @SneakyThrows
+    @DisplayName("should provide instance of custom provider")
+    void shouldProvideInstanceOfCustomProvider() {
+
+        Scope scope = ART.bootstrap(bootstrapScope);
+
+        assertThat(scope.get(BootstrapTestModule.CustomProvider.class))
+                .isPresent();
+    }
+
     @SneakyThrows
     @Test
     @DisplayName("should enable module")

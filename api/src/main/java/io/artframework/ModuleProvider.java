@@ -63,9 +63,9 @@ public interface ModuleProvider extends Provider {
      * Bootstraps the given module and all of the supplied sub modules.
      *
      * @param bootstrapScope the bootstrap scope containing the initial module
-     * @return this module provider
+     * @return the bootstrap phase which is used to load and enable all modules after configuration is finished and sealed
      */
-    ModuleProvider bootstrap(BootstrapScope bootstrapScope) throws BootstrapException;
+    BootstrapPhase bootstrap(BootstrapScope bootstrapScope) throws BootstrapException;
 
     /**
      * Registers the given module with the provider, but does not enable it.

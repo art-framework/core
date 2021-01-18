@@ -42,7 +42,7 @@ import static org.reflections.ReflectionUtils.getAllMethods;
 import static org.reflections.ReflectionUtils.withAnnotation;
 
 @Log(topic = "art-framework")
-public class DefaultModuleProvider extends AbstractProvider implements ModuleProvider {
+public class DefaultModuleProvider extends AbstractProvider implements ModuleProvider, BootstrapPhase {
 
     final Map<Class<?>, ModuleInformation> modules = new HashMap<>();
     private CycleSearch<ModuleMeta> cycleSearcher = new CycleSearch<>(new boolean[0][0], new ModuleMeta[0]);
@@ -84,7 +84,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     }
 
     @Override
-    public ModuleProvider bootstrap(BootstrapScope bootstrapScope) throws BootstrapException {
+    public BootstrapPhase bootstrap(BootstrapScope bootstrapScope) throws BootstrapException {
 
         try {
             log.fine("Starting bootstrap process with: " + bootstrapScope.bootstrapModule().getClass().getSimpleName());
@@ -109,12 +109,6 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             }
 
             bootstrapAll(bootstrapScope);
-
-            loadModule(bootstrapModule);
-            loadAll();
-
-            enableModule(bootstrapModule);
-            enableAll();
 
             log.fine("Successfully bootstrapped the art-framework with: " + bootstrapScope.bootstrapModule().getClass().getSimpleName());
         } catch (ModuleRegistrationException e) {

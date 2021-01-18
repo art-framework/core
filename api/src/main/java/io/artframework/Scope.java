@@ -16,11 +16,12 @@
 
 package io.artframework;
 
+import io.artframework.annotations.OnBootstrap;
 import io.artframework.conf.Settings;
 import io.artframework.impl.DefaultScope;
 
 import java.util.Collection;
-import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 public interface Scope extends DataProvider {
@@ -60,6 +61,17 @@ public interface Scope extends DataProvider {
      * @return the current configuration of this scope
      */
     Configuration configuration();
+
+    /**
+     * Tries to find a provider for the registered provider class and returns its instance.
+     * <p>By default all providers are singletons that can be registered {@link OnBootstrap}
+     * with the {@link BootstrapScope}.
+     *
+     * @param providerClass the class of the provider that should be retrieved
+     * @param <TProvider> the type of the provider
+     * @return the provider if it is registered
+     */
+    <TProvider extends Provider> Optional<TProvider> get(Class<TProvider> providerClass);
 
     /**
      * Gets the storage provider of this scope.

@@ -18,10 +18,14 @@ package io.artframework.integration;
 
 import io.artframework.BootstrapModule;
 import io.artframework.BootstrapScope;
+import io.artframework.Provider;
+import io.artframework.Scope;
 import io.artframework.annotations.ArtModule;
 import io.artframework.annotations.OnBootstrap;
 import io.artframework.annotations.OnEnable;
 import io.artframework.annotations.OnLoad;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -46,8 +50,21 @@ public class BootstrapTestModule implements BootstrapModule {
         public static boolean called = false;
 
         @OnBootstrap
-        public void onBootstrap() {
+        public void onBootstrap(BootstrapScope scope) {
             called = true;
+            scope.add(CustomProvider.class, CustomProvider::new);
+        }
+    }
+
+    @Getter
+    @Accessors(fluent = true)
+    public static class CustomProvider implements Provider {
+
+        private final Scope scope;
+
+        public CustomProvider(Scope scope) {
+
+            this.scope = scope;
         }
     }
 
