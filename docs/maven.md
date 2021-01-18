@@ -8,9 +8,9 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>io.art-framework</groupId>
-            <artifactId>art-core</artifactId>
-            <version>1.6.5</version>
+            <groupId>io.art-framework.core</groupId>
+            <artifactId>api</artifactId>
+            <version>1.6.4</version>
         </dependency>
     </dependencies>
 </project>
