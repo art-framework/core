@@ -81,7 +81,7 @@ jobs:
           
   javadocs:    
     runs-on: ubuntu-18.04
-    if: github.ref == 'refs/heads/master' || github.ref == 'refs/heads/alpha' || github.ref == 'refs/heads/beta'
+    if: github.ref == 'refs/heads/master'
     
     steps:
       - name: Set up JDK 11
@@ -104,7 +104,7 @@ jobs:
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH: gh-pages
-          FOLDER: build/docs/javadoc
+          FOLDER: api/build/docs/javadoc
           
   release:
     needs: [build, test]
