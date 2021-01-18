@@ -51,6 +51,7 @@ dependencies {
     implementation project(':art-scripts')
 
     testImplementation 'io.ebean:ebean-test:12.6.5'
+    testImplementation 'com.github.seeseemelk:MockBukkit-v1.16:0.20.0'
 
     testImplementation group: 'javax.xml.bind', name: 'jaxb-api', version: '2.3.1'
     testImplementation group: 'com.h2database', name: 'h2', version: '1.4.200'

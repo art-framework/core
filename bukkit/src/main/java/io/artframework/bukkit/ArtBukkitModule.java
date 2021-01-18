@@ -24,11 +24,13 @@ import io.artframework.bukkit.actions.CancelBukkitEventAction;
 import io.artframework.bukkit.actions.DamageLivingEntityAction;
 import io.artframework.bukkit.actions.SendMessageAction;
 import io.artframework.bukkit.requirements.HealthRequirement;
+import io.artframework.bukkit.requirements.LocationRequirement;
 import io.artframework.bukkit.storage.EbeanPersistenceProvider;
 import io.artframework.bukkit.storage.MetadataStore;
 import io.artframework.bukkit.targets.*;
 import io.artframework.bukkit.trigger.EntityTrigger;
 import io.artframework.bukkit.trigger.PlayerServerTrigger;
+import io.artframework.bukkit.trigger.PlayerTrigger;
 import io.artframework.modules.scripts.ScriptsModule;
 import io.artframework.util.FileUtil;
 import io.ebean.Database;
@@ -56,6 +58,7 @@ public class ArtBukkitModule implements BootstrapModule {
 
     private final PlayerServerTrigger playerServerTrigger = new PlayerServerTrigger();
     private final EntityTrigger entityTrigger = new EntityTrigger();
+    private final PlayerTrigger playerTrigger = new PlayerTrigger();
     private final ArtBukkitPlugin plugin;
     private EbeanPersistenceProvider storageProvider;
 
@@ -119,6 +122,7 @@ public class ArtBukkitModule implements BootstrapModule {
 
         Bukkit.getPluginManager().registerEvents(playerServerTrigger, plugin);
         Bukkit.getPluginManager().registerEvents(entityTrigger, plugin);
+        Bukkit.getPluginManager().registerEvents(playerTrigger, plugin);
 
         scope.register()
                 .actions()
@@ -127,9 +131,11 @@ public class ArtBukkitModule implements BootstrapModule {
                     .add(SendMessageAction.class)
                 .requirements()
                     .add(HealthRequirement.class)
+                    .add(LocationRequirement.class)
                 .trigger()
                     .add(playerServerTrigger)
                     .add(entityTrigger)
+                    .add(playerTrigger)
                 .targets()
                     .add(Block.class, BlockTarget::new)
                     .add(Cancellable.class, CancellableEventTarget::new)
