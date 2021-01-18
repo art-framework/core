@@ -64,11 +64,12 @@ dependencies {
 shadowJar {
     classifier = ''
     dependencies {
-        include(project(':'))
+        include(project(':api'))
         include(project(':art-scripts'))
         include(dependency('com.google.code.gson:gson:'))
     }
     relocate 'com.google.gson', "shadow.${packageName}.gson"
 }
 
+tasks.build.dependsOn(shadowJar)
 tasks.prepareSpigotPlugins.dependsOn(shadowJar)

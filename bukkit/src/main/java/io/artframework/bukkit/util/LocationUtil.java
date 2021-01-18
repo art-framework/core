@@ -9,8 +9,14 @@ public final class LocationUtil {
     public static boolean isWithinRadius(Location l1, Location l2, int radius) {
 
         if (l1.getWorld() != null && l2.getWorld() != null) {
-            return l1.getWorld().equals(l2.getWorld()) && getDistanceSquared(l1,
-                    l2) <= radius * radius;
+            if (radius <= 0) {
+                return l1.getBlockX() == l2.getBlockX()
+                        && l1.getBlockY() == l2.getBlockY()
+                        && l1.getBlockZ() == l2.getBlockZ();
+            } else {
+                return l1.getWorld().equals(l2.getWorld()) && getDistanceSquared(l1,
+                        l2) <= radius * radius;
+            }
         }
         return false;
     }

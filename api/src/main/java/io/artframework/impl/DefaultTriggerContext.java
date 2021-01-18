@@ -106,11 +106,11 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
                         if (config().executeActions()) {
                             executeActions(target.target(), context);
                         }
+
+                        callListeners(context);
                     }
                 }
             }
-
-            callListeners(context);
         };
 
         long delay = this.config().delay();

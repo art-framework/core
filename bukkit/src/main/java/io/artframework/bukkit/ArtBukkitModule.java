@@ -20,6 +20,7 @@ import io.artframework.BootstrapModule;
 import io.artframework.BootstrapScope;
 import io.artframework.Scope;
 import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.OnReload;
 import io.artframework.bukkit.actions.CancelBukkitEventAction;
 import io.artframework.bukkit.actions.DamageLivingEntityAction;
 import io.artframework.bukkit.actions.SendMessageAction;
@@ -120,6 +121,8 @@ public class ArtBukkitModule implements BootstrapModule {
     @Override
     public void onLoad(Scope scope) {
 
+        storageProvider.load();
+
         Bukkit.getPluginManager().registerEvents(playerServerTrigger, plugin);
         Bukkit.getPluginManager().registerEvents(entityTrigger, plugin);
         Bukkit.getPluginManager().registerEvents(playerTrigger, plugin);
@@ -145,6 +148,12 @@ public class ArtBukkitModule implements BootstrapModule {
                     .add(Location.class, LocationTarget::new)
                     .add(Player.class, PlayerTarget::new)
                     .add(OfflinePlayer.class, OfflinePlayerTarget::new);
+    }
+
+    @OnReload
+    public void onReload() {
+
+        storageProvider.reload();
     }
 
     @Override

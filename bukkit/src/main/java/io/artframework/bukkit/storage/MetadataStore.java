@@ -12,6 +12,7 @@ import net.silthus.ebean.BaseEntity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import java.util.Optional;
+import java.util.UUID;
 
 @Getter
 @Setter
@@ -20,7 +21,7 @@ import java.util.Optional;
 @Table(name = "art_metadata_store")
 public class MetadataStore extends BaseEntity {
 
-    public static final Finder<String, MetadataStore> find = new Finder<>(MetadataStore.class);
+    public static final Finder<UUID, MetadataStore> find = new Finder<>(MetadataStore.class);
 
     public static Optional<MetadataStore> find(String key) {
 

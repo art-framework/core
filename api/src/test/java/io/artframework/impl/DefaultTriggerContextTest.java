@@ -164,6 +164,24 @@ class DefaultTriggerContextTest {
             assertThat(context.store(target, Constants.Storage.COUNT, Integer.class))
                     .isEmpty();
         }
+
+        @Test
+        @DisplayName("should only call listeners if count is successful")
+        void shouldCallListenersIfCountIsSuccessful() {
+
+            config.count(2);
+            TriggerListener<Object> listener = spy(new TriggerListener<Object>() {
+                @Override
+                public void onTrigger(Target<Object> target, ExecutionContext<TriggerContext> context) {
+
+                }
+            });
+            context.addListener(listener);
+
+            context.onTriggerEvent(event());
+
+            verify(listener, never()).onTrigger(any(), any());
+        }
     }
 
     public static class TestTrigger implements Trigger {
