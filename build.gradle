@@ -23,13 +23,10 @@ buildscript {
 
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.0.0' apply false
-    id "io.freefair.lombok" version "5.1.0"
-    id 'java-library'
-    id 'jacoco'
-    id 'idea'
+    id "io.freefair.lombok" version "5.1.0" apply false
 }
 
-allprojects {
+subprojects {
     apply plugin: 'com.github.johnrengelman.shadow'
     apply plugin: 'java-library'
     apply plugin: 'jacoco'
@@ -38,6 +35,10 @@ allprojects {
 
     apply from: "$rootDir/gradle/jacoco.gradle"
     apply from: "$rootDir/gradle/publish.gradle"
+
+    group project.property("group")
+
+    archivesBaseName = "${project.property("pluginName")}"
 
     sourceCompatibility = 11
     targetCompatibility = 11

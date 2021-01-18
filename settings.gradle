@@ -17,5 +17,5 @@
 rootProject.name = 'art-core'
 include 'bukkit'
 include 'art-scripts'
-
+include 'api'
 
