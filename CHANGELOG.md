@@ -1,3 +1,11 @@
+## [1.6.6](https://github.com/art-framework/core/compare/v1.6.5...v1.6.6) (2021-01-18)
+
+
+### Bug Fixes
+
+* **release:** publish javadocs from correct path ([eb44a3d](https://github.com/art-framework/core/commit/eb44a3d57f511de745a6ce26d6fef1d49eed0669))
+* **release:** update group and package name ([4a3a3ea](https://github.com/art-framework/core/commit/4a3a3ea61576f8ab8700feaabb34561204721754))
+
 ## [1.6.5](https://github.com/art-framework/art-core/compare/v1.6.4...v1.6.5) (2021-01-18)
 
 
