@@ -1,3 +1,11 @@
+# [2.1.0](https://github.com/art-framework/core/compare/v2.0.0...v2.1.0) (2021-01-18)
+
+
+### Features
+
+* **api:** add option to register custom providers ([d07a176](https://github.com/art-framework/core/commit/d07a1764a764a1a78f6a464bd759e1315ee5c238))
+* **api:** improve flow line parser api ([4ad42db](https://github.com/art-framework/core/commit/4ad42dbdc519d65d3ab9b680ec3a61422c8c1cb6))
+
 # [2.0.0](https://github.com/art-framework/core/compare/v1.6.6...v2.0.0) (2021-01-18)
 
 
