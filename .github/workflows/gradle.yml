@@ -67,11 +67,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
-      - name: Run codacy-coverage-reporter
-        uses: codacy/codacy-coverage-reporter-action@master
+      - name: Coveralls GitHub Action
+        uses: coverallsapp/github-action@v1.1.2
         with:
-          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
-          coverage-reports: api/build/reports/jacoco/test/jacocoTestReport.xml
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v2
