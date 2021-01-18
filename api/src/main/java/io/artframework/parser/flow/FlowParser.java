@@ -16,18 +16,25 @@
 
 package io.artframework.parser.flow;
 
-import com.google.common.base.Strings;
-import io.artframework.*;
+import io.artframework.ArtContext;
+import io.artframework.ArtObjectContext;
+import io.artframework.ParseException;
+import io.artframework.parser.Parser;
+import io.artframework.Scope;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Accessors(fluent = true)
-public class FlowParser implements Parser<Collection<String>> {
+public final class FlowParser implements Parser<Collection<String>> {
 
     private final Scope scope;
     @Setter
@@ -52,12 +59,15 @@ public class FlowParser implements Parser<Collection<String>> {
 
         Collection<ArtObjectContext<?>> contexts = new ArrayList<>();
 
-        Collection<io.artframework.FlowParser> parsers = configuration().parser().all();
+        Iterator<String> iterator = input.iterator();
+        Collection<FlowLineParser> parsers = configuration().parser().all(iterator, scope);
 
         int lineCount = 1;
-        for (String line : input) {
+        while (iterator.hasNext()) {
+            String line = iterator.next();
             boolean matched = false;
-            for (io.artframework.FlowParser parser : parsers) {
+
+            for (FlowLineParser parser : parsers) {
                 try {
                     if (parser.accept(line)) {
                         matched = true;
@@ -81,10 +91,6 @@ public class FlowParser implements Parser<Collection<String>> {
         return ArtContext.of(scope, scope().settings().artSettings(), contexts);
     }
 
-    // rules for matching and combining actions, requirements and trigger
-    // - requirements can neither have actions nor trigger
-    // - actions can have requirements that are checked before execution and nested actions that are executed in sequence after the first action
-    // - trigger can have requirements and execute actions
     Collection<ArtObjectContext<?>> sortAndCombineArtContexts(Collection<ArtObjectContext<?>> contexts) {
 
         return FlowLogicSorter.of(contexts).getResult();

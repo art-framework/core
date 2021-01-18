@@ -17,28 +17,31 @@
 package io.artframework.parser.flow;
 
 import com.google.common.base.Strings;
-import io.artframework.FlowParser;
-import io.artframework.*;
-import lombok.Getter;
+import io.artframework.ArtObjectContext;
+import io.artframework.ConfigMap;
+import io.artframework.Factory;
+import io.artframework.ParseException;
+import io.artframework.Scope;
+import io.artframework.parser.ConfigParser;
 import lombok.experimental.Accessors;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Accessors(fluent = true)
 @SuppressWarnings("RegExpRedundantEscape")
-public abstract class ArtObjectContextParser<TFactory extends Factory<?, ?>> extends LineParser<ArtObjectContext<?>> implements FlowParser {
+public abstract class ArtObjectContextLineParser<TFactory extends Factory<?, ?>> extends FlowLineParser {
 
-    @Getter
     private final FlowType flowType;
 
-    protected ArtObjectContextParser(Scope scope, FlowType flowType) {
+    protected ArtObjectContextLineParser(Iterator<String> iterator, Scope scope, FlowType flowType) {
         // always edit the regexr link and update the link below!
         // the regexr link and the regex should always match
         // regexr.com/56s09
-        super(scope, Pattern.compile("^" + flowType.typeIdentifier() + "(?<identifier>[\\w\\d:._-]+)([\\[\\(](?<config>[^\\]\\)]*?)[\\]\\)])?( (?<userConfig>.+))?$"));
+        super(iterator, scope, Pattern.compile("^" + flowType.typeIdentifier() + "(?<identifier>[\\w\\d:._-]+)([\\[\\(](?<config>[^\\]\\)]*?)[\\]\\)])?( (?<userConfig>.+))?$"));
         this.flowType = flowType;
     }
 
@@ -66,8 +69,8 @@ public abstract class ArtObjectContextParser<TFactory extends Factory<?, ?>> ext
         String identifier = getIdentifier();
         Optional<TFactory> factoryOptional = factory(identifier);
 
-        if (!factoryOptional.isPresent()) {
-            throw new ParseException("No " + this.flowType().name() + " with identifier \"" + identifier + "\" found");
+        if (factoryOptional.isEmpty()) {
+            throw new ParseException("No " + flowType.name() + " with identifier \"" + identifier + "\" found");
         }
 
         TFactory factory = factoryOptional.get();
@@ -76,14 +79,14 @@ public abstract class ArtObjectContextParser<TFactory extends Factory<?, ?>> ext
         Optional<String> config = getConfig();
         if (config.isPresent()) {
             ConfigMap configMap = configMap();
-            ConfigParser configParser = ConfigParser.of(this.scope(), configMap);
+            ConfigParser configParser = ConfigParser.of(configMap);
             if (configParser.accept(config.get())) {
                 configMaps.put(configMap.type(), configParser.parse());
             }
         }
 
 
-        ConfigParser configParser = ConfigParser.of(this.scope(), ConfigMap.of(ConfigMapType.ART_CONFIG, factory.meta().configMap()));
+        ConfigParser configParser = ConfigParser.of(ConfigMap.of(ConfigMapType.ART_CONFIG, factory.meta().configMap()));
         if (configParser.accept(userConfig())) {
             configMaps.put(ConfigMapType.ART_CONFIG, configParser.parse());
         }

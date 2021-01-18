@@ -21,12 +21,13 @@ import io.artframework.ConfigMap;
 import io.artframework.Scope;
 import io.artframework.conf.ActionConfig;
 
+import java.util.Iterator;
 import java.util.Optional;
 
-public class ActionParser extends ArtObjectContextParser<ActionFactory<?>> {
+class ActionLineParser extends ArtObjectContextLineParser<ActionFactory<?>> {
 
-    public ActionParser(Scope scope) {
-        super(scope, new FlowType("action", "!"));
+    public ActionLineParser(Iterator<String> iterator, Scope scope) {
+        super(iterator, scope, new FlowType("action", "!"));
     }
 
     @Override

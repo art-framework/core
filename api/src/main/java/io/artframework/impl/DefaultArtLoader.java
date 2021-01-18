@@ -17,17 +17,16 @@
 package io.artframework.impl;
 
 import io.artframework.*;
+import io.artframework.parser.Parser;
 import io.artframework.parser.flow.FlowParser;
 import io.artframework.util.ReflectionUtil;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 @Log(topic = "art-framework")
 public class DefaultArtLoader implements ArtLoader {

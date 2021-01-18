@@ -16,6 +16,7 @@
 
 package io.artframework;
 
+import io.artframework.parser.flow.FlowLineParserProvider;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Value;
@@ -42,7 +43,7 @@ public class Configuration {
     StorageProvider storage;
     TargetProvider targets;
     EventProvider events;
-    FlowParserProvider parser;
+    FlowLineParserProvider parser;
     ModuleProvider modules;
     FinderProvider finder;
     ConfigProvider configs;

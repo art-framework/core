@@ -17,25 +17,26 @@
 package io.artframework.parser.flow;
 
 import io.artframework.ConfigMap;
+import io.artframework.RequirementFactory;
 import io.artframework.Scope;
-import io.artframework.TriggerFactory;
-import io.artframework.conf.TriggerConfig;
+import io.artframework.conf.RequirementConfig;
 
+import java.util.Iterator;
 import java.util.Optional;
 
-public class TriggerParser extends ArtObjectContextParser<TriggerFactory> {
+class RequirementLineParser extends ArtObjectContextLineParser<RequirementFactory<?>> {
 
-    public TriggerParser(Scope scope) {
-        super(scope, new FlowType("trigger", "@"));
+    public RequirementLineParser(Iterator<String> iterator, Scope scope) {
+        super(iterator, scope, new FlowType("requirement", "\\?"));
     }
 
     @Override
-    protected Optional<TriggerFactory> factory(String identifier) {
-        return this.configuration().trigger().get(identifier);
+    protected Optional<RequirementFactory<?>> factory(String identifier) {
+        return this.configuration().requirements().get(identifier);
     }
 
     @Override
     protected ConfigMap configMap() {
-        return TriggerConfig.configMap();
+        return RequirementConfig.getConfigMap();
     }
 }

@@ -18,13 +18,13 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import io.artframework.conf.Settings;
+import io.artframework.parser.flow.FlowLineParserProvider;
 import lombok.Getter;
 import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -45,7 +45,7 @@ public final class DefaultScope implements BootstrapScope {
             .events(EventProvider.of(this))
             .finder(FinderProvider.of(this))
             .modules(ModuleProvider.of(this))
-            .parser(FlowParserProvider.of(this))
+            .parser(FlowLineParserProvider.of(this))
             .requirements(RequirementProvider.of(this))
             .targets(TargetProvider.of(this))
             .trigger(TriggerProvider.of(this))

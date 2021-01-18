@@ -28,7 +28,7 @@ import java.util.*;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
-public final class FlowLogicSorter {
+final class FlowLogicSorter {
 
     public static FlowLogicSorter of(Collection<ArtObjectContext<?>> artWrappers) {
         return new FlowLogicSorter(artWrappers);
@@ -54,6 +54,10 @@ public final class FlowLogicSorter {
         return result;
     }
 
+    // rules for matching and combining actions, requirements and trigger
+    // - requirements can neither have actions nor trigger
+    // - actions can have requirements that are checked before execution and nested actions that are executed in sequence after the first action
+    // - trigger can have requirements and execute actions
     private void process() {
 
         if (!iterator.hasNext()) return;

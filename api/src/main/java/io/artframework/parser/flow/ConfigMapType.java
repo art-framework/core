@@ -19,6 +19,7 @@ package io.artframework.parser.flow;
 import io.artframework.conf.ActionConfig;
 import io.artframework.conf.RequirementConfig;
 import io.artframework.conf.TriggerConfig;
+import io.artframework.parser.ConfigParser;
 
 public enum ConfigMapType {
 

@@ -14,36 +14,29 @@
  * limitations under the License.
  */
 
-package io.artframework.parser.flow;
+package io.artframework.parser;
 
 import io.artframework.ConfigMap;
 import io.artframework.ParseException;
-import io.artframework.Scope;
 import io.artframework.annotations.ConfigOption;
+import io.artframework.parser.flow.ConfigMapType;
 import io.artframework.util.ConfigUtil;
 import lombok.Data;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @DisplayName("ConfigParser")
 class ConfigParserTest {
 
-    private ConfigParser parser;
-
-    @BeforeEach
-    @SneakyThrows
-    void beforeEach() {
-        this.parser = parser(TestConfig.class);
-    }
-
     @SneakyThrows
     private ConfigParser parser(Class<?> configClass) {
-        return new ConfigParser(Scope.defaultScope(), ConfigMap.of(ConfigMapType.ART_CONFIG, ConfigUtil.getConfigFields(configClass)));
+        return new ConfigParser(ConfigMap.of(ConfigMapType.ART_CONFIG, ConfigUtil.getConfigFields(configClass)));
     }
 
     @Nested

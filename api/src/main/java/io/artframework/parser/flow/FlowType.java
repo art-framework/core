@@ -16,18 +16,13 @@
 
 package io.artframework.parser.flow;
 
-import lombok.Getter;
+import lombok.Value;
 import lombok.experimental.Accessors;
 
-@Getter
+@Value
 @Accessors(fluent = true)
-public final class FlowType {
+public class FlowType {
 
-    private final String name;
-    private final String typeIdentifier;
-
-    FlowType(String name, String typeIdentifier) {
-        this.name = name;
-        this.typeIdentifier = typeIdentifier;
-    }
+    String name;
+    String typeIdentifier;
 }

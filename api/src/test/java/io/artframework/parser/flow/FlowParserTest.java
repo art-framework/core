@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
 class FlowParserTest {
 
     private FlowParser parser;
-    private ArtObjectContextParser<?> flowParser;
+    private ArtObjectContextLineParser<?> flowParser;
     private String storageKey;
 
     @BeforeEach
@@ -44,10 +44,10 @@ class FlowParserTest {
     void beforeEach() {
 
         Scope scope = Scope.defaultScope();
-
-        flowParser = spy(new ArtObjectContextParser<Factory<?, ?>>(scope, new FlowType("test", ".")) {
+        flowParser = spy(new ArtObjectContextLineParser<>(Arrays.asList("").iterator(), scope, new FlowType("test", ".")) {
             @Override
             protected Optional<Factory<?, ?>> factory(String identifier) {
+
                 Factory<ArtObjectContext<?>, ?> factory = mock(Factory.class);
                 ArtObjectMeta artObjectMeta = mock(ArtObjectMeta.class);
                 when(artObjectMeta.configMap()).thenReturn(new HashMap());
@@ -64,12 +64,13 @@ class FlowParserTest {
 
             @Override
             protected ConfigMap configMap() {
+
                 return ActionConfig.configMap();
             }
         });
 
         scope.configuration().parser().clear();
-        scope.configuration().parser().add(flowParser);
+        scope.configuration().parser().add((iterator, scope1) -> flowParser);
 
         parser = new FlowParser(scope);
     }
@@ -124,7 +125,7 @@ class FlowParserTest {
 
             ParseException exception = new ParseException("TEST ERROR");
             doAnswer((Answer<ArtObjectContext<?>>) invocation -> {
-                ArtObjectContextParser<?> parser = (ArtObjectContextParser<?>) invocation.getMock();
+                ArtObjectContextLineParser<?> parser = (ArtObjectContextLineParser<?>) invocation.getMock();
                 if ("ERROR".equals(parser.input())) {
                     throw exception;
                 }

@@ -18,6 +18,7 @@ package io.artframework;
 
 import io.artframework.conf.ArtSettings;
 import io.artframework.impl.DefaultArtContext;
+import io.artframework.parser.flow.FlowParser;
 import lombok.NonNull;
 
 import java.util.ArrayList;
@@ -42,7 +43,8 @@ import java.util.Optional;
  *     Set the {@link ArtSettings#executeActions(boolean)} flag in the {@link #settings()} to control the behaviour.
  *     <p><b>Important:</b> call {@link #disableTrigger()} when you dispose the context to allow garbage collection to run.
  * </ul>
- * <p><pre>{@code
+ * Here is an example on how to load an ArtContext from a {@code List<String>} using the default {@link FlowParser}
+ * <pre>{@code
  * try {
  *     ArtContext context = ART.load(config.getStringList("rewards"));
  *     context.execute(player);

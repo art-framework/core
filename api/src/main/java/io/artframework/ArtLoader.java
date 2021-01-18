@@ -17,6 +17,7 @@
 package io.artframework;
 
 import io.artframework.impl.DefaultArtLoader;
+import io.artframework.parser.Parser;
 import io.artframework.parser.flow.FlowParser;
 
 import java.util.Collection;

@@ -28,6 +28,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 
@@ -39,7 +40,7 @@ import static org.mockito.Mockito.*;
 class ArtObjectContextParserTest {
 
     private ActionProvider actions;
-    private ActionParser parser;
+    private ActionLineParser parser;
     private ActionFactory<?> factory;
     private ArtObjectMeta artObjectMeta;
 
@@ -54,7 +55,7 @@ class ArtObjectContextParserTest {
         when(artObjectMeta.configMap()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
         when(actions.get(anyString())).thenAnswer(invocation -> Optional.of(factory));
 
-        this.parser = new ActionParser(Scope.of(configurationBuilder -> configurationBuilder.actions(actions)));
+        this.parser = new ActionLineParser(Arrays.asList("").iterator(), Scope.of(configurationBuilder -> configurationBuilder.actions(actions)));
     }
 
     private <TConfig> TConfig extractConfig(ConfigMapType type, TConfig config) {

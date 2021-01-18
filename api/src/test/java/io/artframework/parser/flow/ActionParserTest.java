@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -41,7 +42,7 @@ import static org.mockito.Mockito.*;
 @DisplayName("ActionParser")
 class ActionParserTest {
 
-    private ActionParser parser;
+    private ActionLineParser parser;
     private ActionFactory<?> actionFactory;
 
     @BeforeEach
@@ -53,7 +54,7 @@ class ActionParserTest {
         when(actionProvider.get(anyString())).thenReturn(Optional.of(actionFactory));
         when(actionFactory.create(anyMap())).thenReturn(mock(ActionContext.class));
 
-        this.parser = new ActionParser(new DefaultScope(configurationBuilder -> configurationBuilder.actions(actionProvider)));
+        this.parser = new ActionLineParser(Arrays.asList("").iterator(), new DefaultScope(configurationBuilder -> configurationBuilder.actions(actionProvider)));
     }
 
     @Nested

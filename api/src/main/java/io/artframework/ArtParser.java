@@ -16,6 +16,8 @@
 
 package io.artframework;
 
+import io.artframework.parser.Parser;
+
 /**
  * The art parser parses the given input into a valid art context.
  * <p>You can create your own parser and register it with the art loader

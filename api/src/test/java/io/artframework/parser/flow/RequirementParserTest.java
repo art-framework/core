@@ -25,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +38,7 @@ import static org.mockito.Mockito.*;
 @DisplayName("RequirementParser")
 class RequirementParserTest {
 
-    private RequirementParser parser;
+    private RequirementLineParser parser;
     private RequirementFactory<?> requirementFactory;
 
     @BeforeEach
@@ -49,7 +50,7 @@ class RequirementParserTest {
         when(requirementProvider.get(anyString())).thenReturn(Optional.of(requirementFactory));
         when(requirementFactory.create(anyMap())).thenReturn(mock(RequirementContext.class));
 
-        this.parser = new RequirementParser(Scope.of(configurationBuilder -> configurationBuilder.requirements(requirementProvider)));
+        this.parser = new RequirementLineParser(Arrays.asList("").iterator(), Scope.of(configurationBuilder -> configurationBuilder.requirements(requirementProvider)));
     }
 
     @Nested
