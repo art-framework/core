@@ -1,3 +1,15 @@
+# [2.0.0](https://github.com/art-framework/core/compare/v1.6.6...v2.0.0) (2021-01-18)
+
+
+### Features
+
+* **api:** remove multi trigger listener targets to simplify api ([ff830bc](https://github.com/art-framework/core/commit/ff830bc7f8346aa59c598613f63341b63d6c2ab5))
+
+
+### BREAKING CHANGES
+
+* **api:** ArtContext#onTrigger(...) now takes a TriggerListener with a single target instead of an array.
+
 ## [1.6.6](https://github.com/art-framework/core/compare/v1.6.5...v1.6.6) (2021-01-18)
 
 
