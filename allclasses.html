@@ -36,7 +36,6 @@
 <li><a href="io/artframework/events/ActionExecutionEvent.html" title="class in io.artframework.events">ActionExecutionEvent</a></li>
 <li><a href="io/artframework/ActionFactory.html" title="interface in io.artframework"><span class="interfaceName">ActionFactory</span></a></li>
 <li><a href="io/artframework/ActionHolder.html" title="interface in io.artframework"><span class="interfaceName">ActionHolder</span></a></li>
-<li><a href="io/artframework/parser/flow/ActionParser.html" title="class in io.artframework.parser.flow">ActionParser</a></li>
 <li><a href="io/artframework/ActionProvider.html" title="interface in io.artframework"><span class="interfaceName">ActionProvider</span></a></li>
 <li><a href="io/artframework/util/graphs/AdjacencyList.html" title="class in io.artframework.util.graphs">AdjacencyList</a></li>
 <li><a href="io/artframework/annotations/ART.html" title="annotation in io.artframework.annotations">ART</a></li>
@@ -50,7 +49,7 @@
 <li><a href="io/artframework/ArtObject.html" title="interface in io.artframework"><span class="interfaceName">ArtObject</span></a></li>
 <li><a href="io/artframework/conf/ArtObjectConfig.html" title="class in io.artframework.conf">ArtObjectConfig</a></li>
 <li><a href="io/artframework/ArtObjectContext.html" title="interface in io.artframework"><span class="interfaceName">ArtObjectContext</span></a></li>
-<li><a href="io/artframework/parser/flow/ArtObjectContextParser.html" title="class in io.artframework.parser.flow">ArtObjectContextParser</a></li>
+<li><a href="io/artframework/parser/flow/ArtObjectContextLineParser.html" title="class in io.artframework.parser.flow">ArtObjectContextLineParser</a></li>
 <li><a href="io/artframework/ArtObjectError.html" title="class in io.artframework">ArtObjectError</a></li>
 <li><a href="io/artframework/ArtObjectError.Reason.html" title="enum in io.artframework">ArtObjectError.Reason</a></li>
 <li><a href="io/artframework/events/ArtObjectEvent.html" title="class in io.artframework.events">ArtObjectEvent</a></li>
@@ -64,6 +63,7 @@
 <li><a href="io/artframework/conf/ArtSettings.ArtSettingsBuilder.html" title="class in io.artframework.conf">ArtSettings.ArtSettingsBuilder</a></li>
 <li><a href="io/artframework/BootstrapException.html" title="class in io.artframework">BootstrapException</a></li>
 <li><a href="io/artframework/BootstrapModule.html" title="interface in io.artframework"><span class="interfaceName">BootstrapModule</span></a></li>
+<li><a href="io/artframework/BootstrapPhase.html" title="interface in io.artframework"><span class="interfaceName">BootstrapPhase</span></a></li>
 <li><a href="io/artframework/BootstrapScope.html" title="interface in io.artframework"><span class="interfaceName">BootstrapScope</span></a></li>
 <li><a href="io/artframework/events/Cancellable.html" title="interface in io.artframework.events"><span class="interfaceName">Cancellable</span></a></li>
 <li><a href="io/artframework/impl/CombinedArtContext.html" title="class in io.artframework.impl">CombinedArtContext</a></li>
@@ -74,7 +74,7 @@
 <li><a href="io/artframework/ConfigMap.html" title="interface in io.artframework"><span class="interfaceName">ConfigMap</span></a></li>
 <li><a href="io/artframework/parser/flow/ConfigMapType.html" title="enum in io.artframework.parser.flow">ConfigMapType</a></li>
 <li><a href="io/artframework/annotations/ConfigOption.html" title="annotation in io.artframework.annotations">ConfigOption</a></li>
-<li><a href="io/artframework/parser/flow/ConfigParser.html" title="class in io.artframework.parser.flow">ConfigParser</a></li>
+<li><a href="io/artframework/parser/ConfigParser.html" title="class in io.artframework.parser">ConfigParser</a></li>
 <li><a href="io/artframework/ConfigProvider.html" title="interface in io.artframework"><span class="interfaceName">ConfigProvider</span></a></li>
 <li><a href="io/artframework/Configurable.html" title="interface in io.artframework"><span class="interfaceName">Configurable</span></a></li>
 <li><a href="io/artframework/Configuration.html" title="class in io.artframework">Configuration</a></li>
@@ -101,7 +101,7 @@
 <li><a href="io/artframework/impl/DefaultEventProvider.html" title="class in io.artframework.impl">DefaultEventProvider</a></li>
 <li><a href="io/artframework/impl/DefaultExecutionContext.html" title="class in io.artframework.impl">DefaultExecutionContext</a></li>
 <li><a href="io/artframework/impl/DefaultFinderProvider.html" title="class in io.artframework.impl">DefaultFinderProvider</a></li>
-<li><a href="io/artframework/impl/DefaultFlowParserProvider.html" title="class in io.artframework.impl">DefaultFlowParserProvider</a></li>
+<li><a href="io/artframework/impl/DefaultFlowLineParserProvider.html" title="class in io.artframework.impl">DefaultFlowLineParserProvider</a></li>
 <li><a href="io/artframework/DefaultFutureResult.html" title="class in io.artframework">DefaultFutureResult</a></li>
 <li><a href="io/artframework/impl/DefaultInjectionProvider.html" title="class in io.artframework.impl">DefaultInjectionProvider</a></li>
 <li><a href="io/artframework/impl/DefaultMapStorageProvider.html" title="class in io.artframework.impl">DefaultMapStorageProvider</a></li>
@@ -136,10 +136,9 @@
 <li><a href="io/artframework/Finder.html" title="interface in io.artframework"><span class="interfaceName">Finder</span></a></li>
 <li><a href="io/artframework/FinderProvider.html" title="interface in io.artframework"><span class="interfaceName">FinderProvider</span></a></li>
 <li><a href="io/artframework/FinderResult.html" title="interface in io.artframework"><span class="interfaceName">FinderResult</span></a></li>
-<li><a href="io/artframework/parser/flow/FlowLogicSorter.html" title="class in io.artframework.parser.flow">FlowLogicSorter</a></li>
-<li><a href="io/artframework/FlowParser.html" title="interface in io.artframework"><span class="interfaceName">FlowParser</span></a></li>
+<li><a href="io/artframework/parser/flow/FlowLineParser.html" title="class in io.artframework.parser.flow">FlowLineParser</a></li>
+<li><a href="io/artframework/parser/flow/FlowLineParserProvider.html" title="interface in io.artframework.parser.flow"><span class="interfaceName">FlowLineParserProvider</span></a></li>
 <li><a href="io/artframework/parser/flow/FlowParser.html" title="class in io.artframework.parser.flow">FlowParser</a></li>
-<li><a href="io/artframework/FlowParserProvider.html" title="interface in io.artframework"><span class="interfaceName">FlowParserProvider</span></a></li>
 <li><a href="io/artframework/parser/flow/FlowType.html" title="class in io.artframework.parser.flow">FlowType</a></li>
 <li><a href="io/artframework/FutureResult.html" title="interface in io.artframework"><span class="interfaceName">FutureResult</span></a></li>
 <li><a href="io/artframework/FutureResultCreator.html" title="interface in io.artframework"><span class="interfaceName">FutureResultCreator</span></a></li>
@@ -152,7 +151,7 @@
 <li><a href="io/artframework/InjectionProvider.html" title="interface in io.artframework"><span class="interfaceName">InjectionProvider</span></a></li>
 <li><a href="io/artframework/impl/JacksonConfigProvider.html" title="class in io.artframework.impl">JacksonConfigProvider</a></li>
 <li><a href="io/artframework/conf/KeyValuePair.html" title="class in io.artframework.conf">KeyValuePair</a></li>
-<li><a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow">LineParser</a></li>
+<li><a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></li>
 <li><a href="io/artframework/MessageSender.html" title="interface in io.artframework"><span class="interfaceName">MessageSender</span></a></li>
 <li><a href="io/artframework/events/ModuleBootstrappedEvent.html" title="class in io.artframework.events">ModuleBootstrappedEvent</a></li>
 <li><a href="io/artframework/events/ModuleDisabledEvent.html" title="class in io.artframework.events">ModuleDisabledEvent</a></li>
@@ -174,7 +173,7 @@
 <li><a href="io/artframework/annotations/OnLoad.html" title="annotation in io.artframework.annotations">OnLoad</a></li>
 <li><a href="io/artframework/annotations/OnReload.html" title="annotation in io.artframework.annotations">OnReload</a></li>
 <li><a href="io/artframework/ParseException.html" title="class in io.artframework">ParseException</a></li>
-<li><a href="io/artframework/Parser.html" title="interface in io.artframework"><span class="interfaceName">Parser</span></a></li>
+<li><a href="io/artframework/parser/Parser.html" title="interface in io.artframework.parser"><span class="interfaceName">Parser</span></a></li>
 <li><a href="io/artframework/events/PreActionExecutionEvent.html" title="class in io.artframework.events">PreActionExecutionEvent</a></li>
 <li><a href="io/artframework/Provider.html" title="interface in io.artframework"><span class="interfaceName">Provider</span></a></li>
 <li><a href="io/artframework/util/ReflectionUtil.html" title="class in io.artframework.util">ReflectionUtil</a></li>
@@ -185,7 +184,6 @@
 <li><a href="io/artframework/RequirementContext.html" title="interface in io.artframework"><span class="interfaceName">RequirementContext</span></a></li>
 <li><a href="io/artframework/RequirementFactory.html" title="interface in io.artframework"><span class="interfaceName">RequirementFactory</span></a></li>
 <li><a href="io/artframework/RequirementHolder.html" title="interface in io.artframework"><span class="interfaceName">RequirementHolder</span></a></li>
-<li><a href="io/artframework/parser/flow/RequirementParser.html" title="class in io.artframework.parser.flow">RequirementParser</a></li>
 <li><a href="io/artframework/RequirementProvider.html" title="interface in io.artframework"><span class="interfaceName">RequirementProvider</span></a></li>
 <li><a href="io/artframework/Result.html" title="interface in io.artframework"><span class="interfaceName">Result</span></a></li>
 <li><a href="io/artframework/ResultCreator.html" title="interface in io.artframework"><span class="interfaceName">ResultCreator</span></a></li>
@@ -215,7 +213,6 @@
 <li><a href="io/artframework/events/TriggerEvent.html" title="class in io.artframework.events">TriggerEvent</a></li>
 <li><a href="io/artframework/TriggerFactory.html" title="interface in io.artframework"><span class="interfaceName">TriggerFactory</span></a></li>
 <li><a href="io/artframework/TriggerListener.html" title="interface in io.artframework"><span class="interfaceName">TriggerListener</span></a></li>
-<li><a href="io/artframework/parser/flow/TriggerParser.html" title="class in io.artframework.parser.flow">TriggerParser</a></li>
 <li><a href="io/artframework/TriggerProvider.html" title="interface in io.artframework"><span class="interfaceName">TriggerProvider</span></a></li>
 <li><a href="io/artframework/TriggerRequirement.html" title="interface in io.artframework"><span class="interfaceName">TriggerRequirement</span></a></li>
 <li><a href="io/artframework/TriggerTarget.html" title="class in io.artframework">TriggerTarget</a></li>

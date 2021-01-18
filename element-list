@@ -4,6 +4,7 @@ io.artframework.conf
 io.artframework.events
 io.artframework.finder
 io.artframework.impl
+io.artframework.parser
 io.artframework.parser.flow
 io.artframework.requirements
 io.artframework.util

@@ -183,14 +183,14 @@ implements <a href="../ArtLoader.html" title="interface in io.artframework">ArtL
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>&lt;TParser extends <a href="../Parser.html" title="interface in io.artframework">Parser</a>&lt;TInput&gt;,&#8203;TInput&gt;<br>TParser</code></td>
+<td class="colFirst"><code>&lt;TParser extends <a href="../parser/Parser.html" title="interface in io.artframework.parser">Parser</a>&lt;TInput&gt;,&#8203;TInput&gt;<br>TParser</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parser(java.lang.Class)">parser</a></span>&#8203;(java.lang.Class&lt;TParser&gt;&nbsp;parserClass)</code></th>
 <td class="colLast">
 <div class="block">Gets a registered parser for the given parser class.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>&lt;TParser extends <a href="../Parser.html" title="interface in io.artframework">Parser</a>&lt;TInput&gt;,&#8203;TInput&gt;<br><a href="../ArtLoader.html" title="interface in io.artframework">ArtLoader</a></code></td>
+<td class="colFirst"><code>&lt;TParser extends <a href="../parser/Parser.html" title="interface in io.artframework.parser">Parser</a>&lt;TInput&gt;,&#8203;TInput&gt;<br><a href="../ArtLoader.html" title="interface in io.artframework">ArtLoader</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#parser(java.lang.Class,java.util.function.Function)">parser</a></span>&#8203;(java.lang.Class&lt;TParser&gt;&nbsp;parserClass,
       java.util.function.Function&lt;<a href="../Scope.html" title="interface in io.artframework">Scope</a>,&#8203;TParser&gt;&nbsp;parser)</code></th>
 <td class="colLast">
@@ -265,7 +265,7 @@ implements <a href="../ArtLoader.html" title="interface in io.artframework">ArtL
 <ul class="blockList">
 <li class="blockList">
 <h4>parser</h4>
-<pre class="methodSignature">public&nbsp;&lt;TParser extends <a href="../Parser.html" title="interface in io.artframework">Parser</a>&lt;TInput&gt;,&#8203;TInput&gt;&nbsp;<a href="../ArtLoader.html" title="interface in io.artframework">ArtLoader</a>&nbsp;parser&#8203;(java.lang.Class&lt;TParser&gt;&nbsp;parserClass,
+<pre class="methodSignature">public&nbsp;&lt;TParser extends <a href="../parser/Parser.html" title="interface in io.artframework.parser">Parser</a>&lt;TInput&gt;,&#8203;TInput&gt;&nbsp;<a href="../ArtLoader.html" title="interface in io.artframework">ArtLoader</a>&nbsp;parser&#8203;(java.lang.Class&lt;TParser&gt;&nbsp;parserClass,
                                                                       java.util.function.Function&lt;<a href="../Scope.html" title="interface in io.artframework">Scope</a>,&#8203;TParser&gt;&nbsp;parser)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../ArtLoader.html#parser(java.lang.Class,java.util.function.Function)">ArtLoader</a></code></span></div>
 <div class="block">Registers the given parser class and supplier as an <a href="../ArtParser.html" title="interface in io.artframework"><code>ArtParser</code></a> that can be used to create art contexts.
@@ -291,7 +291,7 @@ implements <a href="../ArtLoader.html" title="interface in io.artframework">ArtL
 <ul class="blockList">
 <li class="blockList">
 <h4>parser</h4>
-<pre class="methodSignature">public&nbsp;&lt;TParser extends <a href="../Parser.html" title="interface in io.artframework">Parser</a>&lt;TInput&gt;,&#8203;TInput&gt;&nbsp;TParser&nbsp;parser&#8203;(java.lang.Class&lt;TParser&gt;&nbsp;parserClass)</pre>
+<pre class="methodSignature">public&nbsp;&lt;TParser extends <a href="../parser/Parser.html" title="interface in io.artframework.parser">Parser</a>&lt;TInput&gt;,&#8203;TInput&gt;&nbsp;TParser&nbsp;parser&#8203;(java.lang.Class&lt;TParser&gt;&nbsp;parserClass)</pre>
 <div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../ArtLoader.html#parser(java.lang.Class)">ArtLoader</a></code></span></div>
 <div class="block">Gets a registered parser for the given parser class.
  <p>Returns null if no parser with the class is registered.</div>

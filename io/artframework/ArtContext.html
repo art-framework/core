@@ -148,7 +148,8 @@ extends <a href="Context.html" title="interface in io.artframework">Context</a>,
      Set the <a href="conf/ArtSettings.html#executeActions(boolean)"><code>ArtSettings.executeActions(boolean)</code></a> flag in the <a href="#settings()"><code>settings()</code></a> to control the behaviour.
      <p><b>Important:</b> call <a href="#disableTrigger()"><code>disableTrigger()</code></a> when you dispose the context to allow garbage collection to run.
  </ul>
- <p><pre><code>
+ Here is an example on how to load an ArtContext from a <code>List&lt;String&gt;</code> using the default <a href="parser/flow/FlowParser.html" title="class in io.artframework.parser.flow"><code>FlowParser</code></a>
+ <pre><code>
  try {
      ArtContext context = ART.load(config.getStringList("rewards"));
      context.execute(player);

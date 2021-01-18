@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":1,"i2":6,"i3":6,"i4":1,"i5":1,"i6":18,"i7":6,"i8":18};
+var data = {"i0":6,"i1":1,"i2":6,"i3":6,"i4":6,"i5":1,"i6":1,"i7":18,"i8":6,"i9":18};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -169,6 +169,13 @@ extends <a href="DataProvider.html" title="interface in io.artframework">DataPro
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>&lt;TProvider extends <a href="Provider.html" title="interface in io.artframework">Provider</a>&gt;<br>java.util.Optional&lt;TProvider&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#get(java.lang.Class)">get</a></span>&#8203;(java.lang.Class&lt;TProvider&gt;&nbsp;providerClass)</code></th>
+<td class="colLast">
+<div class="block">Tries to find a provider for the registered provider class and returns its instance.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code><a href="ArtContext.html" title="interface in io.artframework">ArtContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#load(java.lang.String,java.util.Collection)">load</a></span>&#8203;(java.lang.String&nbsp;key,
     java.util.Collection&lt;java.lang.String&gt;&nbsp;list)</code></th>
@@ -176,7 +183,7 @@ extends <a href="DataProvider.html" title="interface in io.artframework">DataPro
 <div class="block">Loads the given string list and tries to parse each line into a valid art object.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="ArtContext.html" title="interface in io.artframework">ArtContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#load(java.util.Collection)">load</a></span>&#8203;(java.util.Collection&lt;java.lang.String&gt;&nbsp;list)</code></th>
 <td class="colLast">
@@ -184,17 +191,17 @@ extends <a href="DataProvider.html" title="interface in io.artframework">DataPro
  into a valid art object.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static <a href="Scope.html" title="interface in io.artframework">Scope</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#of(io.artframework.Configuration)">of</a></span>&#8203;(<a href="Configuration.html" title="class in io.artframework">Configuration</a>&nbsp;configuration)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>static <a href="Scope.html" title="interface in io.artframework">Scope</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#of(java.util.function.Consumer)">of</a></span>&#8203;(java.util.function.Consumer&lt;<a href="Configuration.ConfigurationBuilder.html" title="class in io.artframework">Configuration.ConfigurationBuilder</a>&gt;&nbsp;config)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>default <a href="ArtProvider.html" title="interface in io.artframework">ArtProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#register()">register</a></span>()</code></th>
 <td class="colLast">
@@ -202,14 +209,14 @@ extends <a href="DataProvider.html" title="interface in io.artframework">DataPro
  like actions, requirements and trigger.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
 <td class="colFirst"><code><a href="conf/Settings.html" title="class in io.artframework.conf">Settings</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#settings()">settings</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Gets the current settings of this scope.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>default <a href="StorageProvider.html" title="interface in io.artframework">StorageProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#store()">store</a></span>()</code></th>
 <td class="colLast">
@@ -301,6 +308,26 @@ extends <a href="DataProvider.html" title="interface in io.artframework">DataPro
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the current configuration of this scope</dd>
+</dl>
+</li>
+</ul>
+<a id="get(java.lang.Class)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>get</h4>
+<pre class="methodSignature">&lt;TProvider extends <a href="Provider.html" title="interface in io.artframework">Provider</a>&gt;&nbsp;java.util.Optional&lt;TProvider&gt;&nbsp;get&#8203;(java.lang.Class&lt;TProvider&gt;&nbsp;providerClass)</pre>
+<div class="block">Tries to find a provider for the registered provider class and returns its instance.
+ <p>By default all providers are singletons that can be registered <a href="annotations/OnBootstrap.html" title="annotation in io.artframework.annotations"><code>OnBootstrap</code></a>
+ with the <a href="BootstrapScope.html" title="interface in io.artframework"><code>BootstrapScope</code></a>.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>TProvider</code> - the type of the provider</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>providerClass</code> - the class of the provider that should be retrieved</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the provider if it is registered</dd>
 </dl>
 </li>
 </ul>

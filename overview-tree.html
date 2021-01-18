@@ -101,6 +101,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li><a href="io/artframework/events/package-tree.html">io.artframework.events</a>, </li>
 <li><a href="io/artframework/finder/package-tree.html">io.artframework.finder</a>, </li>
 <li><a href="io/artframework/impl/package-tree.html">io.artframework.impl</a>, </li>
+<li><a href="io/artframework/parser/package-tree.html">io.artframework.parser</a>, </li>
 <li><a href="io/artframework/parser/flow/package-tree.html">io.artframework.parser.flow</a>, </li>
 <li><a href="io/artframework/requirements/package-tree.html">io.artframework.requirements</a>, </li>
 <li><a href="io/artframework/util/package-tree.html">io.artframework.util</a>, </li>
@@ -155,9 +156,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">io.artframework.impl.<a href="io/artframework/impl/DefaultArtProvider.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultArtProvider</span></a> (implements io.artframework.<a href="io/artframework/ArtProvider.html" title="interface in io.artframework">ArtProvider</a>)</li>
 <li class="circle">io.artframework.impl.<a href="io/artframework/impl/DefaultEventProvider.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultEventProvider</span></a> (implements io.artframework.<a href="io/artframework/EventProvider.html" title="interface in io.artframework">EventProvider</a>)</li>
 <li class="circle">io.artframework.impl.<a href="io/artframework/impl/DefaultFinderProvider.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultFinderProvider</span></a> (implements io.artframework.<a href="io/artframework/FinderProvider.html" title="interface in io.artframework">FinderProvider</a>)</li>
-<li class="circle">io.artframework.impl.<a href="io/artframework/impl/DefaultFlowParserProvider.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultFlowParserProvider</span></a> (implements io.artframework.<a href="io/artframework/FlowParserProvider.html" title="interface in io.artframework">FlowParserProvider</a>)</li>
+<li class="circle">io.artframework.impl.<a href="io/artframework/impl/DefaultFlowLineParserProvider.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultFlowLineParserProvider</span></a> (implements io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParserProvider.html" title="interface in io.artframework.parser.flow">FlowLineParserProvider</a>)</li>
 <li class="circle">io.artframework.impl.<a href="io/artframework/impl/DefaultInjectionProvider.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultInjectionProvider</span></a> (implements io.artframework.<a href="io/artframework/InjectionProvider.html" title="interface in io.artframework">InjectionProvider</a>)</li>
-<li class="circle">io.artframework.impl.<a href="io/artframework/impl/DefaultModuleProvider.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultModuleProvider</span></a> (implements io.artframework.<a href="io/artframework/ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a>)</li>
+<li class="circle">io.artframework.impl.<a href="io/artframework/impl/DefaultModuleProvider.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultModuleProvider</span></a> (implements io.artframework.<a href="io/artframework/BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a>, io.artframework.<a href="io/artframework/ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a>)</li>
 <li class="circle">io.artframework.impl.<a href="io/artframework/impl/DefaultTargetProvider.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultTargetProvider</span></a> (implements io.artframework.<a href="io/artframework/TargetProvider.html" title="interface in io.artframework">TargetProvider</a>)</li>
 </ul>
 </li>
@@ -186,6 +187,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">io.artframework.conf.<a href="io/artframework/conf/ArtSettings.html" title="class in io.artframework.conf"><span class="typeNameLink">ArtSettings</span></a></li>
 <li class="circle">io.artframework.conf.<a href="io/artframework/conf/ArtSettings.ArtSettingsBuilder.html" title="class in io.artframework.conf"><span class="typeNameLink">ArtSettings.ArtSettingsBuilder</span></a></li>
 <li class="circle">io.artframework.conf.<a href="io/artframework/conf/ConfigFieldInformation.html" title="class in io.artframework.conf"><span class="typeNameLink">ConfigFieldInformation</span></a> (implements java.lang.Comparable&lt;T&gt;)</li>
+<li class="circle">io.artframework.parser.<a href="io/artframework/parser/ConfigParser.html" title="class in io.artframework.parser"><span class="typeNameLink">ConfigParser</span></a></li>
 <li class="circle">io.artframework.<a href="io/artframework/Configuration.html" title="class in io.artframework"><span class="typeNameLink">Configuration</span></a></li>
 <li class="circle">io.artframework.<a href="io/artframework/Configuration.ConfigurationBuilder.html" title="class in io.artframework"><span class="typeNameLink">Configuration.ConfigurationBuilder</span></a></li>
 <li class="circle">io.artframework.util.<a href="io/artframework/util/ConfigUtil.html" title="class in io.artframework.util"><span class="typeNameLink">ConfigUtil</span></a></li>
@@ -229,21 +231,17 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="circle">io.artframework.events.<a href="io/artframework/events/EventManager.html" title="class in io.artframework.events"><span class="typeNameLink">EventManager</span></a></li>
 <li class="circle">io.artframework.util.<a href="io/artframework/util/FileUtil.html" title="class in io.artframework.util"><span class="typeNameLink">FileUtil</span></a></li>
-<li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLogicSorter.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">FlowLogicSorter</span></a></li>
-<li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">FlowParser</span></a> (implements io.artframework.<a href="io/artframework/Parser.html" title="interface in io.artframework">Parser</a>&lt;TInput&gt;)</li>
+<li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">FlowParser</span></a> (implements io.artframework.parser.<a href="io/artframework/parser/Parser.html" title="interface in io.artframework.parser">Parser</a>&lt;TInput&gt;)</li>
 <li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowType.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">FlowType</span></a></li>
 <li class="circle">io.artframework.events.<a href="io/artframework/events/HandlerList.html" title="class in io.artframework.events"><span class="typeNameLink">HandlerList</span></a></li>
 <li class="circle">io.artframework.conf.<a href="io/artframework/conf/KeyValuePair.html" title="class in io.artframework.conf"><span class="typeNameLink">KeyValuePair</span></a></li>
-<li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">LineParser</span></a>&lt;TResult&gt; (implements io.artframework.<a href="io/artframework/Scoped.html" title="interface in io.artframework">Scoped</a>)
+<li class="circle">io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser"><span class="typeNameLink">LineParser</span></a>&lt;TResult&gt; (implements java.util.Iterator&lt;E&gt;)
 <ul>
-<li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">ArtObjectContextParser</span></a>&lt;TFactory&gt; (implements io.artframework.<a href="io/artframework/FlowParser.html" title="interface in io.artframework">FlowParser</a>)
+<li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">FlowLineParser</span></a> (implements io.artframework.<a href="io/artframework/Scoped.html" title="interface in io.artframework">Scoped</a>)
 <ul>
-<li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/ActionParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">ActionParser</span></a></li>
-<li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/RequirementParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">RequirementParser</span></a></li>
-<li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/TriggerParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">TriggerParser</span></a></li>
+<li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextLineParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">ArtObjectContextLineParser</span></a>&lt;TFactory&gt;</li>
 </ul>
 </li>
-<li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/ConfigParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">ConfigParser</span></a></li>
 </ul>
 </li>
 <li class="circle">io.artframework.<a href="io/artframework/ModuleResolution.html" title="class in io.artframework"><span class="typeNameLink">ModuleResolution</span></a></li>
@@ -345,7 +343,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">io.artframework.impl.<a href="io/artframework/impl/DefaultModuleProvider.ChildModuleLoader.html" title="interface in io.artframework.impl"><span class="typeNameLink">DefaultModuleProvider.ChildModuleLoader</span></a></li>
 <li class="circle">io.artframework.events.<a href="io/artframework/events/EventExecutor.html" title="interface in io.artframework.events"><span class="typeNameLink">EventExecutor</span></a></li>
 <li class="circle">io.artframework.events.<a href="io/artframework/events/EventListener.html" title="interface in io.artframework.events"><span class="typeNameLink">EventListener</span></a></li>
-<li class="circle">io.artframework.<a href="io/artframework/FlowParser.html" title="interface in io.artframework"><span class="typeNameLink">FlowParser</span></a></li>
 <li class="circle">java.util.function.Function&lt;T,&#8203;R&gt;
 <ul>
 <li class="circle">io.artframework.<a href="io/artframework/FieldNameFormatter.html" title="interface in io.artframework"><span class="typeNameLink">FieldNameFormatter</span></a></li>
@@ -408,6 +405,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">io.artframework.<a href="io/artframework/ArtParser.html" title="interface in io.artframework"><span class="typeNameLink">ArtParser</span></a>&lt;TParser,&#8203;TInput&gt;</li>
 </ul>
 </li>
+<li class="circle">io.artframework.<a href="io/artframework/BootstrapPhase.html" title="interface in io.artframework"><span class="typeNameLink">BootstrapPhase</span></a></li>
 <li class="circle">io.artframework.<a href="io/artframework/ConfigProvider.html" title="interface in io.artframework"><span class="typeNameLink">ConfigProvider</span></a></li>
 <li class="circle">io.artframework.<a href="io/artframework/Context.html" title="interface in io.artframework"><span class="typeNameLink">Context</span></a>
 <ul>
@@ -430,7 +428,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </ul>
 </li>
 <li class="circle">io.artframework.<a href="io/artframework/Finder.html" title="interface in io.artframework"><span class="typeNameLink">Finder</span></a></li>
-<li class="circle">io.artframework.<a href="io/artframework/Parser.html" title="interface in io.artframework"><span class="typeNameLink">Parser</span></a>&lt;TInput&gt;</li>
+<li class="circle">io.artframework.parser.<a href="io/artframework/parser/Parser.html" title="interface in io.artframework.parser"><span class="typeNameLink">Parser</span></a>&lt;TInput&gt;</li>
 <li class="circle">io.artframework.<a href="io/artframework/Provider.html" title="interface in io.artframework"><span class="typeNameLink">Provider</span></a>
 <ul>
 <li class="circle">io.artframework.<a href="io/artframework/ArtProvider.html" title="interface in io.artframework"><span class="typeNameLink">ArtProvider</span></a>
@@ -449,7 +447,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </ul>
 </li>
 <li class="circle">io.artframework.<a href="io/artframework/FinderProvider.html" title="interface in io.artframework"><span class="typeNameLink">FinderProvider</span></a></li>
-<li class="circle">io.artframework.<a href="io/artframework/FlowParserProvider.html" title="interface in io.artframework"><span class="typeNameLink">FlowParserProvider</span></a></li>
+<li class="circle">io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParserProvider.html" title="interface in io.artframework.parser.flow"><span class="typeNameLink">FlowLineParserProvider</span></a></li>
 <li class="circle">io.artframework.<a href="io/artframework/ModuleProvider.html" title="interface in io.artframework"><span class="typeNameLink">ModuleProvider</span></a></li>
 <li class="circle">io.artframework.<a href="io/artframework/TargetProvider.html" title="interface in io.artframework"><span class="typeNameLink">TargetProvider</span></a></li>
 </ul>

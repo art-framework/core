@@ -132,10 +132,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultModuleProvider.ChildModuleLoader.html#accept(io.artframework.impl.DefaultModuleProvider.ModuleInformation)">accept(DefaultModuleProvider.ModuleInformation)</a></span> - Method in interface io.artframework.impl.<a href="io/artframework/impl/DefaultModuleProvider.ChildModuleLoader.html" title="interface in io.artframework.impl">DefaultModuleProvider.ChildModuleLoader</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/FlowParser.html#accept(java.lang.String)">accept(String)</a></span> - Method in interface io.artframework.<a href="io/artframework/FlowParser.html" title="interface in io.artframework">FlowParser</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/LineParser.html#accept(java.lang.String)">accept(String)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow">LineParser</a></dt>
-<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/ConfigParser.html#accept(java.lang.String)">accept(String)</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/ConfigParser.html" title="class in io.artframework.parser">ConfigParser</a></dt>
+<dd>
+<div class="block">Accepts the given input and creates a matcher from it returning the result of the match.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#accept(java.lang.String)">accept(String)</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
+<dd>
+<div class="block">Takes the given line and matches it against the given pattern.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultActionContext.html#action()">action()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultActionContext.html" title="class in io.artframework.impl">DefaultActionContext</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/Action.html" title="interface in io.artframework"><span class="typeNameLink">Action</span></a>&lt;<a href="io/artframework/Action.html" title="type parameter in Action">TTarget</a>&gt; - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
@@ -168,10 +172,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="io/artframework/ActionFactory.html" title="interface in io.artframework"><span class="typeNameLink">ActionFactory</span></a>&lt;<a href="io/artframework/ActionFactory.html" title="type parameter in ActionFactory">TTarget</a>&gt; - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/ActionHolder.html" title="interface in io.artframework"><span class="typeNameLink">ActionHolder</span></a> - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io/artframework/parser/flow/ActionParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">ActionParser</span></a> - Class in <a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ActionParser.html#%3Cinit%3E(io.artframework.Scope)">ActionParser(Scope)</a></span> - Constructor for class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ActionParser.html" title="class in io.artframework.parser.flow">ActionParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/ActionProvider.html" title="interface in io.artframework"><span class="typeNameLink">ActionProvider</span></a> - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>&nbsp;</dd>
@@ -225,10 +225,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFinderProvider.html#add(io.artframework.Finder)">add(Finder)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultFinderProvider.html" title="class in io.artframework.impl">DefaultFinderProvider</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/FlowParserProvider.html#add(io.artframework.FlowParser)">add(FlowParser)</a></span> - Method in interface io.artframework.<a href="io/artframework/FlowParserProvider.html" title="interface in io.artframework">FlowParserProvider</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFlowParserProvider.html#add(io.artframework.FlowParser)">add(FlowParser)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultFlowParserProvider.html" title="class in io.artframework.impl">DefaultFlowParserProvider</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultTriggerProvider.html#add(io.artframework.Trigger)">add(Trigger)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultTriggerProvider.html" title="class in io.artframework.impl">DefaultTriggerProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/TriggerProvider.html#add(io.artframework.Trigger)">add(Trigger)</a></span> - Method in interface io.artframework.<a href="io/artframework/TriggerProvider.html" title="interface in io.artframework">TriggerProvider</a></dt>
@@ -248,6 +244,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/artframework/ActionProvider.html#add(java.lang.Class,io.artframework.ArtObjectProvider)">add(Class&lt;TAction&gt;, ArtObjectProvider&lt;TAction&gt;)</a></span> - Method in interface io.artframework.<a href="io/artframework/ActionProvider.html" title="interface in io.artframework">ActionProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultActionProvider.html#add(java.lang.Class,io.artframework.ArtObjectProvider)">add(Class&lt;TAction&gt;, ArtObjectProvider&lt;TAction&gt;)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultActionProvider.html" title="class in io.artframework.impl">DefaultActionProvider</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/BootstrapScope.html#add(java.lang.Class,java.util.function.Function)">add(Class&lt;TProvider&gt;, Function&lt;Scope, TProvider&gt;)</a></span> - Method in interface io.artframework.<a href="io/artframework/BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a></dt>
+<dd>
+<div class="block">Registers a new provider implementation for the given class with the given provider.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultScope.html#add(java.lang.Class,java.util.function.Function)">add(Class&lt;TProvider&gt;, Function&lt;Scope, TProvider&gt;)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultScope.html" title="class in io.artframework.impl">DefaultScope</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultRequirementProvider.html#add(java.lang.Class,io.artframework.ArtObjectProvider)">add(Class&lt;TRequirement&gt;, ArtObjectProvider&lt;TRequirement&gt;)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultRequirementProvider.html" title="class in io.artframework.impl">DefaultRequirementProvider</a></dt>
 <dd>&nbsp;</dd>
@@ -271,6 +273,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/RequirementProvider.html#add(java.lang.String,java.lang.Class,io.artframework.Requirement)">add(String, Class&lt;TTarget&gt;, Requirement&lt;TTarget&gt;)</a></span> - Method in interface io.artframework.<a href="io/artframework/RequirementProvider.html" title="interface in io.artframework">RequirementProvider</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFlowLineParserProvider.html#add(java.util.function.BiFunction)">add(BiFunction&lt;Iterator&lt;String&gt;, Scope, FlowLineParser&gt;)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultFlowLineParserProvider.html" title="class in io.artframework.impl">DefaultFlowLineParserProvider</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLineParserProvider.html#add(java.util.function.BiFunction)">add(BiFunction&lt;Iterator&lt;String&gt;, Scope, FlowLineParser&gt;)</a></span> - Method in interface io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParserProvider.html" title="interface in io.artframework.parser.flow">FlowLineParserProvider</a></dt>
+<dd>
+<div class="block">Registers the given flow line parser in this provider.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtParser.html#add(TInput)">add(TInput)</a></span> - Method in interface io.artframework.<a href="io/artframework/ArtParser.html" title="interface in io.artframework">ArtParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultArtParser.html#add(TInput)">add(TInput)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultArtParser.html" title="class in io.artframework.impl">DefaultArtParser</a></dt>
@@ -352,11 +360,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/FinderProvider.html#all()">all()</a></span> - Method in interface io.artframework.<a href="io/artframework/FinderProvider.html" title="interface in io.artframework">FinderProvider</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/FlowParserProvider.html#all()">all()</a></span> - Method in interface io.artframework.<a href="io/artframework/FlowParserProvider.html" title="interface in io.artframework">FlowParserProvider</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFinderProvider.html#all()">all()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultFinderProvider.html" title="class in io.artframework.impl">DefaultFinderProvider</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFlowParserProvider.html#all()">all()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultFlowParserProvider.html" title="class in io.artframework.impl">DefaultFlowParserProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultModuleProvider.html#all()">all()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultModuleProvider.html" title="class in io.artframework.impl">DefaultModuleProvider</a></dt>
 <dd>&nbsp;</dd>
@@ -368,6 +372,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/TargetProvider.html#all()">all()</a></span> - Method in interface io.artframework.<a href="io/artframework/TargetProvider.html" title="interface in io.artframework">TargetProvider</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFlowLineParserProvider.html#all(java.util.Iterator,io.artframework.Scope)">all(Iterator&lt;String&gt;, Scope)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultFlowLineParserProvider.html" title="class in io.artframework.impl">DefaultFlowLineParserProvider</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLineParserProvider.html#all(java.util.Iterator,io.artframework.Scope)">all(Iterator&lt;String&gt;, Scope)</a></span> - Method in interface io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParserProvider.html" title="interface in io.artframework.parser.flow">FlowLineParserProvider</a></dt>
+<dd>
+<div class="block">Creates a new instance of all registered parsers for the given iterator and scope.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/Provider.html#and()">and()</a></span> - Method in interface io.artframework.<a href="io/artframework/Provider.html" title="interface in io.artframework">Provider</a></dt>
 <dd>
 <div class="block">This is just syntactic suggar to return to the <a href="io/artframework/Configuration.html" title="class in io.artframework"><code>Configuration</code></a>
@@ -452,9 +462,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Every <a href="io/artframework/ArtObject.html" title="interface in io.artframework"><code>ArtObject</code></a> must be wrapped inside an <a href="io/artframework/ArtObjectContext.html" title="interface in io.artframework"><code>ArtObjectContext</code></a>
  that controls how the <a href="io/artframework/ArtObject.html" title="interface in io.artframework"><code>ArtObject</code></a> is executed or tested.</div>
 </dd>
-<dt><a href="io/artframework/parser/flow/ArtObjectContextParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">ArtObjectContextParser</span></a>&lt;<a href="io/artframework/parser/flow/ArtObjectContextParser.html" title="type parameter in ArtObjectContextParser">TFactory</a> extends <a href="io/artframework/Factory.html" title="interface in io.artframework">Factory</a>&lt;?,&#8203;?&gt;&gt; - Class in <a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a></dt>
+<dt><a href="io/artframework/parser/flow/ArtObjectContextLineParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">ArtObjectContextLineParser</span></a>&lt;<a href="io/artframework/parser/flow/ArtObjectContextLineParser.html" title="type parameter in ArtObjectContextLineParser">TFactory</a> extends <a href="io/artframework/Factory.html" title="interface in io.artframework">Factory</a>&lt;?,&#8203;?&gt;&gt; - Class in <a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextParser.html#%3Cinit%3E(io.artframework.Scope,io.artframework.parser.flow.FlowType)">ArtObjectContextParser(Scope, FlowType)</a></span> - Constructor for class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextParser.html" title="class in io.artframework.parser.flow">ArtObjectContextParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextLineParser.html#%3Cinit%3E(java.util.Iterator,io.artframework.Scope,io.artframework.parser.flow.FlowType)">ArtObjectContextLineParser(Iterator&lt;String&gt;, Scope, FlowType)</a></span> - Constructor for class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextLineParser.html" title="class in io.artframework.parser.flow">ArtObjectContextLineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/ArtObjectError.html" title="class in io.artframework"><span class="typeNameLink">ArtObjectError</span></a> - Class in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>
@@ -481,7 +491,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Provides a way to create new instances of the given <a href="io/artframework/ArtObject.html" title="interface in io.artframework"><code>ArtObject</code></a> type.</div>
 </dd>
-<dt><a href="io/artframework/ArtParser.html" title="interface in io.artframework"><span class="typeNameLink">ArtParser</span></a>&lt;<a href="io/artframework/ArtParser.html" title="type parameter in ArtParser">TParser</a> extends <a href="io/artframework/Parser.html" title="interface in io.artframework">Parser</a>&lt;<a href="io/artframework/ArtParser.html" title="type parameter in ArtParser">TInput</a>&gt;,&#8203;<a href="io/artframework/ArtParser.html" title="type parameter in ArtParser">TInput</a>&gt; - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
+<dt><a href="io/artframework/ArtParser.html" title="interface in io.artframework"><span class="typeNameLink">ArtParser</span></a>&lt;<a href="io/artframework/ArtParser.html" title="type parameter in ArtParser">TParser</a> extends <a href="io/artframework/parser/Parser.html" title="interface in io.artframework.parser">Parser</a>&lt;<a href="io/artframework/ArtParser.html" title="type parameter in ArtParser">TInput</a>&gt;,&#8203;<a href="io/artframework/ArtParser.html" title="type parameter in ArtParser">TInput</a>&gt; - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>
 <div class="block">The art parser parses the given input into a valid art context.</div>
 </dd>
@@ -606,6 +616,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/artframework/ModuleState.html#BOOTSTRAPPED">BOOTSTRAPPED</a></span> - io.artframework.<a href="io/artframework/ModuleState.html" title="enum in io.artframework">ModuleState</a></dt>
 <dd>
 <div class="block">The module has been registered and bootstrapping is complete.</div>
+</dd>
+<dt><a href="io/artframework/BootstrapPhase.html" title="interface in io.artframework"><span class="typeNameLink">BootstrapPhase</span></a> - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
+<dd>
+<div class="block">The bootstrap phase is a special state of the module provider
+ after bootstrapping all modules has finished and before they are loaded.</div>
 </dd>
 <dt><a href="io/artframework/BootstrapScope.html" title="interface in io.artframework"><span class="typeNameLink">BootstrapScope</span></a> - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>
@@ -732,7 +747,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/events/TriggerEvent.html#canEqual(java.lang.Object)">canEqual(Object)</a></span> - Method in class io.artframework.events.<a href="io/artframework/events/TriggerEvent.html" title="class in io.artframework.events">TriggerEvent</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/LineParser.html#canEqual(java.lang.Object)">canEqual(Object)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow">LineParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLineParser.html#canEqual(java.lang.Object)">canEqual(Object)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParser.html" title="class in io.artframework.parser.flow">FlowLineParser</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#canEqual(java.lang.Object)">canEqual(Object)</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/TriggerTarget.html#canEqual(java.lang.Object)">canEqual(Object)</a></span> - Method in class io.artframework.<a href="io/artframework/TriggerTarget.html" title="class in io.artframework">TriggerTarget</a></dt>
 <dd>&nbsp;</dd>
@@ -756,14 +773,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Removes all finders from this provider.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/artframework/FlowParserProvider.html#clear()">clear()</a></span> - Method in interface io.artframework.<a href="io/artframework/FlowParserProvider.html" title="interface in io.artframework">FlowParserProvider</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFinderProvider.html#clear()">clear()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultFinderProvider.html" title="class in io.artframework.impl">DefaultFinderProvider</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFlowParserProvider.html#clear()">clear()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultFlowParserProvider.html" title="class in io.artframework.impl">DefaultFlowParserProvider</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFlowLineParserProvider.html#clear()">clear()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultFlowLineParserProvider.html" title="class in io.artframework.impl">DefaultFlowLineParserProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultTargetProvider.html#clear()">clear()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultTargetProvider.html" title="class in io.artframework.impl">DefaultTargetProvider</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLineParserProvider.html#clear()">clear()</a></span> - Method in interface io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParserProvider.html" title="interface in io.artframework.parser.flow">FlowLineParserProvider</a></dt>
+<dd>
+<div class="block">Clears all registered flow parsers including the default parsers.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/TargetProvider.html#clear()">clear()</a></span> - Method in interface io.artframework.<a href="io/artframework/TargetProvider.html" title="interface in io.artframework">TargetProvider</a></dt>
 <dd>
 <div class="block">Removes all configured <a href="io/artframework/Target.html" title="interface in io.artframework"><code>Target</code></a> source types.</div>
@@ -865,15 +884,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ConfiguredTriggerTarget.html#configMap()">configMap()</a></span> - Method in class io.artframework.<a href="io/artframework/ConfiguredTriggerTarget.html" title="class in io.artframework">ConfiguredTriggerTarget</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ActionParser.html#configMap()">configMap()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ActionParser.html" title="class in io.artframework.parser.flow">ActionParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/ConfigParser.html#configMap()">configMap()</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/ConfigParser.html" title="class in io.artframework.parser">ConfigParser</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextParser.html#configMap()">configMap()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextParser.html" title="class in io.artframework.parser.flow">ArtObjectContextParser</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ConfigParser.html#configMap()">configMap()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ConfigParser.html" title="class in io.artframework.parser.flow">ConfigParser</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/RequirementParser.html#configMap()">configMap()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/RequirementParser.html" title="class in io.artframework.parser.flow">RequirementParser</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/TriggerParser.html#configMap()">configMap()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/TriggerParser.html" title="class in io.artframework.parser.flow">TriggerParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextLineParser.html#configMap()">configMap()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextLineParser.html" title="class in io.artframework.parser.flow">ArtObjectContextLineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/ConfigMap.html" title="interface in io.artframework"><span class="typeNameLink">ConfigMap</span></a> - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>&nbsp;</dd>
@@ -881,10 +894,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/annotations/ConfigOption.html" title="annotation in io.artframework.annotations"><span class="typeNameLink">ConfigOption</span></a> - Annotation Type in <a href="io/artframework/annotations/package-summary.html">io.artframework.annotations</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/artframework/parser/flow/ConfigParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">ConfigParser</span></a> - Class in <a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ConfigParser.html#%3Cinit%3E(io.artframework.Scope,io.artframework.ConfigMap)">ConfigParser(Scope, ConfigMap)</a></span> - Constructor for class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ConfigParser.html" title="class in io.artframework.parser.flow">ConfigParser</a></dt>
-<dd>&nbsp;</dd>
+<dt><a href="io/artframework/parser/ConfigParser.html" title="class in io.artframework.parser"><span class="typeNameLink">ConfigParser</span></a> - Class in <a href="io/artframework/parser/package-summary.html">io.artframework.parser</a></dt>
+<dd>
+<div class="block">The config parser is used to extract <a href="io/artframework/ConfigMap.html" title="interface in io.artframework"><code>ConfigMap</code></a> values from a string
+ and returns a new config map with the values.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/conf/Settings.html#configPath()">configPath()</a></span> - Method in class io.artframework.conf.<a href="io/artframework/conf/Settings.html" title="class in io.artframework.conf">Settings</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/conf/Settings.html#configPath(java.lang.String)">configPath(String)</a></span> - Method in class io.artframework.conf.<a href="io/artframework/conf/Settings.html" title="class in io.artframework.conf">Settings</a></dt>
@@ -915,7 +929,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><a href="io/artframework/Configuration.html" title="class in io.artframework"><span class="typeNameLink">Configuration</span></a> - Class in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/Configuration.html#%3Cinit%3E(io.artframework.ArtProvider,io.artframework.ActionProvider,io.artframework.RequirementProvider,io.artframework.TriggerProvider,io.artframework.Scheduler,io.artframework.StorageProvider,io.artframework.TargetProvider,io.artframework.EventProvider,io.artframework.FlowParserProvider,io.artframework.ModuleProvider,io.artframework.FinderProvider,io.artframework.ConfigProvider,io.artframework.InjectionProvider,java.lang.ClassLoader)">Configuration(ArtProvider, ActionProvider, RequirementProvider, TriggerProvider, Scheduler, StorageProvider, TargetProvider, EventProvider, FlowParserProvider, ModuleProvider, FinderProvider, ConfigProvider, InjectionProvider, ClassLoader)</a></span> - Constructor for class io.artframework.<a href="io/artframework/Configuration.html" title="class in io.artframework">Configuration</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/Configuration.html#%3Cinit%3E(io.artframework.ArtProvider,io.artframework.ActionProvider,io.artframework.RequirementProvider,io.artframework.TriggerProvider,io.artframework.Scheduler,io.artframework.StorageProvider,io.artframework.TargetProvider,io.artframework.EventProvider,io.artframework.parser.flow.FlowLineParserProvider,io.artframework.ModuleProvider,io.artframework.FinderProvider,io.artframework.ConfigProvider,io.artframework.InjectionProvider,java.lang.ClassLoader)">Configuration(ArtProvider, ActionProvider, RequirementProvider, TriggerProvider, Scheduler, StorageProvider, TargetProvider, EventProvider, FlowLineParserProvider, ModuleProvider, FinderProvider, ConfigProvider, InjectionProvider, ClassLoader)</a></span> - Constructor for class io.artframework.<a href="io/artframework/Configuration.html" title="class in io.artframework">Configuration</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/Configuration.ConfigurationBuilder.html" title="class in io.artframework"><span class="typeNameLink">Configuration.ConfigurationBuilder</span></a> - Class in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>&nbsp;</dd>
@@ -1032,7 +1046,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ConfigMapType.html#CUSTOM">CUSTOM</a></span> - io.artframework.parser.flow.<a href="io/artframework/parser/flow/ConfigMapType.html" title="enum in io.artframework.parser.flow">ConfigMapType</a></dt>
 <dd>
-<div class="block">A custom config placeholder that can be used to use the <a href="io/artframework/parser/flow/ConfigParser.html" title="class in io.artframework.parser.flow"><code>ConfigParser</code></a>
+<div class="block">A custom config placeholder that can be used to use the <a href="io/artframework/parser/ConfigParser.html" title="class in io.artframework.parser"><code>ConfigParser</code></a>
  without a general or specific art config.</div>
 </dd>
 <dt><a href="io/artframework/util/graphs/CycleSearch.html" title="class in io.artframework.util.graphs"><span class="typeNameLink">CycleSearch</span></a>&lt;<a href="io/artframework/util/graphs/CycleSearch.html" title="type parameter in CycleSearch">TObject</a>&gt; - Class in <a href="io/artframework/util/graphs/package-summary.html">io.artframework.util.graphs</a></dt>
@@ -1123,7 +1137,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/conf/DefaultArtObjectMeta.html#%3Cinit%3E(java.lang.String,java.lang.Class,TArtObject)">DefaultArtObjectMeta(String, Class&lt;?&gt;, TArtObject)</a></span> - Constructor for class io.artframework.conf.<a href="io/artframework/conf/DefaultArtObjectMeta.html" title="class in io.artframework.conf">DefaultArtObjectMeta</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/artframework/impl/DefaultArtParser.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultArtParser</span></a>&lt;<a href="io/artframework/impl/DefaultArtParser.html" title="type parameter in DefaultArtParser">TParser</a> extends <a href="io/artframework/Parser.html" title="interface in io.artframework">Parser</a>&lt;<a href="io/artframework/impl/DefaultArtParser.html" title="type parameter in DefaultArtParser">TInput</a>&gt;,&#8203;<a href="io/artframework/impl/DefaultArtParser.html" title="type parameter in DefaultArtParser">TInput</a>&gt; - Class in <a href="io/artframework/impl/package-summary.html">io.artframework.impl</a></dt>
+<dt><a href="io/artframework/impl/DefaultArtParser.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultArtParser</span></a>&lt;<a href="io/artframework/impl/DefaultArtParser.html" title="type parameter in DefaultArtParser">TParser</a> extends <a href="io/artframework/parser/Parser.html" title="interface in io.artframework.parser">Parser</a>&lt;<a href="io/artframework/impl/DefaultArtParser.html" title="type parameter in DefaultArtParser">TInput</a>&gt;,&#8203;<a href="io/artframework/impl/DefaultArtParser.html" title="type parameter in DefaultArtParser">TInput</a>&gt; - Class in <a href="io/artframework/impl/package-summary.html">io.artframework.impl</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultArtParser.html#%3Cinit%3E(io.artframework.Scope,TParser)">DefaultArtParser(Scope, TParser)</a></span> - Constructor for class io.artframework.impl.<a href="io/artframework/impl/DefaultArtParser.html" title="class in io.artframework.impl">DefaultArtParser</a></dt>
 <dd>&nbsp;</dd>
@@ -1153,9 +1167,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFinderProvider.html#%3Cinit%3E(io.artframework.Scope)">DefaultFinderProvider(Scope)</a></span> - Constructor for class io.artframework.impl.<a href="io/artframework/impl/DefaultFinderProvider.html" title="class in io.artframework.impl">DefaultFinderProvider</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/artframework/impl/DefaultFlowParserProvider.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultFlowParserProvider</span></a> - Class in <a href="io/artframework/impl/package-summary.html">io.artframework.impl</a></dt>
+<dt><a href="io/artframework/impl/DefaultFlowLineParserProvider.html" title="class in io.artframework.impl"><span class="typeNameLink">DefaultFlowLineParserProvider</span></a> - Class in <a href="io/artframework/impl/package-summary.html">io.artframework.impl</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFlowParserProvider.html#%3Cinit%3E(io.artframework.Scope)">DefaultFlowParserProvider(Scope)</a></span> - Constructor for class io.artframework.impl.<a href="io/artframework/impl/DefaultFlowParserProvider.html" title="class in io.artframework.impl">DefaultFlowParserProvider</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFlowLineParserProvider.html#%3Cinit%3E(io.artframework.Scope)">DefaultFlowLineParserProvider(Scope)</a></span> - Constructor for class io.artframework.impl.<a href="io/artframework/impl/DefaultFlowLineParserProvider.html" title="class in io.artframework.impl">DefaultFlowLineParserProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/DefaultFutureResult.html" title="class in io.artframework"><span class="typeNameLink">DefaultFutureResult</span></a> - Class in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>&nbsp;</dd>
@@ -1199,9 +1213,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultResult.html#%3Cinit%3E(io.artframework.ResultStatus,java.lang.String%5B%5D)">DefaultResult(ResultStatus, String[])</a></span> - Constructor for class io.artframework.impl.<a href="io/artframework/impl/DefaultResult.html" title="class in io.artframework.impl">DefaultResult</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/Finder.html#defaults(io.artframework.Scope)">defaults(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/Finder.html" title="interface in io.artframework">Finder</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLineParser.html#defaults()">defaults()</a></span> - Static method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParser.html" title="class in io.artframework.parser.flow">FlowLineParser</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/FlowParser.html#defaults(io.artframework.Scope)">defaults(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/FlowParser.html" title="interface in io.artframework">FlowParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/Finder.html#defaults(io.artframework.Scope)">defaults(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/Finder.html" title="interface in io.artframework">Finder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/Scope.html#defaultScope()">defaultScope()</a></span> - Static method in interface io.artframework.<a href="io/artframework/Scope.html" title="interface in io.artframework">Scope</a></dt>
 <dd>&nbsp;</dd>
@@ -1367,6 +1381,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Loads the given module into the art-framework configuration instance and enables it.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/artframework/BootstrapPhase.html#enableAll()">enableAll()</a></span> - Method in interface io.artframework.<a href="io/artframework/BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a></dt>
+<dd>
+<div class="block">Enables all modules in the scope.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultModuleProvider.html#enableAll()">enableAll()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultModuleProvider.html" title="class in io.artframework.impl">DefaultModuleProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ModuleState.html#enabled()">enabled()</a></span> - Method in enum io.artframework.<a href="io/artframework/ModuleState.html" title="enum in io.artframework">ModuleState</a></dt>
@@ -1439,7 +1457,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultTargetResult.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultTargetResult.html" title="class in io.artframework.impl">DefaultTargetResult</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/LineParser.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow">LineParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLineParser.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParser.html" title="class in io.artframework.parser.flow">FlowLineParser</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowType.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowType.html" title="class in io.artframework.parser.flow">FlowType</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/TriggerTarget.html#equals(java.lang.Object)">equals(Object)</a></span> - Method in class io.artframework.<a href="io/artframework/TriggerTarget.html" title="class in io.artframework">TriggerTarget</a></dt>
 <dd>&nbsp;</dd>
@@ -1614,7 +1636,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Checks if a <a href="io/artframework/Target.html" title="interface in io.artframework"><code>Target</code></a> provider for the given source type exists.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ConfigParser.html#extractKeyValuePairs(java.util.regex.Matcher)">extractKeyValuePairs(Matcher)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ConfigParser.html" title="class in io.artframework.parser.flow">ConfigParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/ConfigParser.html#extractKeyValuePairs(java.util.regex.Matcher)">extractKeyValuePairs(Matcher)</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/ConfigParser.html" title="class in io.artframework.parser">ConfigParser</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <a id="I:F">
@@ -1622,13 +1644,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">F</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ActionParser.html#factory(java.lang.String)">factory(String)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ActionParser.html" title="class in io.artframework.parser.flow">ActionParser</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextParser.html#factory(java.lang.String)">factory(String)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextParser.html" title="class in io.artframework.parser.flow">ArtObjectContextParser</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/RequirementParser.html#factory(java.lang.String)">factory(String)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/RequirementParser.html" title="class in io.artframework.parser.flow">RequirementParser</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/TriggerParser.html#factory(java.lang.String)">factory(String)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/TriggerParser.html" title="class in io.artframework.parser.flow">TriggerParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextLineParser.html#factory(java.lang.String)">factory(String)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextLineParser.html" title="class in io.artframework.parser.flow">ArtObjectContextLineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/Factory.html" title="interface in io.artframework"><span class="typeNameLink">Factory</span></a>&lt;<a href="io/artframework/Factory.html" title="type parameter in Factory">TContext</a> extends <a href="io/artframework/ArtObjectContext.html" title="interface in io.artframework">ArtObjectContext</a>&lt;<a href="io/artframework/Factory.html" title="type parameter in Factory">TArtObject</a>&gt;,&#8203;<a href="io/artframework/Factory.html" title="type parameter in Factory">TArtObject</a> extends <a href="io/artframework/ArtObject.html" title="interface in io.artframework">ArtObject</a>&gt; - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>
@@ -1733,21 +1749,24 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Contains all result objects and errors that were found during a find operation with a finder.</div>
 </dd>
-<dt><a href="io/artframework/parser/flow/FlowLogicSorter.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">FlowLogicSorter</span></a> - Class in <a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a></dt>
+<dt><a href="io/artframework/parser/flow/FlowLineParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">FlowLineParser</span></a> - Class in <a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a></dt>
+<dd>
+<div class="block">The flow line parser takes a single String (line) and parses it into an art object context.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLineParser.html#%3Cinit%3E(java.util.Iterator,io.artframework.Scope,java.util.regex.Pattern)">FlowLineParser(Iterator&lt;String&gt;, Scope, Pattern)</a></span> - Constructor for class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParser.html" title="class in io.artframework.parser.flow">FlowLineParser</a></dt>
 <dd>&nbsp;</dd>
+<dt><a href="io/artframework/parser/flow/FlowLineParserProvider.html" title="interface in io.artframework.parser.flow"><span class="typeNameLink">FlowLineParserProvider</span></a> - Interface in <a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a></dt>
+<dd>
+<div class="block">The flow line parser provider allows the registration of custom parsers
+ that are iterated when parsing a list of flow lines.</div>
+</dd>
 <dt><a href="io/artframework/parser/flow/FlowParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">FlowParser</span></a> - Class in <a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io/artframework/FlowParser.html" title="interface in io.artframework"><span class="typeNameLink">FlowParser</span></a> - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowParser.html#%3Cinit%3E(io.artframework.Scope)">FlowParser(Scope)</a></span> - Constructor for class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowParser.html" title="class in io.artframework.parser.flow">FlowParser</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/artframework/FlowParserProvider.html" title="interface in io.artframework"><span class="typeNameLink">FlowParserProvider</span></a> - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/FlowParser.html#flowType()">flowType()</a></span> - Method in interface io.artframework.<a href="io/artframework/FlowParser.html" title="interface in io.artframework">FlowParser</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextParser.html#flowType()">flowType()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextParser.html" title="class in io.artframework.parser.flow">ArtObjectContextParser</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="io/artframework/parser/flow/FlowType.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">FlowType</span></a> - Class in <a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowType.html#%3Cinit%3E(java.lang.String,java.lang.String)">FlowType(String, String)</a></span> - Constructor for class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowType.html" title="class in io.artframework.parser.flow">FlowType</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/finder/AbstractFinderResult.html#forEachError(java.util.function.Consumer)">forEachError(Consumer&lt;ArtObjectError&gt;)</a></span> - Method in class io.artframework.finder.<a href="io/artframework/finder/AbstractFinderResult.html" title="class in io.artframework.finder">AbstractFinderResult</a></dt>
 <dd>&nbsp;</dd>
@@ -1804,6 +1823,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultModuleProvider.html#get(java.lang.Class)">get(Class&lt;?&gt;)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultModuleProvider.html" title="class in io.artframework.impl">DefaultModuleProvider</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultScope.html#get(java.lang.Class)">get(Class&lt;TProvider&gt;)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultScope.html" title="class in io.artframework.impl">DefaultScope</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/Scope.html#get(java.lang.Class)">get(Class&lt;TProvider&gt;)</a></span> - Method in interface io.artframework.<a href="io/artframework/Scope.html" title="interface in io.artframework">Scope</a></dt>
+<dd>
+<div class="block">Tries to find a provider for the registered provider class and returns its instance.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultModuleProvider.html#get(java.lang.Object)">get(Object)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultModuleProvider.html" title="class in io.artframework.impl">DefaultModuleProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ModuleProvider.html#get(java.lang.Object)">get(Object)</a></span> - Method in interface io.artframework.<a href="io/artframework/ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></dt>
@@ -1844,7 +1869,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/events/ArtObjectEvent.html#getArtObject()">getArtObject()</a></span> - Method in class io.artframework.events.<a href="io/artframework/events/ArtObjectEvent.html" title="class in io.artframework.events">ArtObjectEvent</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextParser.html#getConfig()">getConfig()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextParser.html" title="class in io.artframework.parser.flow">ArtObjectContextParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextLineParser.html#getConfig()">getConfig()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextLineParser.html" title="class in io.artframework.parser.flow">ArtObjectContextLineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/util/ConfigUtil.html#getConfigFields(java.lang.Class)">getConfigFields(Class&lt;?&gt;)</a></span> - Static method in class io.artframework.util.<a href="io/artframework/util/ConfigUtil.html" title="class in io.artframework.util">ConfigUtil</a></dt>
 <dd>&nbsp;</dd>
@@ -1923,7 +1948,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/events/TriggerEvent.html#getIdentifier()">getIdentifier()</a></span> - Method in class io.artframework.events.<a href="io/artframework/events/TriggerEvent.html" title="class in io.artframework.events">TriggerEvent</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextParser.html#getIdentifier()">getIdentifier()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextParser.html" title="class in io.artframework.parser.flow">ArtObjectContextParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextLineParser.html#getIdentifier()">getIdentifier()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextLineParser.html" title="class in io.artframework.parser.flow">ArtObjectContextLineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/util/ReflectionUtil.html#getInterfaceTypeArgument(java.lang.Class,java.lang.Class,int)">getInterfaceTypeArgument(Class&lt;?&gt;, Class&lt;?&gt;, int)</a></span> - Static method in class io.artframework.util.<a href="io/artframework/util/ReflectionUtil.html" title="class in io.artframework.util">ReflectionUtil</a></dt>
 <dd>&nbsp;</dd>
@@ -1951,8 +1976,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Get the baked registered listeners associated with this handler list</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLogicSorter.html#getResult()">getResult()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLogicSorter.html" title="class in io.artframework.parser.flow">FlowLogicSorter</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/events/EventPriority.html#getSlot()">getSlot()</a></span> - Method in enum io.artframework.events.<a href="io/artframework/events/EventPriority.html" title="enum in io.artframework.events">EventPriority</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/finder/TargetFinder.TargetClassWrapper.html#getTargetClass()">getTargetClass()</a></span> - Method in class io.artframework.finder.<a href="io/artframework/finder/TargetFinder.TargetClassWrapper.html" title="class in io.artframework.finder">TargetFinder.TargetClassWrapper</a></dt>
@@ -2042,9 +2065,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultTargetResult.html#hashCode()">hashCode()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultTargetResult.html" title="class in io.artframework.impl">DefaultTargetResult</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/LineParser.html#hashCode()">hashCode()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow">LineParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLineParser.html#hashCode()">hashCode()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParser.html" title="class in io.artframework.parser.flow">FlowLineParser</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowType.html#hashCode()">hashCode()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowType.html" title="class in io.artframework.parser.flow">FlowType</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#hashCode()">hashCode()</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/TriggerTarget.html#hashCode()">hashCode()</a></span> - Method in class io.artframework.<a href="io/artframework/TriggerTarget.html" title="class in io.artframework">TriggerTarget</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#hasNext()">hasNext()</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/events/EventPriority.html#HIGH">HIGH</a></span> - io.artframework.events.<a href="io/artframework/events/EventPriority.html" title="enum in io.artframework.events">EventPriority</a></dt>
 <dd>
@@ -2128,7 +2157,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/Configuration.ConfigurationBuilder.html#injector(io.artframework.InjectionProvider)">injector(InjectionProvider)</a></span> - Method in class io.artframework.<a href="io/artframework/Configuration.ConfigurationBuilder.html" title="class in io.artframework">Configuration.ConfigurationBuilder</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/LineParser.html#input()">input()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow">LineParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#input()">input()</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
+<dd>
+<div class="block">Peeks the stack returning the current input line.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#inputs()">inputs()</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtObjectError.Reason.html#INVALID_ART_OBJECT">INVALID_ART_OBJECT</a></span> - io.artframework.<a href="io/artframework/ArtObjectError.Reason.html" title="enum in io.artframework">ArtObjectError.Reason</a></dt>
 <dd>&nbsp;</dd>
@@ -2151,6 +2184,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="io/artframework/finder/package-summary.html">io.artframework.finder</a> - package io.artframework.finder</dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/impl/package-summary.html">io.artframework.impl</a> - package io.artframework.impl</dt>
+<dd>&nbsp;</dd>
+<dt><a href="io/artframework/parser/package-summary.html">io.artframework.parser</a> - package io.artframework.parser</dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a> - package io.artframework.parser.flow</dt>
 <dd>&nbsp;</dd>
@@ -2212,6 +2247,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/finder/AbstractFinderResult.html#iterator()">iterator()</a></span> - Method in class io.artframework.finder.<a href="io/artframework/finder/AbstractFinderResult.html" title="class in io.artframework.finder">AbstractFinderResult</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#iterator()">iterator()</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <a id="I:J">
 <!--   -->
@@ -2240,9 +2277,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="io/artframework/conf/Constants.Storage.html#LAST_EXECUTION">LAST_EXECUTION</a></span> - Static variable in class io.artframework.conf.<a href="io/artframework/conf/Constants.Storage.html" title="class in io.artframework.conf">Constants.Storage</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">LineParser</span></a>&lt;<a href="io/artframework/parser/flow/LineParser.html" title="type parameter in LineParser">TResult</a>&gt; - Class in <a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/LineParser.html#%3Cinit%3E(io.artframework.Scope,java.util.regex.Pattern)">LineParser(Scope, Pattern)</a></span> - Constructor for class io.artframework.parser.flow.<a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow">LineParser</a></dt>
+<dt><a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser"><span class="typeNameLink">LineParser</span></a>&lt;<a href="io/artframework/parser/LineParser.html" title="type parameter in LineParser">TResult</a>&gt; - Class in <a href="io/artframework/parser/package-summary.html">io.artframework.parser</a></dt>
+<dd>
+<div class="block">Use the line parser as a super class for any parser class that processes a single line.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#%3Cinit%3E(java.util.Iterator,java.util.regex.Pattern)">LineParser(Iterator&lt;String&gt;, Pattern)</a></span> - Constructor for class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/events/RegisteredEvent.html#listener">listener</a></span> - Variable in class io.artframework.events.<a href="io/artframework/events/RegisteredEvent.html" title="class in io.artframework.events">RegisteredEvent</a></dt>
 <dd>&nbsp;</dd>
@@ -2292,6 +2331,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Loads the given config.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/artframework/BootstrapPhase.html#loadAll()">loadAll()</a></span> - Method in interface io.artframework.<a href="io/artframework/BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a></dt>
+<dd>
+<div class="block">Loads all modules in the scope.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultModuleProvider.html#loadAll()">loadAll()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultModuleProvider.html" title="class in io.artframework.impl">DefaultModuleProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/util/ConfigUtil.html#loadConfigValues(java.util.Map,java.util.List)">loadConfigValues(Map&lt;String, ConfigFieldInformation&gt;, List&lt;KeyValuePair&gt;)</a></span> - Static method in class io.artframework.util.<a href="io/artframework/util/ConfigUtil.html" title="class in io.artframework.util">ConfigUtil</a></dt>
@@ -2336,7 +2379,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dl>
 <dt><span class="memberNameLink"><a href="io/artframework/util/graphs/StrongConnectedComponents.html#main(java.lang.String%5B%5D)">main(String[])</a></span> - Static method in class io.artframework.util.graphs.<a href="io/artframework/util/graphs/StrongConnectedComponents.html" title="class in io.artframework.util.graphs">StrongConnectedComponents</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/LineParser.html#matcher()">matcher()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow">LineParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#matcher()">matcher()</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
+<dd>
+<div class="block">Peeks the matcher stack returning the current matcher.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#matchers()">matchers()</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtObjectError.html#message()">message()</a></span> - Method in class io.artframework.<a href="io/artframework/ArtObjectError.html" title="class in io.artframework">ArtObjectError</a></dt>
 <dd>
@@ -2489,6 +2536,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/conf/RequirementConfig.RequirementConfigBuilder.html#negated(boolean)">negated(boolean)</a></span> - Method in class io.artframework.conf.<a href="io/artframework/conf/RequirementConfig.RequirementConfigBuilder.html" title="class in io.artframework.conf">RequirementConfig.RequirementConfigBuilder</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#next()">next()</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ExecutionContext.html#next(TNextContext)">next(TNextContext)</a></span> - Method in interface io.artframework.<a href="io/artframework/ExecutionContext.html" title="interface in io.artframework">ExecutionContext</a></dt>
 <dd>
 <div class="block">Uses this <a href="io/artframework/ExecutionContext.html" title="interface in io.artframework"><code>ExecutionContext</code></a> as a parent for the next <a href="io/artframework/ArtObjectContext.html" title="interface in io.artframework"><code>ArtObjectContext</code></a>
@@ -2576,6 +2625,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/conf/TriggerConfig.html#of(io.artframework.ConfigMap)">of(ConfigMap)</a></span> - Static method in class io.artframework.conf.<a href="io/artframework/conf/TriggerConfig.html" title="class in io.artframework.conf">TriggerConfig</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/ConfigParser.html#of(io.artframework.ConfigMap)">of(ConfigMap)</a></span> - Static method in class io.artframework.parser.<a href="io/artframework/parser/ConfigParser.html" title="class in io.artframework.parser">ConfigParser</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/Scope.html#of(io.artframework.Configuration)">of(Configuration)</a></span> - Static method in interface io.artframework.<a href="io/artframework/Scope.html" title="interface in io.artframework">Scope</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ConfigMap.html#of(io.artframework.parser.flow.ConfigMapType,java.util.Map)">of(ConfigMapType, Map&lt;String, ConfigFieldInformation&gt;)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ConfigMap.html" title="interface in io.artframework">ConfigMap</a></dt>
@@ -2606,14 +2657,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Creates a new default finder provider with the given configuration.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/artframework/FlowParserProvider.html#of(io.artframework.Scope)">of(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/FlowParserProvider.html" title="interface in io.artframework">FlowParserProvider</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/InjectionProvider.html#of(io.artframework.Scope)">of(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/InjectionProvider.html" title="interface in io.artframework">InjectionProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ModuleProvider.html#of(io.artframework.Scope)">of(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></dt>
 <dd>
 <div class="block">Creates a new default instance of the module provider.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLineParserProvider.html#of(io.artframework.Scope)">of(Scope)</a></span> - Static method in interface io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParserProvider.html" title="interface in io.artframework.parser.flow">FlowLineParserProvider</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/RequirementProvider.html#of(io.artframework.Scope)">of(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/RequirementProvider.html" title="interface in io.artframework">RequirementProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/StorageProvider.html#of(io.artframework.Scope)">of(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/StorageProvider.html" title="interface in io.artframework">StorageProvider</a></dt>
@@ -2625,8 +2676,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Creates a new default implementation of this trigger provider using the given configuration.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtContext.html#of(io.artframework.Scope,io.artframework.conf.ArtSettings,java.util.Collection)">of(Scope, ArtSettings, Collection&lt;ArtObjectContext&lt;?&gt;&gt;)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ArtContext.html" title="interface in io.artframework">ArtContext</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ConfigParser.html#of(io.artframework.Scope,io.artframework.ConfigMap)">of(Scope, ConfigMap)</a></span> - Static method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ConfigParser.html" title="class in io.artframework.parser.flow">ConfigParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtContext.html#of(io.artframework.Scope,java.util.Collection)">of(Scope, Collection&lt;ArtObjectContext&lt;?&gt;&gt;)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ArtContext.html" title="interface in io.artframework">ArtContext</a></dt>
 <dd>&nbsp;</dd>
@@ -2647,8 +2696,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/artframework/conf/KeyValuePair.html#of(java.lang.String,java.lang.String)">of(String, String)</a></span> - Static method in class io.artframework.conf.<a href="io/artframework/conf/KeyValuePair.html" title="class in io.artframework.conf">KeyValuePair</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtContext.html#of(java.util.Collection)">of(Collection&lt;ArtObjectContext&lt;?&gt;&gt;)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ArtContext.html" title="interface in io.artframework">ArtContext</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLogicSorter.html#of(java.util.Collection)">of(Collection&lt;ArtObjectContext&lt;?&gt;&gt;)</a></span> - Static method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLogicSorter.html" title="class in io.artframework.parser.flow">FlowLogicSorter</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/util/graphs/CycleSearch.html#of(java.util.Collection)">of(Collection&lt;ModuleMeta&gt;)</a></span> - Static method in class io.artframework.util.graphs.<a href="io/artframework/util/graphs/CycleSearch.html" title="class in io.artframework.util.graphs">CycleSearch</a></dt>
 <dd>
@@ -2754,23 +2801,26 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtParser.html#parse()">parse()</a></span> - Method in interface io.artframework.<a href="io/artframework/ArtParser.html" title="interface in io.artframework">ArtParser</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/FlowParser.html#parse()">parse()</a></span> - Method in interface io.artframework.<a href="io/artframework/FlowParser.html" title="interface in io.artframework">FlowParser</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultArtParser.html#parse()">parse()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultArtParser.html" title="class in io.artframework.impl">DefaultArtParser</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextParser.html#parse()">parse()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextParser.html" title="class in io.artframework.parser.flow">ArtObjectContextParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/ConfigParser.html#parse()">parse()</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/ConfigParser.html" title="class in io.artframework.parser">ConfigParser</a></dt>
+<dd>
+<div class="block">Parses the last input passed to <a href="io/artframework/parser/ConfigParser.html#accept(java.lang.String)"><code>ConfigParser.accept(String)</code></a> and returns
+ the config map of this parser with the values from the given input.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextLineParser.html#parse()">parse()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextLineParser.html" title="class in io.artframework.parser.flow">ArtObjectContextLineParser</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ConfigParser.html#parse()">parse()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ConfigParser.html" title="class in io.artframework.parser.flow">ConfigParser</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/LineParser.html#parse()">parse()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow">LineParser</a></dt>
-<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#parse()">parse()</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
+<dd>
+<div class="block">Parses the current input into the given result.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowParser.html#parse(java.util.Collection)">parse(Collection&lt;String&gt;)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowParser.html" title="class in io.artframework.parser.flow">FlowParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtLoader.html#parse(java.util.Collection)">parse(Collection&lt;String&gt;)</a></span> - Method in interface io.artframework.<a href="io/artframework/ArtLoader.html" title="interface in io.artframework">ArtLoader</a></dt>
 <dd>
 <div class="block">Directly parses the given string list using the default flow parser.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/artframework/Parser.html#parse(TInput)">parse(TInput)</a></span> - Method in interface io.artframework.<a href="io/artframework/Parser.html" title="interface in io.artframework">Parser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/Parser.html#parse(TInput)">parse(TInput)</a></span> - Method in interface io.artframework.parser.<a href="io/artframework/parser/Parser.html" title="interface in io.artframework.parser">Parser</a></dt>
 <dd>
 <div class="block">Parses the given input into an <a href="io/artframework/ArtContext.html" title="interface in io.artframework"><code>ArtContext</code></a>.</div>
 </dd>
@@ -2787,7 +2837,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/Configuration.html#parser()">parser()</a></span> - Method in class io.artframework.<a href="io/artframework/Configuration.html" title="class in io.artframework">Configuration</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/Configuration.ConfigurationBuilder.html#parser(io.artframework.FlowParserProvider)">parser(FlowParserProvider)</a></span> - Method in class io.artframework.<a href="io/artframework/Configuration.ConfigurationBuilder.html" title="class in io.artframework">Configuration.ConfigurationBuilder</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/Configuration.ConfigurationBuilder.html#parser(io.artframework.parser.flow.FlowLineParserProvider)">parser(FlowLineParserProvider)</a></span> - Method in class io.artframework.<a href="io/artframework/Configuration.ConfigurationBuilder.html" title="class in io.artframework">Configuration.ConfigurationBuilder</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtLoader.html#parser(java.lang.Class)">parser(Class&lt;TParser&gt;)</a></span> - Method in interface io.artframework.<a href="io/artframework/ArtLoader.html" title="interface in io.artframework">ArtLoader</a></dt>
 <dd>
@@ -2801,7 +2851,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultArtLoader.html#parser(java.lang.Class,java.util.function.Function)">parser(Class&lt;TParser&gt;, Function&lt;Scope, TParser&gt;)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultArtLoader.html" title="class in io.artframework.impl">DefaultArtLoader</a></dt>
 <dd>&nbsp;</dd>
-<dt><a href="io/artframework/Parser.html" title="interface in io.artframework"><span class="typeNameLink">Parser</span></a>&lt;<a href="io/artframework/Parser.html" title="type parameter in Parser">TInput</a>&gt; - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
+<dt><a href="io/artframework/parser/Parser.html" title="interface in io.artframework.parser"><span class="typeNameLink">Parser</span></a>&lt;<a href="io/artframework/parser/Parser.html" title="type parameter in Parser">TInput</a>&gt; - Interface in <a href="io/artframework/parser/package-summary.html">io.artframework.parser</a></dt>
 <dd>
 <div class="block">The parser parses the given input into a valid art context.</div>
 </dd>
@@ -2811,7 +2861,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/util/TimeUtil.html#parseTimeAsSeconds(java.lang.String)">parseTimeAsSeconds(String)</a></span> - Static method in class io.artframework.util.<a href="io/artframework/util/TimeUtil.html" title="class in io.artframework.util">TimeUtil</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/LineParser.html#pattern()">pattern()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow">LineParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/LineParser.html#pattern()">pattern()</a></span> - Method in class io.artframework.parser.<a href="io/artframework/parser/LineParser.html" title="class in io.artframework.parser">LineParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/annotations/ConfigOption.html#position()">position()</a></span> - Method in annotation type io.artframework.annotations.<a href="io/artframework/annotations/ConfigOption.html" title="annotation in io.artframework.annotations">ConfigOption</a></dt>
 <dd>&nbsp;</dd>
@@ -2841,6 +2891,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
  that holds a <a href="io/artframework/Configuration.html" title="class in io.artframework"><code>Configuration</code></a> and is used to compose the
  other service provider.</div>
 </dd>
+<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultScope.html#providerMap()">providerMap()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultScope.html" title="class in io.artframework.impl">DefaultScope</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultScope.html#providers()">providers()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultScope.html" title="class in io.artframework.impl">DefaultScope</a></dt>
+<dd>&nbsp;</dd>
 </dl>
 <a id="I:R">
 <!--   -->
@@ -2921,10 +2975,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFinderProvider.html#remove(io.artframework.Finder)">remove(Finder)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultFinderProvider.html" title="class in io.artframework.impl">DefaultFinderProvider</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/FlowParserProvider.html#remove(io.artframework.FlowParser)">remove(FlowParser)</a></span> - Method in interface io.artframework.<a href="io/artframework/FlowParserProvider.html" title="interface in io.artframework">FlowParserProvider</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultFlowParserProvider.html#remove(io.artframework.FlowParser)">remove(FlowParser)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultFlowParserProvider.html" title="class in io.artframework.impl">DefaultFlowParserProvider</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/AbstractFactoryProvider.html#remove(java.lang.Class)">remove(Class&lt;? extends ArtObject&gt;)</a></span> - Method in class io.artframework.<a href="io/artframework/AbstractFactoryProvider.html" title="class in io.artframework">AbstractFactoryProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/FactoryProvider.html#remove(java.lang.Class)">remove(Class&lt;? extends ArtObject&gt;)</a></span> - Method in interface io.artframework.<a href="io/artframework/FactoryProvider.html" title="interface in io.artframework">FactoryProvider</a></dt>
@@ -2968,10 +3018,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><a href="io/artframework/RequirementFactory.html" title="interface in io.artframework"><span class="typeNameLink">RequirementFactory</span></a>&lt;<a href="io/artframework/RequirementFactory.html" title="type parameter in RequirementFactory">TTarget</a>&gt; - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/RequirementHolder.html" title="interface in io.artframework"><span class="typeNameLink">RequirementHolder</span></a> - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
-<dd>&nbsp;</dd>
-<dt><a href="io/artframework/parser/flow/RequirementParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">RequirementParser</span></a> - Class in <a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/RequirementParser.html#%3Cinit%3E(io.artframework.Scope)">RequirementParser(Scope)</a></span> - Constructor for class io.artframework.parser.flow.<a href="io/artframework/parser/flow/RequirementParser.html" title="class in io.artframework.parser.flow">RequirementParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/RequirementProvider.html" title="interface in io.artframework"><span class="typeNameLink">RequirementProvider</span></a> - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>&nbsp;</dd>
@@ -3125,9 +3171,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultArtLoader.html#scope()">scope()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultArtLoader.html" title="class in io.artframework.impl">DefaultArtLoader</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowParser.html#scope()">scope()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowParser.html" title="class in io.artframework.parser.flow">FlowParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLineParser.html#scope()">scope()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParser.html" title="class in io.artframework.parser.flow">FlowLineParser</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/LineParser.html#scope()">scope()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/LineParser.html" title="class in io.artframework.parser.flow">LineParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowParser.html#scope()">scope()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowParser.html" title="class in io.artframework.parser.flow">FlowParser</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/Scoped.html#scope()">scope()</a></span> - Method in interface io.artframework.<a href="io/artframework/Scoped.html" title="interface in io.artframework">Scoped</a></dt>
 <dd>&nbsp;</dd>
@@ -3223,9 +3269,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowParser.html#storageKey()">storageKey()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowParser.html" title="class in io.artframework.parser.flow">FlowParser</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/Parser.html#storageKey()">storageKey()</a></span> - Method in interface io.artframework.<a href="io/artframework/Parser.html" title="interface in io.artframework">Parser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/Parser.html#storageKey()">storageKey()</a></span> - Method in interface io.artframework.parser.<a href="io/artframework/parser/Parser.html" title="interface in io.artframework.parser">Parser</a></dt>
 <dd>
-<div class="block">Returns the storage key set by the <a href="io/artframework/Parser.html#storageKey(java.lang.String)"><code>Parser.storageKey(String)</code></a> method
+<div class="block">Returns the storage key set by the <a href="io/artframework/parser/Parser.html#storageKey(java.lang.String)"><code>Parser.storageKey(String)</code></a> method
  or the random pre generated storage key.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/AbstractArtObjectContext.html#storageKey(java.lang.String)">storageKey(String)</a></span> - Method in class io.artframework.<a href="io/artframework/AbstractArtObjectContext.html" title="class in io.artframework">AbstractArtObjectContext</a></dt>
@@ -3236,7 +3282,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowParser.html#storageKey(java.lang.String)">storageKey(String)</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowParser.html" title="class in io.artframework.parser.flow">FlowParser</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/Parser.html#storageKey(java.lang.String)">storageKey(String)</a></span> - Method in interface io.artframework.<a href="io/artframework/Parser.html" title="interface in io.artframework">Parser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/Parser.html#storageKey(java.lang.String)">storageKey(String)</a></span> - Method in interface io.artframework.parser.<a href="io/artframework/parser/Parser.html" title="interface in io.artframework.parser">Parser</a></dt>
 <dd>
 <div class="block">Sets a static storage key for all art objects created by this parser.</div>
 </dd>
@@ -3493,6 +3539,8 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultTargetResult.html#toString()">toString()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultTargetResult.html" title="class in io.artframework.impl">DefaultTargetResult</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowType.html#toString()">toString()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowType.html" title="class in io.artframework.parser.flow">FlowType</a></dt>
+<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/TriggerTarget.html#toString()">toString()</a></span> - Method in class io.artframework.<a href="io/artframework/TriggerTarget.html" title="class in io.artframework">TriggerTarget</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtProvider.html#trigger()">trigger()</a></span> - Method in interface io.artframework.<a href="io/artframework/ArtProvider.html" title="interface in io.artframework">ArtProvider</a></dt>
@@ -3550,10 +3598,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>
 <div class="block">Used to listen on events fired by <a href="io/artframework/Trigger.html" title="interface in io.artframework"><code>Trigger</code></a>s.</div>
 </dd>
-<dt><a href="io/artframework/parser/flow/TriggerParser.html" title="class in io.artframework.parser.flow"><span class="typeNameLink">TriggerParser</span></a> - Class in <a href="io/artframework/parser/flow/package-summary.html">io.artframework.parser.flow</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/TriggerParser.html#%3Cinit%3E(io.artframework.Scope)">TriggerParser(Scope)</a></span> - Constructor for class io.artframework.parser.flow.<a href="io/artframework/parser/flow/TriggerParser.html" title="class in io.artframework.parser.flow">TriggerParser</a></dt>
-<dd>&nbsp;</dd>
 <dt><a href="io/artframework/TriggerProvider.html" title="interface in io.artframework"><span class="typeNameLink">TriggerProvider</span></a> - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
 <dd>&nbsp;</dd>
 <dt><a href="io/artframework/TriggerRequirement.html" title="interface in io.artframework"><span class="typeNameLink">TriggerRequirement</span></a>&lt;<a href="io/artframework/TriggerRequirement.html" title="type parameter in TriggerRequirement">TTarget</a>,&#8203;<a href="io/artframework/TriggerRequirement.html" title="type parameter in TriggerRequirement">TConfig</a>&gt; - Interface in <a href="io/artframework/package-summary.html">io.artframework</a></dt>
@@ -3635,7 +3679,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Represents a <code>FieldNameFormatter</code> that transforms <i>camelCase</i> to
  <i>UPPER_UNDERSCORE</i>.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextParser.html#userConfig()">userConfig()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextParser.html" title="class in io.artframework.parser.flow">ArtObjectContextParser</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/parser/flow/ArtObjectContextLineParser.html#userConfig()">userConfig()</a></span> - Method in class io.artframework.parser.flow.<a href="io/artframework/parser/flow/ArtObjectContextLineParser.html" title="class in io.artframework.parser.flow">ArtObjectContextLineParser</a></dt>
 <dd>&nbsp;</dd>
 </dl>
 <a id="I:V">

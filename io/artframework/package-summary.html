@@ -170,7 +170,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </td>
 </tr>
 <tr class="altColor">
-<th class="colFirst" scope="row"><a href="ArtParser.html" title="interface in io.artframework">ArtParser</a>&lt;TParser extends <a href="Parser.html" title="interface in io.artframework">Parser</a>&lt;TInput&gt;,&#8203;TInput&gt;</th>
+<th class="colFirst" scope="row"><a href="ArtParser.html" title="interface in io.artframework">ArtParser</a>&lt;TParser extends <a href="parser/Parser.html" title="interface in io.artframework.parser">Parser</a>&lt;TInput&gt;,&#8203;TInput&gt;</th>
 <td class="colLast">
 <div class="block">The art parser parses the given input into a valid art context.</div>
 </td>
@@ -186,149 +186,142 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
+<th class="colFirst" scope="row"><a href="BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a></th>
+<td class="colLast">
+<div class="block">The bootstrap phase is a special state of the module provider
+ after bootstrapping all modules has finished and before they are loaded.</div>
+</td>
+</tr>
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a></th>
 <td class="colLast">
 <div class="block">The bootstrap scope is used to configure the scopes configuration before it is initialized.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="CombinedResult.html" title="interface in io.artframework">CombinedResult</a></th>
 <td class="colLast">
 <div class="block">The CombinedResult combines multiple results and target results and dynamically
  adjusts its own result based off the results contained within.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="CombinedResultCreator.html" title="interface in io.artframework">CombinedResultCreator</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="ConfigMap.html" title="interface in io.artframework">ConfigMap</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="ConfigProvider.html" title="interface in io.artframework">ConfigProvider</a></th>
 <td class="colLast">
 <div class="block">Provides a way to load configs from the filesystem into objects.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="Configurable.html" title="interface in io.artframework">Configurable</a>&lt;TConfig&gt;</th>
 <td class="colLast">
 <div class="block">Marks the ArtObject or Module as configurable.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="Context.html" title="interface in io.artframework">Context</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="DataProvider.html" title="interface in io.artframework">DataProvider</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="EventProvider.html" title="interface in io.artframework">EventProvider</a></th>
 <td class="colLast">
 <div class="block">Use the <a href="EventProvider.html" title="interface in io.artframework"><code>EventProvider</code></a> to provide one or
  multiple <a href="events/EventListener.html" title="interface in io.artframework.events"><code>EventListener</code></a>s that can act and listen upon various events.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="ExecutionContext.html" title="interface in io.artframework">ExecutionContext</a>&lt;TContext extends <a href="ArtObjectContext.html" title="interface in io.artframework">ArtObjectContext</a>&lt;?&gt;&gt;</th>
 <td class="colLast">
 <div class="block">The</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="Factory.html" title="interface in io.artframework">Factory</a>&lt;TContext extends <a href="ArtObjectContext.html" title="interface in io.artframework">ArtObjectContext</a>&lt;TArtObject&gt;,&#8203;TArtObject extends <a href="ArtObject.html" title="interface in io.artframework">ArtObject</a>&gt;</th>
 <td class="colLast">
 <div class="block">The <a href="Factory.html" title="interface in io.artframework"><code>Factory</code></a> is used to create new instances of <a href="ArtObject.html" title="interface in io.artframework"><code>ArtObject</code></a>s which
  are wrapped inside an <a href="ArtObjectContext.html" title="interface in io.artframework"><code>ArtObjectContext</code></a>.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="FactoryProvider.html" title="interface in io.artframework">FactoryProvider</a>&lt;TFactory extends <a href="Factory.html" title="interface in io.artframework">Factory</a>&lt;?,&#8203;?&gt;&gt;</th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="FieldNameFormatter.html" title="interface in io.artframework">FieldNameFormatter</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="Finder.html" title="interface in io.artframework">Finder</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="FinderProvider.html" title="interface in io.artframework">FinderProvider</a></th>
 <td class="colLast">
 <div class="block">Provides the option to register various finder implementations that can load different parts of the art-framework.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="FinderResult.html" title="interface in io.artframework">FinderResult</a>&lt;TResult&gt;</th>
 <td class="colLast">
 <div class="block">Contains all result objects and errors that were found during a find operation with a finder.</div>
 </td>
 </tr>
-<tr class="rowColor">
-<th class="colFirst" scope="row"><a href="FlowParser.html" title="interface in io.artframework">FlowParser</a></th>
-<td class="colLast">&nbsp;</td>
-</tr>
 <tr class="altColor">
-<th class="colFirst" scope="row"><a href="FlowParserProvider.html" title="interface in io.artframework">FlowParserProvider</a></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="FutureResult.html" title="interface in io.artframework">FutureResult</a></th>
 <td class="colLast">
 <div class="block">The future result is used in situations where the underlying actions or trigger
  do not immediately return all of their results.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="FutureResultCreator.html" title="interface in io.artframework">FutureResultCreator</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="FutureTargetResultCreator.html" title="interface in io.artframework">FutureTargetResultCreator</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="GenericAction.html" title="interface in io.artframework">GenericAction</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="GenericRequirement.html" title="interface in io.artframework">GenericRequirement</a></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="InjectionProvider.html" title="interface in io.artframework">InjectionProvider</a></th>
 <td class="colLast">
 <div class="block">The injection provider provides the possibility to create objects from classes.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="MessageSender.html" title="interface in io.artframework">MessageSender</a></th>
 <td class="colLast">
 <div class="block">Implement this on your <a href="Target.html" title="interface in io.artframework"><code>Target</code></a> to allow it to receive messages.</div>
 </td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <th class="colFirst" scope="row"><a href="ModuleMeta.html" title="interface in io.artframework">ModuleMeta</a></th>
 <td class="colLast">
 <div class="block">The module meta provides meta information about a loaded module.</div>
 </td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <th class="colFirst" scope="row"><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></th>
 <td class="colLast">
 <div class="block">The module provider handles the registration and creation of all art modules.</div>
-</td>
-</tr>
-<tr class="altColor">
-<th class="colFirst" scope="row"><a href="Parser.html" title="interface in io.artframework">Parser</a>&lt;TInput&gt;</th>
-<td class="colLast">
-<div class="block">The parser parses the given input into a valid art context.</div>
 </td>
 </tr>
 <tr class="rowColor">

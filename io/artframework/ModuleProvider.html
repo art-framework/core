@@ -163,7 +163,7 @@ extends <a href="Provider.html" title="interface in io.artframework">Provider</a
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
+<td class="colFirst"><code><a href="BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#bootstrap(io.artframework.BootstrapScope)">bootstrap</a></span>&#8203;(<a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;bootstrapScope)</code></th>
 <td class="colLast">
 <div class="block">Bootstraps the given module and all of the supplied sub modules.</div>
@@ -330,14 +330,14 @@ extends <a href="Provider.html" title="interface in io.artframework">Provider</a
 <ul class="blockList">
 <li class="blockList">
 <h4>bootstrap</h4>
-<pre class="methodSignature"><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a>&nbsp;bootstrap&#8203;(<a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;bootstrapScope)
+<pre class="methodSignature"><a href="BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a>&nbsp;bootstrap&#8203;(<a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;bootstrapScope)
                   throws <a href="BootstrapException.html" title="class in io.artframework">BootstrapException</a></pre>
 <div class="block">Bootstraps the given module and all of the supplied sub modules.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>bootstrapScope</code> - the bootstrap scope containing the initial module</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>this module provider</dd>
+<dd>the bootstrap phase which is used to load and enable all modules after configuration is finished and sealed</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="BootstrapException.html" title="class in io.artframework">BootstrapException</a></code></dd>
 </dl>

@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -192,49 +192,64 @@ implements <a href="../BootstrapScope.html" title="interface in io.artframework"
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>&lt;TProvider extends <a href="../Provider.html" title="interface in io.artframework">Provider</a>&gt;<br><a href="../BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#add(java.lang.Class,java.util.function.Function)">add</a></span>&#8203;(java.lang.Class&lt;TProvider&gt;&nbsp;providerClass,
+   java.util.function.Function&lt;<a href="../Scope.html" title="interface in io.artframework">Scope</a>,&#8203;TProvider&gt;&nbsp;supplier)</code></th>
+<td class="colLast">
+<div class="block">Registers a new provider implementation for the given class with the given provider.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../Scope.html" title="interface in io.artframework">Scope</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#bootstrap()">bootstrap</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Finishes the bootstrap process, seals the configuration and returns the created scope.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code><a href="../BootstrapModule.html" title="interface in io.artframework">BootstrapModule</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#bootstrapModule()">bootstrapModule</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Gets the module that initiated the bootstrap process.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#bootstrapped()">bootstrapped</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../Configuration.html" title="class in io.artframework">Configuration</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#configuration()">configuration</a></span>()</code></th>
 <td class="colLast">
 <div class="block">The current configuration of this scope.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="../Configuration.ConfigurationBuilder.html" title="class in io.artframework">Configuration.ConfigurationBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#configurationBuilder()">configurationBuilder</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code><a href="../BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#configure(java.util.function.Consumer)">configure</a></span>&#8203;(java.util.function.Consumer&lt;<a href="../Configuration.ConfigurationBuilder.html" title="class in io.artframework">Configuration.ConfigurationBuilder</a>&gt;&nbsp;builder)</code></th>
 <td class="colLast">
 <div class="block">Configures this bootstrap scopes configuration.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.Object,&#8203;java.lang.Object&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#data()">data</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>&lt;TProvider extends <a href="../Provider.html" title="interface in io.artframework">Provider</a>&gt;<br>java.util.Optional&lt;TProvider&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#get(java.lang.Class)">get</a></span>&#8203;(java.lang.Class&lt;TProvider&gt;&nbsp;providerClass)</code></th>
+<td class="colLast">
+<div class="block">Tries to find a provider for the registered provider class and returns its instance.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code><a href="../ArtContext.html" title="interface in io.artframework">ArtContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#load(java.lang.String,java.util.Collection)">load</a></span>&#8203;(java.lang.String&nbsp;key,
     java.util.Collection&lt;java.lang.String&gt;&nbsp;list)</code></th>
@@ -242,7 +257,7 @@ implements <a href="../BootstrapScope.html" title="interface in io.artframework"
 <div class="block">Loads the given string list and tries to parse each line into a valid art object.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="../ArtContext.html" title="interface in io.artframework">ArtContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#load(java.util.Collection)">load</a></span>&#8203;(java.util.Collection&lt;java.lang.String&gt;&nbsp;list)</code></th>
 <td class="colLast">
@@ -250,7 +265,17 @@ implements <a href="../BootstrapScope.html" title="interface in io.artframework"
  into a valid art object.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.Class&lt;? extends <a href="../Provider.html" title="interface in io.artframework">Provider</a>&gt;,&#8203;java.util.function.Function&lt;<a href="../Scope.html" title="interface in io.artframework">Scope</a>,&#8203;? extends <a href="../Provider.html" title="interface in io.artframework">Provider</a>&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#providerMap()">providerMap</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i12" class="altColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.Class&lt;? extends <a href="../Provider.html" title="interface in io.artframework">Provider</a>&gt;,&#8203;<a href="../Provider.html" title="interface in io.artframework">Provider</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#providers()">providers</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../conf/Settings.html" title="class in io.artframework.conf">Settings</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#settings()">settings</a></span>()</code></th>
 <td class="colLast">
@@ -342,6 +367,53 @@ implements <a href="../BootstrapScope.html" title="interface in io.artframework"
 <!--   -->
 </a>
 <h3>Method Detail</h3>
+<a id="add(java.lang.Class,java.util.function.Function)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>add</h4>
+<pre class="methodSignature">public&nbsp;&lt;TProvider extends <a href="../Provider.html" title="interface in io.artframework">Provider</a>&gt;&nbsp;<a href="../BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;add&#8203;(java.lang.Class&lt;TProvider&gt;&nbsp;providerClass,
+                                                       java.util.function.Function&lt;<a href="../Scope.html" title="interface in io.artframework">Scope</a>,&#8203;TProvider&gt;&nbsp;supplier)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../BootstrapScope.html#add(java.lang.Class,java.util.function.Function)">BootstrapScope</a></code></span></div>
+<div class="block">Registers a new provider implementation for the given class with the given provider.
+ <p>By default all providers are singletons and will be created once when <a href="../BootstrapScope.html#bootstrap()"><code>BootstrapScope.bootstrap()</code></a> is called.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../BootstrapScope.html#add(java.lang.Class,java.util.function.Function)">add</a></code>&nbsp;in interface&nbsp;<code><a href="../BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a></code></dd>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>TProvider</code> - the type of the provider</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>providerClass</code> - the class of the provider</dd>
+<dd><code>supplier</code> - the supplier that creates the provider</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this bootstrap scope</dd>
+</dl>
+</li>
+</ul>
+<a id="get(java.lang.Class)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>get</h4>
+<pre class="methodSignature">public&nbsp;&lt;TProvider extends <a href="../Provider.html" title="interface in io.artframework">Provider</a>&gt;&nbsp;java.util.Optional&lt;TProvider&gt;&nbsp;get&#8203;(java.lang.Class&lt;TProvider&gt;&nbsp;providerClass)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../Scope.html#get(java.lang.Class)">Scope</a></code></span></div>
+<div class="block">Tries to find a provider for the registered provider class and returns its instance.
+ <p>By default all providers are singletons that can be registered <a href="../annotations/OnBootstrap.html" title="annotation in io.artframework.annotations"><code>OnBootstrap</code></a>
+ with the <a href="../BootstrapScope.html" title="interface in io.artframework"><code>BootstrapScope</code></a>.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../Scope.html#get(java.lang.Class)">get</a></code>&nbsp;in interface&nbsp;<code><a href="../Scope.html" title="interface in io.artframework">Scope</a></code></dd>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>TProvider</code> - the type of the provider</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>providerClass</code> - the class of the provider that should be retrieved</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the provider if it is registered</dd>
+</dl>
+</li>
+</ul>
 <a id="configure(java.util.function.Consumer)">
 <!--   -->
 </a>
@@ -442,16 +514,23 @@ implements <a href="../BootstrapScope.html" title="interface in io.artframework"
 </dl>
 </li>
 </ul>
-<a id="data()">
+<a id="settings()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>data</h4>
-<pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.Object,&#8203;java.lang.Object&gt;&nbsp;data()</pre>
+<h4>settings</h4>
+<pre class="methodSignature">public&nbsp;<a href="../conf/Settings.html" title="class in io.artframework.conf">Settings</a>&nbsp;settings()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../Scope.html#settings()">Scope</a></code></span></div>
+<div class="block">Gets the current settings of this scope.
+ <p>
+ The scope is initialized with its settings upon creation and will read them from a config file.
+ The settings can be modified by any service during the lifetime of the scope.</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../DataProvider.html#data()">data</a></code>&nbsp;in interface&nbsp;<code><a href="../DataProvider.html" title="interface in io.artframework">DataProvider</a></code></dd>
+<dd><code><a href="../Scope.html#settings()">settings</a></code>&nbsp;in interface&nbsp;<code><a href="../Scope.html" title="interface in io.artframework">Scope</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the current scope settings</dd>
 </dl>
 </li>
 </ul>
@@ -472,24 +551,35 @@ implements <a href="../BootstrapScope.html" title="interface in io.artframework"
 </dl>
 </li>
 </ul>
-<a id="settings()">
+<a id="data()">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>settings</h4>
-<pre class="methodSignature">public&nbsp;<a href="../conf/Settings.html" title="class in io.artframework.conf">Settings</a>&nbsp;settings()</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../Scope.html#settings()">Scope</a></code></span></div>
-<div class="block">Gets the current settings of this scope.
- <p>
- The scope is initialized with its settings upon creation and will read them from a config file.
- The settings can be modified by any service during the lifetime of the scope.</div>
+<h4>data</h4>
+<pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.Object,&#8203;java.lang.Object&gt;&nbsp;data()</pre>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="../Scope.html#settings()">settings</a></code>&nbsp;in interface&nbsp;<code><a href="../Scope.html" title="interface in io.artframework">Scope</a></code></dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the current scope settings</dd>
+<dd><code><a href="../DataProvider.html#data()">data</a></code>&nbsp;in interface&nbsp;<code><a href="../DataProvider.html" title="interface in io.artframework">DataProvider</a></code></dd>
 </dl>
+</li>
+</ul>
+<a id="providers()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>providers</h4>
+<pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.Class&lt;? extends <a href="../Provider.html" title="interface in io.artframework">Provider</a>&gt;,&#8203;<a href="../Provider.html" title="interface in io.artframework">Provider</a>&gt;&nbsp;providers()</pre>
+</li>
+</ul>
+<a id="providerMap()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>providerMap</h4>
+<pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.Class&lt;? extends <a href="../Provider.html" title="interface in io.artframework">Provider</a>&gt;,&#8203;java.util.function.Function&lt;<a href="../Scope.html" title="interface in io.artframework">Scope</a>,&#8203;? extends <a href="../Provider.html" title="interface in io.artframework">Provider</a>&gt;&gt;&nbsp;providerMap()</pre>
 </li>
 </ul>
 <a id="configurationBuilder()">
