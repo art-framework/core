@@ -23,9 +23,6 @@ if (project.hasProperty("local_script")) {
     apply from: file(local_script + "/build.local.gradle")
 }
 
-apply from: "$rootDir/gradle/publish.gradle"
-tasks.publish.dependsOn(shadowJar)
-
 ext {
     mcVersion = project.property("mcVersion")
 }

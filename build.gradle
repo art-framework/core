@@ -23,8 +23,10 @@ buildscript {
 
 plugins {
     id 'com.github.johnrengelman.shadow' version '6.0.0' apply false
-    id "io.freefair.lombok" version "5.1.0" apply false
-    id 'java'
+    id "io.freefair.lombok" version "5.1.0"
+    id 'java-library'
+    id 'jacoco'
+    id 'idea'
 }
 
 allprojects {
@@ -35,6 +37,7 @@ allprojects {
     apply plugin: 'io.freefair.lombok'
 
     apply from: "$rootDir/gradle/jacoco.gradle"
+    apply from: "$rootDir/gradle/publish.gradle"
 
     sourceCompatibility = 11
     targetCompatibility = 11
@@ -78,6 +81,7 @@ allprojects {
     }
 
     tasks.build.dependsOn(shadowJar)
+    tasks.publish.dependsOn(shadowJar)
 
     test {
         useJUnitPlatform()
@@ -95,6 +99,3 @@ allprojects {
 
     defaultTasks 'build'
 }
-
-apply from: "$rootDir/gradle/publish.gradle"
-tasks.publish.dependsOn(shadowJar)

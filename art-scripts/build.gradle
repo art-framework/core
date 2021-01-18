@@ -1,6 +1,7 @@
 
+
 group project.property("group")
-archivesBaseName = "${project.property("pluginName")}-scripts"
+archivesBaseName = "${project.property("pluginName")}-module-scripts"
 
 dependencies {
     implementation project(':')
