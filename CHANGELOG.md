@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/art-framework/core/compare/v2.1.0...v2.1.1) (2021-01-18)
+
+
+### Bug Fixes
+
+* return null provider if not existent ([70e5126](https://github.com/art-framework/core/commit/70e5126057e0c04c4f5bb54bfcd96245abd356c9))
+
 # [2.1.0](https://github.com/art-framework/core/compare/v2.0.0...v2.1.0) (2021-01-18)
 
 
