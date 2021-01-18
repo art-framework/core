@@ -63,7 +63,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Test
-        run: ./gradlew test
+        run: ./gradlew test jacocoTestReport coveralls
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           
