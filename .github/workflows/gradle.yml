@@ -66,11 +66,11 @@ jobs:
         run: ./gradlew test
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload CodeCov Report
-        uses: codecov/codecov-action@v1
+          
+      - name: Run codacy-coverage-reporter
+        uses: codacy/codacy-coverage-reporter-action@master
         with:
-          file: "**/build/reports/jacoco/**/*.xml"
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
 
       - name: Upload Test Report
         uses: actions/upload-artifact@v2
