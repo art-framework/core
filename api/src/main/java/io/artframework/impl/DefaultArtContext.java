@@ -17,16 +17,31 @@
 package io.artframework.impl;
 
 import com.google.common.collect.ImmutableList;
-import io.artframework.*;
+import io.artframework.AbstractScoped;
+import io.artframework.ActionContext;
+import io.artframework.ArtContext;
+import io.artframework.ArtObjectContext;
+import io.artframework.CombinedResult;
+import io.artframework.ExecutionContext;
+import io.artframework.FutureResult;
+import io.artframework.RequirementContext;
+import io.artframework.Result;
+import io.artframework.Scope;
+import io.artframework.Target;
+import io.artframework.TriggerContext;
+import io.artframework.TriggerListener;
 import io.artframework.conf.ArtSettings;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static io.artframework.util.ReflectionUtil.getEntryForTarget;
 
@@ -112,58 +127,31 @@ public class DefaultArtContext extends AbstractScoped implements ArtContext, Tri
     }
 
     @Override
-    public void onTrigger(Target<Object>[] targets, ExecutionContext<TriggerContext> context) {
+    public void onTrigger(Target<Object> target, ExecutionContext<TriggerContext> context) {
+
         if (!isAutoTrigger()) return;
 
-        List<Target<?>> successfulTargets = new ArrayList<>();
+        if (test(target, context).success()) {
+            if (settings.executeActions()) execute(target, context);
 
-        for (Target<Object> target : targets) {
-            if (test(target, context).success()) {
-                if (settings.executeActions()) execute(target, context);
-
-                successfulTargets.add(target);
-            }
+            callListeners(target, context);
         }
-
-        callListeners(successfulTargets, context);
-
-    }
-
-    private void callListeners(List<Target<?>> targets, ExecutionContext<TriggerContext> context) {
-
-        targets.stream()
-                .collect(Collectors.groupingBy(target -> target.source().getClass()))
-                .forEach((key, value) -> callTargetListeners(toTargetCollection(key, value), context));
     }
 
     @SuppressWarnings("unchecked")
-    private <TTarget> List<Target<TTarget>> toTargetCollection(Class<TTarget> targetClass, Collection<Target<?>> targets) {
-        return targets.stream()
-                .filter(target -> target.isTargetType(targetClass))
-                .map(target -> (Target<TTarget>) target)
-                .collect(Collectors.toList());
-    }
+    private <TTarget> void callListeners(Target<TTarget> target, ExecutionContext<TriggerContext> context) {
 
-    @SuppressWarnings("unchecked")
-    private <TTarget> void callTargetListeners(List<Target<TTarget>> targets, ExecutionContext<TriggerContext> context) {
+        if (target == null) return;
 
-        if (targets.isEmpty()) return;
-
-        getEntryForTarget(targets.get(0), triggerListeners)
-                .orElse(new ArrayList<>())
-                .stream()
+        getEntryForTarget(target, triggerListeners).stream()
+                .flatMap(Collection::stream)
                 .map(listener -> (TriggerListener<TTarget>) listener)
-                .forEach(triggerListener -> triggerListener.onTrigger(targets.toArray(new Target[0]), context));
+                .forEach(triggerListener -> triggerListener.onTrigger(target, context));
     }
 
     @Override
     public ArtContext combine(ArtContext context) {
         return new CombinedArtContext(this, context);
-    }
-
-    @Override
-    public void close() {
-        disableTrigger();
     }
 
     @Override

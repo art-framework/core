@@ -28,13 +28,14 @@ public interface TriggerListener<TTarget> {
 
     /**
      * Gets called when a trigger got executed and informs its listeners.
-     *
-     * You can use the {@link Target#uniqueId()} to get a unique
+     * <p>If the trigger was called with multiple targets, e.g. a list of players
+     * the listener will be called for each matching target.
+     * <p>You can use the {@link Target#uniqueId()} to get a unique
      * non changing identifier of the trigger target that can be used
      * to cache or reference the target.
      *
-     * @param targets the targets that triggered the trigger
+     * @param target the target that triggered the trigger
      * @param context the context of the trigger execution
      */
-    void onTrigger(Target<TTarget>[] targets, ExecutionContext<TriggerContext> context);
+    void onTrigger(Target<TTarget> target, ExecutionContext<TriggerContext> context);
 }

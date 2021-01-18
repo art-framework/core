@@ -29,7 +29,11 @@ import io.artframework.integration.targets.EntityTarget;
 import io.artframework.integration.targets.PlayerTarget;
 import io.artframework.integration.trigger.PlayerTrigger;
 import lombok.Data;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +43,11 @@ import java.util.function.Consumer;
 
 import static io.artframework.Result.success;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @SuppressWarnings("ALL")
 @DisplayName("ART Integration Tests")
@@ -238,8 +246,8 @@ public class ArtIntegrationTest {
 
             TriggerListener<Player> triggerListener = spy(new TriggerListener<Player>() {
                 @Override
-                public void onTrigger(Target<Player>[] targets, ExecutionContext<TriggerContext> context) {
-                    assertThat(targets).contains(playerTarget.get());
+                public void onTrigger(Target<Player> target, ExecutionContext<TriggerContext> context) {
+                    target.equals(playerTarget.get());
                 }
             });
 
@@ -459,7 +467,7 @@ public class ArtIntegrationTest {
 
                 TriggerListener<Player> listener = spy(new TriggerListener<Player>() {
                     @Override
-                    public void onTrigger(Target<Player>[] targets, ExecutionContext<TriggerContext> context) {
+                    public void onTrigger(Target<Player> targets, ExecutionContext<TriggerContext> context) {
 
                     }
                 });

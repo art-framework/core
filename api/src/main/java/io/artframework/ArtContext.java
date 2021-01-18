@@ -20,11 +20,38 @@ import io.artframework.conf.ArtSettings;
 import io.artframework.impl.DefaultArtContext;
 import lombok.NonNull;
 
-import java.util.*;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Optional;
 
-// TODO: javadoc
-public interface ArtContext extends Context, AutoCloseable, ResultCreator, TargetCreator {
+/**
+ * The art-context is a central component of the art-framework and allows you to
+ * use your parsed actions, requirements and trigger.
+ * <p>The art-context is created by loading (parsing) your configuration into valid art-objects.
+ * Use the {@link Scope#load(String, Collection)} and {@link ART#load(String, Collection)} methods for parsing your config.
+ * <p>Depending on your intention you can then use the methods of this context for one of the following actions:
+ * <p><ul>
+ *     <li>{@link #execute(Object...)} all {@link Action}s in this context for the given target.
+ *          This will also check any requirements that are configured for the actions.
+ *     <li>{@link #test(Object)} all {@link Requirement} in the context for the given target
+ *     <li>{@link #enableTrigger()} all triggers that are configured in the context.
+ *     <p>Use the {@link #onTrigger(Class, TriggerListener)} method to listen to any trigger calls
+ *     invoked by this context.
+ *     <p>By default every trigger that gets calls will also executed any configured actions below it.
+ *     Set the {@link ArtSettings#executeActions(boolean)} flag in the {@link #settings()} to control the behaviour.
+ *     <p><b>Important:</b> call {@link #disableTrigger()} when you dispose the context to allow garbage collection to run.
+ * </ul>
+ * <p><pre>{@code
+ * try {
+ *     ArtContext context = ART.load(config.getStringList("rewards"));
+ *     context.execute(player);
+ * } catch (ParseException e) {
+ *     e.printStacktrace();
+ * }
+ * }</pre>
+ */
+public interface ArtContext extends Context, ResultCreator, TargetCreator {
 
     ///
     /// ART instance related methods
@@ -152,8 +179,8 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
 
     /**
      * Enables all configured trigger in this context, registering them as listeners.
-     * <p>
-     * Use this method if you want to register all trigger in the config as listeners.
+     * <p>This method must be called for triggers to work in this art-context.
+     * <p>Use this method if you want to register all trigger in the config as listeners.
      * Do not use this if triggers are not intended in your config.
      *
      * @return this art context
@@ -162,13 +189,10 @@ public interface ArtContext extends Context, AutoCloseable, ResultCreator, Targe
 
     /**
      * Disables all triggers in this context, unregistering them as listeners.
-     * <p>
-     * Use this to cleanup your context.
+     * <p>Make sure to call this method once you are done with the context
+     * to assure garbage collection runs and no more triggers are fired.
      *
      * @return this art context
      */
     ArtContext disableTrigger();
-
-    @Override
-    void close();
 }

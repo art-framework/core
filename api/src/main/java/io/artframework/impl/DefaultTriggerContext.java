@@ -140,7 +140,11 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
             entry.getValue().stream()
                     .map(listener -> (TriggerListener<TTarget>) listener)
-                    .forEach(listener -> listener.onTrigger(targets, executionContext));
+                    .forEach(listener -> {
+                        for (Target<TTarget> target : targets) {
+                            listener.onTrigger(target, executionContext);
+                        }
+                    });
         }
     }
 

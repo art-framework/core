@@ -68,9 +68,4 @@ public final class CombinedArtContext extends DefaultArtContext implements ArtCo
 
         return this;
     }
-
-    @Override
-    public void close() {
-        contextSet.forEach(ArtContext::close);
-    }
 }
