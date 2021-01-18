@@ -1,3 +1,10 @@
+## [1.6.4](https://github.com/art-framework/art-core/compare/v1.6.3...v1.6.4) (2021-01-18)
+
+
+### Bug Fixes
+
+* **release:** publish scripts artifact as well ([88204ea](https://github.com/art-framework/art-core/commit/88204ea2d99d7045fc13dcdf5422dd91c9443b82))
+
 ## [1.6.3](https://github.com/art-framework/art-core/compare/v1.6.2...v1.6.3) (2021-01-17)
 
 
