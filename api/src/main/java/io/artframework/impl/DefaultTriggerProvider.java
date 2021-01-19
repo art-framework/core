@@ -36,7 +36,9 @@ import lombok.extern.java.Log;
 import org.reflections.ReflectionUtils;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 
 @Log(topic = "art-framework")
 public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFactory> implements TriggerProvider, CombinedResultCreator {
@@ -93,6 +95,10 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
     @Override
     public CombinedResult trigger(String identifier, TriggerTarget<?>... targets) {
         if (!exists(identifier)) return error("Trigger with identifier '" + identifier + "' does not exist.");
+
+        targets = Arrays.stream(targets)
+                .filter(Objects::nonNull)
+                .toArray(TriggerTarget[]::new);
 
         TriggerEvent triggerEvent = io.artframework.ART.callEvent(new TriggerEvent(identifier, targets));
 
