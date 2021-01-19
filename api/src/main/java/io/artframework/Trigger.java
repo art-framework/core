@@ -16,7 +16,9 @@
 
 package io.artframework;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -66,10 +68,17 @@ public interface Trigger extends ArtObject, Scoped, TargetCreator, ResultCreator
      * @return the result of the trigger
      */
     default CombinedResult trigger(String identifier, Object... targets) {
-        return configuration().trigger().trigger(identifier, Arrays.stream(targets)
-                .map(this::of)
-                .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
-                .toArray(TriggerTarget[]::new));
+
+        ArrayList<TriggerTarget<?>> triggerTargets = new ArrayList<>();
+        for (Object target : targets) {
+            if (target instanceof TriggerTarget) {
+                triggerTargets.add((TriggerTarget<?>) target);
+            } else {
+                triggerTargets.add(of(target));
+            }
+        }
+
+        return trigger(identifier, triggerTargets.toArray(TriggerTarget[]::new));
     }
 
     /**
@@ -87,7 +96,7 @@ public interface Trigger extends ArtObject, Scoped, TargetCreator, ResultCreator
     default <TTarget, TConfig> CombinedResult trigger(String identifier, Class<TConfig> configClass, TriggerRequirement<TTarget, TConfig> requirement, TTarget... targets) {
         return trigger(identifier, Arrays.stream(targets)
                 .map(target -> of(target, configClass, requirement))
-                .flatMap(o -> o.map(Stream::of).orElseGet(Stream::empty))
+                .filter(Objects::nonNull)
                 .toArray(TriggerTarget[]::new));
     }
 
@@ -107,11 +116,12 @@ public interface Trigger extends ArtObject, Scoped, TargetCreator, ResultCreator
      *
      * @param target the target of the trigger
      * @param <TTarget> type of the target
-     * @return the new trigger target
+     * @return the new trigger target or null if a wrapper for the target was not found
      */
-     default <TTarget> Optional<TriggerTarget<TTarget>> of(TTarget target) {
-        return target(target)
-                .map(TriggerTarget::new);
+     default <TTarget> TriggerTarget<TTarget> of(TTarget target) {
+         return target(target)
+                 .map(TriggerTarget::new)
+                 .orElse(null);
     }
 
     /**
@@ -124,9 +134,12 @@ public interface Trigger extends ArtObject, Scoped, TargetCreator, ResultCreator
      * @param requirement the predicate to check before applying the trigger to the target
      * @param <TTarget> type of the target
      * @param <TConfig> type of the config
-     * @return the result of the trigger
+     * @return the result of the trigger or null of no target type was found
      */
-    default <TTarget, TConfig> Optional<TriggerTarget<TTarget>> of(TTarget target, Class<TConfig> configClass, TriggerRequirement<TTarget, TConfig> requirement) {
-        return of(target).map(triggerTarget -> triggerTarget.with(configClass, requirement));
+    default <TTarget, TConfig> TriggerTarget<TTarget> of(TTarget target, Class<TConfig> configClass, TriggerRequirement<TTarget, TConfig> requirement) {
+        return target(target)
+                .map(TriggerTarget::new)
+                .map(triggerTarget -> triggerTarget.with(configClass, requirement))
+                .orElse(null);
     }
 }
