@@ -27,11 +27,9 @@ import java.util.Map;
 
 public interface ConfigMap {
 
-    static ConfigMap of(ConfigMapType type, Map<String, ConfigFieldInformation> configFields) {
-        return new DefaultConfigMap(type, configFields);
+    static ConfigMap of(Map<String, ConfigFieldInformation> configFields) {
+        return new DefaultConfigMap(configFields);
     }
-
-    ConfigMapType type();
 
     <TConfig> TConfig applyTo(@NonNull TConfig config);
 

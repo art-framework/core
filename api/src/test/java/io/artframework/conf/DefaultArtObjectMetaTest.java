@@ -18,6 +18,7 @@ package io.artframework.conf;
 
 import io.artframework.*;
 import io.artframework.annotations.ART;
+import io.artframework.annotations.Config;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.integration.data.Player;
 import lombok.NonNull;
@@ -189,6 +190,14 @@ class DefaultArtObjectMetaTest {
         @Override
         public Result execute(@NonNull Target<Object> target, @NonNull ExecutionContext<ActionContext<Object>> context) {
             return success();
+        }
+    }
+
+    public static class MyTrigger implements Trigger {
+
+        @ART("move")
+        public void onMove() {
+
         }
     }
 

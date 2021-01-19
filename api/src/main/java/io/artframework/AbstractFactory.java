@@ -39,7 +39,7 @@ public abstract class AbstractFactory<TContext extends ArtObjectContext<TArtObje
     protected final TArtObject createArtObject(ConfigMap configMap) {
         TArtObject artObject = meta().provider().create();
 
-        if (configMap == null || !configMap.loaded() || configMap.type() != ConfigMapType.ART_CONFIG) {
+        if (configMap == null || !configMap.loaded()) {
             return artObject;
         }
 

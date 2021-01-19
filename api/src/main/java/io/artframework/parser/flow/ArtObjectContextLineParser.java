@@ -74,23 +74,27 @@ public abstract class ArtObjectContextLineParser<TFactory extends Factory<?, ?>>
         }
 
         TFactory factory = factoryOptional.get();
-        Map<ConfigMapType, ConfigMap> configMaps = new HashMap<>();
+
+        ConfigMap configMap = configMap();
 
         Optional<String> config = getConfig();
         if (config.isPresent()) {
-            ConfigMap configMap = configMap();
             ConfigParser configParser = ConfigParser.of(configMap);
             if (configParser.accept(config.get())) {
-                configMaps.put(configMap.type(), configParser.parse());
+                configMap = configParser.parse();
             }
         }
 
 
+        if (factory.meta().configMap().isEmpty()) {
+            return factory.create(configMap, )
+        }
+        ConfigMap.of(factory.meta().configMap());
         ConfigParser configParser = ConfigParser.of(ConfigMap.of(ConfigMapType.ART_CONFIG, factory.meta().configMap()));
         if (configParser.accept(userConfig())) {
             configMaps.put(ConfigMapType.ART_CONFIG, configParser.parse());
         }
 
-        return factory.create(configMaps);
+        return factory.create(configMap, );
     }
 }

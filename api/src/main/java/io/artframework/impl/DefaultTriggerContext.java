@@ -19,6 +19,7 @@ package io.artframework.impl;
 import com.google.common.base.Strings;
 import io.artframework.*;
 import io.artframework.conf.Constants;
+import io.artframework.conf.KeyValuePair;
 import io.artframework.conf.TriggerConfig;
 import io.artframework.events.EventHandler;
 import io.artframework.events.EventListener;
@@ -41,14 +42,16 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     private final Map<Class<?>, Set<TriggerListener<?>>> listeners = new HashMap<>();
     @Getter
     private final TriggerConfig config;
+    private final List<KeyValuePair> configValues;
 
     public DefaultTriggerContext(
             @NonNull Scope scope,
             @NonNull ArtObjectMeta<Trigger> information,
-            @NonNull TriggerConfig config
-    ) {
+            @NonNull TriggerConfig config,
+            @NonNull List<KeyValuePair> configValues) {
         super(scope, information);
         this.config = config;
+        this.configValues = List.copyOf(configValues);
 
         configuration().events().register(this);
     }

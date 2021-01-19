@@ -37,21 +37,17 @@ import java.util.Map;
 public class DefaultConfigMap implements ConfigMap {
 
     @Getter
-    ConfigMapType type;
-    @Getter
     Map<String, ConfigFieldInformation> configFields;
     Map<ConfigFieldInformation, Object> configValues;
     boolean loaded;
 
-    public DefaultConfigMap(ConfigMapType type, Map<String, ConfigFieldInformation> configFields) {
-        this.type = type;
+    public DefaultConfigMap(Map<String, ConfigFieldInformation> configFields) {
         this.configFields = ImmutableMap.copyOf(configFields);
         this.configValues = new HashMap<>();
         this.loaded = false;
     }
 
-    DefaultConfigMap(ConfigMapType type, Map<String, ConfigFieldInformation> configFields, Map<ConfigFieldInformation, Object> configValues) {
-        this.type = type;
+    DefaultConfigMap(Map<String, ConfigFieldInformation> configFields, Map<ConfigFieldInformation, Object> configValues) {
         this.configFields = ImmutableMap.copyOf(configFields);
         this.configValues = ImmutableMap.copyOf(configValues);
         this.loaded = true;
@@ -66,7 +62,7 @@ public class DefaultConfigMap implements ConfigMap {
 
     @Override
     public ConfigMap with(@NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException {
-        return new DefaultConfigMap(type(), configFields(), ConfigUtil.loadConfigValues(configFields(), keyValuePairs));
+        return new DefaultConfigMap(configFields(), ConfigUtil.loadConfigValues(configFields(), keyValuePairs));
     }
 
     private void setConfigFields(Object config, Map<ConfigFieldInformation, Object> fieldValueMap) {

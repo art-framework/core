@@ -38,7 +38,8 @@ public class DefaultTriggerFactory extends AbstractFactory<TriggerContext, Trigg
         return TriggerContext.of(
                 scope(),
                 meta(),
-                TriggerConfig.of(configMaps.get(ConfigMapType.TRIGGER))
+                TriggerConfig.of(configMaps.get(ConfigMapType.TRIGGER)),
+                configMaps.get(ConfigMapType.ART_CONFIG)
         );
     }
 }

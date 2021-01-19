@@ -16,10 +16,12 @@
 
 package io.artframework;
 
+import io.artframework.conf.KeyValuePair;
 import io.artframework.conf.TriggerConfig;
 import io.artframework.impl.DefaultTriggerContext;
 import lombok.NonNull;
 
+import java.util.List;
 import java.util.Set;
 
 public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder, RequirementHolder, AutoCloseable {
@@ -27,9 +29,10 @@ public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder,
     static TriggerContext of(
             @NonNull Scope scope,
             @NonNull ArtObjectMeta<Trigger> information,
-            @NonNull TriggerConfig config
-    ) {
-        return new DefaultTriggerContext(scope, information, config);
+            @NonNull TriggerConfig config,
+            @NonNull List<KeyValuePair> configValues
+            ) {
+        return new DefaultTriggerContext(scope, information, config, configValues);
     }
 
     /**

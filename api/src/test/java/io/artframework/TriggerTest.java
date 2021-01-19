@@ -120,6 +120,32 @@ class TriggerTest implements Trigger {
 
             verify(requirement, times(1)).test(any(), any(), any());
         }
+
+        @SneakyThrows
+        @Test
+        @DisplayName("should pass parsed config to trigger")
+        void shouldParseConfigInTrigger() {
+
+            Player player = new Player("foo");
+            TriggerRequirement<Player, TestConfig> requirement = spy(new TriggerRequirement<Player, TestConfig>() {
+                @Override
+                public Result test(Target<Player> target, ExecutionContext<TriggerContext> context, TestConfig testConfig) {
+
+                    assertThat(testConfig.x).isEqualTo(100);
+                    return success();
+                }
+            });
+
+            scope.load(Collections.singletonList(
+                    "@foo 100"
+            )).enableTrigger();
+
+            CombinedResult result = trigger.trigger("foo", of(player, TestConfig.class, requirement));
+
+            assertThat(result.success()).isTrue();
+
+            verify(requirement, times(1)).test(any(), any(), any());
+        }
     }
 
     public static class TestConfig {

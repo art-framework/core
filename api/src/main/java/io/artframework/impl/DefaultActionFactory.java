@@ -18,8 +18,10 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import io.artframework.conf.ActionConfig;
+import io.artframework.conf.KeyValuePair;
 import io.artframework.parser.flow.ConfigMapType;
 
+import java.util.List;
 import java.util.Map;
 
 public class DefaultActionFactory<TTarget> extends AbstractFactory<ActionContext<TTarget>, Action<TTarget>> implements ActionFactory<TTarget> {
@@ -29,11 +31,12 @@ public class DefaultActionFactory<TTarget> extends AbstractFactory<ActionContext
     }
 
     @Override
-    public ActionContext<TTarget> create(Map<ConfigMapType, ConfigMap> configMaps) {
+    public ActionContext<TTarget> create(ConfigMap configMap, List<KeyValuePair> values) {
 
         return ActionContext.of(
                 scope(),
                 meta(),
+                createArtObject(meta().configMap())
                 createArtObject(configMaps.get(ConfigMapType.ART_CONFIG)),
                 ActionConfig.of(configMaps.get(ConfigMapType.ACTION))
         );

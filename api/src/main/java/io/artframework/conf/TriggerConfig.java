@@ -52,7 +52,7 @@ public class TriggerConfig extends ArtObjectConfig {
     public static TriggerConfig of(@Nullable ConfigMap configMap) {
         TriggerConfig config = TriggerConfig.builder().build();
 
-        if (configMap == null || configMap.type() != ConfigMapType.TRIGGER) {
+        if (configMap == null) {
             return config;
         }
 
