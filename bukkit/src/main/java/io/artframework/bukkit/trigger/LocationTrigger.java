@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class PlayerTrigger implements Listener, Trigger {
+public class LocationTrigger implements Listener, Trigger {
 
     public static final String PLAYER_MOVE = "player.move";
 

@@ -31,7 +31,7 @@ import io.artframework.bukkit.storage.MetadataStore;
 import io.artframework.bukkit.targets.*;
 import io.artframework.bukkit.trigger.EntityTrigger;
 import io.artframework.bukkit.trigger.PlayerServerTrigger;
-import io.artframework.bukkit.trigger.PlayerTrigger;
+import io.artframework.bukkit.trigger.LocationTrigger;
 import io.artframework.modules.scripts.ScriptsModule;
 import io.artframework.util.FileUtil;
 import io.ebean.Database;
@@ -46,7 +46,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 
@@ -59,7 +58,7 @@ public class ArtBukkitModule implements BootstrapModule {
 
     private final PlayerServerTrigger playerServerTrigger = new PlayerServerTrigger();
     private final EntityTrigger entityTrigger = new EntityTrigger();
-    private final PlayerTrigger playerTrigger = new PlayerTrigger();
+    private final LocationTrigger locationTrigger = new LocationTrigger();
     private final ArtBukkitPlugin plugin;
     private EbeanPersistenceProvider storageProvider;
 
@@ -125,7 +124,7 @@ public class ArtBukkitModule implements BootstrapModule {
 
         Bukkit.getPluginManager().registerEvents(playerServerTrigger, plugin);
         Bukkit.getPluginManager().registerEvents(entityTrigger, plugin);
-        Bukkit.getPluginManager().registerEvents(playerTrigger, plugin);
+        Bukkit.getPluginManager().registerEvents(locationTrigger, plugin);
 
         scope.register()
                 .actions()
@@ -138,7 +137,7 @@ public class ArtBukkitModule implements BootstrapModule {
                 .trigger()
                     .add(playerServerTrigger)
                     .add(entityTrigger)
-                    .add(playerTrigger)
+                    .add(locationTrigger)
                 .targets()
                     .add(Block.class, BlockTarget::new)
                     .add(Cancellable.class, CancellableEventTarget::new)
