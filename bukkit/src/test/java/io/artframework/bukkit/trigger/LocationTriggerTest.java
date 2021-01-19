@@ -1,0 +1,104 @@
+package io.artframework.bukkit.trigger;
+
+import be.seeseemelk.mockbukkit.MockBukkit;
+import be.seeseemelk.mockbukkit.ServerMock;
+import be.seeseemelk.mockbukkit.entity.PlayerMock;
+import io.artframework.*;
+import io.artframework.bukkit.targets.PlayerTarget;
+import lombok.SneakyThrows;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerMoveEvent;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.util.Collections;
+
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.Mockito.*;
+
+class LocationTriggerTest {
+
+    private static ServerMock server;
+    private static LocationTrigger trigger;
+
+    @BeforeAll
+    static void beforeAll() {
+        server = MockBukkit.mock();
+        trigger = new LocationTrigger();
+        ART.globalScope().register()
+                .targets().add(Player.class, PlayerTarget::new)
+                .and()
+                .trigger().add(trigger);
+    }
+
+    @AfterAll
+    static void afterAll() {
+        MockBukkit.unmock();
+    }
+
+    @Test
+    @DisplayName("should parse location trigger into art context")
+    void shouldParseLocationTrigger() {
+
+        assertThatCode(() -> ART.load(Collections.singletonList(
+                "@loc 100,50,-100"
+        ))).doesNotThrowAnyException();
+    }
+
+    @Test
+    @SneakyThrows
+    @DisplayName("should call trigger when player moves to location")
+    void shouldCallTriggerWhenPlayerMovesToLocation() {
+
+        ArtContext context = ART.load(Collections.singletonList(
+                "@loc 100,50,-100"
+        ));
+
+        TriggerListener<Player> listener = spy(new TriggerListener<>() {
+            @Override
+            public void onTrigger(Target<Player> target, ExecutionContext<TriggerContext> context) {
+
+            }
+        });
+        context.onTrigger(Player.class, listener);
+        context.enableTrigger();
+
+        PlayerMock player = server.addPlayer();
+        Location from = new Location(player.getWorld(), 0, 0, 0);
+        Location to = new Location(player.getWorld(), 100, 50, -100);
+        trigger.onMove(new PlayerMoveEvent(player, from, from));
+        trigger.onMove(new PlayerMoveEvent(player, from, to));
+
+        verify(listener, times(1)).onTrigger(eq(new PlayerTarget(player)), any());
+    }
+
+    @SneakyThrows
+    @Test
+    @DisplayName("should not call listener if location does not match configured location")
+    void shouldNotCallListenerIfLocationDoesNotMatchConfiguredLocation() {
+
+        ArtContext context = ART.load(Collections.singletonList(
+                "@loc 100,50,-100"
+        ));
+
+        TriggerListener<Player> listener = spy(new TriggerListener<>() {
+            @Override
+            public void onTrigger(Target<Player> target, ExecutionContext<TriggerContext> context) {
+
+            }
+        });
+        context.onTrigger(Player.class, listener);
+        context.enableTrigger();
+
+        PlayerMock player = server.addPlayer();
+        Location to = new Location(player.getWorld(), 0, 0, 0);
+        Location from = new Location(player.getWorld(), 100, 50, -100);
+        trigger.onMove(new PlayerMoveEvent(player, from, from));
+        trigger.onMove(new PlayerMoveEvent(player, from, to));
+
+        verify(listener, never()).onTrigger(any(), any());
+    }
+}
