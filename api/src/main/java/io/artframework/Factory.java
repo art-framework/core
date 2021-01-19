@@ -16,9 +16,12 @@
 
 package io.artframework;
 
+import io.artframework.annotations.Config;
+import io.artframework.conf.KeyValuePair;
 import io.artframework.parser.flow.ConfigMapType;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -37,9 +40,5 @@ public interface Factory<TContext extends ArtObjectContext<TArtObject>, TArtObje
 
     ArtObjectMeta<TArtObject> meta();
 
-    default TContext create() {
-        return create(new HashMap<>());
-    }
-
-    TContext create(Map<ConfigMapType, ConfigMap> configMaps);
+    TContext create(ConfigMap configMap, List<KeyValuePair> values);
 }

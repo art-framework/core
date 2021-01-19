@@ -60,7 +60,7 @@ public class RequirementConfig extends ArtObjectConfig {
     public static RequirementConfig of(@Nullable ConfigMap configMap) {
         RequirementConfig config = RequirementConfig.builder().build();
 
-        if (configMap == null || configMap.type() != ConfigMapType.REQUIREMENT) {
+        if (configMap == null) {
             return config;
         }
 

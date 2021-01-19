@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,8 +31,8 @@ class DefaultTriggerContextTest {
         config = TriggerConfig.builder().build();
         context = new DefaultTriggerContext(ART.globalScope(),
                 ArtObjectMeta.of("test", TestTrigger.class, new TestTrigger()),
-                config
-        );
+                config,
+                new ArrayList<>());
         action = spy(new TestAction());
         ActionContext actionContext = ActionContext.of(ART.globalScope(),
                 (ArtObjectMeta) ArtObjectMeta.of(TestAction.class),
@@ -181,6 +182,12 @@ class DefaultTriggerContextTest {
             context.onTriggerEvent(event());
 
             verify(listener, never()).onTrigger(any(), any());
+        }
+
+        @Test
+        @DisplayName("should call trigger with parsed config map")
+        void shouldCallListenerWithParsedTriggerConfigMap() {
+
         }
     }
 

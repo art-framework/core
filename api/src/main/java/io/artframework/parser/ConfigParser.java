@@ -88,13 +88,15 @@ public final class ConfigParser {
         if (matcher == null) throw new ParseException("ConfigParser not initialized! Call accept(String) first!");
 
         try {
-            return configMap.with(extractKeyValuePairs(matcher));
+            return configMap.with(extractKeyValuePairs());
         } catch (ConfigurationException e) {
             throw new ParseException(e.getMessage(), e);
         }
     }
 
-    protected List<KeyValuePair> extractKeyValuePairs(Matcher matcher) {
+    public List<KeyValuePair> extractKeyValuePairs() throws ParseException {
+
+        if (matcher == null) throw new ParseException("ConfigParser not initialized! Call accept(String) first!");
 
         ArrayList<KeyValuePair> pairs = new ArrayList<>();
 

@@ -324,6 +324,20 @@ class ConfigParserTest {
                         .contains("my cool array with spaces");
             }).doesNotThrowAnyException();
         }
+
+        @Test
+        @DisplayName("should parse location config with negative values")
+        void shouldParseLocationConfigWithNegativeValues() {
+
+            ConfigParser parser = parser(LocationConfig.class);
+
+            assertThat(parser.accept("0,45,-102")).isTrue();
+            assertThatCode(() -> assertThat(parser.parse()
+                    .applyTo(new LocationConfig()))
+                    .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
+                    .contains(0, 45, -102)
+            ).doesNotThrowAnyException();
+        }
     }
 
     @Data
@@ -378,5 +392,17 @@ class ConfigParserTest {
         private int myVal = 5;
         @ConfigOption
         private String[] messages;
+    }
+
+    @Data
+    @ConfigOption
+    public static class LocationConfig {
+
+        @ConfigOption(position = 0)
+        private int x;
+        @ConfigOption(position = 1)
+        private int y;
+        @ConfigOption(position = 2)
+        private int z;
     }
 }
