@@ -78,7 +78,7 @@ public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder,
      *
      * @param targets the targets that triggered this trigger
      */
-    void trigger(final Target<?>[] targets, ExecutionContext<TriggerContext> context);
+    void trigger(ExecutionContext<TriggerContext> context, final Target<?>[] targets);
 
     /**
      * Registers the given {@link TriggerListener} to listen for events

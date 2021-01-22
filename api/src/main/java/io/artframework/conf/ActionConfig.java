@@ -16,8 +16,8 @@
 
 package io.artframework.conf;
 
-import io.artframework.ConfigurationException;
 import io.artframework.ConfigMap;
+import io.artframework.ConfigurationException;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.TimeUtil;
@@ -36,7 +36,6 @@ import javax.annotation.Nullable;
  * Otherwise the config will be parsed by the given parser and provided for you.
  */
 @Data
-@Builder
 @ConfigOption
 @Accessors(fluent = true)
 @EqualsAndHashCode(callSuper = true)
@@ -49,7 +48,7 @@ public final class ActionConfig extends ArtObjectConfig {
     public static ConfigMap configMap() {
         if (configMap == null) {
             try {
-                configMap = ConfigMap.of(ConfigUtil.getConfigFields(ActionConfig.class, ActionConfig.builder().build()));
+                configMap = ConfigMap.of(ConfigUtil.getConfigFields(ActionConfig.class, new ActionConfig()));
             } catch (ConfigurationException e) {
                 e.printStackTrace();
             }
@@ -58,7 +57,7 @@ public final class ActionConfig extends ArtObjectConfig {
     }
 
     public static ActionConfig of(@Nullable ConfigMap configMap) {
-        ActionConfig config = ActionConfig.builder().build();
+        ActionConfig config = new ActionConfig();
 
         if (configMap == null) {
             return config;
@@ -71,14 +70,12 @@ public final class ActionConfig extends ArtObjectConfig {
             "The delay after which the action is executed.",
             TimeUtil.TIME_DESC
     })
-    @Builder.Default
     private String delay = "0s";
 
     @ConfigOption(description = {
             "Prevents a consecutive execution of this action before the cooldown ended.",
             TimeUtil.TIME_DESC
     })
-    @Builder.Default
     private String cooldown = "0s";
 
     @ConfigOption(description = "Will only execute the action once.")

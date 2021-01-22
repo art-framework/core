@@ -55,7 +55,9 @@ class FlowLogicSorterTest {
     private TriggerContext trigger() {
         return spy(TriggerContext.of(Scope.of(configurationBuilder -> configurationBuilder.events(mock(EventProvider.class))),
                 mock(ArtObjectMeta.class),
-                mock(TriggerConfig.class)));
+                mock(Trigger.class),
+                mock(TriggerConfig.class))
+        );
     }
 
     @Nested

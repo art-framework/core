@@ -16,8 +16,6 @@
 
 package io.artframework;
 
-import io.artframework.events.EventHandler;
-import io.artframework.events.EventListener;
 import io.artframework.integration.actions.DamageAction;
 import io.artframework.integration.actions.TestGenericAction;
 import io.artframework.integration.actions.TextAction;
@@ -26,27 +24,16 @@ import io.artframework.integration.data.Player;
 import io.artframework.integration.requirements.HealthRequirement;
 import io.artframework.integration.targets.EntityTarget;
 import io.artframework.integration.targets.PlayerTarget;
-import io.artframework.integration.trigger.PlayerTrigger;
-import lombok.Data;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import io.artframework.integration.trigger.PlayerMoveTrigger;
+import io.artframework.integration.trigger.PlayerDamangeTrigger;
+import org.junit.jupiter.api.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import static io.artframework.Result.success;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
 @DisplayName("ART Integration Tests")
@@ -155,27 +142,8 @@ public class ArtIntegrationTest {
             void shouldRegisterTrigger() {
 
                 TriggerProvider trigger = scope.configuration().trigger();
-                trigger.add(PlayerTrigger.class);
-
-                assertThat(trigger.get("move"))
-                        .isNotEmpty();
-
-                assertThat(trigger.get("damage"))
-                        .isNotEmpty();
-
-                assertThat(trigger.get("dmg"))
-                        .isNotEmpty().get()
-                        .extracting(triggerFactory -> triggerFactory.meta())
-                        .extracting(triggerArtInformation -> triggerArtInformation.identifier())
-                        .isEqualTo("damage");
-            }
-
-            @Test
-            @DisplayName("should register trigger from direct instance")
-            void shouldRegisterTriggerFromInstance() {
-
-                TriggerProvider trigger = scope.configuration().trigger();
-                trigger.add(new PlayerTrigger());
+                trigger.add(PlayerDamangeTrigger.class);
+                trigger.add(PlayerMoveTrigger.class);
 
                 assertThat(trigger.get("move"))
                         .isNotEmpty();
@@ -211,31 +179,12 @@ public class ArtIntegrationTest {
     class Events {
 
         @Test
-        @DisplayName("should call trigger event in listener")
-        void shouldCallTriggerEventListener() {
-
-            PlayerTrigger trigger = new PlayerTrigger(scope);
-            scope.configuration().trigger().add(trigger);
-
-            MyEventListener eventListener = spy(new MyEventListener());
-            scope.configuration().events().register(eventListener);
-            eventListener.consumers.add(event -> {
-                assertThat(event.getIdentifier()).isEqualTo("move");
-            });
-
-            trigger.onMove(new Player());
-
-            verify(eventListener, times(1)).onTrigger(any());
-        }
-
-        @Test
         @DisplayName("should call registered triggers")
         void shouldCallRegisteredTrigger() throws ParseException {
 
             scope.configuration().targets().add(Player.class, PlayerTarget::new);
 
-            PlayerTrigger trigger = new PlayerTrigger(scope);
-            scope.configuration().trigger().add(trigger);
+            scope.configuration().trigger().add(PlayerMoveTrigger.class);
 
             ArtContext context = scope.load(Arrays.asList("@move"));
             context.enableTrigger();
@@ -252,7 +201,8 @@ public class ArtIntegrationTest {
 
             context.onTrigger(Player.class, triggerListener);
 
-            trigger.onMove(player);
+            scope.trigger(PlayerMoveTrigger.class).with(player).execute();
+
             verify(triggerListener, times(1)).onTrigger(any(), any());
         }
     }
@@ -261,11 +211,8 @@ public class ArtIntegrationTest {
     @DisplayName("ART creation")
     class ArtCreation {
 
-        private PlayerTrigger playerTrigger;
-
         @BeforeEach
         void setUp() {
-            playerTrigger = new PlayerTrigger(scope);
             scope.configuration()
                     .actions()
                         .add(DamageAction.class)
@@ -273,7 +220,8 @@ public class ArtIntegrationTest {
                     .requirements()
                         .add(HealthRequirement.class)
                     .trigger()
-                        .add(playerTrigger)
+                        .add(PlayerDamangeTrigger.class)
+                        .add(PlayerMoveTrigger.class)
                     .targets()
                         .add(Player.class, PlayerTarget::new);
         }
@@ -408,9 +356,9 @@ public class ArtIntegrationTest {
                 scope.load(Arrays.asList(
                         "@move",
                         "!damage 40"
-                ));
+                )).enableTrigger();
 
-                playerTrigger.onMove(player);
+                scope.trigger(PlayerMoveTrigger.class).with(player).execute();
 
                 assertThat(player.getHealth()).isEqualTo(60);
             }
@@ -425,11 +373,11 @@ public class ArtIntegrationTest {
                 scope.load(Arrays.asList(
                         "@move(execute_once=true)",
                         "!damage 40"
-                ));
+                )).enableTrigger();
 
-                playerTrigger.onMove(player);
-                playerTrigger.onMove(player);
-                playerTrigger.onMove(player);
+                scope.trigger(PlayerMoveTrigger.class).with(player).execute();
+                scope.trigger(PlayerMoveTrigger.class).with(player).execute();
+                scope.trigger(PlayerMoveTrigger.class).with(player).execute();
 
                 assertThat(player.getHealth()).isEqualTo(60);
             }
@@ -445,10 +393,10 @@ public class ArtIntegrationTest {
                         "@move",
                         "@damage",
                         "!damage 40"
-                ));
+                )).enableTrigger();
 
-                playerTrigger.onMove(player);
-                playerTrigger.onDamage(player);
+                scope.trigger(PlayerDamangeTrigger.class).with(player).execute();
+                scope.trigger(PlayerMoveTrigger.class).with(player).execute();
 
                 assertThat(player.getHealth()).isEqualTo(20);
             }
@@ -473,21 +421,10 @@ public class ArtIntegrationTest {
 
                 artContext.onTrigger(Player.class, listener);
 
-                playerTrigger.onMove(player);
+                scope.trigger(PlayerMoveTrigger.class).with(player).execute();
 
                 verify(listener, times(1)).onTrigger(any(), any());
             }
-        }
-    }
-
-    @Data
-    public static class MyEventListener implements EventListener {
-
-        private final List<Consumer<TriggerEvent>> consumers = new ArrayList<>();
-
-        @EventHandler
-        public void onTrigger(TriggerEvent event) {
-            consumers.forEach(triggerEventConsumer -> triggerEventConsumer.accept(event));
         }
     }
 }

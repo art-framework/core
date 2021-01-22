@@ -19,7 +19,6 @@ package io.artframework.finder;
 import io.artframework.*;
 import io.artframework.util.FileUtil;
 import io.artframework.util.ReflectionUtil;
-import javassist.bytecode.ClassFile;
 import lombok.Value;
 
 import java.io.File;

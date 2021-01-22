@@ -17,30 +17,14 @@
 package io.artframework.impl;
 
 import com.google.common.collect.ImmutableList;
-import io.artframework.AbstractScoped;
-import io.artframework.ActionContext;
-import io.artframework.ArtContext;
-import io.artframework.ArtObjectContext;
-import io.artframework.CombinedResult;
-import io.artframework.ExecutionContext;
-import io.artframework.FutureResult;
-import io.artframework.RequirementContext;
-import io.artframework.Result;
-import io.artframework.Scope;
-import io.artframework.Target;
-import io.artframework.TriggerContext;
-import io.artframework.TriggerListener;
+import io.artframework.*;
 import io.artframework.conf.ArtSettings;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 
 import static io.artframework.util.ReflectionUtil.getEntryForTarget;
@@ -119,11 +103,15 @@ public class DefaultArtContext extends AbstractScoped implements ArtContext, Tri
     }
 
     @Override
-    public <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
+    public <TTarget> ArtContext onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
+
         if (!triggerListeners.containsKey(targetClass)) {
             triggerListeners.put(targetClass, new ArrayList<>());
         }
+
         triggerListeners.get(targetClass).add(listener);
+
+        return this;
     }
 
     @Override
@@ -159,7 +147,7 @@ public class DefaultArtContext extends AbstractScoped implements ArtContext, Tri
         artContexts().stream()
                 .filter(artObjectContext -> artObjectContext instanceof TriggerContext)
                 .map(artObjectContext -> (TriggerContext) artObjectContext)
-                .forEach(context -> context.addListener(this));
+                .forEach(context -> context.addListener(this).enable());
         return this;
     }
 
@@ -168,7 +156,7 @@ public class DefaultArtContext extends AbstractScoped implements ArtContext, Tri
         artContexts().stream()
                 .filter(artObjectContext -> artObjectContext instanceof TriggerContext)
                 .map(artObjectContext -> (TriggerContext) artObjectContext)
-                .forEach(context -> context.removeListener(this));
+                .forEach(context -> context.removeListener(this).disable());
         return this;
     }
 

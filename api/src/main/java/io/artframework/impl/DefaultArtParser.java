@@ -16,7 +16,10 @@
 
 package io.artframework.impl;
 
-import io.artframework.*;
+import io.artframework.ArtContext;
+import io.artframework.ArtParser;
+import io.artframework.ParseException;
+import io.artframework.Scope;
 import io.artframework.parser.Parser;
 
 import java.util.ArrayList;

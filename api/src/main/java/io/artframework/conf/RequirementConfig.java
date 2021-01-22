@@ -16,8 +16,8 @@
 
 package io.artframework.conf;
 
-import io.artframework.ConfigurationException;
 import io.artframework.ConfigMap;
+import io.artframework.ConfigurationException;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.util.ConfigUtil;
 import lombok.Builder;
@@ -35,7 +35,6 @@ import javax.annotation.Nullable;
  * Otherwise the config will be parsed by the given parser and provided for you.
  */
 @Data
-@Builder
 @ConfigOption
 @Accessors(fluent = true)
 @EqualsAndHashCode(callSuper = true)
@@ -48,7 +47,7 @@ public class RequirementConfig extends ArtObjectConfig {
     public static ConfigMap getConfigMap() {
         if (configMap == null) {
             try {
-                configMap = ConfigMap.of(ConfigUtil.getConfigFields(RequirementConfig.class, RequirementConfig.builder().build()));
+                configMap = ConfigMap.of(ConfigUtil.getConfigFields(RequirementConfig.class, new RequirementConfig()));
             } catch (ConfigurationException e) {
                 e.printStackTrace();
             }
@@ -57,7 +56,7 @@ public class RequirementConfig extends ArtObjectConfig {
     }
 
     public static RequirementConfig of(@Nullable ConfigMap configMap) {
-        RequirementConfig config = RequirementConfig.builder().build();
+        RequirementConfig config = new RequirementConfig();
 
         if (configMap == null) {
             return config;
@@ -70,15 +69,15 @@ public class RequirementConfig extends ArtObjectConfig {
             "Setting a count for the requirement will let it only become true if it was true for the number of the defined count.",
             "e.g. setting a count of 5 means the requirement must be met 5 times before it comes true"
     })
-    private int count;
+    protected int count;
 
     @ConfigOption(description = "Set to true if the outcome of the requirement should be negated/switched.")
-    private boolean negated;
+    protected boolean negated;
 
     @ConfigOption(description = {
             "Set to true if you only want to check the requirement once and store the result afterwards.",
             "This will have the effect that a requirement that was true once will always be true in the future."
     })
-    private boolean checkOnce;
+    protected boolean checkOnce;
 }
 

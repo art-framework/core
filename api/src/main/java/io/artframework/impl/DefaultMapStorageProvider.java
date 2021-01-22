@@ -19,7 +19,6 @@ package io.artframework.impl;
 import io.artframework.AbstractScoped;
 import io.artframework.Scope;
 import io.artframework.StorageProvider;
-import io.artframework.util.ReflectionUtil;
 import lombok.NonNull;
 
 import java.util.HashMap;

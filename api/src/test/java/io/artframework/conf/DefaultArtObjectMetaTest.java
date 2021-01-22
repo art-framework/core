@@ -18,7 +18,6 @@ package io.artframework.conf;
 
 import io.artframework.*;
 import io.artframework.annotations.ART;
-import io.artframework.annotations.Config;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.integration.data.Player;
 import lombok.NonNull;
@@ -98,29 +97,6 @@ class DefaultArtObjectMetaTest {
                     .asInstanceOf(map(String.class, ConfigFieldInformation.class))
                     .containsKey("alt_config")
             ).doesNotThrowAnyException();
-        }
-
-        @Test
-        @SneakyThrows
-        @DisplayName("should extract information from method")
-        void shouldExtractOptionsFromMethod() {
-
-            DefaultArtObjectMeta<MyMethodOptions> options = new DefaultArtObjectMeta<>(MyMethodOptions.class);
-
-            assertThat(options.initialize())
-                    .extracting(
-                            ArtObjectMeta::identifier,
-                            ArtObjectMeta::alias,
-                            ArtObjectMeta::description,
-                            ArtObjectMeta::configClass,
-                            ArtObjectMeta::targetClass
-                    ).contains(
-                        "class-options",
-                        new String[]{"class"},
-                        new String[]{"testing the ART annotation on classes"},
-                        Optional.of(MyMethodOptions.class),
-                        Player.class
-            );
         }
 
         @SneakyThrows

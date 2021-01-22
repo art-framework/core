@@ -25,7 +25,7 @@ class DefaultRequirementContextTest {
     @BeforeEach
     void setUp() throws ArtMetaDataException {
 
-        config = RequirementConfig.builder().build();
+        config = new RequirementConfig();
         requirement = spy(new TestRequirement());
         context = new DefaultRequirementContext<>(ART.globalScope(),
                 (ArtObjectMeta) ArtObjectMeta.of(TestRequirement.class),

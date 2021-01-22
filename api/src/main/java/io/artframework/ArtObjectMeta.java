@@ -21,53 +21,115 @@ import io.artframework.conf.DefaultArtObjectMeta;
 import lombok.NonNull;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * The ArtObjectMeta contains meta information about art object gathered from the @ART annotation
+ * and information provided by scanning the class.
+ * <p>It is required to construct a new instance of the art object with its {@link Factory} method.
+ * <p>{@link #initialize()} must be called before any property of this object can be retrieved.
+ * @param <TArtObject> the art object type of this meta object
+ */
 public interface ArtObjectMeta<TArtObject extends ArtObject> {
 
+    /**
+     * Creates a new default art meta object from the given art class.
+     * <p>Automatically calls {@link #initialize()} on the meta object and throws an exception if the initialization failed.
+     *
+     * @param artObjectClass the class of the art object that should be initialized
+     * @param <TArtObject> the type of the art object
+     * @return the created and initialized art object meta
+     * @throws ArtMetaDataException if the initialization of the art object failed
+     */
     static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass) throws ArtMetaDataException {
         return new DefaultArtObjectMeta<>(artObjectClass).initialize();
-    }
-
-    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, Method... methods) throws ArtMetaDataException {
-        return new DefaultArtObjectMeta<>(artObjectClass, methods).initialize();
     }
 
     static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider) throws ArtMetaDataException {
         return new DefaultArtObjectMeta<>(artObjectClass, provider).initialize();
     }
 
-    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) throws ArtMetaDataException {
-        return new DefaultArtObjectMeta<>(artObjectClass, provider, methods).initialize();
-    }
-
     static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull String identifier, @NonNull Class<?> targetClass, @NonNull TArtObject artObject) {
         return new DefaultArtObjectMeta<>(identifier, targetClass, artObject);
     }
 
+    /**
+     * The identifier of an art object must be unique and is the value of the {@link io.artframework.annotations.ART} annotation.
+     * <p>The art can be referenced by its identity and aliases in the config.
+     *
+     * @return the unique identifier of the art object
+     * @throws UnsupportedOperationException if this meta object is not {@link #initialized()}
+     */
     String identifier();
 
+    /**
+     * @return the description of the art object
+     * @throws UnsupportedOperationException if this meta object is not {@link #initialized()}
+     */
     String[] description();
 
+    /**
+     * An alias can be used as an alternative to the identifier.
+     *
+     * @return a list of aliases of this art object
+     * @throws UnsupportedOperationException if this meta object is not {@link #initialized()}
+     */
     String[] alias();
 
+    /**
+     * @return true if the art object is auto registered when scanning the class path
+     * @throws UnsupportedOperationException if this meta object is not {@link #initialized()}
+     */
     boolean autoRegister();
 
+    /**
+     * The config class is used to construct a {@link ConfigMap} for the art object.
+     * <p>The config class may be the same as the {@link #artObjectClass()}.
+     *
+     * @return the optional config class of this art object if one exists
+     * @throws UnsupportedOperationException if this meta object is not {@link #initialized()}
+     */
     Optional<Class<?>> configClass();
 
+    /**
+     * @return the class the art object targets
+     * @throws UnsupportedOperationException if this meta object is not {@link #initialized()}
+     */
     Class<?> targetClass();
 
+    /**
+     * @return the art object class this meta object references
+     */
     Class<TArtObject> artObjectClass();
 
+    /**
+     * Gets the config field information parsed from the {@link #configClass()}.
+     * <p>The map may be empty but is never null.
+     *
+     * @return the config map of the given art object
+     */
     Map<String, ConfigFieldInformation> configMap();
 
+    /**
+     * By default art objects will be constructed using reflection and trying to find
+     * a parameterless public constructor. A custom provider is required if none exists.
+     *
+     * @return the provider that knows how to create new instances of the art object
+     * @throws UnsupportedOperationException if this meta object is not {@link #initialized()}
+     */
     ArtObjectProvider<TArtObject> provider();
 
+    /**
+     * @return the physical location of the jar file the art object was loaded from
+     * @throws UnsupportedOperationException if this meta object is not {@link #initialized()}
+     */
     URL location();
 
+    /**
+     * @return true if the meta object was initialized and the properties of this object can be accessed
+     */
     boolean initialized();
 
     /**

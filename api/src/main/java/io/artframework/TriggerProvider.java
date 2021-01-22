@@ -94,6 +94,11 @@ public interface TriggerProvider extends ArtProvider, FactoryProvider<TriggerFac
     void unregister(TriggerContext context);
 
     /**
+     * Unregisters all currently registered trigger contexts.
+     */
+    void unregisterAll();
+
+    /**
      * Executes the given trigger execution calling all registered trigger context listeners
      * for the trigger of the execution.
      *

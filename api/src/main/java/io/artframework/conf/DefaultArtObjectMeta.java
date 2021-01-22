@@ -27,12 +27,9 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import javax.annotation.Nullable;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -54,8 +51,6 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
     private final URL location;
     @Getter
     private final boolean initialized;
-
-    private Method[] methods;
 
     private DefaultArtObjectMeta(
             @NonNull Class<TArtObject> artObjectClass,
@@ -81,11 +76,10 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
         this.initialized = true;
     }
 
-    public DefaultArtObjectMeta(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider, Method... methods) {
+    public DefaultArtObjectMeta(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider) {
         this.artObjectClass = artObjectClass;
         this.location = artObjectClass.getProtectionDomain().getCodeSource().getLocation();
         this.artObjectProvider = provider;
-        this.methods = methods;
 
         this.identifier = "";
         this.description = new String[0];
@@ -98,16 +92,8 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
         this.initialized = false;
     }
 
-    public DefaultArtObjectMeta(@NonNull Class<TArtObject> artObjectClass, Method... methods) {
-        this(artObjectClass, null, methods);
-    }
-
-    public DefaultArtObjectMeta(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> artObjectProvider) {
-        this(artObjectClass, artObjectProvider, artObjectClass.getDeclaredMethods());
-    }
-
     public DefaultArtObjectMeta(@NonNull Class<TArtObject> artObjectClass) {
-        this(artObjectClass, null, artObjectClass.getDeclaredMethods());
+        this(artObjectClass, null);
     }
 
     @SuppressWarnings("unchecked")
@@ -115,7 +101,6 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
         this.artObjectClass = (Class<TArtObject>) artObject.getClass();
         this.location = artObjectClass.getProtectionDomain().getCodeSource().getLocation();
         this.artObjectProvider = () -> artObject;
-        this.methods = new Method[0];
         this.identifier = identifier;
         this.description = new String[0];
         this.alias = new String[0];
@@ -215,12 +200,12 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
         if (this.initialized()) return this;
 
         try {
-            String identifier = tryGetIdentifier(methods);
-            String[] description = tryGetDescription(methods);
-            String[] alias = tryGetAlias(methods);
+            String identifier = tryGetIdentifier();
+            String[] description = tryGetDescription();
+            String[] alias = tryGetAlias();
             Class<?> targetClass = tryGetTargetClass();
             Class<?> configClass = findConfigClass();
-            boolean autoRegister = tryGetAutoRegister(methods);
+            boolean autoRegister = tryGetAutoRegister();
             ArtObjectProvider<TArtObject> provider = tryGetArtObjectProvider();
             Map<String, ConfigFieldInformation> configMap = tryGetConfigMap(configClass);
 
@@ -238,20 +223,20 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
         }
     }
 
-    private String tryGetIdentifier(Method... methods) {
-        return getAnnotation(ART.class, methods).map(ART::value).orElse(null);
+    private String tryGetIdentifier() {
+        return getAnnotation().map(ART::value).orElse(null);
     }
 
-    private String[] tryGetAlias(Method... methods) {
-        return getAnnotation(ART.class, methods).map(ART::alias).orElse(new String[0]);
+    private String[] tryGetAlias() {
+        return getAnnotation().map(ART::alias).orElse(new String[0]);
     }
 
-    private String[] tryGetDescription(Method... methods) {
-        return getAnnotation(ART.class, methods).map(ART::description).orElse(new String[0]);
+    private String[] tryGetDescription() {
+        return getAnnotation().map(ART::description).orElse(new String[0]);
     }
 
-    private boolean tryGetAutoRegister(Method... methods) {
-        return getAnnotation(ART.class, methods).map(ART::autoRegister).orElse(true);
+    private boolean tryGetAutoRegister() {
+        return getAnnotation().map(ART::autoRegister).orElse(true);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -338,14 +323,12 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
         }
     }
 
-    private <TAnnotation extends Annotation> Optional<TAnnotation> getAnnotation(Class<TAnnotation> annotationClass, Method... methods) {
-        if (artObjectClass.isAnnotationPresent(annotationClass)) {
-            return Optional.of(artObjectClass.getAnnotation(annotationClass));
-        } else {
-            return Arrays.stream(methods)
-                    .filter(method -> method.isAnnotationPresent(annotationClass))
-                    .findFirst()
-                    .map(method -> method.getAnnotation(annotationClass));
+    private Optional<ART> getAnnotation() {
+
+        if (artObjectClass.isAnnotationPresent(ART.class)) {
+            return Optional.of(artObjectClass.getAnnotation(ART.class));
         }
+
+        return Optional.empty();
     }
 }

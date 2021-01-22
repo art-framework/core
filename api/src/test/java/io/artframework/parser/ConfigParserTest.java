@@ -26,16 +26,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayName("ConfigParser")
 class ConfigParserTest {
 
     @SneakyThrows
     private ConfigParser parser(Class<?> configClass) {
-        return new ConfigParser(ConfigMap.of(ConfigMapType.ART_CONFIG, ConfigUtil.getConfigFields(configClass)));
+        return new ConfigParser(ConfigMap.of(ConfigUtil.getConfigFields(configClass)));
     }
 
     @Nested

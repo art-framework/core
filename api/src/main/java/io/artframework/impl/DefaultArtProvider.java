@@ -20,8 +20,6 @@ import io.artframework.*;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 
-import java.io.File;
-import java.net.URISyntaxException;
 import java.util.Collection;
 
 @Log(topic = "art-framework")

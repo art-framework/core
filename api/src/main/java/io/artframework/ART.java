@@ -27,7 +27,6 @@ import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import java.util.Collection;
-import java.util.List;
 
 @Accessors(fluent = true)
 public final class ART {
@@ -131,5 +130,19 @@ public final class ART {
     public static ArtContext load(Collection<String> list) throws ParseException {
 
         return globalScope().load(list);
+    }
+
+    /**
+     * Starts a new trigger execution on the global scope for the given trigger class.
+     * <p>Use the returned execution builder to add targets and additional
+     * config parameters to the trigger execution. Whe done call {@link TriggerExecution#execute()}.
+     *
+     * @param triggerClass the class of the trigger
+     * @param <TTrigger> the type of the trigger
+     * @return a new trigger execution builder
+     */
+    public static <TTrigger extends Trigger> TriggerExecution<TTrigger> trigger(Class<TTrigger> triggerClass) {
+
+        return globalScope.trigger(triggerClass);
     }
 }

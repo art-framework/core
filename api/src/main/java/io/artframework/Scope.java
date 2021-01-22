@@ -21,7 +21,6 @@ import io.artframework.conf.Settings;
 import io.artframework.impl.DefaultScope;
 
 import java.util.Collection;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 public interface Scope extends DataProvider {
@@ -123,4 +122,18 @@ public interface Scope extends DataProvider {
      * @return the parsed art context
      */
     ArtContext load(Collection<String> list) throws ParseException;
+
+    /**
+     * Starts a new trigger execution for the given trigger class.
+     * <p>Use the returned execution builder to add targets and additional
+     * config parameters to the trigger execution. Whe done call {@link TriggerExecution#execute()}.
+     *
+     * @param triggerClass the class of the trigger
+     * @param <TTrigger> the type of the trigger
+     * @return a new trigger execution builder
+     */
+    default <TTrigger extends Trigger> TriggerExecution<TTrigger> trigger(Class<TTrigger> triggerClass) {
+
+        return TriggerExecution.of(this, triggerClass);
+    }
 }

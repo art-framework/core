@@ -18,152 +18,127 @@ package io.artframework;
 
 import io.artframework.annotations.ART;
 import io.artframework.annotations.ConfigOption;
-import io.artframework.impl.DefaultTriggerProvider;
+import io.artframework.impl.DefaultScope;
 import io.artframework.integration.data.Block;
-import io.artframework.integration.data.Location;
 import io.artframework.integration.data.Player;
 import io.artframework.integration.targets.BlockTarget;
 import io.artframework.integration.targets.PlayerTarget;
+import lombok.NonNull;
 import lombok.SneakyThrows;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.MockitoAnnotations;
+import org.junit.jupiter.api.*;
 
-import java.util.Arrays;
 import java.util.Collections;
+import java.util.Stack;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
-import static org.assertj.core.api.InstanceOfAssertFactories.type;
 import static org.mockito.Mockito.*;
 
-class TriggerTest implements Trigger {
+class TriggerTest {
 
     private Scope scope;
-    private Trigger trigger;
-    private TriggerProvider triggerProvider;
-    @Captor
-    private ArgumentCaptor<TriggerTarget<?>> captor;
+    private TestTrigger trigger;
 
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
-
-        triggerProvider = spy(new DefaultTriggerProvider(Scope.defaultScope()));
-        scope = Scope.of(configurationBuilder -> configurationBuilder.trigger(triggerProvider));
+        scope = new DefaultScope(Configuration.ConfigurationBuilder::build);
 
         scope.configuration().targets().add(Player.class, PlayerTarget::new);
         scope.configuration().targets().add(Block.class, BlockTarget::new);
 
-        trigger = new TestTrigger();
-        scope.register().trigger().add(TestTrigger.class, TestTrigger::new);
-    }
-
-    @Override
-    public Scope scope() {
-
-        return scope;
+        trigger = spy(new TestTrigger());
+        scope.register().trigger().add(TestTrigger.class, () -> trigger);
     }
 
     @Nested
     @DisplayName("trigger(identifier, Objects...)")
     class trigger {
 
-        @Test
-        @DisplayName("should wrap objects into trigger target")
-        void shouldWrapObjectsIntoTriggerTarget() {
-
-            Player player = new Player("foo");
-            Block block = new Block(new Location(0, 1, 2, "world"));
-            trigger.trigger("foo", player, block);
-
-            verify(triggerProvider, times(1)).trigger(eq("foo"), captor.capture());
-            assertThat(captor.getAllValues())
-                    .hasSize(2);
-            assertThat(captor.getAllValues().get(0))
-                    .extracting(TriggerTarget::target)
-                    .extracting(Target::source)
-                    .asInstanceOf(type(Player.class))
-                    .isEqualTo(player);
-            assertThat(captor.getAllValues().get(1))
-                    .extracting(TriggerTarget::target)
-                    .extracting(Target::source)
-                    .asInstanceOf(type(Block.class))
-                    .isEqualTo(block);
-        }
-
         @SneakyThrows
         @Test
-        @DisplayName("should wrap configured trigger target into requirement")
-        void shouldWrapConfiguredTargetWithRequirement() {
-
-            Player player = new Player("foo");
-            TriggerRequirement<Player, TestConfig> requirement = spy(new TriggerRequirement<Player, TestConfig>() {
-                @Override
-                public Result test(Target<Player> target, ExecutionContext<TriggerContext> context, TestConfig testConfig) {
-
-                    return success();
-                }
-            });
-
-            scope.load(Collections.singletonList(
-                    "@foo"
-            )).enableTrigger();
-
-            CombinedResult result = trigger.trigger("foo", of(player, TestConfig.class, requirement));
-
-            assertThat(result.success()).isTrue();
-
-            verify(requirement, times(1)).test(any(), any(), any());
-        }
-
-        @SneakyThrows
-        @Test
-        @DisplayName("should pass parsed config to trigger")
+        @DisplayName("should pass parsed config to trigger and check requirement")
         void shouldParseConfigInTrigger() {
-
-            Player player = new Player("foo");
-            TriggerRequirement<Player, TestConfig> requirement = spy(new TriggerRequirement<Player, TestConfig>() {
-                @Override
-                public Result test(Target<Player> target, ExecutionContext<TriggerContext> context, TestConfig testConfig) {
-
-                    assertThat(testConfig.x).isEqualTo(100);
-                    return success();
-                }
-            });
 
             scope.load(Collections.singletonList(
                     "@foo 100"
             )).enableTrigger();
 
-            CombinedResult result = trigger.trigger("foo", of(player, TestConfig.class, requirement));
+            scope.trigger(TestTrigger.class).with(new Player()).execute();
 
-            assertThat(result.success()).isTrue();
+            assertThat(trigger.x).isEqualTo(100);
+            verify(trigger, times(1)).test(any(), any());
+        }
 
-            verify(requirement, times(1)).test(any(), any(), any());
+        @Test
+        @DisplayName("should not execute if trigger requirement fails")
+        void shouldNotExecuteForInvalidRequirementCheck() throws ParseException {
+
+            TriggerListener<Player> listener = spy(new TriggerListener<>() {
+                @Override
+                public void onTrigger(Target<Player> target, ExecutionContext<TriggerContext> context) {
+
+                }
+            });
+
+            scope.load(Collections.singletonList(
+                    "@foo"
+            )).onTrigger(Player.class, listener).enableTrigger();
+
+            scope.trigger(TestTrigger.class).with(new Player()).execute();
+
+            verify(listener, never()).onTrigger(any(), any());
+        }
+
+        @Test
+        @DisplayName("should call listener if all checks are successful")
+        void shouldCallListenerWhenSuccessful() throws ParseException {
+
+            TriggerListener<Player> listener = spy(new TriggerListener<>() {
+                @Override
+                public void onTrigger(Target<Player> target, ExecutionContext<TriggerContext> context) {
+
+                }
+            });
+
+            scope.load(Collections.singletonList(
+                    "@foo 10"
+            )).onTrigger(Player.class, listener).enableTrigger();
+
+            scope.trigger(TestTrigger.class).with(new Player()).execute();
+
+            verify(listener, times(1)).onTrigger(any(), any());
+        }
+
+        @Test
+        @DisplayName("should not call trigger context if trigger is not enabled")
+        void shouldNotCallTriggerIfNotenabled() throws ParseException {
+
+            TriggerListener<Player> listener = spy(new TriggerListener<>() {
+                @Override
+                public void onTrigger(Target<Player> target, ExecutionContext<TriggerContext> context) {
+
+                }
+            });
+
+            scope.load(Collections.singletonList(
+                    "@foo 10"
+            )).onTrigger(Player.class, listener);
+
+            scope.trigger(TestTrigger.class).with(new Player()).execute();
+
+            verify(listener, never()).onTrigger(any(), any());
         }
     }
 
-    public static class TestConfig {
+    @ART("foo")
+    public static class TestTrigger implements Trigger, Requirement<Player> {
 
         @ConfigOption
         private int x;
-    }
-
-    public class TestTrigger implements Trigger {
 
         @Override
-        public Scope scope() {
-            return scope;
-        }
+        public Result test(@NonNull Target<Player> target, @NonNull ExecutionContext<RequirementContext<Player>> context) {
 
-        @ART("foo")
-        public void onFoo() {
-
+            return resultOf(x > 0);
         }
     }
 }

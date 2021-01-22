@@ -16,7 +16,6 @@
 
 package io.artframework.conf;
 
-import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 
 /**

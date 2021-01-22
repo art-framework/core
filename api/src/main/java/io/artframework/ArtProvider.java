@@ -18,11 +18,9 @@ package io.artframework;
 
 import io.artframework.conf.Settings;
 import io.artframework.impl.DefaultArtProvider;
-import lombok.extern.java.Log;
 
 import java.io.File;
 import java.net.URISyntaxException;
-import java.security.CodeSource;
 import java.util.Collection;
 
 /**

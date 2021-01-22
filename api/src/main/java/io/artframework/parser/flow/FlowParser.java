@@ -19,18 +19,14 @@ package io.artframework.parser.flow;
 import io.artframework.ArtContext;
 import io.artframework.ArtObjectContext;
 import io.artframework.ParseException;
-import io.artframework.parser.Parser;
 import io.artframework.Scope;
+import io.artframework.parser.Parser;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Accessors(fluent = true)

@@ -30,7 +30,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -48,7 +47,7 @@ class RequirementParserTest {
 
         RequirementProvider requirementProvider = mock(RequirementProvider.class);
         when(requirementProvider.get(anyString())).thenReturn(Optional.of(requirementFactory));
-        when(requirementFactory.create(anyMap())).thenReturn(mock(RequirementContext.class));
+        when(requirementFactory.create(any(), any())).thenReturn(mock(RequirementContext.class));
 
         this.parser = new RequirementLineParser(Arrays.asList("").iterator(), Scope.of(configurationBuilder -> configurationBuilder.requirements(requirementProvider)));
     }
@@ -66,7 +65,7 @@ class RequirementParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            verify(requirementFactory, times(1)).create(anyMap());
+            verify(requirementFactory, times(1)).create(any(), any());
         }
 
         @ParameterizedTest
