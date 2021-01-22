@@ -5,9 +5,6 @@ import io.artframework.Target;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class DefaultTargetProviderTest {
 
@@ -24,16 +21,7 @@ class DefaultTargetProviderTest {
     @DisplayName("get(...)")
     class get {
 
-        @Test
-        @DisplayName("should unwrap trigger target and return nested target")
-        void shouldUnwrapTriggerTarget() {
 
-            MyTargetWrapper wrapper = new MyTargetWrapper(new MyTarget());
-
-            assertThat(provider.get(new TriggerTarget<>(wrapper)))
-                    .isPresent().get()
-                    .isSameAs(wrapper);
-        }
     }
 
     static class MyTarget {

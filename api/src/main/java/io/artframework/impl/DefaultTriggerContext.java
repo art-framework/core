@@ -36,10 +36,10 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     @Getter
     private final List<RequirementContext<?>> requirements = new ArrayList<>();
     private final Map<Class<?>, Set<TriggerListener<?>>> listeners = new HashMap<>();
-    @Getter
     private final Trigger trigger;
     @Getter
     private final TriggerConfig config;
+    private final RequirementContext<?> requirement;
 
     public DefaultTriggerContext(
             @NonNull Scope scope,
@@ -49,6 +49,12 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
         super(scope, information);
         this.trigger = trigger;
         this.config = config;
+
+        if (trigger instanceof Requirement) {
+            requirement = RequirementContext.of(scope, information.get(), (Requirement<?>) trigger, config);
+        } else {
+            requirement = null;
+        }
     }
 
     @Override
@@ -86,25 +92,26 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     }
 
     @Override
-    public void trigger(final Target<?>[] targets) {
+    public void trigger(final Target<?>... targets) {
 
-        trigger(targets, ExecutionContext.of(
+        trigger(ExecutionContext.of(
                 scope(),
                 this,
                 targets
-        ).next(this));
+        ).next(this), targets);
     }
 
     @Override
-    public void trigger(Target<?>[] targets, ExecutionContext<TriggerContext> context) {
+    public void trigger(ExecutionContext<TriggerContext> context, Target<?>... targets) {
 
         Runnable runnable = () -> {
+            // only execute the trigger for any target if the provided requirement matches
+            if (!Arrays.stream(targets).allMatch(target -> testTriggerRequirement(target, context))) {
+                return;
+            }
+
             for (Target<?> target : targets) {
                 if (cannotExecute(target)) continue;
-
-                if (trigger instanceof Requirement) {
-                    // TODO: test if trigger implements requirement
-                }
 
                 if (testRequirements(context).success()) {
 
@@ -127,6 +134,16 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
         } else {
             runnable.run();
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private <TTarget> boolean testTriggerRequirement(Target<TTarget> target, ExecutionContext<TriggerContext> context) {
+
+        if (requirement == null) return true;
+        if (!requirement.isTargetType(target)) return true;
+        RequirementContext<TTarget> requirement = (RequirementContext<TTarget>) this.requirement;
+
+        return requirement.test(target, context.next(requirement)).success();
     }
 
     @SuppressWarnings("unchecked")

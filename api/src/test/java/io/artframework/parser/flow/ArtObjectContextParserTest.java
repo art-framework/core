@@ -29,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -51,21 +50,27 @@ class ArtObjectContextParserTest {
         factory = mock(ActionFactory.class);
         artObjectMeta = mock(ArtObjectMeta.class);
         when(factory.meta()).thenReturn(artObjectMeta);
-        when(factory.create(anyMap())).thenReturn(mock(ActionContext.class));
+        when(factory.create(any(), any())).thenReturn(mock(ActionContext.class));
         when(artObjectMeta.configMap()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
         when(actions.get(anyString())).thenAnswer(invocation -> Optional.of(factory));
 
         this.parser = new ActionLineParser(Arrays.asList("").iterator(), Scope.of(configurationBuilder -> configurationBuilder.actions(actions)));
     }
 
-    private <TConfig> TConfig extractConfig(ConfigMapType type, TConfig config) {
-        ArgumentCaptor<Map<ConfigMapType, ConfigMap>> argument = ArgumentCaptor.forClass(Map.class);
-        verify(factory).create(argument.capture());
+    private <TConfig> TConfig extractArtConfig(TConfig config) {
+        ArgumentCaptor<ConfigMap> argument = ArgumentCaptor.forClass(ConfigMap.class);
+        verify(factory).create(argument.capture(), any());
 
-        assertThat(argument.getValue())
-                .containsKey(type);
+        argument.getValue().applyTo(config);
 
-        argument.getValue().get(type).applyTo(config);
+        return config;
+    }
+
+    private <TConfig> TConfig extractIndividualConfig(TConfig config) {
+        ArgumentCaptor<ConfigMap> argument = ArgumentCaptor.forClass(ConfigMap.class);
+        verify(factory).create(any(), argument.capture());
+
+        argument.getValue().applyTo(config);
 
         return config;
     }
@@ -97,7 +102,7 @@ class ArtObjectContextParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            assertThat(extractConfig(ConfigMapType.ACTION, ActionConfig.builder().build()))
+            assertThat(extractArtConfig(new ActionConfig()))
                     .extracting(ActionConfig::cooldown, ActionConfig::delay)
                     .contains(5000L, 10000L);
         }
@@ -111,7 +116,7 @@ class ArtObjectContextParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            assertThat(extractConfig(ConfigMapType.ACTION, ActionConfig.builder().build()))
+            assertThat(extractArtConfig(new ActionConfig()))
                     .extracting(ActionConfig::cooldown, ActionConfig::delay)
                     .contains(5000L, 10000L);
         }
@@ -125,7 +130,7 @@ class ArtObjectContextParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            TestConfig config = extractConfig(ConfigMapType.ART_CONFIG, new TestConfig());
+            TestConfig config = extractIndividualConfig(new TestConfig());
 
             assertThat(config)
                     .extracting(TestConfig::getName, TestConfig::getNumber)
@@ -142,11 +147,11 @@ class ArtObjectContextParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            assertThat(extractConfig(ConfigMapType.ACTION, ActionConfig.builder().build()))
+            assertThat(extractArtConfig(new ActionConfig()))
                     .extracting(ActionConfig::delay)
                     .isEqualTo(10L);
 
-            assertThat(extractConfig(ConfigMapType.ART_CONFIG, new TestConfig()))
+            assertThat(extractIndividualConfig(new TestConfig()))
                     .extracting(TestConfig::getName, TestConfig::getNumber)
                     .contains("foo", 2);
         }

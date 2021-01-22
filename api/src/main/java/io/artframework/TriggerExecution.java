@@ -59,7 +59,7 @@ public final class TriggerExecution<TTrigger extends Trigger> implements Scoped,
      *
      * @throws UnsupportedOperationException if the trigger execution was already called once
      */
-    public void call() {
+    public void execute() {
 
         if (executed()) {
             throw new UnsupportedOperationException("This trigger execution was already called. You can only call a trigger once and need to create a new instance for every call.");

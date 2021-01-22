@@ -17,20 +17,18 @@
 package io.artframework.impl;
 
 import io.artframework.*;
-import io.artframework.annotations.ART;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.ReflectionUtil;
 import lombok.NonNull;
 import lombok.extern.java.Log;
-import org.reflections.ReflectionUtils;
 
-import java.lang.reflect.Method;
 import java.util.*;
 
 @Log(topic = "art-framework")
 public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFactory> implements TriggerProvider, CombinedResultCreator {
 
-    private final Map<Class<?>, Set<TriggerContext>> listeners = new HashMap<>();
+    // trigger class -> context listeners
+    private final Map<Class<?>, Set<TriggerContext>> contextListeners = new HashMap<>();
 
     public DefaultTriggerProvider(Scope scope) {
         super(scope);
@@ -48,52 +46,52 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public TriggerProvider add(Class<? extends Trigger> triggerClass) {
-        for (Method method : ReflectionUtils.getAllMethods(triggerClass, method -> method.isAnnotationPresent(ART.class))) {
-            try {
-                add((ArtObjectMeta<Trigger>) ArtObjectMeta.of(triggerClass, method));
-            } catch (ArtMetaDataException e) {
-                log.severe("failed to add " + triggerClass.getCanonicalName() + " -> " + method.getName() + ": " + e.getMessage());
-                e.printStackTrace();
-            }
+        try {
+            add(Objects.requireNonNull(ArtObjectMeta.of(triggerClass).get()));
+        } catch (ArtMetaDataException e) {
+            log.severe("failed to add " + triggerClass.getCanonicalName() + ": " + e.getMessage());
+            e.printStackTrace();
         }
         return this;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public <TTrigger extends Trigger> TriggerProvider add(Class<TTrigger> triggerClass, ArtObjectProvider<TTrigger> supplier) {
 
-        for (Method method : ReflectionUtils.getAllMethods(triggerClass, method -> method.isAnnotationPresent(ART.class))) {
-            try {
-                add((ArtObjectMeta<Trigger>) ArtObjectMeta.of(triggerClass, supplier, method));
-            } catch (ArtMetaDataException e) {
-                log.severe("failed to add " + triggerClass.getCanonicalName() + " -> " + method.getName() + ": " + e.getMessage());
-                e.printStackTrace();
-            }
+        try {
+            add(Objects.requireNonNull(ArtObjectMeta.of(triggerClass, supplier).get()));
+        } catch (ArtMetaDataException e) {
+            log.severe("failed to add " + triggerClass.getCanonicalName() + ": " + e.getMessage());
+            e.printStackTrace();
         }
+
         return this;
     }
 
     @Override
     public void register(TriggerContext context) {
 
-        listeners.computeIfAbsent(context.meta().artObjectClass(), aClass -> new HashSet<>())
-                .add(context);
+        contextListeners.computeIfAbsent(context.meta().artObjectClass(), aClass -> new HashSet<>()).add(context);
+        log.info("foo");
     }
 
     @Override
     public void unregister(TriggerContext context) {
 
-        listeners.computeIfAbsent(context.meta().artObjectClass(), aClass -> new HashSet<>())
-                .remove(context);
+        contextListeners.computeIfAbsent(context.meta().artObjectClass(), aClass -> new HashSet<>()).remove(context);
+    }
+
+    @Override
+    public void unregisterAll() {
+
+        contextListeners.clear();
     }
 
     @Override
     public <TTrigger extends Trigger> void execute(TriggerExecution<TTrigger> execution) {
 
-        ReflectionUtil.getEntryForTarget(execution.triggerClass(), listeners)
+        ReflectionUtil.getEntryForTargetClass(execution.triggerClass(), contextListeners)
                 .ifPresent(triggerContexts -> triggerContexts.forEach(context -> context.trigger(execution.targets())));
     }
 

@@ -167,7 +167,7 @@ public interface ArtContext extends Context, ResultCreator, TargetCreator {
      * @param listener function to react to the trigger
      * @param <TTarget> type of the target
      */
-    <TTarget> void onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> listener);
+    <TTarget> ArtContext onTrigger(Class<TTarget> targetClass, TriggerListener<TTarget> listener);
 
     /**
      * Combines this {@link ArtContext} with the given {@link ArtContext}.

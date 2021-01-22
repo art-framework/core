@@ -34,7 +34,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
@@ -52,7 +51,7 @@ class ActionParserTest {
 
         ActionProvider actionProvider = mock(ActionProvider.class);
         when(actionProvider.get(anyString())).thenReturn(Optional.of(actionFactory));
-        when(actionFactory.create(anyMap())).thenReturn(mock(ActionContext.class));
+        when(actionFactory.create(any(), any())).thenReturn(mock(ActionContext.class));
 
         this.parser = new ActionLineParser(Arrays.asList("").iterator(), new DefaultScope(configurationBuilder -> configurationBuilder.actions(actionProvider)));
     }
@@ -70,7 +69,7 @@ class ActionParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            verify(actionFactory, times(1)).create(anyMap());
+            verify(actionFactory, times(1)).create(any(), any());
         }
 
         @ParameterizedTest

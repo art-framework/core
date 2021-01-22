@@ -21,6 +21,14 @@ package io.artframework;
  * <p>Use this interface to mark your class as a trigger and add the {@link io.artframework.annotations.ART} annotation.
  * <p>If your trigger has requirements implement the {@link Requirement} interface.
  * <p>Make sure that you register your <code>Trigger</code> with the {@link TriggerProvider}.
+ * <p>Execute/call the trigger by using the {@link Scope#trigger(Class)} or {@link ART#trigger(Class)} method to
+ * create a {@link TriggerExecution}. Then call {@link TriggerExecution#execute()} after adding the targets to the trigger.
+ * <pre>{@code
+ * // register the trigger
+ * scope.register().trigger().add(MyTrigger.class);
+ * // and then call the trigger like this
+ * scope.trigger(MyTrigger.class).with(player).execute();
+ * }</pre>
  */
 public interface Trigger extends ArtObject {
 

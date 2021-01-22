@@ -26,24 +26,20 @@ class DefaultTriggerContextTest {
     @BeforeEach
     void setUp() throws ArtMetaDataException {
 
-        config = TriggerConfig.builder().build();
+        config = new TriggerConfig();
         context = new DefaultTriggerContext(ART.globalScope(),
                 ArtObjectMeta.of("test", TestTrigger.class, new TestTrigger()),
+                new TestTrigger(),
                 config);
         action = spy(new TestAction());
         ActionContext actionContext = ActionContext.of(ART.globalScope(),
                 (ArtObjectMeta) ArtObjectMeta.of(TestAction.class),
                 action,
-                ActionConfig.builder().build()
+                new ActionConfig()
         );
         context.addAction(actionContext);
 
         target = new MyTargetWrapper(new MyTarget());
-    }
-
-    private TriggerEvent event() {
-
-        return new TriggerEvent("test", new TriggerTarget<>(target));
     }
 
     @Nested
@@ -76,7 +72,8 @@ class DefaultTriggerContextTest {
         void shouldNotExecuteIfCountNotMet() {
 
             config.count(5);
-            context.onTriggerEvent(event());
+
+            context.trigger(target);
 
             assertThat(context.store(target, Constants.Storage.COUNT, Integer.class))
                     .isPresent().get()
@@ -85,19 +82,10 @@ class DefaultTriggerContextTest {
         }
 
         @Test
-        @DisplayName("should not execute for different identifier")
-        void shouldNotExecuteForDifferentIdentifier() {
-
-            context.onTriggerEvent(new TriggerEvent("foobar", new TriggerTarget<>(target)));
-
-            verify(action, never()).execute(any(), any());
-        }
-
-        @Test
         @DisplayName("should execute if nothing else is specified")
         void shouldExecuteIfNothingElseIsSpecified() {
 
-            context.onTriggerEvent(event());
+            context.trigger(target);
 
             verify(action, times(1)).execute(any(), any());
         }
@@ -108,8 +96,8 @@ class DefaultTriggerContextTest {
 
             config.executeOnce(true);
 
-            context.onTriggerEvent(event());
-            context.onTriggerEvent(event());
+            context.trigger(target);
+            context.trigger(target);
 
             verify(action, times(1)).execute(any(), any());
         }
@@ -122,7 +110,7 @@ class DefaultTriggerContextTest {
             config.count(2);
 
             for (int i = 0; i < 5; i++) {
-                context.onTriggerEvent(event());
+                context.trigger(target);
             }
 
             verify(action, times(1)).execute(any(), any());
@@ -134,8 +122,8 @@ class DefaultTriggerContextTest {
 
             config.executeOnce(true);
 
-            context.onTriggerEvent(event());
-            context.onTriggerEvent(new TriggerEvent("test", new TriggerTarget<>(new MyTargetWrapper(new MyTarget()))));
+            context.trigger(target);
+            context.trigger(new MyTargetWrapper(new MyTarget()));
 
             verify(action, times(2)).execute(any(), any());
         }
@@ -146,7 +134,7 @@ class DefaultTriggerContextTest {
 
             config.executeActions(false);
 
-            context.onTriggerEvent(event());
+            context.trigger(target);
 
             verify(action, never()).execute(any(), any());
         }
@@ -157,7 +145,7 @@ class DefaultTriggerContextTest {
 
             config.count(0);
 
-            context.onTriggerEvent(event());
+            context.trigger(target);
 
             assertThat(context.store(target, Constants.Storage.COUNT, Integer.class))
                     .isEmpty();
@@ -176,7 +164,7 @@ class DefaultTriggerContextTest {
             });
             context.addListener(listener);
 
-            context.onTriggerEvent(event());
+            context.trigger(target);
 
             verify(listener, never()).onTrigger(any(), any());
         }

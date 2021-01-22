@@ -17,7 +17,10 @@
 package io.artframework.integration.data;
 
 import io.artframework.MessageSender;
-import lombok.*;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.Singular;
 import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;

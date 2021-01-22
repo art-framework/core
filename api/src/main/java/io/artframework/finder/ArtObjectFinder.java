@@ -17,11 +17,9 @@
 package io.artframework.finder;
 
 import io.artframework.*;
-import io.artframework.annotations.ART;
 import io.artframework.util.FileUtil;
 
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -43,24 +41,12 @@ public final class ArtObjectFinder extends AbstractFinder {
         FileUtil.findClasses(classLoader, file, ArtObject.class)
                 .stream().filter(predicate)
                 .forEach(artClass -> {
-            if (Trigger.class.isAssignableFrom(artClass)) {
-                for (Method method : artClass.getDeclaredMethods()) {
-                    if (method.isAnnotationPresent(ART.class)) {
-                        try {
-                            artObjectMetas.add(ArtObjectMeta.of(artClass, method));
-                        } catch (ArtMetaDataException e) {
-                            errors.add(e.error());
-                        }
+                    try {
+                        artObjectMetas.add(ArtObjectMeta.of(artClass));
+                    } catch (ArtMetaDataException e) {
+                        errors.add(e.error());
                     }
-                }
-            } else {
-                try {
-                    artObjectMetas.add(ArtObjectMeta.of(artClass));
-                } catch (ArtMetaDataException e) {
-                    errors.add(e.error());
-                }
-            }
-        });
+                });
 
         return new ArtObjectFinderResult(artObjectMetas, errors);
     }

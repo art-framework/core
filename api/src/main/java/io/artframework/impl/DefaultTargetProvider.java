@@ -17,7 +17,10 @@
 package io.artframework.impl;
 
 import com.google.common.collect.ImmutableList;
-import io.artframework.*;
+import io.artframework.AbstractProvider;
+import io.artframework.Scope;
+import io.artframework.Target;
+import io.artframework.TargetProvider;
 import io.artframework.util.ReflectionUtil;
 import lombok.NonNull;
 import lombok.extern.java.Log;

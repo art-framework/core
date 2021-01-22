@@ -44,22 +44,13 @@ class DefaultTriggerProviderTest {
         @DisplayName("should register trigger")
         void shouldRegisterTrigger() {
 
-            provider.add(new TestTrigger());
+            provider.add(TestTrigger.class);
 
-            assertThat(provider.all()).containsKeys("foo", "bar");
+            assertThat(provider.all()).containsKeys("foo");
         }
     }
 
+    @ART("foo")
     public static class TestTrigger implements Trigger {
-
-        @ART("foo")
-        public void onFoo() {
-
-        }
-
-        @ART("bar")
-        public void onBar() {
-
-        }
     }
 }
