@@ -47,7 +47,11 @@ public abstract class AbstractFactoryProvider<TFactory extends Factory<?, ?>> im
 
     @Override
     public Map<String, TFactory> all() {
-        return ImmutableMap.copyOf(factories);
+        HashMap<String, TFactory> map = new HashMap<>(factories);
+        for (Map.Entry<String, String> entry : aliasMappings.entrySet()) {
+            map.put(entry.getKey(), factories.get(entry.getValue()));
+        }
+        return ImmutableMap.copyOf(map);
     }
 
     @Override
