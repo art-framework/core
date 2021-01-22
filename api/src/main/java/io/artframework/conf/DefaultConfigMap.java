@@ -19,7 +19,6 @@ package io.artframework.conf;
 import com.google.common.collect.ImmutableMap;
 import io.artframework.ConfigurationException;
 import io.artframework.ConfigMap;
-import io.artframework.parser.flow.ConfigMapType;
 import io.artframework.util.ConfigUtil;
 import lombok.Getter;
 import lombok.NonNull;

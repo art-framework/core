@@ -19,7 +19,6 @@ package io.artframework.conf;
 import io.artframework.ConfigurationException;
 import io.artframework.ConfigMap;
 import io.artframework.annotations.ConfigOption;
-import io.artframework.parser.flow.ConfigMapType;
 import io.artframework.util.ConfigUtil;
 import lombok.Builder;
 import lombok.Data;
@@ -49,7 +48,7 @@ public class RequirementConfig extends ArtObjectConfig {
     public static ConfigMap getConfigMap() {
         if (configMap == null) {
             try {
-                configMap = ConfigMap.of(ConfigMapType.REQUIREMENT, ConfigUtil.getConfigFields(RequirementConfig.class, RequirementConfig.builder().build()));
+                configMap = ConfigMap.of(ConfigUtil.getConfigFields(RequirementConfig.class, RequirementConfig.builder().build()));
             } catch (ConfigurationException e) {
                 e.printStackTrace();
             }

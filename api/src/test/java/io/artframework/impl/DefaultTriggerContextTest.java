@@ -4,14 +4,12 @@ import io.artframework.*;
 import io.artframework.conf.ActionConfig;
 import io.artframework.conf.Constants;
 import io.artframework.conf.TriggerConfig;
-import io.artframework.events.TriggerEvent;
 import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,8 +29,7 @@ class DefaultTriggerContextTest {
         config = TriggerConfig.builder().build();
         context = new DefaultTriggerContext(ART.globalScope(),
                 ArtObjectMeta.of("test", TestTrigger.class, new TestTrigger()),
-                config,
-                new ArrayList<>());
+                config);
         action = spy(new TestAction());
         ActionContext actionContext = ActionContext.of(ART.globalScope(),
                 (ArtObjectMeta) ArtObjectMeta.of(TestAction.class),

@@ -16,14 +16,6 @@
 
 package io.artframework;
 
-import io.artframework.annotations.Config;
-import io.artframework.conf.KeyValuePair;
-import io.artframework.parser.flow.ConfigMapType;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * The {@link Factory} is used to create new instances of {@link ArtObject}s which
  * are wrapped inside an {@link ArtObjectContext}.
@@ -40,5 +32,5 @@ public interface Factory<TContext extends ArtObjectContext<TArtObject>, TArtObje
 
     ArtObjectMeta<TArtObject> meta();
 
-    TContext create(ConfigMap configMap, List<KeyValuePair> values);
+    TContext create(ConfigMap configMap, ConfigMap individualConfig);
 }

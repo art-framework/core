@@ -16,32 +16,21 @@
 
 package io.artframework.impl;
 
-import io.artframework.AbstractFactoryProvider;
-import io.artframework.ArtMetaDataException;
-import io.artframework.ArtObjectMeta;
-import io.artframework.ArtObjectProvider;
-import io.artframework.ArtProvider;
-import io.artframework.CombinedResult;
-import io.artframework.CombinedResultCreator;
-import io.artframework.Scope;
-import io.artframework.Trigger;
-import io.artframework.TriggerFactory;
-import io.artframework.TriggerProvider;
-import io.artframework.TriggerTarget;
+import io.artframework.*;
 import io.artframework.annotations.ART;
-import io.artframework.events.TriggerEvent;
 import io.artframework.util.ConfigUtil;
+import io.artframework.util.ReflectionUtil;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 import org.reflections.ReflectionUtils;
 
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Objects;
+import java.util.*;
 
 @Log(topic = "art-framework")
 public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFactory> implements TriggerProvider, CombinedResultCreator {
+
+    private final Map<Class<?>, Set<TriggerContext>> listeners = new HashMap<>();
 
     public DefaultTriggerProvider(Scope scope) {
         super(scope);
@@ -88,23 +77,24 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
     }
 
     @Override
-    public TriggerProvider add(Trigger trigger) {
-        return add(trigger.getClass());
+    public void register(TriggerContext context) {
+
+        listeners.computeIfAbsent(context.meta().artObjectClass(), aClass -> new HashSet<>())
+                .add(context);
     }
 
     @Override
-    public CombinedResult trigger(String identifier, TriggerTarget<?>... targets) {
-        if (!exists(identifier)) return error("Trigger with identifier '" + identifier + "' does not exist.");
+    public void unregister(TriggerContext context) {
 
-        targets = Arrays.stream(targets)
-                .filter(Objects::nonNull)
-                .toArray(TriggerTarget[]::new);
+        listeners.computeIfAbsent(context.meta().artObjectClass(), aClass -> new HashSet<>())
+                .remove(context);
+    }
 
-        TriggerEvent triggerEvent = io.artframework.ART.callEvent(new TriggerEvent(identifier, targets));
+    @Override
+    public <TTrigger extends Trigger> void execute(TriggerExecution<TTrigger> execution) {
 
-        if (triggerEvent.isCancelled()) return cancelled();
-
-        return success();
+        ReflectionUtil.getEntryForTarget(execution.triggerClass(), listeners)
+                .ifPresent(triggerContexts -> triggerContexts.forEach(context -> context.trigger(execution.targets())));
     }
 
     @Override

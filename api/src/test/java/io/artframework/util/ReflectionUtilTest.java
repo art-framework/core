@@ -17,7 +17,6 @@
 package io.artframework.util;
 
 import io.artframework.Target;
-import io.artframework.TriggerTarget;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

@@ -16,7 +16,6 @@
 
 package io.artframework;
 
-import io.artframework.parser.flow.ConfigMapType;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;

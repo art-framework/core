@@ -19,7 +19,6 @@ package io.artframework;
 import io.artframework.conf.ConfigFieldInformation;
 import io.artframework.conf.DefaultConfigMap;
 import io.artframework.conf.KeyValuePair;
-import io.artframework.parser.flow.ConfigMapType;
 import lombok.NonNull;
 
 import java.util.List;
