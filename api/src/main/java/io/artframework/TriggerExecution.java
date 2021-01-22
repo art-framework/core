@@ -66,17 +66,5 @@ public final class TriggerExecution<TTrigger extends Trigger> implements Scoped,
         }
 
         scope().configuration().trigger().execute(this);
-
-        // fetch registered listeners (trigger context) from the provider
-        // call them with all targets provided by this builder
-        // the trigger context holds the configured trigger instance
-        // and calls test for any matching target
-        // the trigger will only call all targets if the provided test is successful
-
-        // TODO: remove event api
-        // TODO: add trigger class -> context listener mapping in provider
-        // TODO: construct trigger instance with config mapping in parser like others
-        // TODO: refactor trigger interface to match requirement
-        // TODO: add new marker interface with shortcut to this builder
     }
 }

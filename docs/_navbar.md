@@ -1,0 +1,4 @@
+- [![Getting started](https://icongr.am/fontawesome/flash.svg?size=18&color=currentColor)Getting started](/introduction#getting-started)
+- [![Configuration](https://icongr.am/fontawesome/cogs.svg?size=18&color=currentColor)Configuration](/configuration/)
+- [![Download](https://icongr.am/fontawesome/cloud-download.svg?size=18&color=currentColor)Download](https://github.com/art-framework/art-core/releases/latest)
+- [![Javadocs](https://icongr.am/devicon/java-original.svg?size=16&color=currentColor)JavaDocs](https://jdocs.art-framework.io)
