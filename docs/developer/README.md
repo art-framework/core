@@ -216,12 +216,12 @@ Triggers are a bit different than actions and requirements, since they are not c
 For triggers to work you need something that triggers the trigger, e.g. a bukkit event. In this example we are going to create some very simple trigger for the `PlayerJoinEvent` and `PlayerQuitEvent`.
 
 As the same with the others, we are going to start by implementing the `Trigger` interface. But this time it won't take a target type parameter. We will define that later when we call the trigger.  
-You might have noticed that we don't have any methods that need to be implemented. That is because the trigger interface only acts as a marker interface and provides some convenient methos to call the trigger.  
-What's different as well is that we do not need to annotate the class with `@ART`. We will do that on the methods that call the trigger.
+You might have noticed that we don't have any methods that need to be implemented. If you need check some requirements against a target in your trigger, implement the `Requirement` interface.
 
-[PlayerServerTrigger.java](https://raw.githubusercontent.com/art-framework/art-bukkit/master/src/main/java/io/artframework/bukkit/trigger/PlayerServerTrigger.java ':include :fragment=demo')
+[PlayerJoinTrigger.java](../../bukkit/src/main/java/io/artframework/bukkit/trigger/PlayerJoinTrigger.java ':include :fragment=demo')
+[PlayerListener.java](../../bukkit/src/main/java/io/artframework/bukkit/trigger/PlayerListener.java ':include :fragment=demo')
 
-As you can see you just need to call the `trigger(identifier, targets...)` method and annotate it with `@ART` as you know it from the actions and requirements.
+As you can see you just need to create a class that implements `Trigger` and is annotated with `@ART`. Then call the trigger from inside a bukkit event with the `scope.trigger(...).with(...targets...).execute()` method.  
 
 > [!NOTE]
 > You can pass multiple targets to a trigger, which will be used in the execution chain downstream.  
@@ -229,7 +229,7 @@ As you can see you just need to call the `trigger(identifier, targets...)` metho
 > This makes it possible to use player and event actions in this trigger chain.  
 > See the [target](target.md) and [configuration](/configuration/) documentation for more details on the topic.
 
-To register your trigger create an instance of it and pass it to the scope:
+To register your trigger simply add the class to the trigger provider and register your bukkit listeners.
 
 ```java
 @ArtModule("my-plugin")
@@ -238,7 +238,10 @@ public class MyPlugin extends JavaPlugin {
     @OnLoad
     public void onLoad(Scope scope) {
         
-        scope.register().trigger().add(new PlayerServerTrigger());
+        playerListener = new PlayerListener(scope);
+        Bukkit.getPluginManager().registerEvents(playerListener, plugin);
+
+        scope.register().trigger().add(PlayerJoinTrigger.class);
     }
 }
 ```
