@@ -18,10 +18,7 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import io.artframework.conf.TriggerConfig;
-import io.artframework.parser.flow.ConfigMapType;
 import lombok.NonNull;
-
-import java.util.Map;
 
 public class DefaultTriggerFactory extends AbstractFactory<TriggerContext, Trigger> implements TriggerFactory {
 
@@ -33,13 +30,13 @@ public class DefaultTriggerFactory extends AbstractFactory<TriggerContext, Trigg
     }
 
     @Override
-    public TriggerContext create(Map<ConfigMapType, ConfigMap> configMaps) {
+    public TriggerContext create(ConfigMap configMap, ConfigMap individualConfig) {
 
         return TriggerContext.of(
                 scope(),
                 meta(),
-                TriggerConfig.of(configMaps.get(ConfigMapType.TRIGGER)),
-                configMaps.get(ConfigMapType.ART_CONFIG)
+                createArtObject(individualConfig),
+                TriggerConfig.of(configMap)
         );
     }
 }

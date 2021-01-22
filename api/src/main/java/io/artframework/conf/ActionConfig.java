@@ -19,7 +19,6 @@ package io.artframework.conf;
 import io.artframework.ConfigurationException;
 import io.artframework.ConfigMap;
 import io.artframework.annotations.ConfigOption;
-import io.artframework.parser.flow.ConfigMapType;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.TimeUtil;
 import lombok.Builder;
@@ -50,7 +49,7 @@ public final class ActionConfig extends ArtObjectConfig {
     public static ConfigMap configMap() {
         if (configMap == null) {
             try {
-                configMap = ConfigMap.of(ConfigMapType.ACTION, ConfigUtil.getConfigFields(ActionConfig.class, ActionConfig.builder().build()));
+                configMap = ConfigMap.of(ConfigUtil.getConfigFields(ActionConfig.class, ActionConfig.builder().build()));
             } catch (ConfigurationException e) {
                 e.printStackTrace();
             }

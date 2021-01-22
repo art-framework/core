@@ -133,9 +133,9 @@ public final class ConfigParser {
         pairs.add(new KeyValuePair(matcher.group("key"), value));
 
         if (!Strings.isNullOrEmpty(config)) {
-            matcher = PATTERN.matcher(StringUtils.strip(config.trim(), ",;").trim());
+            this.matcher = PATTERN.matcher(StringUtils.strip(config.trim(), ",;").trim());
             if (matcher.matches()) {
-                pairs.addAll(extractKeyValuePairs(matcher));
+                pairs.addAll(extractKeyValuePairs());
             }
         }
 

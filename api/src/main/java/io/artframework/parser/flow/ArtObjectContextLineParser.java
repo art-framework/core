@@ -85,16 +85,12 @@ public abstract class ArtObjectContextLineParser<TFactory extends Factory<?, ?>>
             }
         }
 
-
-        if (factory.meta().configMap().isEmpty()) {
-            return factory.create(configMap, )
-        }
-        ConfigMap.of(factory.meta().configMap());
-        ConfigParser configParser = ConfigParser.of(ConfigMap.of(ConfigMapType.ART_CONFIG, factory.meta().configMap()));
+        ConfigMap individualArtConfig = ConfigMap.of(factory.meta().configMap());
+        ConfigParser configParser = ConfigParser.of(individualArtConfig);
         if (configParser.accept(userConfig())) {
-            configMaps.put(ConfigMapType.ART_CONFIG, configParser.parse());
+            individualArtConfig = configParser.parse();
         }
 
-        return factory.create(configMap, );
+        return factory.create(configMap, individualArtConfig);
     }
 }

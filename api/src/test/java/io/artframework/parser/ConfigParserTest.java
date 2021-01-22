@@ -19,7 +19,6 @@ package io.artframework.parser;
 import io.artframework.ConfigMap;
 import io.artframework.ParseException;
 import io.artframework.annotations.ConfigOption;
-import io.artframework.parser.flow.ConfigMapType;
 import io.artframework.util.ConfigUtil;
 import lombok.Data;
 import lombok.SneakyThrows;

@@ -2,7 +2,6 @@ package io.artframework.impl;
 
 import io.artframework.Scope;
 import io.artframework.Target;
-import io.artframework.TriggerTarget;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;

@@ -19,12 +19,8 @@ package io.artframework.impl;
 import com.google.common.base.Strings;
 import io.artframework.*;
 import io.artframework.conf.Constants;
-import io.artframework.conf.KeyValuePair;
+import io.artframework.conf.RequirementConfig;
 import io.artframework.conf.TriggerConfig;
-import io.artframework.events.EventHandler;
-import io.artframework.events.EventListener;
-import io.artframework.events.EventPriority;
-import io.artframework.events.TriggerEvent;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
@@ -33,7 +29,7 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 @Accessors(fluent = true)
-public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> implements TriggerContext, EventListener {
+public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> implements TriggerContext {
 
     @Getter
     private final List<ActionContext<?>> actions = new ArrayList<>();
@@ -41,19 +37,18 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     private final List<RequirementContext<?>> requirements = new ArrayList<>();
     private final Map<Class<?>, Set<TriggerListener<?>>> listeners = new HashMap<>();
     @Getter
+    private final Trigger trigger;
+    @Getter
     private final TriggerConfig config;
-    private final List<KeyValuePair> configValues;
 
     public DefaultTriggerContext(
             @NonNull Scope scope,
             @NonNull ArtObjectMeta<Trigger> information,
-            @NonNull TriggerConfig config,
-            @NonNull List<KeyValuePair> configValues) {
+            @NonNull Trigger trigger,
+            @NonNull TriggerConfig config) {
         super(scope, information);
+        this.trigger = trigger;
         this.config = config;
-        this.configValues = List.copyOf(configValues);
-
-        configuration().events().register(this);
     }
 
     @Override
@@ -68,46 +63,56 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
 
     @Override
     public void addAction(ActionContext<?> action) {
+
         this.actions.add(action);
     }
 
     @Override
     public void addRequirement(RequirementContext<?> requirement) {
+
         this.requirements.add(requirement);
     }
 
-    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
-    public void onTriggerEvent(TriggerEvent event) {
-        if (!event.getIdentifier().equalsIgnoreCase(meta().identifier())) return;
+    @Override
+    public void enable() {
 
-        ExecutionContext<?> executionContext = ExecutionContext.of(
-                scope(),
-                this,
-                Arrays.stream(event.getTargets()).map(TriggerTarget::target).toArray(Target[]::new)
-        );
-
-        trigger(event.getTargets(), executionContext.next(this));
+        scope().configuration().trigger().register(this);
     }
 
     @Override
-    public void trigger(final TriggerTarget<?>[] targets, final ExecutionContext<TriggerContext> context) {
+    public void disable() {
+
+        scope().configuration().trigger().unregister(this);
+    }
+
+    @Override
+    public void trigger(final Target<?>[] targets) {
+
+        trigger(targets, ExecutionContext.of(
+                scope(),
+                this,
+                targets
+        ).next(this));
+    }
+
+    @Override
+    public void trigger(Target<?>[] targets, ExecutionContext<TriggerContext> context) {
 
         Runnable runnable = () -> {
-            for (TriggerTarget<?> target : targets) {
-                if (cannotExecute(target.target())) continue;
+            for (Target<?> target : targets) {
+                if (cannotExecute(target)) continue;
 
-                if (target instanceof ConfiguredTriggerTarget) {
-                    Result result = testTrigger((ConfiguredTriggerTarget<?, ?>) target, context).combine();
-                    if (result.failure()) return;
+                if (trigger instanceof Requirement) {
+                    // TODO: test if trigger implements requirement
                 }
 
                 if (testRequirements(context).success()) {
 
-                    if (increaseAndCheckCount(target.target())) {
-                        store(target.target(), Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
+                    if (increaseAndCheckCount(target)) {
+                        store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
                         if (config().executeActions()) {
-                            executeActions(target.target(), context);
+                            executeActions(target, context);
                         }
 
                         callListeners(context);
@@ -121,16 +126,6 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
             configuration().scheduler().get().runTaskLater(runnable, delay);
         } else {
             runnable.run();
-        }
-    }
-
-    private <TTarget, TConfig> Result testTrigger(ConfiguredTriggerTarget<TTarget, TConfig> target, ExecutionContext<TriggerContext> executionContext) {
-        try {
-            TConfig config = target.configMap().applyTo(target.configClass().newInstance());
-            return target.test(executionContext, config);
-        } catch (InstantiationException | IllegalAccessException e) {
-            return Result.error(e, "Failed to create a new config instance from the config class " + target.configClass().getSimpleName() + ". " +
-                    "Make sure the class is public and has an public parameterless constructor.");
         }
     }
 
@@ -152,29 +147,35 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     }
 
     @Override
-    public <TTarget> void addListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
+    public <TTarget> TriggerContext addListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener) {
+
         if (!listeners.containsKey(targetClass)) {
             listeners.put(targetClass, new HashSet<>());
         }
+
         listeners.get(targetClass).add(listener);
+
+        return this;
     }
 
     @Override
-    public void addListener(TriggerListener<Object> listener) {
+    public TriggerContext addListener(TriggerListener<Object> listener) {
+
         addListener(Object.class, listener);
+
+        return this;
     }
 
     @Override
-    public <TTarget> void removeListener(TriggerListener<TTarget> listener) {
+    public <TTarget> TriggerContext removeListener(TriggerListener<TTarget> listener) {
+
         listeners.values().forEach(triggerListeners -> triggerListeners.remove(listener));
-    }
 
-    @Override
-    public void close() {
-        configuration().events().unregister(this);
+        return this;
     }
 
     private <TTarget> boolean cannotExecute(Target<TTarget> target) {
+
         return wasExecutedOnce(target) || isOnCooldown(target);
     }
 

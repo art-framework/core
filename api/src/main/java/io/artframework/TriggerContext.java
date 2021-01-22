@@ -16,23 +16,30 @@
 
 package io.artframework;
 
-import io.artframework.conf.KeyValuePair;
 import io.artframework.conf.TriggerConfig;
 import io.artframework.impl.DefaultTriggerContext;
 import lombok.NonNull;
 
-import java.util.List;
 import java.util.Set;
 
-public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder, RequirementHolder, AutoCloseable {
+public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder, RequirementHolder {
 
+    /**
+     * Creates a new default trigger context instance with the provided parameters.
+     *
+     * @param scope the scope of the trigger
+     * @param information the meta information about the trigger
+     * @param trigger the trigger contained in this context
+     * @param config the config of the trigger
+     * @return the created trigger context
+     */
     static TriggerContext of(
             @NonNull Scope scope,
             @NonNull ArtObjectMeta<Trigger> information,
-            @NonNull TriggerConfig config,
-            @NonNull List<KeyValuePair> configValues
+            @NonNull Trigger trigger,
+            @NonNull TriggerConfig config
             ) {
-        return new DefaultTriggerContext(scope, information, config, configValues);
+        return new DefaultTriggerContext(scope, information, trigger, config);
     }
 
     /**
@@ -43,13 +50,35 @@ public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder,
     TriggerConfig config();
 
     /**
+     * Enables this trigger context to start listening on trigger events
+     * for the configured trigger type.
+     * <p>Nothing will happen until {@code enable()} is called.
+     * <p>Make sure to call {@link #disable()} when the trigger is no longer
+     * in use to allow garbage collection to run.
+     */
+    void enable();
+
+    /**
+     * Disables this trigger and stops listening to all events for the given trigger type.
+     * <p>Make sure to call this method when the trigger context is no longer required.
+     */
+    void disable();
+
+    /**
      * Fires this trigger and informs all listeners about its executing
      * if the given predicate and target type matches.
      *
      * @param targets the targets that triggered this trigger
-     * @param context the execution context of this trigger
      */
-    void trigger(final TriggerTarget<?>[] targets, final ExecutionContext<TriggerContext> context);
+    void trigger(final Target<?>[] targets);
+
+    /**
+     * Fires this trigger and informs all listeners about its executing
+     * if the given predicate and target type matches.
+     *
+     * @param targets the targets that triggered this trigger
+     */
+    void trigger(final Target<?>[] targets, ExecutionContext<TriggerContext> context);
 
     /**
      * Registers the given {@link TriggerListener} to listen for events
@@ -58,14 +87,19 @@ public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder,
      * @param listener trigger listener to register
      * @see Set#add(Object)
      */
-    <TTarget> void addListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener);
+    <TTarget> TriggerContext addListener(Class<TTarget> targetClass, TriggerListener<TTarget> listener);
 
-    void addListener(TriggerListener<Object> listener);
+    /**
+     * Registers the given trigger listener to listen on all events fired by this trigger.
+     *
+     * @param listener the listener to register
+     */
+    TriggerContext addListener(TriggerListener<Object> listener);
 
     /**
      * Unregisters the given listener from listening to this trigger.
      *
      * @param listener trigger listener to unregister
      */
-    <TTarget> void removeListener(TriggerListener<TTarget> listener);
+    <TTarget> TriggerContext removeListener(TriggerListener<TTarget> listener);
 }

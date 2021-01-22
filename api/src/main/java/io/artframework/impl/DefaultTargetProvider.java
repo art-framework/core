@@ -49,13 +49,6 @@ public class DefaultTargetProvider extends AbstractProvider implements TargetPro
     public <TTarget> Optional<Target<TTarget>> get(@Nullable TTarget source) {
 
         if (source == null) return Optional.empty();
-        if (source instanceof TriggerTarget) {
-            return Optional.of((Target<TTarget>) ((TriggerTarget<?>) source).target());
-        } else if (source instanceof Optional
-                && ((Optional<?>) source).isPresent()
-                && ((Optional<?>) source).get() instanceof TriggerTarget) {
-            return Optional.of((Target<TTarget>) ((TriggerTarget<?>) ((Optional<?>) source).get()).target());
-        }
 
         Optional<Target<TTarget>> target = ReflectionUtil.getEntryForTarget(source, targetProviders)
                 .map(targetFunction -> (Target<TTarget>) targetFunction.apply(source));

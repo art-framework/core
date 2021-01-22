@@ -18,7 +18,6 @@ package io.artframework;
 
 import io.artframework.events.EventHandler;
 import io.artframework.events.EventListener;
-import io.artframework.events.TriggerEvent;
 import io.artframework.integration.actions.DamageAction;
 import io.artframework.integration.actions.TestGenericAction;
 import io.artframework.integration.actions.TextAction;

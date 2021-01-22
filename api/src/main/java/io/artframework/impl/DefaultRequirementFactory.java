@@ -18,10 +18,7 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import io.artframework.conf.RequirementConfig;
-import io.artframework.parser.flow.ConfigMapType;
 import lombok.NonNull;
-
-import java.util.Map;
 
 public class DefaultRequirementFactory<TTarget> extends AbstractFactory<RequirementContext<TTarget>, Requirement<TTarget>> implements RequirementFactory<TTarget> {
 
@@ -33,13 +30,13 @@ public class DefaultRequirementFactory<TTarget> extends AbstractFactory<Requirem
     }
 
     @Override
-    public RequirementContext<TTarget> create(Map<ConfigMapType, ConfigMap> configMaps) {
+    public RequirementContext<TTarget> create(ConfigMap configMap, ConfigMap individualConfig) {
 
         return RequirementContext.of(
                 scope(),
                 meta(),
-                createArtObject(configMaps.get(ConfigMapType.ART_CONFIG)),
-                RequirementConfig.of(configMaps.get(ConfigMapType.REQUIREMENT))
+                createArtObject(individualConfig),
+                RequirementConfig.of(configMap)
         );
     }
 }

@@ -18,7 +18,6 @@ package io.artframework.util;
 
 import com.google.common.base.Strings;
 import io.artframework.Target;
-import io.artframework.TriggerTarget;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 
