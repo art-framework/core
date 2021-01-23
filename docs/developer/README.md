@@ -106,21 +106,21 @@ The `Action` interface takes a `TTarget` type argument that should be the broade
 !> Make sure your class has a parameterless public constructor, as it will be created on the fly everytime it is used.  
   Or take a look at the advanced [art-registration documentation](/developer/registration) how to register your class if it requires some parameters.
 
-[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-bukkit/master/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=header')
+[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=header')
 
 You can then use any member variable in your class as a config option by annotating it with `@ConfigOption`.  
 These fields will be injected with the configured values when your action is loaded and before the `execute(...)` method is called.
 
-[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-bukkit/master/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=config')
+[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=config')
 
 Then implement the logic of your action using the config variables and target parameter.
 
-[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-bukkit/master/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=action')
+[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=action')
 
 <details>
 <summary>Full example action (click to expand)</summary>
 
-[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-bukkit/master/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=full-example')
+[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=full-example')
 
 </details>
 
@@ -159,26 +159,26 @@ We are still going to keep it simple and implement a requirement that checks the
 
 The process is pretty much the same as the one with the action, except this time we are implementing the `Requirement<TTarget>` interface.
 
-[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-bukkit/master/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=header')
+[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=header')
 
 The next part is the config, which will be a bit more complicated and take a regex input. This is just to make the requirement more convenient to use. You will see why in the next code example.
 
-[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-bukkit/master/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=config')
+[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=config')
 
 Then inside the `test(...)` method we are going to check our requirement logic. Here you will see the `return error(...)` statement that can be used when exceptions or config error occur.
 
-[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-bukkit/master/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=error')
+[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=error')
 
 After no error in the config exists, we are going to check if the actual requirement succeeds and wrap our `boolean` check inside a `resultOf(...)`. If the underlying boolean is `true` a `success()` will be returned and if it is `false` a `failure()` will be returned.
 
-[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-bukkit/master/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=result')
+[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=result')
 
 And if we put everything together we get a requirement that looks like this.
 
 <details>
 <summary>Full example requirement (click to expand)</summary>
 
-[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-bukkit/master/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=full-example')
+[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=full-example')
 
 </details>
 

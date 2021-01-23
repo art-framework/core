@@ -61,7 +61,7 @@ You can find the detailed [configuration documentation here](configuration).
 
 And now take a look at the developer side of things. In this example we are going to show how the text action is implemented.
 
-[SendMessageAction.java](https://raw.githubusercontent.com/art-framework/art-bukkit/master/src/main/java/io/artframework/bukkit/actions/SendMessageAction.java ':include :fragment=demo')
+[SendMessageAction.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/actions/SendMessageAction.java ':include :fragment=demo')
 
 > [!TIP]
 > That's it! Your action can now be used in any art-configuration.
