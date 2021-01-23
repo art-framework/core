@@ -126,11 +126,11 @@ public final class ConfigParser {
                 value = "\"" + quotedValue + "\"" + config;
             }
 
-            pairs.add(new KeyValuePair(matcher.group("key"), value));
+            pairs.add(KeyValuePair.of(matcher.group("key"), value));
             return pairs;
         }
 
-        pairs.add(new KeyValuePair(matcher.group("key"), value));
+        pairs.add(KeyValuePair.of(matcher.group("key"), value));
 
         if (!Strings.isNullOrEmpty(config)) {
             this.matcher = PATTERN.matcher(StringUtils.strip(config.trim(), ",;").trim());
