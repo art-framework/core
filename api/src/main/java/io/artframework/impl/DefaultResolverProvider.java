@@ -2,6 +2,7 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import io.artframework.util.ReflectionUtil;
+import lombok.extern.java.Log;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -10,6 +11,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+@Log(topic = "art-framework")
 public class DefaultResolverProvider extends AbstractProvider implements ResolverProvider {
 
     private final Map<Class<?>, Map<Class<? extends Resolver<?>>, ResolverFactory<?>>> resolvers = new HashMap<>();
@@ -41,14 +43,33 @@ public class DefaultResolverProvider extends AbstractProvider implements Resolve
     public <TResolver extends Resolver<TType>, TType> ResolverProvider add(Class<TResolver> resolverClass) {
 
         ReflectionUtil.getInterfaceTypeArgument(resolverClass, Resolver.class, 0)
-                .ifPresent(typeClass -> resolvers.computeIfAbsent(typeClass, aClass -> new HashMap<>())
-                        .putIfAbsent(resolverClass, ResolverFactory.of(resolverClass)));
+                .ifPresent(typeClass -> {
+                    try {
+                        resolvers.computeIfAbsent(typeClass, aClass -> new HashMap<>())
+                                .putIfAbsent(resolverClass, ResolverFactory.of(scope(), resolverClass));
+                    } catch (ConfigurationException e) {
+                        log.severe("failed to register Resolver " + resolverClass.getCanonicalName() + ": " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
 
         return this;
     }
 
     @Override
     public <TResolver extends Resolver<TType>, TType> ResolverProvider add(Class<TResolver> resolverClass, Supplier<TResolver> supplier) {
-        return null;
+
+        ReflectionUtil.getInterfaceTypeArgument(resolverClass, Resolver.class, 0)
+                .ifPresent(typeClass -> {
+                    try {
+                        resolvers.computeIfAbsent(typeClass, aClass -> new HashMap<>())
+                                .putIfAbsent(resolverClass, ResolverFactory.of(scope(), resolverClass, supplier));
+                    } catch (ConfigurationException e) {
+                        log.severe("failed to register Resolver " + resolverClass.getCanonicalName() + ": " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
+
+        return this;
     }
 }

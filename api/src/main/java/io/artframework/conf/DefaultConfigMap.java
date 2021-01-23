@@ -100,7 +100,7 @@ public class DefaultConfigMap implements ConfigMap {
     private void setField(@NonNull Scope scope, @NonNull Object config, @NonNull Field field, Object value) throws IllegalAccessException {
 
         if (!field.getType().isInstance(value) && value != null) {
-            // TODO: resolve config value
+            // TODO: resolve config value - maybe put the resolver information in the ConfigFieldInformation class
 //            scope.configuration().resolvers().get(value.getClass())
 //                    .map(resolverFactory -> resolverFactory.create(configValues))
 //                    .map(resolver -> resolver.resolve())

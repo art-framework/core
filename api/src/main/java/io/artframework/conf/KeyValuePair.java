@@ -16,19 +16,36 @@
 
 package io.artframework.conf;
 
+import lombok.Value;
+import lombok.experimental.Accessors;
+
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public final class KeyValuePair {
+/**
+ * The KeyValuePair maps an optional key to an optional string value.
+ * <p>It is primarily used in the {@link io.artframework.parser.ConfigParser}
+ * to map the parsed values into the {@link io.artframework.ConfigMap}.
+ */
+@Value
+public class KeyValuePair {
 
+    /**
+     * Creates a new key value pair from the given key and value.
+     * <p>Do not use empty keys. Provide a null key instead.
+     *
+     * @param key the key. can be null.
+     * @param value the value. can be null.
+     * @return the key value pair
+     */
     public static KeyValuePair of(@Nullable String key, @Nullable String value) {
         return new KeyValuePair(key, value);
     }
 
-    private final String key;
-    private final String value;
+    String key;
+    String value;
 
-    public KeyValuePair(String key, String value) {
+    private KeyValuePair(String key, String value) {
         this.key = key;
         this.value = value;
     }
