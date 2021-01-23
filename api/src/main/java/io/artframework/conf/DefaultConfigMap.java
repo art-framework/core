@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableMap;
 import io.artframework.ConfigMap;
 import io.artframework.ConfigurationException;
 import io.artframework.util.ConfigUtil;
+import io.artframework.util.ReflectionUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
@@ -74,12 +75,20 @@ public class DefaultConfigMap implements ConfigMap {
             if (fieldInformation.identifier().contains(".")) {
                 // handle nested config objects
                 String nestedIdentifier = StringUtils.substringBefore(fieldInformation.identifier(), ".");
-                Field parentField = config.getClass().getDeclaredField(nestedIdentifier);
+                Field parentField = ReflectionUtil.getDeclaredField(config.getClass(), nestedIdentifier)
+                        .orElse(null);
+                if (parentField == null) {
+                    throw new NoSuchFieldException("No field with the name " + nestedIdentifier + " found in: " + config);
+                }
                 parentField.setAccessible(true);
                 Object nestedConfigObject = parentField.get(config);
                 setConfigField(nestedConfigObject, fieldInformation.withIdentifier(nestedIdentifier), value);
             } else {
-                Field field = config.getClass().getDeclaredField(fieldInformation.name());
+                Field field = ReflectionUtil.getDeclaredField(config.getClass(), fieldInformation.name())
+                        .orElse(null);
+                if (field == null) {
+                    throw new NoSuchFieldException("No field with the name " + fieldInformation.name() + " found in: " + config);
+                }
                 field.setAccessible(true);
                 field.set(config, value);
             }

@@ -23,11 +23,10 @@ import lombok.extern.java.Log;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -207,4 +206,35 @@ public final class ReflectionUtil {
         return targetClass.isInstance(target);
     }
 
+    /**
+     * Recursively searches the given class and all of its super classes for a field with the given name.
+     *
+     * @param type the class that should be searched
+     * @param name the name of the field
+     * @return the field or an empty optional
+     */
+    public static Optional<Field> getDeclaredField(Class<?> type, String name) {
+
+        return getAllFields(type, new ArrayList<>()).stream()
+                .filter(field -> field.getName().equals(name))
+                .findFirst();
+    }
+
+    /**
+     * Recursively gets all fields from the given class and its superclasses.
+     *
+     * @param type the class that should be searched
+     * @param fields the list to store the fields in. provide an empty array list to start.
+     * @return the list of fields from the given class and its superclasses
+     */
+    public static List<Field> getAllFields(Class<?> type, List<Field> fields) {
+
+        fields.addAll(Arrays.asList(type.getDeclaredFields()));
+
+        if (type.getSuperclass() != null) {
+            getAllFields(type.getSuperclass(), fields);
+        }
+
+        return fields;
+    }
 }
