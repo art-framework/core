@@ -19,6 +19,7 @@ package io.artframework.conf;
 import com.google.common.collect.ImmutableMap;
 import io.artframework.ConfigMap;
 import io.artframework.ConfigurationException;
+import io.artframework.Scope;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.ReflectionUtil;
 import lombok.Getter;
@@ -54,9 +55,9 @@ public class DefaultConfigMap implements ConfigMap {
     }
 
     @Override
-    public <TConfig> TConfig applyTo(@NonNull TConfig config) {
+    public <TConfig> TConfig applyTo(Scope scope, @NonNull TConfig config) {
         if (!this.loaded()) return config;
-        setConfigFields(config, configValues);
+        setConfigFields(scope, config, configValues);
         return config;
     }
 
@@ -65,11 +66,11 @@ public class DefaultConfigMap implements ConfigMap {
         return new DefaultConfigMap(configFields(), ConfigUtil.loadConfigValues(configFields(), keyValuePairs));
     }
 
-    private void setConfigFields(Object config, Map<ConfigFieldInformation, Object> fieldValueMap) {
-        fieldValueMap.forEach((configFieldInformation, o) -> setConfigField(config, configFieldInformation, o));
+    private void setConfigFields(Scope scope, Object config, Map<ConfigFieldInformation, Object> configValues) {
+        configValues.forEach((configFieldInformation, o) -> setConfigField(scope, config, configFieldInformation, o));
     }
 
-    private void setConfigField(Object config, ConfigFieldInformation fieldInformation, Object value) {
+    private void setConfigField(Scope scope, Object config, ConfigFieldInformation fieldInformation, Object value) {
 
         try {
             if (fieldInformation.identifier().contains(".")) {
@@ -82,18 +83,30 @@ public class DefaultConfigMap implements ConfigMap {
                 }
                 parentField.setAccessible(true);
                 Object nestedConfigObject = parentField.get(config);
-                setConfigField(nestedConfigObject, fieldInformation.withIdentifier(nestedIdentifier), value);
+                setConfigField(scope, nestedConfigObject, fieldInformation.withIdentifier(nestedIdentifier), value);
             } else {
                 Field field = ReflectionUtil.getDeclaredField(config.getClass(), fieldInformation.name())
                         .orElse(null);
                 if (field == null) {
                     throw new NoSuchFieldException("No field with the name " + fieldInformation.name() + " found in: " + config);
                 }
-                field.setAccessible(true);
-                field.set(config, value);
+                setField(scope, config, field, value);
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    private void setField(@NonNull Scope scope, @NonNull Object config, @NonNull Field field, Object value) throws IllegalAccessException {
+
+        if (!field.getType().isInstance(value) && value != null) {
+            // TODO: resolve config value
+//            scope.configuration().resolvers().get(value.getClass())
+//                    .map(resolverFactory -> resolverFactory.create(configValues))
+//                    .map(resolver -> resolver.resolve())
+        }
+
+        field.setAccessible(true);
+        field.set(config, value);
     }
 }

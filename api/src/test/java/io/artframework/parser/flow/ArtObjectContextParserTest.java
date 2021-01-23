@@ -61,7 +61,7 @@ class ArtObjectContextParserTest {
         ArgumentCaptor<ConfigMap> argument = ArgumentCaptor.forClass(ConfigMap.class);
         verify(factory).create(argument.capture(), any());
 
-        argument.getValue().applyTo(config);
+        argument.getValue().applyTo(ART.globalScope(), config);
 
         return config;
     }
@@ -70,7 +70,7 @@ class ArtObjectContextParserTest {
         ArgumentCaptor<ConfigMap> argument = ArgumentCaptor.forClass(ConfigMap.class);
         verify(factory).create(any(), argument.capture());
 
-        argument.getValue().applyTo(config);
+        argument.getValue().applyTo(ART.globalScope(), config);
 
         return config;
     }

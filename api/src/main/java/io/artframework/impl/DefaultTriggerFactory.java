@@ -36,7 +36,7 @@ public class DefaultTriggerFactory extends AbstractFactory<TriggerContext, Trigg
                 scope(),
                 meta(),
                 createArtObject(individualConfig),
-                TriggerConfig.of(configMap)
+                TriggerConfig.of(scope(), configMap)
         );
     }
 }

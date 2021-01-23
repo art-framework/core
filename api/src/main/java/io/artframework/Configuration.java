@@ -42,6 +42,7 @@ public class Configuration {
     Scheduler scheduler;
     StorageProvider storage;
     TargetProvider targets;
+    ResolverProvider resolvers;
     EventProvider events;
     FlowLineParserProvider parser;
     ModuleProvider modules;

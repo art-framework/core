@@ -30,7 +30,7 @@ public interface ConfigMap {
         return new DefaultConfigMap(configFields);
     }
 
-    <TConfig> TConfig applyTo(@NonNull TConfig config);
+    <TConfig> TConfig applyTo(Scope scope, @NonNull TConfig config);
 
     Map<String, ConfigFieldInformation> configFields();
 

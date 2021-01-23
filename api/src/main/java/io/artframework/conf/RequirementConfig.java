@@ -18,9 +18,9 @@ package io.artframework.conf;
 
 import io.artframework.ConfigMap;
 import io.artframework.ConfigurationException;
+import io.artframework.Scope;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.util.ConfigUtil;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -55,14 +55,14 @@ public class RequirementConfig extends ArtObjectConfig {
         return configMap;
     }
 
-    public static RequirementConfig of(@Nullable ConfigMap configMap) {
+    public static RequirementConfig of(Scope scope, @Nullable ConfigMap configMap) {
         RequirementConfig config = new RequirementConfig();
 
         if (configMap == null) {
             return config;
         }
 
-        return configMap.applyTo(config);
+        return configMap.applyTo(scope, config);
     }
 
     @ConfigOption(description = {

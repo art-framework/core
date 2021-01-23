@@ -32,7 +32,7 @@ public class DefaultActionFactory<TTarget> extends AbstractFactory<ActionContext
                 scope(),
                 meta(),
                 createArtObject(individualConfig),
-                ActionConfig.of(configMap)
+                ActionConfig.of(scope(), configMap)
         );
     }
 }

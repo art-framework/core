@@ -45,19 +45,19 @@ public abstract class AbstractFactory<TContext extends ArtObjectContext<TArtObje
         meta().configClass().ifPresent(configClass -> {
             if (artObject instanceof Configurable) {
                 if (configClass.isInstance(artObject)) {
-                    configMap.applyTo(artObject);
+                    configMap.applyTo(scope, artObject);
                     ((Configurable<TArtObject>) artObject).load(artObject);
                 } else {
                     try {
                         Object config = configClass.getConstructor().newInstance();
-                        configMap.applyTo(config);
+                        configMap.applyTo(scope, config);
                         ((Configurable) artObject).load(config);
                     } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                         e.printStackTrace();
                     }
                 }
             } else if (configClass.isInstance(artObject)) {
-                configMap.applyTo(artObject);
+                configMap.applyTo(scope, artObject);
             }
         });
 

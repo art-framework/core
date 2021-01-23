@@ -18,10 +18,10 @@ package io.artframework.conf;
 
 import io.artframework.ConfigMap;
 import io.artframework.ConfigurationException;
+import io.artframework.Scope;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.TimeUtil;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -56,14 +56,14 @@ public final class ActionConfig extends ArtObjectConfig {
         return configMap;
     }
 
-    public static ActionConfig of(@Nullable ConfigMap configMap) {
+    public static ActionConfig of(Scope scope, @Nullable ConfigMap configMap) {
         ActionConfig config = new ActionConfig();
 
         if (configMap == null) {
             return config;
         }
 
-        return configMap.applyTo(config);
+        return configMap.applyTo(scope, config);
     }
 
     @ConfigOption(description = {

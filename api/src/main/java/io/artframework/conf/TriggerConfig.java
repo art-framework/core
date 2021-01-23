@@ -18,10 +18,10 @@ package io.artframework.conf;
 
 import io.artframework.ConfigMap;
 import io.artframework.ConfigurationException;
+import io.artframework.Scope;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.TimeUtil;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -47,14 +47,14 @@ public class TriggerConfig extends RequirementConfig {
         return configMap;
     }
 
-    public static TriggerConfig of(@Nullable ConfigMap configMap) {
+    public static TriggerConfig of(Scope scope, @Nullable ConfigMap configMap) {
         TriggerConfig config = new TriggerConfig();
 
         if (configMap == null) {
             return config;
         }
 
-        return configMap.applyTo(config);
+        return configMap.applyTo(scope, config);
     }
 
     @ConfigOption(description = {
