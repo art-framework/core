@@ -10,7 +10,7 @@
         <dependency>
             <groupId>io.art-framework.core</groupId>
             <artifactId>api</artifactId>
-            <version>3.0.0</version>
+            <version>3.0.1</version>
         </dependency>
     </dependencies>
 </project>

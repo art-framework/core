@@ -1,3 +1,10 @@
+## [3.0.1](https://github.com/art-framework/core/compare/v3.0.0...v3.0.1) (2021-01-23)
+
+
+### Bug Fixes
+
+* **config:** recursively set fields in super class ([9170171](https://github.com/art-framework/core/commit/91701718b78d25efd2afa8f86a3db61381f891db))
+
 # [3.0.0](https://github.com/art-framework/core/compare/v2.2.0...v3.0.0) (2021-01-23)
 
 
