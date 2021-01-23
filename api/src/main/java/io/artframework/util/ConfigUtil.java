@@ -164,8 +164,8 @@ public final class ConfigUtil {
         try {
             return Files.walk(new File("").toPath())
                     .filter(Files::isRegularFile)
-                    .filter(file -> containsString(file.toFile(), id))
                     .map(Path::toFile)
+                    .filter(file -> containsString(file, id))
                     .map(File::getAbsolutePath)
                     .findFirst();
         } catch (IOException e) {
@@ -213,13 +213,13 @@ public final class ConfigUtil {
                 }
                 int finalI = i;
                 Optional<ConfigFieldInformation> optionalFieldInformation = configFields.values().stream().filter(info -> info.position() == finalI).findFirst();
-                if (!optionalFieldInformation.isPresent()) {
+                if (optionalFieldInformation.isEmpty()) {
                     throw new ConfigurationException("Config does not define positioned parameters. Use key value pairs instead.");
                 }
                 configFieldInformation = optionalFieldInformation.get();
             }
 
-            if (!keyValue.getValue().isPresent()) {
+            if (keyValue.getValue().isEmpty()) {
                 throw new ConfigurationException("Config " + configFieldInformation.identifier() + " has an empty value.");
             }
 

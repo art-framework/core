@@ -145,6 +145,20 @@ public final class ReflectionUtil {
         return Optional.ofNullable(result);
     }
 
+    /**
+     * Tries to extract the generic type provided by the interface implementation of the class.
+     * <p>This does not work if the implementing class uses a generic to provide the interface type.
+     * <pre>{@code
+     * public class MyResolver implements Resolver<Foobar> {}
+     *
+     * // returns the type Foobar.class
+     * getInterfaceTypeArgument(MyResolver.class, Resolver.class, 0);
+     * }</pre>
+     * @param clazz the class that should have the type of an implementing interface extracted
+     * @param interfaceType the type of the interface to extract
+     * @param position the generic argument position in the interface. starting at index 0.
+     * @return the extracted type if found.
+     */
     public static Optional<Class<?>> getInterfaceTypeArgument(Class<?> clazz, Class<?> interfaceType, int position) {
 
         Class<?> foundClass = null;

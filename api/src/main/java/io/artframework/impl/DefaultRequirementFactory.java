@@ -36,7 +36,7 @@ public class DefaultRequirementFactory<TTarget> extends AbstractFactory<Requirem
                 scope(),
                 meta(),
                 createArtObject(individualConfig),
-                RequirementConfig.of(configMap)
+                RequirementConfig.of(scope(), configMap)
         );
     }
 }

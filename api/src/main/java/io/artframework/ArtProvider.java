@@ -97,4 +97,6 @@ public interface ArtProvider extends Provider {
     default TargetProvider targets() {
         return configuration().targets();
     }
+
+    default ResolverProvider resolvers() { return configuration().resolvers(); }
 }
