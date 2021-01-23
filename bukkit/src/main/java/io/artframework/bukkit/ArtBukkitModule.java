@@ -25,13 +25,10 @@ import io.artframework.bukkit.actions.CancelBukkitEventAction;
 import io.artframework.bukkit.actions.DamageLivingEntityAction;
 import io.artframework.bukkit.actions.SendMessageAction;
 import io.artframework.bukkit.requirements.HealthRequirement;
-import io.artframework.bukkit.requirements.LocationRequirement;
 import io.artframework.bukkit.storage.EbeanPersistenceProvider;
 import io.artframework.bukkit.storage.MetadataStore;
 import io.artframework.bukkit.targets.*;
-import io.artframework.bukkit.trigger.EntityTrigger;
-import io.artframework.bukkit.trigger.PlayerServerTrigger;
-import io.artframework.bukkit.trigger.LocationTrigger;
+import io.artframework.bukkit.trigger.*;
 import io.artframework.modules.scripts.ScriptsModule;
 import io.artframework.util.FileUtil;
 import io.ebean.Database;
@@ -46,6 +43,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
+import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 
@@ -56,9 +54,9 @@ import java.util.Collection;
 @ArtModule("art-bukkit")
 public class ArtBukkitModule implements BootstrapModule {
 
-    private final PlayerServerTrigger playerServerTrigger = new PlayerServerTrigger();
-    private final EntityTrigger entityTrigger = new EntityTrigger();
-    private final LocationTrigger locationTrigger = new LocationTrigger();
+    private PlayerListener playerListener;
+    private LocationTrigger locationTrigger;
+    private EntityDamageTrigger entityDamageTrigger;
     private final ArtBukkitPlugin plugin;
     private EbeanPersistenceProvider storageProvider;
 
@@ -122,9 +120,13 @@ public class ArtBukkitModule implements BootstrapModule {
 
         storageProvider.load();
 
-        Bukkit.getPluginManager().registerEvents(playerServerTrigger, plugin);
-        Bukkit.getPluginManager().registerEvents(entityTrigger, plugin);
+        playerListener = new PlayerListener(scope);
+        locationTrigger = new LocationTrigger(scope);
+        entityDamageTrigger = new EntityDamageTrigger(scope);
+
+        Bukkit.getPluginManager().registerEvents(playerListener, plugin);
         Bukkit.getPluginManager().registerEvents(locationTrigger, plugin);
+        Bukkit.getPluginManager().registerEvents(entityDamageTrigger, plugin);
 
         scope.register()
                 .actions()
@@ -133,11 +135,12 @@ public class ArtBukkitModule implements BootstrapModule {
                     .add(SendMessageAction.class)
                 .requirements()
                     .add(HealthRequirement.class)
-                    .add(LocationRequirement.class)
+                    .add(LocationTrigger.class, () -> new LocationTrigger(scope))
                 .trigger()
-                    .add(playerServerTrigger)
-                    .add(entityTrigger)
-                    .add(locationTrigger)
+                    .add(PlayerJoinTrigger.class)
+                    .add(PlayerQuitTrigger.class)
+                    .add(LocationTrigger.class, () -> new LocationTrigger(scope))
+                    .add(EntityDamageTrigger.class, () -> new EntityDamageTrigger(scope))
                 .targets()
                     .add(Block.class, BlockTarget::new)
                     .add(Cancellable.class, CancellableEventTarget::new)
@@ -146,7 +149,8 @@ public class ArtBukkitModule implements BootstrapModule {
                     .add(LivingEntity.class, LivingEntityTarget::new)
                     .add(Location.class, LocationTarget::new)
                     .add(Player.class, PlayerTarget::new)
-                    .add(OfflinePlayer.class, OfflinePlayerTarget::new);
+                    .add(OfflinePlayer.class, OfflinePlayerTarget::new)
+                    .add(Event.class, BukkitEventTarget::new);
     }
 
     @OnReload
@@ -158,7 +162,7 @@ public class ArtBukkitModule implements BootstrapModule {
     @Override
     public void onDisable(Scope scope) {
 
-        HandlerList.unregisterAll(playerServerTrigger);
-        HandlerList.unregisterAll(entityTrigger);
+        HandlerList.unregisterAll(playerListener);
+        HandlerList.unregisterAll(entityDamageTrigger);
     }
 }
