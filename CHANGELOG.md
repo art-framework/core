@@ -1,3 +1,23 @@
+# [3.0.0](https://github.com/art-framework/core/compare/v2.2.0...v3.0.0) (2021-01-23)
+
+
+### Bug Fixes
+
+* return alias mapping in all() factories method ([248e613](https://github.com/art-framework/core/commit/248e613b0644b4e3dfc9cd9c8d75bce2a6c78098))
+* **rewards:** do no try to parse an empty global rewards list ([e98328c](https://github.com/art-framework/core/commit/e98328c29c37363a55d78979212330fce315012c))
+
+
+### Features
+
+* add new and improved trigger api ([a56876e](https://github.com/art-framework/core/commit/a56876ea7cf0b743728783cac89793510bab6fca))
+* completely refactor and fix trigger api ([8868a1e](https://github.com/art-framework/core/commit/8868a1ec8af360f132be0b308e71f1a84529fa05))
+* migrate bukkit module to new trigger api ([1917133](https://github.com/art-framework/core/commit/1917133cd575043445cdd3f9daba131190df4d22))
+
+
+### BREAKING CHANGES
+
+* everything that has todo with triggers needs to be reimplemented
+
 # [2.2.0](https://github.com/art-framework/core/compare/v2.1.1...v2.2.0) (2021-01-18)
 
 
