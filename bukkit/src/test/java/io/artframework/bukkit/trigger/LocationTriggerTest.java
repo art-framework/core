@@ -4,10 +4,15 @@ import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import io.artframework.*;
+import io.artframework.bukkit.ArtBukkitPlugin;
+import io.artframework.bukkit.targets.BukkitEventTarget;
+import io.artframework.bukkit.targets.EntityTarget;
 import io.artframework.bukkit.targets.PlayerTarget;
 import lombok.SneakyThrows;
 import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -27,11 +32,13 @@ class LocationTriggerTest {
     @BeforeAll
     static void beforeAll() {
         server = MockBukkit.mock();
-        trigger = new LocationTrigger();
+        trigger = new LocationTrigger(ART.globalScope());
+
         ART.globalScope().register()
-                .targets().add(Player.class, PlayerTarget::new)
+                .targets().add(Entity.class, EntityTarget::new)
+                .add(Event.class, BukkitEventTarget::new)
                 .and()
-                .trigger().add(trigger);
+                .trigger().add(LocationTrigger.class, () -> new LocationTrigger(ART.globalScope()));
     }
 
     @AfterAll
@@ -69,7 +76,9 @@ class LocationTriggerTest {
         PlayerMock player = server.addPlayer();
         Location from = new Location(player.getWorld(), 0, 0, 0);
         Location to = new Location(player.getWorld(), 100, 50, -100);
+        player.setLocation(from);
         trigger.onMove(new PlayerMoveEvent(player, from, from));
+        player.setLocation(to);
         trigger.onMove(new PlayerMoveEvent(player, from, to));
 
         verify(listener, times(1)).onTrigger(eq(new PlayerTarget(player)), any());

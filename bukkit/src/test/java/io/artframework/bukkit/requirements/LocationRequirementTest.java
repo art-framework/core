@@ -2,10 +2,12 @@ package io.artframework.bukkit.requirements;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
+import io.artframework.ART;
 import io.artframework.ExecutionContext;
 import io.artframework.RequirementContext;
 import io.artframework.Target;
 import io.artframework.bukkit.targets.EntityTarget;
+import io.artframework.bukkit.trigger.LocationTrigger;
 import io.artframework.bukkit.trigger.configs.LocationConfig;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -20,7 +22,7 @@ import static org.mockito.Mockito.when;
 class LocationRequirementTest {
 
     private static ServerMock server;
-    private LocationRequirement requirement;
+    private LocationTrigger requirement;
 
     @BeforeAll
     static void beforeAll() {
@@ -31,7 +33,7 @@ class LocationRequirementTest {
     @BeforeEach
     void setUp() {
 
-        requirement = new LocationRequirement();
+        requirement = new LocationTrigger(ART.globalScope());
     }
 
     @AfterAll
