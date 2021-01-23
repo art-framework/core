@@ -201,13 +201,13 @@ public final class ConfigUtil {
 
         for (int i = 0; i < keyValuePairs.size(); i++) {
             KeyValuePair keyValue = keyValuePairs.get(i);
-            ConfigFieldInformation configFieldInformation;
+            ConfigFieldInformation configFieldInformation = null;
             if (keyValue.getKey().isPresent() && configFields.containsKey(keyValue.getKey().get())) {
                 configFieldInformation = configFields.get(keyValue.getKey().get());
                 usedKeyValue = true;
-            } else if (configFields.size() == 1) {
+            } else if (configFields.size() == 1 && keyValue.getKey().isEmpty()) {
                 configFieldInformation = configFields.values().stream().findFirst().get();
-            } else {
+            } else if (keyValue.getKey().isEmpty()) {
                 if (usedKeyValue) {
                     throw new ConfigurationException("Positioned parameter found after key=value pair usage. Positioned parameters must come first.");
                 }
@@ -219,8 +219,18 @@ public final class ConfigUtil {
                 configFieldInformation = optionalFieldInformation.get();
             }
 
+            if (configFieldInformation == null) {
+                log.warning("No matching field for key " + keyValue.getKey().orElse("n/a") + " found!");
+                continue;
+            }
+
             if (keyValue.getValue().isEmpty()) {
                 throw new ConfigurationException("Config " + configFieldInformation.identifier() + " has an empty value.");
+            }
+
+            if (mappedFields.contains(configFieldInformation)) {
+                log.warning("not mapping extraneous key value pair: " + keyValue);
+                continue;
             }
 
             Object value = ReflectionUtil.toObject(configFieldInformation.type(), keyValue.getValue().get());
