@@ -27,7 +27,7 @@ import java.util.Optional;
 class RequirementLineParser extends ArtObjectContextLineParser<RequirementFactory<?>> {
 
     public RequirementLineParser(Iterator<String> iterator, Scope scope) {
-        super(iterator, scope, new FlowType("requirement", "\\?"));
+        super(scope, iterator, new FlowType("requirement", "\\?"));
     }
 
     @Override

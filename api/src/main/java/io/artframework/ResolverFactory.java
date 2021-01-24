@@ -61,6 +61,16 @@ public interface ResolverFactory<TType> extends Scoped {
     }
 
     /**
+     * @return the implementing class of the resolver
+     */
+    Class<? extends Resolver<TType>> resolverClass();
+
+    /**
+     * @return the config map that was created for the resolver
+     */
+    ConfigMap configMap();
+
+    /**
      * Creates a new instance of the resolver using the provided config values.
      *
      * @param configValues the config values to create the resolver with

@@ -158,11 +158,11 @@ class ConfigMapTest {
     void shouldIgnoreUnmappedKeyValuePairs() throws ConfigurationException {
 
         SingleFieldConfig config = ConfigMap.of(SingleFieldConfig.class)
-                .with(Arrays.asList(
+                .with(ART.globalScope(), Arrays.asList(
                         KeyValuePair.of("test", "foobar"),
                         KeyValuePair.of("foo", "bar"),
                         KeyValuePair.of("num", "1")
-                )).applyTo(ART.globalScope(), new SingleFieldConfig());
+                )).applyTo(new SingleFieldConfig());
 
         assertThat(config)
                 .extracting(SingleFieldConfig::getTest)
@@ -174,11 +174,11 @@ class ConfigMapTest {
     void shouldUseFirstValueForMultipleWithoutKeys() throws ConfigurationException {
 
         SingleFieldConfig config = ConfigMap.of(SingleFieldConfig.class)
-                .with(Arrays.asList(
+                .with(ART.globalScope(), Arrays.asList(
                         KeyValuePair.of(null, "foobar"),
                         KeyValuePair.of(null, "bar"),
                         KeyValuePair.of(null, "1")
-                )).applyTo(ART.globalScope(), new SingleFieldConfig());
+                )).applyTo(new SingleFieldConfig());
 
         assertThat(config)
                 .extracting(SingleFieldConfig::getTest)
@@ -190,11 +190,11 @@ class ConfigMapTest {
     void shouldNotMapUnmatchingKey() throws ConfigurationException {
 
         SingleFieldConfig config = ConfigMap.of(SingleFieldConfig.class)
-                .with(Arrays.asList(
+                .with(ART.globalScope(), Arrays.asList(
                         KeyValuePair.of("f", "foobar"),
                         KeyValuePair.of("a", "bar"),
                         KeyValuePair.of("b", "1")
-                )).applyTo(ART.globalScope(), new SingleFieldConfig());
+                )).applyTo(new SingleFieldConfig());
 
         assertThat(config)
                 .extracting(SingleFieldConfig::getTest)

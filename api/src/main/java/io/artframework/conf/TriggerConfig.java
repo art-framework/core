@@ -54,7 +54,7 @@ public class TriggerConfig extends RequirementConfig {
             return config;
         }
 
-        return configMap.applyTo(scope, config);
+        return configMap.applyTo(config);
     }
 
     @ConfigOption(description = {

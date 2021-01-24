@@ -17,19 +17,14 @@
 package io.artframework.util;
 
 import com.google.common.base.Strings;
-import io.artframework.BootstrapModule;
-import io.artframework.ConfigurationException;
-import io.artframework.FieldNameFormatter;
-import io.artframework.Scope;
-import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.Config;
-import io.artframework.annotations.ConfigOption;
-import io.artframework.annotations.Ignore;
+import io.artframework.*;
+import io.artframework.annotations.*;
 import io.artframework.conf.ConfigFieldInformation;
 import io.artframework.conf.FieldNameFormatters;
 import io.artframework.conf.KeyValuePair;
 import lombok.NonNull;
 import lombok.extern.java.Log;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.reflections.ReflectionUtils;
@@ -37,6 +32,7 @@ import org.reflections.ReflectionUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -78,7 +74,10 @@ public final class ConfigUtil {
             if (configClass.isAnnotationPresent(ConfigOption.class)) {
                 configFields = FieldUtils.getAllFields(configClass);
             } else {
-                configFields = FieldUtils.getFieldsWithAnnotation(configClass, ConfigOption.class);
+                configFields = ArrayUtils.addAll(
+                        FieldUtils.getFieldsWithAnnotation(configClass, ConfigOption.class),
+                        FieldUtils.getFieldsWithAnnotation(configClass, Resolve.class)
+                );
             }
 
             for (Field field : configFields) {
@@ -91,7 +90,7 @@ public final class ConfigUtil {
                     continue;
                 }
 
-                Optional<ConfigOption> configOption = getConfigOption(field);
+                Optional<ConfigOption> configOption = getAnnotation(field, ConfigOption.class);
 
                 String identifier = basePath + configOption.map(ConfigOption::value)
                         .filter(s -> !Strings.isNullOrEmpty(s))
@@ -102,6 +101,10 @@ public final class ConfigUtil {
                     String[] description = configOption.map(ConfigOption::description).orElse(new String[0]);
                     Boolean required = configOption.map(ConfigOption::required).orElse(false);
                     Integer position = configOption.map(ConfigOption::position).orElse(-1);
+                    boolean resolve = getAnnotation(field, Resolve.class).isPresent();
+                    Class<? extends Resolver<?>>[] resolvers = getAnnotation(field, Resolve.class)
+                            .map(Resolve::value)
+                            .orElse(null);
 
                     field.setAccessible(true);
 
@@ -118,7 +121,9 @@ public final class ConfigUtil {
                             position,
                             description,
                             required,
-                            defaultValue
+                            defaultValue,
+                            resolve,
+                            resolvers
                     ));
                 } else {
                     fields.putAll(getConfigFields(identifier + ".", field.getType(), field.getType().getConstructor().newInstance(), formatter));
@@ -144,10 +149,10 @@ public final class ConfigUtil {
         return fields;
     }
 
-    public static Optional<ConfigOption> getConfigOption(Field field) {
+    public static <TAnnotation extends Annotation> Optional<TAnnotation> getAnnotation(Field field, Class<TAnnotation> annotationClass) {
 
-        if (field.isAnnotationPresent(ConfigOption.class)) {
-            return Optional.of(field.getAnnotation(ConfigOption.class));
+        if (field.isAnnotationPresent(annotationClass)) {
+            return Optional.of(field.getAnnotation(annotationClass));
         }
         return Optional.empty();
     }
@@ -188,68 +193,6 @@ public final class ConfigUtil {
             e.printStackTrace();
         }
         return false;
-    }
-
-    public static Map<ConfigFieldInformation, Object> loadConfigValues(@NonNull Map<String, ConfigFieldInformation> configFields, @NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException {
-
-        if (configFields.isEmpty()) return new HashMap<>();
-
-        Map<ConfigFieldInformation, Object> fieldValueMap = new HashMap<>();
-        Set<ConfigFieldInformation> mappedFields = new HashSet<>();
-
-        boolean usedKeyValue = false;
-
-        for (int i = 0; i < keyValuePairs.size(); i++) {
-            KeyValuePair keyValue = keyValuePairs.get(i);
-            ConfigFieldInformation configFieldInformation = null;
-            if (keyValue.getKey().isPresent() && configFields.containsKey(keyValue.getKey().get())) {
-                configFieldInformation = configFields.get(keyValue.getKey().get());
-                usedKeyValue = true;
-            } else if (configFields.size() == 1 && keyValue.getKey().isEmpty()) {
-                configFieldInformation = configFields.values().stream().findFirst().get();
-            } else if (keyValue.getKey().isEmpty()) {
-                if (usedKeyValue) {
-                    throw new ConfigurationException("Positioned parameter found after key=value pair usage. Positioned parameters must come first.");
-                }
-                int finalI = i;
-                Optional<ConfigFieldInformation> optionalFieldInformation = configFields.values().stream().filter(info -> info.position() == finalI).findFirst();
-                if (optionalFieldInformation.isEmpty()) {
-                    throw new ConfigurationException("Config does not define positioned parameters. Use key value pairs instead.");
-                }
-                configFieldInformation = optionalFieldInformation.get();
-            }
-
-            if (configFieldInformation == null) {
-                log.warning("No matching field for key " + keyValue.getKey().orElse("n/a") + " found!");
-                continue;
-            }
-
-            if (keyValue.getValue().isEmpty()) {
-                throw new ConfigurationException("Config " + configFieldInformation.identifier() + " has an empty value.");
-            }
-
-            if (mappedFields.contains(configFieldInformation)) {
-                log.warning("not mapping extraneous key value pair: " + keyValue);
-                continue;
-            }
-
-            Object value = ReflectionUtil.toObject(configFieldInformation.type(), keyValue.getValue().get());
-
-            fieldValueMap.put(configFieldInformation, value);
-            mappedFields.add(configFieldInformation);
-        }
-
-        List<ConfigFieldInformation> missingRequiredFields = configFields.values().stream()
-                .filter(ConfigFieldInformation::required)
-                .filter(configFieldInformation -> !mappedFields.contains(configFieldInformation))
-                .collect(Collectors.toList());
-
-        if (!missingRequiredFields.isEmpty()) {
-            throw new ConfigurationException("Config is missing " + missingRequiredFields.size() + " required parameters: "
-                    + missingRequiredFields.stream().map(ConfigFieldInformation::identifier).collect(Collectors.joining(",")));
-        }
-
-        return fieldValueMap;
     }
 
     @SuppressWarnings("unchecked")

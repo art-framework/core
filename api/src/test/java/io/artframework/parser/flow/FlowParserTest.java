@@ -48,7 +48,7 @@ class FlowParserTest {
     void beforeEach() {
 
         Scope scope = Scope.defaultScope();
-        flowParser = spy(new ArtObjectContextLineParser<>(Arrays.asList("").iterator(), scope, new FlowType("test", ".")) {
+        flowParser = spy(new ArtObjectContextLineParser<>(scope, Arrays.asList("").iterator(), new FlowType("test", ".")) {
             @Override
             protected Optional<Factory<?, ?>> factory(String identifier) {
 

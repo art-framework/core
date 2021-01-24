@@ -27,7 +27,7 @@ import java.util.Optional;
 class TriggerLineParser extends ArtObjectContextLineParser<TriggerFactory> {
 
     public TriggerLineParser(Iterator<String> iterator, Scope scope) {
-        super(iterator, scope, new FlowType("trigger", "@"));
+        super(scope, iterator, new FlowType("trigger", "@"));
     }
 
     @Override

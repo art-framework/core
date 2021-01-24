@@ -31,7 +31,7 @@ public abstract class ArtObjectContextLineParser<TFactory extends Factory<?, ?>>
 
     private final FlowType flowType;
 
-    protected ArtObjectContextLineParser(Iterator<String> iterator, Scope scope, FlowType flowType) {
+    protected ArtObjectContextLineParser(Scope scope, Iterator<String> iterator, FlowType flowType) {
         // always edit the regexr link and update the link below!
         // the regexr link and the regex should always match
         // regexr.com/56s09
@@ -73,14 +73,14 @@ public abstract class ArtObjectContextLineParser<TFactory extends Factory<?, ?>>
 
         Optional<String> config = getConfig();
         if (config.isPresent()) {
-            ConfigParser configParser = ConfigParser.of(configMap);
+            ConfigParser configParser = ConfigParser.of(scope(), configMap);
             if (configParser.accept(config.get())) {
                 configMap = configParser.parse();
             }
         }
 
         ConfigMap individualArtConfig = ConfigMap.of(factory.meta().configMap());
-        ConfigParser configParser = ConfigParser.of(individualArtConfig);
+        ConfigParser configParser = ConfigParser.of(scope(), individualArtConfig);
         if (configParser.accept(userConfig())) {
             individualArtConfig = configParser.parse();
         }
