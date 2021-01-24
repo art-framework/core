@@ -16,19 +16,20 @@
 
 package io.artframework.parser;
 
-import io.artframework.ART;
-import io.artframework.ConfigMap;
-import io.artframework.ParseException;
+import io.artframework.*;
 import io.artframework.annotations.ConfigOption;
+import io.artframework.annotations.Resolve;
 import io.artframework.util.ConfigUtil;
 import lombok.Data;
 import lombok.SneakyThrows;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
+@SuppressWarnings("ALL")
 @DisplayName("ConfigParser")
 class ConfigParserTest {
 
@@ -336,6 +337,68 @@ class ConfigParserTest {
                     .contains(0, 45, -102)
             ).doesNotThrowAnyException();
         }
+
+        @Test
+        @DisplayName("should set resolvable value to null if config field is optional")
+        void shouldSetResolvableValueToNullIfOptional() throws ParseException {
+
+            ConfigParser parser = parser(ResolverConfig.class);
+
+            assertThat(parser.accept("location=$(1, 2, 3)")).isTrue();
+            assertThat(parser.parse().applyTo(new ResolverConfig()))
+                    .extracting(ResolverConfig::getLocation)
+                    .isEqualTo(null);
+        }
+
+        @Nested
+        class ResolverTests {
+
+            @BeforeEach
+            void setUp() {
+
+                ART.globalScope().configuration()
+                        .resolvers().add(LocationConfig.class);
+            }
+
+            @Test
+            @DisplayName("should parse resolver key values as own key value pairs")
+            void shouldParseResolverKeyValuesAsOwnKeyValuePairs() throws ParseException {
+
+                ConfigParser parser = parser(ResolverConfig.class);
+
+                assertThat(parser.accept("location=$(1, 2, 3)")).isTrue();
+                assertThat(parser.parse().applyTo(new ResolverConfig()))
+                        .extracting(ResolverConfig::getLocation)
+                        .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
+                        .contains(1, 2, 3);
+            }
+
+            @Test
+            @DisplayName("should parse nested resolvable key vlaues into resolver")
+            void shouldImplicitlyParseOneRootArgumentToNestedKeyValueList() throws ParseException {
+
+                ConfigParser parser = parser(ResolverConfig.class);
+
+                assertThat(parser.accept("1, 2, 3")).isTrue();
+                assertThat(parser.parse().applyTo(new ResolverConfig()))
+                        .extracting(ResolverConfig::getLocation)
+                        .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
+                        .contains(1, 2, 3);
+            }
+
+            @Test
+            @DisplayName("should parse nested resolver argument key values into resolver")
+            void shouldParseNestedResolverArguments() throws ParseException {
+
+                ConfigParser parser = parser(ResolverConfig.class);
+
+                assertThat(parser.accept("$(1, 2, 3)")).isTrue();
+                assertThat(parser.parse().applyTo(new ResolverConfig()))
+                        .extracting(ResolverConfig::getLocation)
+                        .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
+                        .contains(1, 2, 3);
+            }
+        }
     }
 
     @Data
@@ -394,7 +457,7 @@ class ConfigParserTest {
 
     @Data
     @ConfigOption
-    public static class LocationConfig {
+    public static class LocationConfig implements Resolver<LocationConfig> {
 
         @ConfigOption(position = 0)
         private int x;
@@ -402,5 +465,27 @@ class ConfigParserTest {
         private int y;
         @ConfigOption(position = 2)
         private int z;
+
+        public LocationConfig() {
+        }
+
+        public LocationConfig(int x, int y, int z) {
+            this.x = x;
+            this.y = y;
+            this.z = z;
+        }
+
+        @Override
+        public LocationConfig resolve(ResolverContext context) throws ResolveException {
+
+            return new LocationConfig(x, y, z);
+        }
+    }
+
+    @Data
+    public static class ResolverConfig {
+
+        @Resolve
+        private LocationConfig location;
     }
 }

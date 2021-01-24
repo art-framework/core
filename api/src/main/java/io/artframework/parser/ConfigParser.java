@@ -44,8 +44,8 @@ public final class ConfigParser implements Scoped {
 
     // always edit the regexr link and update the link below!
     // the regexr link and the regex should always match
-    // regexr.com/576km
-    private static final Pattern PATTERN = Pattern.compile("^(?<keyValue>((?<key>[\\w\\d._-]+)?[:=])?((\"(?<quotedValue>.*?)\")|(\\[(?<array>.*?)\\])|(?<valueWithSpaces>(?<value>[^;, ]*)[,; ]?)))(?<config>.*)?$");
+    // regexr.com/5ktlp
+    private static final Pattern PATTERN = Pattern.compile("^(?<keyValue>((?<key>[\\w\\d._-]+)?[:=])?((\\$\\((?<resolver>.*?)\\))|(\"(?<quotedValue>.*?)\")|(\\[(?<array>.*?)\\])|(?<valueWithSpaces>(?<value>[^;, ]*)[,; ]?)))(?<config>.*)?$");
 
     @Getter
     private final Scope scope;
@@ -104,6 +104,7 @@ public final class ConfigParser implements Scoped {
         String quotedValue = matcher.group("quotedValue");
         String array = matcher.group("array");
         String unquotedValue = matcher.group("value");
+        String resolver = matcher.group("resolver");
         String value;
 
         if (quotedValue != null) {
@@ -115,20 +116,22 @@ public final class ConfigParser implements Scoped {
         }
 
         String config = matcher.group("config");
-        if (Strings.isNullOrEmpty(array) && configMap().configFields().size() == 1
-                && configMap().configFields().values().stream().findFirst()
-                .map(ConfigFieldInformation::type)
-                .map(Class::isArray)
-                .orElse(false)) {
+        if (Strings.isNullOrEmpty(array) && configMap().configFields().size() == 1) {
 
-            if (Strings.isNullOrEmpty(quotedValue)) {
-                value = matcher.group("valueWithSpaces") + config;
-            } else {
-                value = "\"" + quotedValue + "\"" + config;
+            // automatically parse array annotation with [ ... ] if ony one config option exists
+            if (configMap().configFields().values().stream().findFirst()
+                    .map(ConfigFieldInformation::type)
+                    .map(Class::isArray)
+                    .orElse(false)) {
+                if (Strings.isNullOrEmpty(quotedValue)) {
+                    value = matcher.group("valueWithSpaces") + config;
+                } else {
+                    value = "\"" + quotedValue + "\"" + config;
+                }
+
+                pairs.add(KeyValuePair.of(matcher.group("key"), value));
+                return pairs;
             }
-
-            pairs.add(KeyValuePair.of(matcher.group("key"), value));
-            return pairs;
         }
 
         pairs.add(KeyValuePair.of(matcher.group("key"), value));

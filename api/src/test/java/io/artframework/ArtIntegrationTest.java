@@ -323,7 +323,7 @@ public class ArtIntegrationTest {
                         "?health >50",
                         "!damage 40",
                         "?health >50",
-                        "!txt awesome, you, did it"
+                        "!txt [awesome, you, did it]"
                 ));
 
                 Player bar = spy(new Player("bar"));
