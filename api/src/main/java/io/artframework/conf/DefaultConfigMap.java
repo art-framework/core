@@ -16,6 +16,7 @@
 
 package io.artframework.conf;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.artframework.ConfigMap;
 import io.artframework.ConfigurationException;
@@ -26,56 +27,57 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.experimental.Accessors;
+import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Value
+@Log(topic = "art-framework")
 @Accessors(fluent = true)
 public class DefaultConfigMap implements ConfigMap {
 
     @Getter
     Map<String, ConfigFieldInformation> configFields;
-    Map<ConfigFieldInformation, Object> configValues;
+    List<ConfigValue> configValues;
     boolean loaded;
 
     public DefaultConfigMap(Map<String, ConfigFieldInformation> configFields) {
         this.configFields = ImmutableMap.copyOf(configFields);
-        this.configValues = new HashMap<>();
+        this.configValues = new ArrayList<>();
         this.loaded = false;
     }
 
-    DefaultConfigMap(Map<String, ConfigFieldInformation> configFields, Map<ConfigFieldInformation, Object> configValues) {
+    DefaultConfigMap(Map<String, ConfigFieldInformation> configFields, List<ConfigValue> configValues) {
         this.configFields = ImmutableMap.copyOf(configFields);
-        this.configValues = ImmutableMap.copyOf(configValues);
+        this.configValues = ImmutableList.copyOf(configValues);
         this.loaded = true;
     }
 
     @Override
-    public <TConfig> TConfig applyTo(Scope scope, @NonNull TConfig config) {
-        if (!this.loaded()) return config;
-        setConfigFields(scope, config, configValues);
-        return config;
+    public ConfigMap with(Scope scope, @NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException {
+        return new DefaultConfigMap(configFields(), loadConfigValues(scope, keyValuePairs));
     }
 
     @Override
-    public ConfigMap with(@NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException {
-        return new DefaultConfigMap(configFields(), ConfigUtil.loadConfigValues(configFields(), keyValuePairs));
+    public <TConfig> TConfig applyTo(@NonNull TConfig config) {
+        if (!this.loaded()) return config;
+        setConfigFields(config);
+        return config;
     }
 
-    private void setConfigFields(Scope scope, Object config, Map<ConfigFieldInformation, Object> configValues) {
-        configValues.forEach((configFieldInformation, o) -> setConfigField(scope, config, configFieldInformation, o));
+    private void setConfigFields(Object config) {
+        configValues.forEach(value -> setConfigField(config, value));
     }
 
-    private void setConfigField(Scope scope, Object config, ConfigFieldInformation fieldInformation, Object value) {
+    private void setConfigField(Object config, ConfigValue value) {
 
         try {
-            if (fieldInformation.identifier().contains(".")) {
+            if (value.field().identifier().contains(".")) {
                 // handle nested config objects
-                String nestedIdentifier = StringUtils.substringBefore(fieldInformation.identifier(), ".");
+                String nestedIdentifier = StringUtils.substringBefore(value.field().identifier(), ".");
                 Field parentField = ReflectionUtil.getDeclaredField(config.getClass(), nestedIdentifier)
                         .orElse(null);
                 if (parentField == null) {
@@ -83,30 +85,81 @@ public class DefaultConfigMap implements ConfigMap {
                 }
                 parentField.setAccessible(true);
                 Object nestedConfigObject = parentField.get(config);
-                setConfigField(scope, nestedConfigObject, fieldInformation.withIdentifier(nestedIdentifier), value);
+                setConfigField(nestedConfigObject, value.withIdentifier(nestedIdentifier));
             } else {
-                Field field = ReflectionUtil.getDeclaredField(config.getClass(), fieldInformation.name())
+                Field field = ReflectionUtil.getDeclaredField(config.getClass(), value.field().name())
                         .orElse(null);
                 if (field == null) {
-                    throw new NoSuchFieldException("No field with the name " + fieldInformation.name() + " found in: " + config);
+                    throw new NoSuchFieldException("No field with the name " + value.field().name() + " found in: " + config);
                 }
-                setField(scope, config, field, value);
+
+                field.setAccessible(true);
+                field.set(config, value.value());
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
 
-    private void setField(@NonNull Scope scope, @NonNull Object config, @NonNull Field field, Object value) throws IllegalAccessException {
+    public List<ConfigValue> loadConfigValues(@NonNull Scope scope, @NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException {
 
-        if (!field.getType().isInstance(value) && value != null) {
-            // TODO: resolve config value - maybe put the resolver information in the ConfigFieldInformation class
-//            scope.configuration().resolvers().get(value.getClass())
-//                    .map(resolverFactory -> resolverFactory.create(configValues))
-//                    .map(resolver -> resolver.resolve())
+        if (configFields.isEmpty()) return new ArrayList<>();
+
+        List<ConfigValue> fieldValues = new ArrayList<>();
+        Set<ConfigFieldInformation> mappedFields = new HashSet<>();
+
+        boolean usedKeyValue = false;
+
+        for (int i = 0; i < keyValuePairs.size(); i++) {
+            KeyValuePair keyValue = keyValuePairs.get(i);
+            ConfigFieldInformation configFieldInformation = null;
+            if (keyValue.getKey().isPresent() && configFields.containsKey(keyValue.getKey().get())) {
+                configFieldInformation = configFields.get(keyValue.getKey().get());
+                usedKeyValue = true;
+            } else if (configFields.size() == 1 && keyValue.getKey().isEmpty()) {
+                configFieldInformation = configFields.values().stream().findFirst().get();
+            } else if (keyValue.getKey().isEmpty()) {
+                if (usedKeyValue) {
+                    throw new ConfigurationException("Positioned parameter found after key=value pair usage. Positioned parameters must come first.");
+                }
+                int finalI = i;
+                Optional<ConfigFieldInformation> optionalFieldInformation = configFields.values().stream().filter(info -> info.position() == finalI).findFirst();
+                if (optionalFieldInformation.isEmpty()) {
+                    throw new ConfigurationException("Config does not define positioned parameters. Use key value pairs instead.");
+                }
+                configFieldInformation = optionalFieldInformation.get();
+            }
+
+            if (configFieldInformation == null) {
+                log.warning("No matching field for key " + keyValue.getKey().orElse("n/a") + " found!");
+                continue;
+            }
+
+            if (keyValue.getValue().isEmpty()) {
+                throw new ConfigurationException("Config " + configFieldInformation.identifier() + " has an empty value.");
+            }
+
+            if (mappedFields.contains(configFieldInformation)) {
+                log.warning("not mapping extraneous key value pair: " + keyValue);
+                continue;
+            }
+
+            Object value = ReflectionUtil.toObject(configFieldInformation.type(), keyValue.getValue().get());
+
+            fieldValues.add(new ConfigValue(configFieldInformation, value));
+            mappedFields.add(configFieldInformation);
         }
 
-        field.setAccessible(true);
-        field.set(config, value);
+        List<ConfigFieldInformation> missingRequiredFields = configFields.values().stream()
+                .filter(ConfigFieldInformation::required)
+                .filter(configFieldInformation -> !mappedFields.contains(configFieldInformation))
+                .collect(Collectors.toList());
+
+        if (!missingRequiredFields.isEmpty()) {
+            throw new ConfigurationException("Config is missing " + missingRequiredFields.size() + " required parameters: "
+                    + missingRequiredFields.stream().map(ConfigFieldInformation::identifier).collect(Collectors.joining(",")));
+        }
+
+        return fieldValues;
     }
 }

@@ -17,9 +17,7 @@
 package io.artframework.parser;
 
 import com.google.common.base.Strings;
-import io.artframework.ConfigMap;
-import io.artframework.ConfigurationException;
-import io.artframework.ParseException;
+import io.artframework.*;
 import io.artframework.conf.ConfigFieldInformation;
 import io.artframework.conf.KeyValuePair;
 import lombok.Getter;
@@ -38,10 +36,10 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings("RegExpRedundantEscape")
 @Accessors(fluent = true)
-public final class ConfigParser {
+public final class ConfigParser implements Scoped {
 
-    public static ConfigParser of(ConfigMap configMap) {
-        return new ConfigParser(configMap);
+    public static ConfigParser of(Scope scope, ConfigMap configMap) {
+        return new ConfigParser(scope, configMap);
     }
 
     // always edit the regexr link and update the link below!
@@ -50,10 +48,13 @@ public final class ConfigParser {
     private static final Pattern PATTERN = Pattern.compile("^(?<keyValue>((?<key>[\\w\\d._-]+)?[:=])?((\"(?<quotedValue>.*?)\")|(\\[(?<array>.*?)\\])|(?<valueWithSpaces>(?<value>[^;, ]*)[,; ]?)))(?<config>.*)?$");
 
     @Getter
+    private final Scope scope;
+    @Getter
     private final ConfigMap configMap;
     private Matcher matcher;
 
-    ConfigParser(ConfigMap configMap) {
+    ConfigParser(Scope scope, ConfigMap configMap) {
+        this.scope = scope;
 
         this.configMap = configMap;
     }
@@ -88,7 +89,7 @@ public final class ConfigParser {
         if (matcher == null) throw new ParseException("ConfigParser not initialized! Call accept(String) first!");
 
         try {
-            return configMap.with(extractKeyValuePairs());
+            return configMap.with(scope(), extractKeyValuePairs());
         } catch (ConfigurationException e) {
             throw new ParseException(e.getMessage(), e);
         }

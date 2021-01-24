@@ -19,7 +19,6 @@ package io.artframework.parser;
 import io.artframework.ART;
 import io.artframework.ConfigMap;
 import io.artframework.ParseException;
-import io.artframework.Scope;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.util.ConfigUtil;
 import lombok.Data;
@@ -35,7 +34,7 @@ class ConfigParserTest {
 
     @SneakyThrows
     private ConfigParser parser(Class<?> configClass) {
-        return new ConfigParser(ConfigMap.of(ConfigUtil.getConfigFields(configClass)));
+        return new ConfigParser(ART.globalScope(), ConfigMap.of(ConfigUtil.getConfigFields(configClass)));
     }
 
     @Nested
@@ -51,7 +50,7 @@ class ConfigParserTest {
 
             parser.accept("10");
             ConfigMap result = parser.parse();
-            assertThat(result.applyTo(ART.globalScope(), new SingleFieldConfig()))
+            assertThat(result.applyTo(new SingleFieldConfig()))
                     .extracting(SingleFieldConfig::getAmount)
                     .isEqualTo(10.0);
         }
@@ -65,7 +64,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("name=foobar, required=true")).isTrue();
             ConfigMap result = parser.parse();
-            assertThat(result.applyTo(ART.globalScope(), new TestConfig()))
+            assertThat(result.applyTo(new TestConfig()))
                     .extracting(TestConfig::getName, TestConfig::isRequired)
                     .contains("foobar", true);
         }
@@ -79,7 +78,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("name:foobar, required:true")).isTrue();
             ConfigMap result = parser.parse();
-            assertThat(result.applyTo(ART.globalScope(), new TestConfig()))
+            assertThat(result.applyTo(new TestConfig()))
                     .extracting(TestConfig::getName, TestConfig::isRequired)
                     .contains("foobar", true);
         }
@@ -93,7 +92,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("name:foobar,required=true")).isTrue();
             ConfigMap result = parser.parse();
-            assertThat(result.applyTo(ART.globalScope(), new TestConfig()))
+            assertThat(result.applyTo(new TestConfig()))
                     .extracting(TestConfig::getName, TestConfig::isRequired)
                     .contains("foobar", true);
         }
@@ -107,7 +106,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("name:foobar; required=true")).isTrue();
             ConfigMap result = parser.parse();
-            assertThat(result.applyTo(ART.globalScope(), new TestConfig()))
+            assertThat(result.applyTo(new TestConfig()))
                     .extracting(TestConfig::getName, TestConfig::isRequired)
                     .contains("foobar", true);
         }
@@ -133,7 +132,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("foobar, optional=barfoo")).isTrue();
             ConfigMap result = parser.parse();
-            assertThat(result.applyTo(ART.globalScope(), new TestConfig()))
+            assertThat(result.applyTo(new TestConfig()))
                     .extracting(TestConfig::getName, TestConfig::getOptional)
                     .contains("foobar", "barfoo");
         }
@@ -146,7 +145,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("\"foobar with spaces\"")).isTrue();
             ConfigMap result = parser.parse();
-            assertThat(result.applyTo(ART.globalScope(), new TestConfig()))
+            assertThat(result.applyTo(new TestConfig()))
                     .extracting(TestConfig::getName)
                     .isEqualTo("foobar with spaces");
         }
@@ -159,7 +158,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("\"foobar with spaces\"")).isTrue();
             ConfigMap result = parser.parse();
-            assertThat(result.applyTo(ART.globalScope(), new TestConfig()))
+            assertThat(result.applyTo(new TestConfig()))
                     .extracting(TestConfig::getName)
                     .isEqualTo("foobar with spaces");
         }
@@ -172,7 +171,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("foobar true spaces")).isTrue();
             ConfigMap result = parser.parse();
-            assertThat(result.applyTo(ART.globalScope(), new TestConfig()))
+            assertThat(result.applyTo(new TestConfig()))
                     .extracting(TestConfig::getName, TestConfig::isRequired, TestConfig::getOptional)
                     .contains("foobar", true, "spaces");
         }
@@ -185,7 +184,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("foobar optional=\"with spaces\"")).isTrue();
             ConfigMap result = parser.parse();
-            assertThat(result.applyTo(ART.globalScope(), new TestConfig()))
+            assertThat(result.applyTo(new TestConfig()))
                     .extracting(TestConfig::getName, TestConfig::getOptional)
                     .contains("foobar", "with spaces");
         }
@@ -222,7 +221,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("name=")).isTrue();
             assertThatCode(() -> {
-                TestConfig result = parser.parse().applyTo(ART.globalScope(), new TestConfig());
+                TestConfig result = parser.parse().applyTo(new TestConfig());
                 assertThat(result).extracting(TestConfig::getName)
                         .isEqualTo("");
             }).doesNotThrowAnyException();
@@ -236,7 +235,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("name=\"\"")).isTrue();
             assertThatCode(() -> {
-                TestConfig result = parser.parse().applyTo(ART.globalScope(), new TestConfig());
+                TestConfig result = parser.parse().applyTo(new TestConfig());
                 assertThat(result).extracting(TestConfig::getName)
                         .isEqualTo("");
             }).doesNotThrowAnyException();
@@ -250,7 +249,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("messages=[my cool, multiline, message with spaces]")).isTrue();
             assertThatCode(() -> {
-                ConfigWithArray result = parser.parse().applyTo(ART.globalScope(), new ConfigWithArray());
+                ConfigWithArray result = parser.parse().applyTo(new ConfigWithArray());
                 assertThat(result.getMessages())
                         .contains("my cool", "multiline", "message with spaces");
             }).doesNotThrowAnyException();
@@ -264,7 +263,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("[my cool, multiline, message with spaces]")).isTrue();
             assertThatCode(() -> {
-                ConfigWithArray result = parser.parse().applyTo(ART.globalScope(), new ConfigWithArray());
+                ConfigWithArray result = parser.parse().applyTo(new ConfigWithArray());
                 assertThat(result.getMessages())
                         .contains("my cool", "multiline", "message with spaces");
             }).doesNotThrowAnyException();
@@ -277,7 +276,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("my cool, multiline, message with spaces")).isTrue();
             assertThatCode(() -> {
-                ConfigWithArray result = parser.parse().applyTo(ART.globalScope(), new ConfigWithArray());
+                ConfigWithArray result = parser.parse().applyTo(new ConfigWithArray());
                 assertThat(result.getMessages())
                         .contains("my cool", "multiline", "message with spaces");
             }).doesNotThrowAnyException();
@@ -291,7 +290,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("\"my cool, multiline, message with spaces\", and mixed, commas")).isTrue();
             assertThatCode(() -> {
-                ConfigWithArray result = parser.parse().applyTo(ART.globalScope(), new ConfigWithArray());
+                ConfigWithArray result = parser.parse().applyTo(new ConfigWithArray());
                 assertThat(result.getMessages())
                         .contains("my cool, multiline, message with spaces", "and mixed", "commas");
             }).doesNotThrowAnyException();
@@ -305,7 +304,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("[\"my cool, multiline, message with spaces\", and mixed, commas]")).isTrue();
             assertThatCode(() -> {
-                ConfigWithArray result = parser.parse().applyTo(ART.globalScope(), new ConfigWithArray());
+                ConfigWithArray result = parser.parse().applyTo(new ConfigWithArray());
                 assertThat(result.getMessages())
                         .contains("my cool, multiline, message with spaces", "and mixed", "commas");
             }).doesNotThrowAnyException();
@@ -318,7 +317,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("my cool array with spaces")).isTrue();
             assertThatCode(() -> {
-                ConfigWithArray result = parser.parse().applyTo(ART.globalScope(), new ConfigWithArray());
+                ConfigWithArray result = parser.parse().applyTo(new ConfigWithArray());
                 assertThat(result.getMessages())
                         .contains("my cool array with spaces");
             }).doesNotThrowAnyException();
@@ -332,7 +331,7 @@ class ConfigParserTest {
 
             assertThat(parser.accept("0,45,-102")).isTrue();
             assertThatCode(() -> assertThat(parser.parse()
-                    .applyTo(ART.globalScope(), new LocationConfig()))
+                    .applyTo(new LocationConfig()))
                     .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
                     .contains(0, 45, -102)
             ).doesNotThrowAnyException();

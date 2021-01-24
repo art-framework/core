@@ -27,7 +27,7 @@ import java.util.Optional;
 class ActionLineParser extends ArtObjectContextLineParser<ActionFactory<?>> {
 
     public ActionLineParser(Iterator<String> iterator, Scope scope) {
-        super(iterator, scope, new FlowType("action", "!"));
+        super(scope, iterator, new FlowType("action", "!"));
     }
 
     @Override

@@ -4,10 +4,7 @@ import io.artframework.*;
 import io.artframework.util.ReflectionUtil;
 import lombok.extern.java.Log;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -37,6 +34,17 @@ public class DefaultResolverProvider extends AbstractProvider implements Resolve
                 .map(Map::values)
                 .flatMap(resolverFactories -> resolverFactories.stream().findFirst())
                 .map(resolverFactory -> (ResolverFactory<TType>) resolverFactory);
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <TResolver extends Resolver<TType>, TType> Optional<ResolverFactory<TType>> getResolver(Class<TResolver> resolverClass) {
+
+        return resolvers.values().stream()
+                .map(classResolverFactoryMap -> classResolverFactoryMap.get(resolverClass))
+                .filter(Objects::nonNull)
+                .map(resolverFactory -> (ResolverFactory<TType>) resolverFactory)
+                .findFirst();
     }
 
     @Override

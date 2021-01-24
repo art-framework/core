@@ -16,8 +16,6 @@
 
 package io.artframework.annotations;
 
-import io.artframework.Scope;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -45,7 +43,7 @@ public @interface ConfigOption {
     String[] description() default {};
 
     /**
-     * An exception is thrown when calling {@link io.artframework.ConfigMap#applyTo(Scope, Object)} if
+     * An exception is thrown when calling {@link io.artframework.ConfigMap#applyTo(Object)} if
      * a required config option is missing.
      *
      * @return true if the config value is required

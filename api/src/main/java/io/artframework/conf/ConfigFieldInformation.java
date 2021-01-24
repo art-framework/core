@@ -16,6 +16,7 @@
 
 package io.artframework.conf;
 
+import io.artframework.Resolver;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.With;
@@ -40,6 +41,11 @@ public class ConfigFieldInformation implements Comparable<ConfigFieldInformation
     String[] description;
     boolean required;
     Object defaultValue;
+    boolean resolve;
+    /**
+     * Can be null if no explicit resolvers have been specified.
+     */
+    Class<? extends Resolver<?>>[] resolvers;
 
     @Override
     public int compareTo(@NonNull ConfigFieldInformation o) {

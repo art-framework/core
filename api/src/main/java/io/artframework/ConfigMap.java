@@ -64,7 +64,7 @@ public interface ConfigMap {
     }
 
     /**
-     * @return true if the config map has been loaded {@link #with(List)} config values
+     * @return true if the config map has been loaded {@link #with(Scope, List)} config values
      */
     boolean loaded();
 
@@ -78,22 +78,22 @@ public interface ConfigMap {
      * config fields.
      * <p>The map can be loaded multiple times but the last call will always override and erase all prior config values.
      *
+     * @param scope the scope of the config map
      * @param keyValuePairs the list of key value pairs that should be loaded into this config map
      * @return a new config map with the loaded key value pairs. {@link #loaded()} is now true.
      * @throws ConfigurationException if the provided list of key value pairs cannot be mapped to this config,
      *                                e.g. if required fields are missing from the value list.
      */
-    ConfigMap with(@NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException;
+    ConfigMap with(@NonNull Scope scope, @NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException;
 
     /**
      * Applies the loaded and mapped config values of this config map to the given config instance.
-     * <p>Will inject the mapped fields with the values provided from {@link #with(List)} into the config.
+     * <p>Will inject the mapped fields with the values provided from {@link #with(Scope, List)} into the config.
      * <p>The config object is not altered if the config values have not been provided by calling {@code with(List)}.
      *
-     * @param scope the scope of the operation
-     * @param config the config that should have its config fields injected
      * @param <TConfig> the type of the config
+     * @param config the config that should have its config fields injected
      * @return the provided config instance
      */
-    <TConfig> TConfig applyTo(Scope scope, @NonNull TConfig config);
+    <TConfig> TConfig applyTo(@NonNull TConfig config);
 }

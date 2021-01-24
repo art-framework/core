@@ -31,7 +31,7 @@ class ConfigFieldInformationTest {
     }
 
     private ConfigFieldInformation field(String id, int pos) {
-        return new ConfigFieldInformation(id, id, String.class, pos, new String[0], false, "");
+        return new ConfigFieldInformation(id, id, String.class, pos, new String[0], false, "", false, null);
     }
 
     @Nested

@@ -25,6 +25,16 @@ public interface ResolverProvider extends Provider {
     <TType> Optional<ResolverFactory<TType>> get(Class<TType> type);
 
     /**
+     * Directly gets the resolver registered for the given resolver class.
+     *
+     * @param resolverClass the class of the resolver
+     * @param <TResolver> the type of the resolver
+     * @param <TType> the type the resolver resolves
+     * @return the registered resolver factory or an empty optional if the resolver is not registered
+     */
+    <TResolver extends Resolver<TType>, TType> Optional<ResolverFactory<TType>> getResolver(Class<TResolver> resolverClass);
+
+    /**
      * Registers the given resolver in this provider.
      * <p>The registration will fail and print a log message if the resolver is already registered.
      * <p>The resolver must have an parameterless public constructor or else {@link #add(Class, Supplier)} must be used.

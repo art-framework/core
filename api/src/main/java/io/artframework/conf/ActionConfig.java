@@ -63,7 +63,7 @@ public final class ActionConfig extends ArtObjectConfig {
             return config;
         }
 
-        return configMap.applyTo(scope, config);
+        return configMap.applyTo(config);
     }
 
     @ConfigOption(description = {
