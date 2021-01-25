@@ -57,6 +57,7 @@ public final class ReflectionUtil {
         if (Long.class == fieldType || Long.TYPE == fieldType) return Long.parseLong(value);
         if (Float.class == fieldType || Float.TYPE == fieldType) return Float.parseFloat(value);
         if (Double.class == fieldType || Double.TYPE == fieldType) return Double.parseDouble(value);
+
         return value;
     }
 

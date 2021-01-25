@@ -94,6 +94,20 @@ public interface ConfigMap {
      * <p>Values in this config map can only resolve after they were provided {@link #with(List)}.
      *
      * @param scope the scope used when resolving the values of this config map. must not be null.
+     * @return a new config map instance with the resolved values
+     */
+    default ConfigMap resolve(@NonNull Scope scope) {
+
+        return resolve(scope, null, null);
+    }
+
+    /**
+     * Resolves all values in this config map using the provided scope.
+     * <p>All config fields that are tagged with @{@link Resolve} and not primitive values
+     * will be resolved using the registered {@link Resolver}.
+     * <p>Values in this config map can only resolve after they were provided {@link #with(List)}.
+     *
+     * @param scope the scope used when resolving the values of this config map. must not be null.
      * @param target the target of the resolution. can be null.
      * @param context the execution context that called the resolution. can be null.
      * @return a new config map instance with the resolved values

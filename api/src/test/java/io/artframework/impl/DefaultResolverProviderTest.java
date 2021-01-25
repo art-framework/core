@@ -5,8 +5,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DefaultResolverProviderTest {
@@ -25,7 +23,7 @@ class DefaultResolverProviderTest {
 
         provider.add(TestResolver.class);
 
-        assertThat(provider.getResolver(TestResolver.class))
+        assertThat(provider.get(String.class, TestResolver.class))
                 .isNotEmpty().get()
                 .extracting(ResolverFactory::resolverClass)
                 .isEqualTo(TestResolver.class);

@@ -345,7 +345,7 @@ class ConfigParserTest {
             ConfigParser parser = parser(ResolverConfig.class);
 
             assertThat(parser.accept("location=$(1, 2, 3)")).isTrue();
-            assertThat(parser.parse().applyTo(new ResolverConfig()))
+            assertThat(parser.parse().resolve(ART.globalScope()).applyTo(new ResolverConfig()))
                     .extracting(ResolverConfig::getLocation)
                     .isEqualTo(null);
         }
@@ -367,7 +367,7 @@ class ConfigParserTest {
                 ConfigParser parser = parser(ResolverConfig.class);
 
                 assertThat(parser.accept("location=$(1, 2, 3)")).isTrue();
-                assertThat(parser.parse().applyTo(new ResolverConfig()))
+                assertThat(parser.parse().resolve(ART.globalScope()).applyTo(new ResolverConfig()))
                         .extracting(ResolverConfig::getLocation)
                         .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
                         .contains(1, 2, 3);
@@ -380,7 +380,7 @@ class ConfigParserTest {
                 ConfigParser parser = parser(ResolverConfig.class);
 
                 assertThat(parser.accept("1, 2, 3")).isTrue();
-                assertThat(parser.parse().applyTo(new ResolverConfig()))
+                assertThat(parser.parse().resolve(ART.globalScope()).applyTo(new ResolverConfig()))
                         .extracting(ResolverConfig::getLocation)
                         .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
                         .contains(1, 2, 3);
@@ -393,7 +393,7 @@ class ConfigParserTest {
                 ConfigParser parser = parser(ResolverConfig.class);
 
                 assertThat(parser.accept("$(1, 2, 3)")).isTrue();
-                assertThat(parser.parse().applyTo(new ResolverConfig()))
+                assertThat(parser.parse().resolve(ART.globalScope()).applyTo(new ResolverConfig()))
                         .extracting(ResolverConfig::getLocation)
                         .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
                         .contains(1, 2, 3);

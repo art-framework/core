@@ -26,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -104,7 +105,9 @@ public final class ConfigParser {
         String resolver = matcher.group("resolver");
         String value;
 
-        if (quotedValue != null) {
+        if (resolver != null) {
+            value = resolver;
+        } else if (quotedValue != null) {
             value = quotedValue;
         } else if (array != null) {
             value = array;
@@ -113,12 +116,12 @@ public final class ConfigParser {
         }
 
         String config = matcher.group("config");
-        if (Strings.isNullOrEmpty(array) && configMap().configFields().size() == 1) {
+        if (Strings.isNullOrEmpty(array) && configMap().configFields().size() == 1 && Strings.isNullOrEmpty(resolver)) {
 
-            // automatically parse array annotation with [ ... ] if ony one config option exists
+            // automatically parse array annotation with [ ... ] if only one config option exists
+            // also pass on all values to the resolver if only one field exists
             if (configMap().configFields().values().stream().findFirst()
-                    .map(ConfigFieldInformation::type)
-                    .map(Class::isArray)
+                    .map(configFieldInformation -> configFieldInformation.type().isArray() || configFieldInformation.resolve())
                     .orElse(false)) {
                 if (Strings.isNullOrEmpty(quotedValue)) {
                     value = matcher.group("valueWithSpaces") + config;

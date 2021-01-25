@@ -29,6 +29,6 @@ public class DefaultResolverFactory<TType> implements ResolverFactory<TType> {
     @Override
     public Resolver<TType> create(List<KeyValuePair> configValues) throws ConfigurationException {
 
-        return configMap().with(configValues).applyTo(supplier.get());
+        return configMap().with(configValues).resolve(scope(), null, null).applyTo(supplier.get());
     }
 }
