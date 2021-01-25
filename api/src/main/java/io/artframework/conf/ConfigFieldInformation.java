@@ -18,11 +18,13 @@ package io.artframework.conf;
 
 import io.artframework.Resolver;
 import lombok.NonNull;
+import lombok.ToString;
 import lombok.Value;
 import lombok.With;
 import lombok.experimental.Accessors;
 
 @Value
+@ToString(of = {"identifier", "name", "type"})
 @Accessors(fluent = true)
 public class ConfigFieldInformation implements Comparable<ConfigFieldInformation> {
 

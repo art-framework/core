@@ -18,11 +18,8 @@ package io.artframework.conf;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.artframework.ConfigMap;
-import io.artframework.ConfigurationException;
-import io.artframework.ExecutionContext;
-import io.artframework.Scope;
-import io.artframework.Target;
+import io.artframework.*;
+import io.artframework.parser.ConfigParser;
 import io.artframework.util.ReflectionUtil;
 import lombok.Getter;
 import lombok.NonNull;
@@ -33,12 +30,8 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.lang.reflect.InvocationTargetException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Value
@@ -70,8 +63,49 @@ public class DefaultConfigMap implements ConfigMap {
 
     @Override
     public ConfigMap resolve(@NonNull Scope scope, @Nullable Target<?> target, @Nullable ExecutionContext<?> context) {
-        //TODO: implement
-        return this;
+
+        if (!loaded()) return this;
+
+        ArrayList<ConfigValue> resolvedValues = new ArrayList<>();
+        for (ConfigValue configValue : configValues()) {
+            if (configValue.field().resolve() && configValue.value() instanceof String) {
+                Optional<? extends ResolverFactory<?>> factory;
+                if (configValue.field().resolvers() != null && configValue.field().resolvers().length > 0) {
+                    factory = Arrays.stream(configValue.field().resolvers()).findFirst()
+                            .flatMap(aClass -> scope.configuration().resolvers().get(configValue.field().type(), aClass));
+                } else {
+                    factory = scope.configuration().resolvers().get(configValue.field().type());
+                }
+                resolvedValues.add(configValue.withValue(factory.map(resolverFactory -> {
+                    try {
+                        ConfigParser parser = ConfigParser.of(resolverFactory.configMap());
+                        if (parser.accept(configValue.value().toString())) {
+                            List<KeyValuePair> configValues = parser.extractKeyValuePairs();
+                            return resolverFactory.create(configValues).resolve(ResolverContext.of(scope, resolverFactory.configMap(), configValues, target, context));
+                        }
+                    } catch (ConfigurationException | ParseException | ResolveException e) {
+                        log.severe("unable to resolve config \"" + configValue.value() + "\" for " + configValue.field() + ": " + e.getMessage());
+                        e.printStackTrace();
+                    }
+
+                    return null;
+                }).orElse(null)));
+            } else {
+                resolvedValues.add(configValue);
+            }
+        }
+
+        List<ConfigFieldInformation> missingRequiredFields = resolvedValues.stream()
+                .filter(value -> value.field().required())
+                .filter(value -> value.value() == null)
+                .map(ConfigValue::field)
+                .collect(Collectors.toList());
+        if (!missingRequiredFields.isEmpty()) {
+            log.severe("Config is missing " + missingRequiredFields.size() + " required parameters: "
+                    + missingRequiredFields.stream().map(ConfigFieldInformation::identifier).collect(Collectors.joining(",")));
+        }
+
+        return new DefaultConfigMap(configFields(), resolvedValues);
     }
 
     @Override
@@ -96,9 +130,15 @@ public class DefaultConfigMap implements ConfigMap {
                 if (parentField == null) {
                     throw new NoSuchFieldException("No field with the name " + nestedIdentifier + " found in: " + config);
                 }
+
                 parentField.setAccessible(true);
                 Object nestedConfigObject = parentField.get(config);
-                setConfigField(nestedConfigObject, value.withIdentifier(nestedIdentifier));
+                if (nestedConfigObject == null) {
+                    nestedConfigObject = parentField.getType().getConstructor().newInstance();
+                    parentField.set(config, nestedConfigObject);
+                }
+
+                setConfigField(nestedConfigObject, value.withIdentifier(StringUtils.substringAfter(value.field().identifier(), ".")));
             } else {
                 Field field = ReflectionUtil.getDeclaredField(config.getClass(), value.field().name())
                         .orElse(null);
@@ -109,7 +149,7 @@ public class DefaultConfigMap implements ConfigMap {
                 field.setAccessible(true);
                 field.set(config, value.value());
             }
-        } catch (NoSuchFieldException | IllegalAccessException e) {
+        } catch (NoSuchFieldException | IllegalAccessException | NoSuchMethodException | InvocationTargetException | InstantiationException e) {
             e.printStackTrace();
         }
     }

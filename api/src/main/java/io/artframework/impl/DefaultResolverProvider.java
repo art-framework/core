@@ -11,18 +11,21 @@ import java.util.stream.Collectors;
 @Log(topic = "art-framework")
 public class DefaultResolverProvider extends AbstractProvider implements ResolverProvider {
 
-    private final Map<Class<?>, Map<Class<? extends Resolver<?>>, ResolverFactory<?>>> resolvers = new HashMap<>();
+    // resolved type class -> resolver class -> factory map
+    private final Map<Class<?>, Map<Class<?>, ResolverFactory<?>>> resolvers = new HashMap<>();
 
     public DefaultResolverProvider(Scope scope) {
         super(scope);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Collection<Class<? extends Resolver<?>>> all() {
 
         return resolvers.values().stream()
                 .map(Map::keySet)
                 .flatMap(Collection::stream)
+                .map(aClass -> (Class<Resolver<?>>) aClass)
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -38,13 +41,11 @@ public class DefaultResolverProvider extends AbstractProvider implements Resolve
 
     @SuppressWarnings("unchecked")
     @Override
-    public <TResolver extends Resolver<TType>, TType> Optional<ResolverFactory<TType>> getResolver(Class<TResolver> resolverClass) {
+    public <TType> Optional<ResolverFactory<TType>> get(Class<TType> type, Class<? extends Resolver<?>> resolverClass) {
 
-        return resolvers.values().stream()
-                .map(classResolverFactoryMap -> classResolverFactoryMap.get(resolverClass))
-                .filter(Objects::nonNull)
-                .map(resolverFactory -> (ResolverFactory<TType>) resolverFactory)
-                .findFirst();
+        return ReflectionUtil.getEntryForTargetClass(type, resolvers)
+                .flatMap(classResolverFactoryMap -> ReflectionUtil.getEntryForTargetClass(resolverClass, classResolverFactoryMap))
+                .map(resolverFactory -> (ResolverFactory<TType>) resolverFactory);
     }
 
     @Override

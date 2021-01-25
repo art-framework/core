@@ -1,6 +1,7 @@
 package io.artframework.conf;
 
 import lombok.Value;
+import lombok.With;
 import lombok.experimental.Accessors;
 
 @Value
@@ -8,6 +9,7 @@ import lombok.experimental.Accessors;
 public class ConfigValue {
 
     ConfigFieldInformation field;
+    @With
     Object value;
 
     public ConfigValue withIdentifier(String identifier) {

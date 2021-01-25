@@ -1,5 +1,7 @@
 package io.artframework;
 
+import io.artframework.impl.DefaultResolverProvider;
+
 import java.util.Collection;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -8,6 +10,11 @@ import java.util.function.Supplier;
  * The ResolverProvider provides a way to register and query {@link Resolver}s.
  */
 public interface ResolverProvider extends Provider {
+
+    static ResolverProvider of(Scope scope) {
+
+        return new DefaultResolverProvider(scope);
+    }
 
     /**
      * @return an immutable list of all registered resolvers
@@ -27,12 +34,12 @@ public interface ResolverProvider extends Provider {
     /**
      * Directly gets the resolver registered for the given resolver class.
      *
+     * @param type the class of the type that should be resolved
      * @param resolverClass the class of the resolver
-     * @param <TResolver> the type of the resolver
      * @param <TType> the type the resolver resolves
      * @return the registered resolver factory or an empty optional if the resolver is not registered
      */
-    <TResolver extends Resolver<TType>, TType> Optional<ResolverFactory<TType>> getResolver(Class<TResolver> resolverClass);
+    <TType> Optional<ResolverFactory<TType>> get(Class<TType> type, Class<? extends Resolver<?>> resolverClass);
 
     /**
      * Registers the given resolver in this provider.

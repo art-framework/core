@@ -91,17 +91,17 @@ public final class ConfigUtil {
                 }
 
                 Optional<ConfigOption> configOption = getAnnotation(field, ConfigOption.class);
+                boolean resolve = getAnnotation(field, Resolve.class).isPresent();
 
                 String identifier = basePath + configOption.map(ConfigOption::value)
                         .filter(s -> !Strings.isNullOrEmpty(s))
                         .orElse(formatter.apply(field.getName()));
 
-                if (field.getType().isPrimitive() || field.getType().equals(String.class) || field.getType().isArray()) {
+                if (resolve || field.getType().isPrimitive() || field.getType().equals(String.class) || field.getType().isArray()) {
 
                     String[] description = configOption.map(ConfigOption::description).orElse(new String[0]);
                     Boolean required = configOption.map(ConfigOption::required).orElse(false);
                     Integer position = configOption.map(ConfigOption::position).orElse(-1);
-                    boolean resolve = getAnnotation(field, Resolve.class).isPresent();
                     Class<? extends Resolver<?>>[] resolvers = getAnnotation(field, Resolve.class)
                             .map(Resolve::value)
                             .orElse(null);

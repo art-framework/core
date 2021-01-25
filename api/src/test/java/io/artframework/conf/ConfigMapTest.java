@@ -202,10 +202,41 @@ class ConfigMapTest {
                 .isNull();
     }
 
+    @Test
+    @DisplayName("should set nested config fields")
+    void shouldSetNestedConfigFields() throws ConfigurationException {
+
+        RootConfig config = ConfigMap.of(RootConfig.class)
+                .with(Arrays.asList(
+                        KeyValuePair.of("cfg.x", "1")
+                )).applyTo(new RootConfig());
+
+        assertThat(config)
+                .extracting(RootConfig::getCfg)
+                .isNotNull()
+                .extracting(nestedConfig -> nestedConfig.x)
+                .isEqualTo(1);
+    }
+
     @Data
     public static class SingleFieldConfig {
 
         @ConfigOption
         private String test;
+    }
+
+    @Data
+    @ConfigOption
+    public static class RootConfig {
+
+        private NestedConfig cfg;
+    }
+
+    @Data
+    @ConfigOption
+    public static class NestedConfig {
+
+        private int x;
+        private int y;
     }
 }
