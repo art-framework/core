@@ -14,10 +14,11 @@ public class DefaultResolverProvider extends AbstractProvider implements Resolve
     // resolved type class -> resolver class -> factory map
     private final Map<Class<?>, Map<Class<?>, ResolverFactory<?>>> resolvers = new HashMap<>();
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public DefaultResolverProvider(Scope scope) {
         super(scope);
 
-        ResolverProvider.DEFAULT.forEach(this::add);
+        ResolverProvider.DEFAULT.forEach(aClass -> add((Class) aClass));
     }
 
     @SuppressWarnings("unchecked")
