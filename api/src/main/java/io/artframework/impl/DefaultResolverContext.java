@@ -16,6 +16,7 @@ public class DefaultResolverContext implements ResolverContext {
 
     @NonNull Scope scope;
     @NonNull ConfigMap configMap;
+    @NonNull Class<?> type;
     @NonNull List<KeyValuePair> configValues;
     @Nullable Target<?> target;
     @Nullable ExecutionContext<?> executionContext;
