@@ -13,6 +13,7 @@
   - [Registration](/developer/registration)
   - [Scope](/developer/scope)
   - [Targets](/developer/targets)
+  - [Resolver](/developer/resolver)
 - **CONFIGURATION**
 - [Quickstart](/configuration/)
 - [Actions](/configuration/actions)
