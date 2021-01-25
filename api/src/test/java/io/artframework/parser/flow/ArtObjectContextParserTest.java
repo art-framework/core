@@ -50,7 +50,7 @@ class ArtObjectContextParserTest {
         factory = mock(ActionFactory.class);
         artObjectMeta = mock(ArtObjectMeta.class);
         when(factory.meta()).thenReturn(artObjectMeta);
-        when(factory.create(any(), any())).thenReturn(mock(ActionContext.class));
+        when(factory.createContext(any(), any())).thenReturn(mock(ActionContext.class));
         when(artObjectMeta.configMap()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
         when(actions.get(anyString())).thenAnswer(invocation -> Optional.of(factory));
 
@@ -59,7 +59,7 @@ class ArtObjectContextParserTest {
 
     private <TConfig> TConfig extractArtConfig(TConfig config) {
         ArgumentCaptor<ConfigMap> argument = ArgumentCaptor.forClass(ConfigMap.class);
-        verify(factory).create(argument.capture(), any());
+        verify(factory).createContext(argument.capture(), any());
 
         argument.getValue().applyTo(config);
 
@@ -68,7 +68,7 @@ class ArtObjectContextParserTest {
 
     private <TConfig> TConfig extractIndividualConfig(TConfig config) {
         ArgumentCaptor<ConfigMap> argument = ArgumentCaptor.forClass(ConfigMap.class);
-        verify(factory).create(any(), argument.capture());
+        verify(factory).createContext(any(), argument.capture());
 
         argument.getValue().applyTo(config);
 

@@ -47,7 +47,7 @@ class RequirementParserTest {
 
         RequirementProvider requirementProvider = mock(RequirementProvider.class);
         when(requirementProvider.get(anyString())).thenReturn(Optional.of(requirementFactory));
-        when(requirementFactory.create(any(), any())).thenReturn(mock(RequirementContext.class));
+        when(requirementFactory.createContext(any(), any())).thenReturn(mock(RequirementContext.class));
 
         this.parser = new RequirementLineParser(Arrays.asList("").iterator(), Scope.of(configurationBuilder -> configurationBuilder.requirements(requirementProvider)));
     }
@@ -65,7 +65,7 @@ class RequirementParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            verify(requirementFactory, times(1)).create(any(), any());
+            verify(requirementFactory, times(1)).createContext(any(), any());
         }
 
         @ParameterizedTest

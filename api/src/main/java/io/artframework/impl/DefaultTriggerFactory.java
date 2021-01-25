@@ -30,12 +30,12 @@ public class DefaultTriggerFactory extends AbstractFactory<TriggerContext, Trigg
     }
 
     @Override
-    public TriggerContext create(ConfigMap configMap, ConfigMap individualConfig) {
+    public TriggerContext createContext(ConfigMap configMap, ConfigMap individualConfig) {
 
         return TriggerContext.of(
                 scope(),
                 meta(),
-                createArtObject(individualConfig),
+                create(individualConfig),
                 TriggerConfig.of(scope(), configMap)
         );
     }

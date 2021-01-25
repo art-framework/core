@@ -51,7 +51,7 @@ class ActionParserTest {
 
         ActionProvider actionProvider = mock(ActionProvider.class);
         when(actionProvider.get(anyString())).thenReturn(Optional.of(actionFactory));
-        when(actionFactory.create(any(), any())).thenReturn(mock(ActionContext.class));
+        when(actionFactory.createContext(any(), any())).thenReturn(mock(ActionContext.class));
 
         this.parser = new ActionLineParser(Arrays.asList("").iterator(), new DefaultScope(configurationBuilder -> configurationBuilder.actions(actionProvider)));
     }
@@ -69,7 +69,7 @@ class ActionParserTest {
 
             assertThatCode(() -> parser.parse()).doesNotThrowAnyException();
 
-            verify(actionFactory, times(1)).create(any(), any());
+            verify(actionFactory, times(1)).createContext(any(), any());
         }
 
         @ParameterizedTest

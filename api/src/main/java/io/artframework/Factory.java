@@ -25,12 +25,17 @@ package io.artframework;
  * that knows how to create the context, a new instance of the art object and how to load the configuration
  * of the art object.
  *
- * @param <TContext>
- * @param <TArtObject>
+ * @param <TContext> the type of the context that is created for the art object by the factory
+ * @param <TArtObject> the art object type that is created by the factory, e.g. {@link Action}
  */
 public interface Factory<TContext extends ArtObjectContext<TArtObject>, TArtObject extends ArtObject> extends Scoped {
 
+    /**
+     * @return the meta information of the art object created by this factory
+     */
     ArtObjectMeta<TArtObject> meta();
 
-    TContext create(ConfigMap configMap, ConfigMap individualConfig);
+    TArtObject create(ConfigMap configMap);
+
+    TContext createContext(ConfigMap configMap, ConfigMap individualConfig);
 }
