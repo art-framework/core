@@ -26,6 +26,7 @@ import io.artframework.bukkit.actions.DamageLivingEntityAction;
 import io.artframework.bukkit.actions.SendMessageAction;
 import io.artframework.bukkit.requirements.EquipmentRequirement;
 import io.artframework.bukkit.requirements.HealthRequirement;
+import io.artframework.bukkit.resolver.MaterialResolver;
 import io.artframework.bukkit.storage.EbeanPersistenceProvider;
 import io.artframework.bukkit.storage.MetadataStore;
 import io.artframework.bukkit.targets.*;
@@ -152,7 +153,10 @@ public class ArtBukkitModule implements BootstrapModule {
                     .add(Location.class, LocationTarget::new)
                     .add(Player.class, PlayerTarget::new)
                     .add(OfflinePlayer.class, OfflinePlayerTarget::new)
-                    .add(Event.class, BukkitEventTarget::new);
+                    .add(Event.class, BukkitEventTarget::new)
+                .and()
+                .resolvers()
+                    .add(MaterialResolver.class);
     }
 
     @OnReload
