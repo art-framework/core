@@ -1,3 +1,24 @@
+# [3.1.0](https://github.com/art-framework/core/compare/v3.0.1...v3.1.0) (2021-01-25)
+
+
+### Bug Fixes
+
+* allow creation of context with factory or direct art object instance ([819fe51](https://github.com/art-framework/core/commit/819fe5100720bfa9f7458b909304c40db5b730e4))
+* purge generic info from default resolvers ([b925270](https://github.com/art-framework/core/commit/b925270f9d01992e8db0402a7174891b9337244c))
+* **config:** extraneous keys and values overwrite explicit matching key values ([8eb8d59](https://github.com/art-framework/core/commit/8eb8d59c65c667fb3b21167c7dc9b3f78dacaf96))
+
+
+### Features
+
+* add generic enum resolver as default resolver ([6a068ce](https://github.com/art-framework/core/commit/6a068ce413a81d9d191ed5f8bf62eed97550e50c))
+* add Material resolver ([92395af](https://github.com/art-framework/core/commit/92395aff5142fa90da143323d4435edbaecda566))
+* add resolver to config parser regex using $(...) syntax ([d3a7ff1](https://github.com/art-framework/core/commit/d3a7ff1bc7266d7f15863fca483708ef79595ac2))
+* finalize resolver api ([cf7dff2](https://github.com/art-framework/core/commit/cf7dff28c6214611f3a4be861e3f5fbe0fbc29e5))
+* **api:** add resolver api ([15c119b](https://github.com/art-framework/core/commit/15c119b956370c5fdb4677ca647345860c9ca7e6)), closes [#16](https://github.com/art-framework/core/issues/16)
+* **api:** factories now have a method to create instances of art objects ([1e2436a](https://github.com/art-framework/core/commit/1e2436a3efa05a1fdae82ff91ab5390b5983fa47))
+* **api:** implement ResolverFactory and ResolverProvider ([aea9db8](https://github.com/art-framework/core/commit/aea9db83cdcf5113e81daf52441a2d8529c346f3)), closes [#16](https://github.com/art-framework/core/issues/16)
+* **bukkit:** add equipment requirement ([40be1d8](https://github.com/art-framework/core/commit/40be1d88a7f0b13b6a6f895401257bdf24515758))
+
 ## [3.0.1](https://github.com/art-framework/core/compare/v3.0.0...v3.0.1) (2021-01-23)
 
 
