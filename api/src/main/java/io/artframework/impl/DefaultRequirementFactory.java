@@ -30,12 +30,12 @@ public class DefaultRequirementFactory<TTarget> extends AbstractFactory<Requirem
     }
 
     @Override
-    public RequirementContext<TTarget> create(ConfigMap configMap, ConfigMap individualConfig) {
+    public RequirementContext<TTarget> createContext(ConfigMap configMap, ConfigMap individualConfig) {
 
         return RequirementContext.of(
                 scope(),
                 meta(),
-                createArtObject(individualConfig),
+                create(individualConfig),
                 RequirementConfig.of(scope(), configMap)
         );
     }

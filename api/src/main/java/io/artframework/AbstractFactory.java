@@ -35,7 +35,7 @@ public abstract class AbstractFactory<TContext extends ArtObjectContext<TArtObje
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    protected final TArtObject createArtObject(ConfigMap configMap) {
+    public final TArtObject create(ConfigMap configMap) {
         TArtObject artObject = meta().provider().create();
 
         if (configMap == null || !configMap.loaded()) {

@@ -26,12 +26,12 @@ public class DefaultActionFactory<TTarget> extends AbstractFactory<ActionContext
     }
 
     @Override
-    public ActionContext<TTarget> create(ConfigMap configMap, ConfigMap individualConfig) {
+    public ActionContext<TTarget> createContext(ConfigMap configMap, ConfigMap individualConfig) {
 
         return ActionContext.of(
                 scope(),
                 meta(),
-                createArtObject(individualConfig),
+                create(individualConfig),
                 ActionConfig.of(scope(), configMap)
         );
     }

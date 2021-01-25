@@ -85,6 +85,6 @@ public abstract class ArtObjectContextLineParser<TFactory extends Factory<?, ?>>
             individualArtConfig = configParser.parse();
         }
 
-        return factory.create(configMap, individualArtConfig);
+        return factory.createContext(configMap, individualArtConfig);
     }
 }
