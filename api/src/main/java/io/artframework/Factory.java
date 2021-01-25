@@ -16,6 +16,8 @@
 
 package io.artframework;
 
+import io.artframework.conf.ContextConfig;
+
 /**
  * The {@link Factory} is used to create new instances of {@link ArtObject}s which
  * are wrapped inside an {@link ArtObjectContext}.
@@ -35,7 +37,23 @@ public interface Factory<TContext extends ArtObjectContext<TArtObject>, TArtObje
      */
     ArtObjectMeta<TArtObject> meta();
 
+    /**
+     * Creates a new ArtObject instance provided by this factory with the given configuration.
+     * <p>The created object will have its field injected that are defined in the provided {@link ConfigMap}.
+     * <p>The object will be created automtically by the {@link ArtObjectContext} that is created
+     * with the {@link #createContext(ContextConfig)} method.
+     *
+     * @param configMap the config map that holds the config information of the object
+     * @return a new art object instance for the type of this factory
+     */
     TArtObject create(ConfigMap configMap);
 
-    TContext createContext(ConfigMap configMap, ConfigMap individualConfig);
+    /**
+     * Creates a new ArtObjectContext that controls the execution flow of the ArtObject.
+     * <p>The context will dynamically create new instances of the {@link ArtObject} using {@link #create(ConfigMap)}.
+     *
+     * @param config the configuration maps of the context
+     * @return a new instance of the art object context defined as the context type of this factory
+     */
+    TContext createContext(ContextConfig config);
 }

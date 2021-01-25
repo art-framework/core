@@ -23,7 +23,6 @@ import io.artframework.events.ActionExecutedEvent;
 import io.artframework.events.ActionExecutionEvent;
 import io.artframework.events.PreActionExecutionEvent;
 import io.artframework.util.TimeUtil;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
@@ -40,10 +39,12 @@ import java.util.List;
 @Accessors(fluent = true)
 public final class DefaultActionContext<TTarget> extends AbstractArtObjectContext<Action<TTarget>> implements ActionContext<TTarget>, FutureTargetResultCreator {
 
-    @Getter(AccessLevel.PROTECTED)
-    private final Action<TTarget> action;
     @Getter
     private final ActionConfig config;
+    @Getter
+    private final ActionFactory<TTarget> factory;
+    @Getter
+    private final ConfigMap artObjectConfig;
 
     @Getter
     private final List<ActionContext<?>> actions = new ArrayList<>();
@@ -52,13 +53,13 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
     public DefaultActionContext(
             @NonNull Scope scope,
-            @NonNull ArtObjectMeta<Action<TTarget>> information,
-            @NonNull Action<TTarget> action,
-            @NonNull ActionConfig config
-    ) {
-        super(scope, information);
-        this.action = action;
+            @NonNull ActionConfig config,
+            @NonNull ActionFactory<TTarget> factory,
+            @NonNull ConfigMap artObjectConfig) {
+        super(scope, factory.meta());
         this.config = config;
+        this.factory = factory;
+        this.artObjectConfig = artObjectConfig;
     }
 
     @Override
@@ -93,7 +94,10 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
                 return;
             }
 
-            Result actionResult = action().execute(target, context).with(target, this);
+            Result actionResult = factory().create(artObjectConfig()
+                    .resolve(scope(), target, context))
+                    .execute(target, context)
+                    .with(target, this);
 
             ART.callEvent(new ActionExecutedEvent<>(meta(), context));
 

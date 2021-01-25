@@ -31,11 +31,21 @@ public interface RequirementContext<TTarget> extends Requirement<TTarget>, ArtOb
 
     static <TTarget> RequirementContext<TTarget> of(
             @NonNull Scope scope,
-            @NonNull ArtObjectMeta<Requirement<TTarget>> information,
-            @NonNull Requirement<TTarget> requirement,
-            @NonNull RequirementConfig config
+            @NonNull RequirementConfig config,
+            @NonNull RequirementFactory<TTarget> factory,
+            @NonNull ConfigMap artObjectConfig
     ) {
-        return new DefaultRequirementContext<>(scope, information, requirement, config);
+        return new DefaultRequirementContext<>(scope, config, factory, artObjectConfig);
+    }
+
+    static <TTarget> RequirementContext<TTarget> of(
+            @NonNull Scope scope,
+            @NonNull ArtObjectMeta<Requirement<TTarget>> information,
+            @NonNull RequirementConfig config,
+            @NonNull Requirement<TTarget> requirement
+    ) {
+
+        return new DefaultRequirementContext<>(scope, information, config, requirement);
     }
 
     /**

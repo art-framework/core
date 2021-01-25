@@ -1,6 +1,5 @@
 package io.artframework.conf;
 
-import io.artframework.ART;
 import io.artframework.ConfigMap;
 import io.artframework.ConfigurationException;
 import io.artframework.annotations.ConfigOption;
@@ -13,7 +12,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @SuppressWarnings("ALL")
 @Nested
@@ -158,7 +159,7 @@ class ConfigMapTest {
     void shouldIgnoreUnmappedKeyValuePairs() throws ConfigurationException {
 
         SingleFieldConfig config = ConfigMap.of(SingleFieldConfig.class)
-                .with(ART.globalScope(), Arrays.asList(
+                .with(Arrays.asList(
                         KeyValuePair.of("test", "foobar"),
                         KeyValuePair.of("foo", "bar"),
                         KeyValuePair.of("num", "1")
@@ -174,7 +175,7 @@ class ConfigMapTest {
     void shouldUseFirstValueForMultipleWithoutKeys() throws ConfigurationException {
 
         SingleFieldConfig config = ConfigMap.of(SingleFieldConfig.class)
-                .with(ART.globalScope(), Arrays.asList(
+                .with(Arrays.asList(
                         KeyValuePair.of(null, "foobar"),
                         KeyValuePair.of(null, "bar"),
                         KeyValuePair.of(null, "1")
@@ -190,7 +191,7 @@ class ConfigMapTest {
     void shouldNotMapUnmatchingKey() throws ConfigurationException {
 
         SingleFieldConfig config = ConfigMap.of(SingleFieldConfig.class)
-                .with(ART.globalScope(), Arrays.asList(
+                .with(Arrays.asList(
                         KeyValuePair.of("f", "foobar"),
                         KeyValuePair.of("a", "bar"),
                         KeyValuePair.of("b", "1")

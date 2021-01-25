@@ -23,14 +23,15 @@ class DefaultRequirementContextTest {
     private MyTargetWrapper target;
 
     @BeforeEach
-    void setUp() throws ArtMetaDataException {
+    void setUp() throws ArtMetaDataException, ConfigurationException {
 
         config = new RequirementConfig();
         requirement = spy(new TestRequirement());
-        context = new DefaultRequirementContext<>(ART.globalScope(),
-                (ArtObjectMeta) ArtObjectMeta.of(TestRequirement.class),
-                requirement,
-                config
+        context = new DefaultRequirementContext<>(
+                ART.globalScope(),
+                config,
+                RequirementFactory.of(ART.globalScope(), (ArtObjectMeta) ArtObjectMeta.of(TestRequirement.class, () -> requirement)),
+                ConfigMap.of(TestRequirement.class)
         );
 
         target = new MyTargetWrapper(new MyTarget());

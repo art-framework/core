@@ -17,15 +17,31 @@
 package io.artframework.impl;
 
 import com.google.common.base.Strings;
-import io.artframework.*;
+import io.artframework.AbstractArtObjectContext;
+import io.artframework.ActionContext;
+import io.artframework.ConfigMap;
+import io.artframework.ExecutionContext;
+import io.artframework.Requirement;
+import io.artframework.RequirementContext;
+import io.artframework.Scope;
+import io.artframework.Target;
+import io.artframework.Trigger;
+import io.artframework.TriggerContext;
+import io.artframework.TriggerFactory;
+import io.artframework.TriggerListener;
 import io.artframework.conf.Constants;
-import io.artframework.conf.RequirementConfig;
 import io.artframework.conf.TriggerConfig;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @SuppressWarnings("unused")
 @Accessors(fluent = true)
@@ -36,25 +52,21 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     @Getter
     private final List<RequirementContext<?>> requirements = new ArrayList<>();
     private final Map<Class<?>, Set<TriggerListener<?>>> listeners = new HashMap<>();
-    private final Trigger trigger;
+    @Getter
+    private final TriggerFactory factory;
+    private final ConfigMap artObjectConfig;
     @Getter
     private final TriggerConfig config;
-    private final RequirementContext<?> requirement;
 
     public DefaultTriggerContext(
             @NonNull Scope scope,
-            @NonNull ArtObjectMeta<Trigger> information,
-            @NonNull Trigger trigger,
-            @NonNull TriggerConfig config) {
-        super(scope, information);
-        this.trigger = trigger;
+            @NonNull TriggerConfig config,
+            @NonNull TriggerFactory factory,
+            @NonNull ConfigMap artObjectConfig) {
+        super(scope, factory.meta());
         this.config = config;
-
-        if (trigger instanceof Requirement) {
-            requirement = RequirementContext.of(scope, information.get(), (Requirement<?>) trigger, config);
-        } else {
-            requirement = null;
-        }
+        this.factory = factory;
+        this.artObjectConfig = artObjectConfig;
     }
 
     @Override
@@ -139,11 +151,15 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     @SuppressWarnings("unchecked")
     private <TTarget> boolean testTriggerRequirement(Target<TTarget> target, ExecutionContext<TriggerContext> context) {
 
-        if (requirement == null) return true;
-        if (!requirement.isTargetType(target)) return true;
-        RequirementContext<TTarget> requirement = (RequirementContext<TTarget>) this.requirement;
+        Trigger trigger = factory().create(artObjectConfig.resolve(scope(), target, context));
+        if (trigger instanceof Requirement) {
+            RequirementContext<?> requirementContext = RequirementContext.of(scope(), meta().get(), config, (Requirement<Object>) trigger);
+            if (requirementContext.isTargetType(target)) {
+                return ((RequirementContext<TTarget>) requirementContext).test(target, context.next((RequirementContext<TTarget>) requirementContext)).success();
+            }
+        }
 
-        return requirement.test(target, context.next(requirement)).success();
+        return true;
     }
 
     @SuppressWarnings("unchecked")

@@ -36,10 +36,10 @@ import java.util.regex.Pattern;
  */
 @SuppressWarnings("RegExpRedundantEscape")
 @Accessors(fluent = true)
-public final class ConfigParser implements Scoped {
+public final class ConfigParser {
 
-    public static ConfigParser of(Scope scope, ConfigMap configMap) {
-        return new ConfigParser(scope, configMap);
+    public static ConfigParser of(ConfigMap configMap) {
+        return new ConfigParser(configMap);
     }
 
     // always edit the regexr link and update the link below!
@@ -48,13 +48,10 @@ public final class ConfigParser implements Scoped {
     private static final Pattern PATTERN = Pattern.compile("^(?<keyValue>((?<key>[\\w\\d._-]+)?[:=])?((\\$\\((?<resolver>.*?)\\))|(\"(?<quotedValue>.*?)\")|(\\[(?<array>.*?)\\])|(?<valueWithSpaces>(?<value>[^;, ]*)[,; ]?)))(?<config>.*)?$");
 
     @Getter
-    private final Scope scope;
-    @Getter
     private final ConfigMap configMap;
     private Matcher matcher;
 
-    ConfigParser(Scope scope, ConfigMap configMap) {
-        this.scope = scope;
+    ConfigParser(ConfigMap configMap) {
 
         this.configMap = configMap;
     }
@@ -89,7 +86,7 @@ public final class ConfigParser implements Scoped {
         if (matcher == null) throw new ParseException("ConfigParser not initialized! Call accept(String) first!");
 
         try {
-            return configMap.with(scope(), extractKeyValuePairs());
+            return configMap.with(extractKeyValuePairs());
         } catch (ConfigurationException e) {
             throw new ParseException(e.getMessage(), e);
         }

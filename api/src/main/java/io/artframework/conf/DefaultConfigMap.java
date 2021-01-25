@@ -20,8 +20,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.artframework.ConfigMap;
 import io.artframework.ConfigurationException;
+import io.artframework.ExecutionContext;
 import io.artframework.Scope;
-import io.artframework.util.ConfigUtil;
+import io.artframework.Target;
 import io.artframework.util.ReflectionUtil;
 import lombok.Getter;
 import lombok.NonNull;
@@ -30,8 +31,14 @@ import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nullable;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Value
@@ -57,8 +64,14 @@ public class DefaultConfigMap implements ConfigMap {
     }
 
     @Override
-    public ConfigMap with(Scope scope, @NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException {
-        return new DefaultConfigMap(configFields(), loadConfigValues(scope, keyValuePairs));
+    public ConfigMap with(@NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException {
+        return new DefaultConfigMap(configFields(), loadConfigValues(keyValuePairs));
+    }
+
+    @Override
+    public ConfigMap resolve(@NonNull Scope scope, @Nullable Target<?> target, @Nullable ExecutionContext<?> context) {
+        //TODO: implement
+        return this;
     }
 
     @Override
@@ -101,7 +114,7 @@ public class DefaultConfigMap implements ConfigMap {
         }
     }
 
-    public List<ConfigValue> loadConfigValues(@NonNull Scope scope, @NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException {
+    public List<ConfigValue> loadConfigValues(@NonNull List<KeyValuePair> keyValuePairs) throws ConfigurationException {
 
         if (configFields.isEmpty()) return new ArrayList<>();
 
