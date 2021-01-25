@@ -39,6 +39,7 @@ import java.util.List;
 @Accessors(fluent = true)
 public final class DefaultActionContext<TTarget> extends AbstractArtObjectContext<Action<TTarget>> implements ActionContext<TTarget>, FutureTargetResultCreator {
 
+    private final Action<TTarget> action;
     @Getter
     private final ActionConfig config;
     @Getter
@@ -60,6 +61,25 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
         this.config = config;
         this.factory = factory;
         this.artObjectConfig = artObjectConfig;
+        this.action = null;
+    }
+
+    public DefaultActionContext(@NonNull Scope scope, ArtObjectMeta<Action<TTarget>> information, Action<TTarget> action, ActionConfig config) {
+
+        super(scope, information);
+        this.action = action;
+        this.config = config;
+        this.factory = null;
+        this.artObjectConfig = null;
+    }
+
+    public Action<TTarget> action(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
+
+        if (action != null) {
+            return action;
+        } else {
+            return factory().create(artObjectConfig().resolve(scope(), target, context));
+        }
     }
 
     @Override
@@ -94,8 +114,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
                 return;
             }
 
-            Result actionResult = factory().create(artObjectConfig()
-                    .resolve(scope(), target, context))
+            Result actionResult = action(target, context)
                     .execute(target, context)
                     .with(target, this);
 

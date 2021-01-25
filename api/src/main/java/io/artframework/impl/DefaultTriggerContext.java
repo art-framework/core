@@ -19,6 +19,7 @@ package io.artframework.impl;
 import com.google.common.base.Strings;
 import io.artframework.AbstractArtObjectContext;
 import io.artframework.ActionContext;
+import io.artframework.ArtObjectMeta;
 import io.artframework.ConfigMap;
 import io.artframework.ExecutionContext;
 import io.artframework.Requirement;
@@ -57,6 +58,7 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     private final ConfigMap artObjectConfig;
     @Getter
     private final TriggerConfig config;
+    private final Trigger trigger;
 
     public DefaultTriggerContext(
             @NonNull Scope scope,
@@ -67,6 +69,16 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
         this.config = config;
         this.factory = factory;
         this.artObjectConfig = artObjectConfig;
+        this.trigger = null;
+    }
+
+    public DefaultTriggerContext(@NonNull Scope scope, ArtObjectMeta<Trigger> information, Trigger trigger, TriggerConfig config) {
+
+        super(scope, information);
+        this.config = config;
+        this.trigger = trigger;
+        this.factory = null;
+        this.artObjectConfig = null;
     }
 
     @Override
@@ -89,6 +101,15 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     public void addRequirement(RequirementContext<?> requirement) {
 
         this.requirements.add(requirement);
+    }
+
+    public <TTarget> Trigger trigger(Target<TTarget> target, ExecutionContext<TriggerContext> context) {
+
+        if (trigger != null) {
+            return trigger;
+        } else {
+            return factory().create(artObjectConfig.resolve(scope(), target, context));
+        }
     }
 
     @Override
@@ -151,9 +172,9 @@ public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> imp
     @SuppressWarnings("unchecked")
     private <TTarget> boolean testTriggerRequirement(Target<TTarget> target, ExecutionContext<TriggerContext> context) {
 
-        Trigger trigger = factory().create(artObjectConfig.resolve(scope(), target, context));
+        Trigger trigger = trigger(target, context);
         if (trigger instanceof Requirement) {
-            RequirementContext<?> requirementContext = RequirementContext.of(scope(), meta().get(), config, (Requirement<Object>) trigger);
+            RequirementContext<?> requirementContext = RequirementContext.of(scope(), meta().get(), (Requirement<Object>) trigger, config);
             if (requirementContext.isTargetType(target)) {
                 return ((RequirementContext<TTarget>) requirementContext).test(target, context.next((RequirementContext<TTarget>) requirementContext)).success();
             }
