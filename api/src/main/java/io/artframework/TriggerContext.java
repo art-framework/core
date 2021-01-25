@@ -28,9 +28,9 @@ public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder,
      * Creates a new default trigger context instance with the provided parameters.
      *
      * @param scope the scope of the trigger
-     * @param information the meta information about the trigger
-     * @param trigger the trigger contained in this context
      * @param config the config of the trigger
+     * @param factory the factory used to create the trigger
+     * @param artObjectConfig the config passed to the factory when creating the trigger
      * @return the created trigger context
      */
     static TriggerContext of(
@@ -40,6 +40,16 @@ public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder,
             @NonNull ConfigMap artObjectConfig
             ) {
         return new DefaultTriggerContext(scope, config, factory, artObjectConfig);
+    }
+
+    static TriggerContext of(
+            @NonNull Scope scope,
+            @NonNull ArtObjectMeta<Trigger> meta,
+            @NonNull Trigger trigger,
+            @NonNull TriggerConfig config
+    ) {
+
+        return new DefaultTriggerContext(scope, meta, trigger, config);
     }
 
     /**

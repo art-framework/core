@@ -56,7 +56,7 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
         this.requirement = null;
     }
 
-    public DefaultRequirementContext(@NonNull Scope scope, ArtObjectMeta<Requirement<TTarget>> information, RequirementConfig config, Requirement<TTarget> requirement) {
+    public DefaultRequirementContext(@NonNull Scope scope, ArtObjectMeta<Requirement<TTarget>> information, Requirement<TTarget> requirement, RequirementConfig config) {
 
         super(scope, information);
         this.config = config;
@@ -75,6 +75,15 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
         return config().identifier();
     }
 
+    public Requirement<TTarget> requirement(Target<TTarget> target, ExecutionContext<RequirementContext<TTarget>> context) {
+
+        if (requirement != null) {
+            return requirement;
+        } else {
+            return factory().create(artObjectConfig().resolve(scope(), target, context));
+        }
+    }
+
     @Override
     public TargetResult<TTarget, RequirementContext<TTarget>> test(@NonNull Target<TTarget> target, @NonNull ExecutionContext<RequirementContext<TTarget>> context) {
 
@@ -87,14 +96,7 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
             }
         }
 
-        Requirement<TTarget> requirement;
-        if (this.requirement == null) {
-            requirement = factory().create(artObjectConfig.resolve(scope(), target, context));
-        } else {
-            requirement = this.requirement;
-        }
-
-        Result result = resultOf(requirement.test(target, context));
+        Result result = resultOf(requirement(target, context).test(target, context));
 
         int currentCount = store(target, Constants.Storage.COUNT, Integer.class).orElse(0);
         if (result.success()) {

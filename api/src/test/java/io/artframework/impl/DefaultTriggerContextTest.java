@@ -29,8 +29,8 @@ class DefaultTriggerContextTest {
         config = new TriggerConfig();
         context = new DefaultTriggerContext(ART.globalScope(),
                 ArtObjectMeta.of("test", TestTrigger.class, new TestTrigger()),
-                new TestTrigger(),
-                config);
+                new TestTrigger(), config
+        );
         action = spy(new TestAction());
         ActionContext actionContext = ActionContext.of(ART.globalScope(),
                 (ArtObjectMeta) ArtObjectMeta.of(TestAction.class),

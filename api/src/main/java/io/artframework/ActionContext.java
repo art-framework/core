@@ -37,6 +37,16 @@ public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContex
         return new DefaultActionContext<>(scope, config, factory, artObjectConfig);
     }
 
+    static <TTarget> ActionContext<TTarget> of(
+            @NonNull Scope scope,
+            @NonNull ArtObjectMeta<Action<TTarget>> meta,
+            @NonNull Action<TTarget> action,
+            @NonNull ActionConfig config
+    ) {
+
+        return new DefaultActionContext<>(scope, meta, action, config);
+    }
+
     /**
      * Gets the config used by this {@link ActionContext}.
      *

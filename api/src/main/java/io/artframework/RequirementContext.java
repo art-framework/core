@@ -41,11 +41,11 @@ public interface RequirementContext<TTarget> extends Requirement<TTarget>, ArtOb
     static <TTarget> RequirementContext<TTarget> of(
             @NonNull Scope scope,
             @NonNull ArtObjectMeta<Requirement<TTarget>> information,
-            @NonNull RequirementConfig config,
-            @NonNull Requirement<TTarget> requirement
+            @NonNull Requirement<TTarget> requirement,
+            @NonNull RequirementConfig config
     ) {
 
-        return new DefaultRequirementContext<>(scope, information, config, requirement);
+        return new DefaultRequirementContext<>(scope, information, requirement, config);
     }
 
     /**
