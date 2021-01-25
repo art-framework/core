@@ -1,15 +1,19 @@
 package io.artframework;
 
 import io.artframework.impl.DefaultResolverProvider;
+import io.artframework.resolver.EnumResolver;
 
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 
 /**
  * The ResolverProvider provides a way to register and query {@link Resolver}s.
  */
 public interface ResolverProvider extends Provider {
+
+    List<Class<? extends Resolver<?>>> DEFAULT = Collections.singletonList(
+            EnumResolver.class
+    );
 
     static ResolverProvider of(Scope scope) {
 

@@ -81,7 +81,14 @@ public class DefaultConfigMap implements ConfigMap {
                         ConfigParser parser = ConfigParser.of(resolverFactory.configMap());
                         if (parser.accept(configValue.value().toString())) {
                             List<KeyValuePair> configValues = parser.extractKeyValuePairs();
-                            return resolverFactory.create(configValues).resolve(ResolverContext.of(scope, resolverFactory.configMap(), configValues, target, context));
+                            return resolverFactory.create(configValues).resolve(ResolverContext.of(
+                                    scope,
+                                    resolverFactory.configMap(),
+                                    configValue.field().type(),
+                                    configValues,
+                                    target,
+                                    context
+                            ));
                         }
                     } catch (ConfigurationException | ParseException | ResolveException e) {
                         log.severe("unable to resolve config \"" + configValue.value() + "\" for " + configValue.field() + ": " + e.getMessage());

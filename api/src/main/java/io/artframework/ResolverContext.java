@@ -16,11 +16,12 @@ public interface ResolverContext extends Scoped {
 
     static ResolverContext of(@NonNull Scope scope,
                               @NonNull ConfigMap configMap,
+                              @NonNull Class<?> type,
                               @NonNull List<KeyValuePair> configValues,
                               @Nullable Target<?> target,
                               @Nullable ExecutionContext<?> executionContext) {
 
-        return new DefaultResolverContext(scope, configMap, configValues, target, executionContext);
+        return new DefaultResolverContext(scope, configMap, type, configValues, target, executionContext);
     }
 
     /**
@@ -35,6 +36,11 @@ public interface ResolverContext extends Scoped {
      * @return the raw list of config key value pairs created by the parser
      */
     List<KeyValuePair> configValues();
+
+    /**
+     * @return the class of the type that is resolved by the resolver
+     */
+    Class<?> type();
 
     /**
      * @return the optional target that is available for the resolution

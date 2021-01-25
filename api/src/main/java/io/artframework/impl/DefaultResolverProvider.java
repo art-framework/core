@@ -16,6 +16,8 @@ public class DefaultResolverProvider extends AbstractProvider implements Resolve
 
     public DefaultResolverProvider(Scope scope) {
         super(scope);
+
+        ResolverProvider.DEFAULT.forEach(this::add);
     }
 
     @SuppressWarnings("unchecked")
@@ -56,6 +58,7 @@ public class DefaultResolverProvider extends AbstractProvider implements Resolve
                     try {
                         resolvers.computeIfAbsent(typeClass, aClass -> new HashMap<>())
                                 .putIfAbsent(resolverClass, ResolverFactory.of(scope(), resolverClass));
+                        log.info("registered resolver " + resolverClass.getCanonicalName() + " for type: " + typeClass.getCanonicalName());
                     } catch (ConfigurationException e) {
                         log.severe("failed to register Resolver " + resolverClass.getCanonicalName() + ": " + e.getMessage());
                         e.printStackTrace();
