@@ -7,5 +7,6 @@ io.artframework.impl
 io.artframework.parser
 io.artframework.parser.flow
 io.artframework.requirements
+io.artframework.resolver
 io.artframework.util
 io.artframework.util.graphs
