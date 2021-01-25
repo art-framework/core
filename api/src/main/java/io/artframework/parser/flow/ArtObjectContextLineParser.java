@@ -18,6 +18,7 @@ package io.artframework.parser.flow;
 
 import com.google.common.base.Strings;
 import io.artframework.*;
+import io.artframework.conf.ContextConfig;
 import io.artframework.parser.ConfigParser;
 import lombok.experimental.Accessors;
 
@@ -69,22 +70,22 @@ public abstract class ArtObjectContextLineParser<TFactory extends Factory<?, ?>>
 
         TFactory factory = factoryOptional.get();
 
-        ConfigMap configMap = configMap();
+        ConfigMap contextConfig = configMap();
 
         Optional<String> config = getConfig();
         if (config.isPresent()) {
-            ConfigParser configParser = ConfigParser.of(scope(), configMap);
+            ConfigParser configParser = ConfigParser.of(contextConfig);
             if (configParser.accept(config.get())) {
-                configMap = configParser.parse();
+                contextConfig = configParser.parse();
             }
         }
 
-        ConfigMap individualArtConfig = ConfigMap.of(factory.meta().configMap());
-        ConfigParser configParser = ConfigParser.of(scope(), individualArtConfig);
+        ConfigMap artObjectConfig = ConfigMap.of(factory.meta().configMap());
+        ConfigParser configParser = ConfigParser.of(artObjectConfig);
         if (configParser.accept(userConfig())) {
-            individualArtConfig = configParser.parse();
+            artObjectConfig = configParser.parse();
         }
 
-        return factory.createContext(configMap, individualArtConfig);
+        return factory.createContext(new ContextConfig(contextConfig, artObjectConfig));
     }
 }

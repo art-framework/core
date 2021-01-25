@@ -35,11 +35,11 @@ public interface TriggerContext extends ArtObjectContext<Trigger>, ActionHolder,
      */
     static TriggerContext of(
             @NonNull Scope scope,
-            @NonNull ArtObjectMeta<Trigger> information,
-            @NonNull Trigger trigger,
-            @NonNull TriggerConfig config
+            @NonNull TriggerConfig config,
+            @NonNull TriggerFactory factory,
+            @NonNull ConfigMap artObjectConfig
             ) {
-        return new DefaultTriggerContext(scope, information, trigger, config);
+        return new DefaultTriggerContext(scope, config, factory, artObjectConfig);
     }
 
     /**

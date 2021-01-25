@@ -30,11 +30,11 @@ public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContex
 
     static <TTarget> ActionContext<TTarget> of(
             @NonNull Scope scope,
-            @NonNull ArtObjectMeta<Action<TTarget>> information,
-            @NonNull Action<TTarget> action,
-            @NonNull ActionConfig config
+            @NonNull ActionConfig config,
+            @NonNull ActionFactory<TTarget> factory,
+            @NonNull ConfigMap artObjectConfig
     ) {
-        return new DefaultActionContext<>(scope, information, action, config);
+        return new DefaultActionContext<>(scope, config, factory, artObjectConfig);
     }
 
     /**

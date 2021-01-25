@@ -35,7 +35,7 @@ class ConfigParserTest {
 
     @SneakyThrows
     private ConfigParser parser(Class<?> configClass) {
-        return new ConfigParser(ART.globalScope(), ConfigMap.of(ConfigUtil.getConfigFields(configClass)));
+        return new ConfigParser(ConfigMap.of(ConfigUtil.getConfigFields(configClass)));
     }
 
     @Nested

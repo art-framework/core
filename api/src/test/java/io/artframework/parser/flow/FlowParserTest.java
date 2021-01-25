@@ -57,7 +57,7 @@ class FlowParserTest {
                 when(artObjectMeta.configMap()).thenReturn(new HashMap());
                 when(factory.meta()).thenReturn(artObjectMeta);
                 ArtObjectContext context = mock(ArtObjectContext.class);
-                when(factory.createContext(any(), any())).thenReturn(context);
+                when(factory.createContext(any())).thenReturn(context);
                 doAnswer(invocation -> {
                     storageKey = invocation.getArgument(0);
                     return invocation.getMock();

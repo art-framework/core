@@ -17,6 +17,7 @@
 package io.artframework.impl;
 
 import io.artframework.*;
+import io.artframework.conf.ContextConfig;
 import io.artframework.conf.RequirementConfig;
 import lombok.NonNull;
 
@@ -30,13 +31,13 @@ public class DefaultRequirementFactory<TTarget> extends AbstractFactory<Requirem
     }
 
     @Override
-    public RequirementContext<TTarget> createContext(ConfigMap configMap, ConfigMap individualConfig) {
+    public RequirementContext<TTarget> createContext(ContextConfig config) {
 
         return RequirementContext.of(
                 scope(),
-                meta(),
-                create(individualConfig),
-                RequirementConfig.of(scope(), configMap)
+                RequirementConfig.of(scope(), config.contextConfig()),
+                this,
+                config.artObjectConfig()
         );
     }
 }

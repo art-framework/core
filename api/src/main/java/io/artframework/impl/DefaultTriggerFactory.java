@@ -17,6 +17,7 @@
 package io.artframework.impl;
 
 import io.artframework.*;
+import io.artframework.conf.ContextConfig;
 import io.artframework.conf.TriggerConfig;
 import lombok.NonNull;
 
@@ -30,13 +31,13 @@ public class DefaultTriggerFactory extends AbstractFactory<TriggerContext, Trigg
     }
 
     @Override
-    public TriggerContext createContext(ConfigMap configMap, ConfigMap individualConfig) {
+    public TriggerContext createContext(ContextConfig config) {
 
         return TriggerContext.of(
                 scope(),
-                meta(),
-                create(individualConfig),
-                TriggerConfig.of(scope(), configMap)
+                TriggerConfig.of(scope(), config.contextConfig()),
+                this,
+                config.artObjectConfig()
         );
     }
 }

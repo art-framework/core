@@ -19,6 +19,7 @@ package io.artframework.parser.flow;
 import io.artframework.*;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.conf.ActionConfig;
+import io.artframework.conf.ContextConfig;
 import io.artframework.util.ConfigUtil;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -50,7 +51,7 @@ class ArtObjectContextParserTest {
         factory = mock(ActionFactory.class);
         artObjectMeta = mock(ArtObjectMeta.class);
         when(factory.meta()).thenReturn(artObjectMeta);
-        when(factory.createContext(any(), any())).thenReturn(mock(ActionContext.class));
+        when(factory.createContext(any())).thenReturn(mock(ActionContext.class));
         when(artObjectMeta.configMap()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
         when(actions.get(anyString())).thenAnswer(invocation -> Optional.of(factory));
 
@@ -58,19 +59,19 @@ class ArtObjectContextParserTest {
     }
 
     private <TConfig> TConfig extractArtConfig(TConfig config) {
-        ArgumentCaptor<ConfigMap> argument = ArgumentCaptor.forClass(ConfigMap.class);
-        verify(factory).createContext(argument.capture(), any());
+        ArgumentCaptor<ContextConfig> argument = ArgumentCaptor.forClass(ContextConfig.class);
+        verify(factory).createContext(argument.capture());
 
-        argument.getValue().applyTo(config);
+        argument.getValue().contextConfig().applyTo(config);
 
         return config;
     }
 
     private <TConfig> TConfig extractIndividualConfig(TConfig config) {
-        ArgumentCaptor<ConfigMap> argument = ArgumentCaptor.forClass(ConfigMap.class);
-        verify(factory).createContext(any(), argument.capture());
+        ArgumentCaptor<ContextConfig> argument = ArgumentCaptor.forClass(ContextConfig.class);
+        verify(factory).createContext(argument.capture());
 
-        argument.getValue().applyTo(config);
+        argument.getValue().artObjectConfig().applyTo(config);
 
         return config;
     }

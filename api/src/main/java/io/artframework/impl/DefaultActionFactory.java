@@ -18,6 +18,7 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import io.artframework.conf.ActionConfig;
+import io.artframework.conf.ContextConfig;
 
 public class DefaultActionFactory<TTarget> extends AbstractFactory<ActionContext<TTarget>, Action<TTarget>> implements ActionFactory<TTarget> {
 
@@ -26,13 +27,13 @@ public class DefaultActionFactory<TTarget> extends AbstractFactory<ActionContext
     }
 
     @Override
-    public ActionContext<TTarget> createContext(ConfigMap configMap, ConfigMap individualConfig) {
+    public ActionContext<TTarget> createContext(ContextConfig config) {
 
         return ActionContext.of(
                 scope(),
-                meta(),
-                create(individualConfig),
-                ActionConfig.of(scope(), configMap)
+                ActionConfig.of(scope(), config.contextConfig()),
+                this,
+                config.artObjectConfig()
         );
     }
 }

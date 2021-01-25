@@ -35,19 +35,34 @@ import java.util.Optional;
 @Accessors(fluent = true)
 public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext<Requirement<TTarget>> implements RequirementContext<TTarget>, CombinedResultCreator {
 
-    private final Requirement<TTarget> requirement;
     @Getter
     private final RequirementConfig config;
+    @Getter
+    private final RequirementFactory<TTarget> factory;
+    @Getter
+    private final ConfigMap artObjectConfig;
+    private final Requirement<TTarget> requirement;
 
     public DefaultRequirementContext(
             @NonNull Scope scope,
-            @NonNull ArtObjectMeta<Requirement<TTarget>> information,
-            @NonNull Requirement<TTarget> requirement,
-            @NonNull RequirementConfig config
+            @NonNull RequirementConfig config,
+            @NonNull RequirementFactory<TTarget> factory,
+            @NonNull ConfigMap artObjectConfig
     ) {
-        super(scope, information);
-        this.requirement = requirement;
+        super(scope, factory.meta());
         this.config = config;
+        this.factory = factory;
+        this.artObjectConfig = artObjectConfig;
+        this.requirement = null;
+    }
+
+    public DefaultRequirementContext(@NonNull Scope scope, ArtObjectMeta<Requirement<TTarget>> information, RequirementConfig config, Requirement<TTarget> requirement) {
+
+        super(scope, information);
+        this.config = config;
+        this.factory = null;
+        this.artObjectConfig = null;
+        this.requirement = requirement;
     }
 
     @Override
@@ -70,6 +85,13 @@ public class DefaultRequirementContext<TTarget> extends AbstractArtObjectContext
             if (result.isPresent()) {
                 return resultOf(result.get()).with(target, this);
             }
+        }
+
+        Requirement<TTarget> requirement;
+        if (this.requirement == null) {
+            requirement = factory().create(artObjectConfig.resolve(scope(), target, context));
+        } else {
+            requirement = this.requirement;
         }
 
         Result result = resultOf(requirement.test(target, context));
