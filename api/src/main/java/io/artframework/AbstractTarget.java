@@ -17,6 +17,7 @@
 package io.artframework;
 
 import lombok.Getter;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 
@@ -27,6 +28,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
  * @param <TTarget> type of the target to wrap
  * @see Target
  */
+@ToString
 @Accessors(fluent = true)
 public abstract class AbstractTarget<TTarget> implements Target<TTarget> {
 

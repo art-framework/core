@@ -64,6 +64,9 @@ A module does not require any lifecycle method to work. All methods work complet
 The `onBootstrap(BootstrapScope)` method is the first to be called before building the configuration object with all of its providers.
 It is the only method that takes a different argument, the `BootstrapScope`.
 
+> [!NOTE]
+> In the [art-bukkit](/platforms/bukkit) platform the bootstrap phase is called in the `onLoad()` method of the plugin.
+
 Use the bootstrap lifecycle to overwrite or register your own customer providers, e.g. a different scheduler or storage provider.
 
 ```java
@@ -76,6 +79,9 @@ public void onBootstrap(BootstrapScope scope) {
 ### OnLoad
 
 The load phase comes directly after all modules finished the bootstrap phase. The configuration is fixed and cannot be changed at this point.
+
+> [!NOTE]
+> In the [art-bukkit](/platforms/bukkit) platform the load phase is called in the `onEnable()` method of the plugin.
 
 Use the `load(Scope)` method annotated with `@OnLoad` to load your configuration (which was injected before bootstrapping) or to do other stuff that prepares your module.
 You **should not** use the load method to start any logic of your module. Use the enable lifecycle for that.
@@ -102,6 +108,9 @@ public void onLoad(Scope scope) {
 ### OnEnable
 
 The enable phase is the final phase in the module startup lifecycle. Use it to start the main logic of your module, [parse art-configurations](/developer/parser) and more.
+
+> [!NOTE]
+> In the [art-bukkit](/platforms/bukkit) platform the enable phase is called in the `onEnable()` method of the plugin one tick after all plugins are enabled.
 
 ```java
 @Config("config.yml")
