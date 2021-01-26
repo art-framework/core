@@ -80,7 +80,7 @@ public class DefaultConfigMap implements ConfigMap {
                     }
                     configValue = configValue.withValue(values);
                 }
-            } else {
+            } else if (configValue.value() instanceof String) {
                 configValue = configValue.withValue(scope.configuration().replacements().replace(String.valueOf(configValue.value()), replacementContext));
             }
 
