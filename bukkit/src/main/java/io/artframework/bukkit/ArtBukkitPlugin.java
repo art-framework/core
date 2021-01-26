@@ -18,6 +18,7 @@ package io.artframework.bukkit;
 
 import io.artframework.ART;
 import io.artframework.BootstrapException;
+import io.artframework.BootstrapPhase;
 import io.artframework.BootstrapScope;
 import io.artframework.conf.Settings;
 import io.ebean.Database;
@@ -38,6 +39,8 @@ public class ArtBukkitPlugin extends JavaPlugin {
     @Getter
     private static boolean testing = false;
 
+    private BootstrapPhase bootstrap;
+
     public ArtBukkitPlugin() {
     }
 
@@ -47,19 +50,29 @@ public class ArtBukkitPlugin extends JavaPlugin {
     }
 
     @Override
+    public void onLoad() {
+
+        try {
+            bootstrap = ART.bootstrap(BootstrapScope.of(new ArtBukkitModule(this), Settings.builder()
+                    .basePath(getDataFolder().getAbsolutePath())
+                    .build()
+            ), true);
+        } catch (BootstrapException e) {
+            getLogger().severe("failed to bootstrap the art-framework: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void onEnable() {
 
         getDataFolder().mkdirs();
 
-        Bukkit.getScheduler().runTaskLater(this, () -> {
-            try {
-                ART.bootstrap(BootstrapScope.of(new ArtBukkitModule(this), Settings.builder()
-                        .basePath(getDataFolder().getAbsolutePath())
-                        .build()
-                ), true);
-            } catch (BootstrapException e) {
-                e.printStackTrace();
-            }
-        }, 1L);
+        if (bootstrap != null) {
+            bootstrap.loadAll();
+
+            Bukkit.getScheduler().runTaskLater(this, () -> bootstrap.enableAll(), 1L);
+        }
     }
 }

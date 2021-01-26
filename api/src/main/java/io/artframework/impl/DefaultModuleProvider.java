@@ -36,13 +36,14 @@ import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static org.reflections.ReflectionUtils.getAllMethods;
 import static org.reflections.ReflectionUtils.withAnnotation;
 
 @Log(topic = "art-framework")
-public class DefaultModuleProvider extends AbstractProvider implements ModuleProvider, BootstrapPhase {
+public class DefaultModuleProvider extends AbstractProvider implements ModuleProvider {
 
     final Map<Class<?>, ModuleInformation> modules = new HashMap<>();
     private CycleSearch<ModuleMeta> cycleSearcher = new CycleSearch<>(new boolean[0][0], new ModuleMeta[0]);
@@ -84,7 +85,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     }
 
     @Override
-    public BootstrapPhase bootstrap(BootstrapScope bootstrapScope) throws BootstrapException {
+    public ModuleProvider bootstrap(BootstrapScope bootstrapScope) throws BootstrapException {
 
         try {
             log.fine("Starting bootstrap process with: " + bootstrapScope.bootstrapModule().getClass().getSimpleName());
@@ -130,6 +131,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         }
     }
 
+    @Override
     public void loadAll() {
 
         for (ModuleInformation module : modules.values()) {
@@ -141,6 +143,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         }
     }
 
+    @Override
     public void enableAll() {
 
         for (ModuleInformation module : modules.values()) {
@@ -152,6 +155,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         }
     }
 
+    @Override
     public void disableAll() {
 
         for (ModuleInformation module : modules.values()) {

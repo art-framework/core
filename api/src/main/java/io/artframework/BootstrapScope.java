@@ -86,14 +86,41 @@ public interface BootstrapScope extends Scope {
 
     /**
      * Registers a new provider implementation for the given class with the given provider.
-     * <p>By default all providers are singletons and will be created once when {@link #bootstrap()} is called.
+     * <p>Existing providers matching the provider class type will be overwritten, but only
+     * if the class is an exact match.
+     * <p>Use the {@link #addSingletonProvider(Class, Provider)} method to register singleton providers or
+     * handle the lifetime of your provider with the calls to the provided supplier.
+     * <pre>{@code
+     * add(Scheduler.class, (scope) -> new BukkitScheduler(scope));
+     * // this will not overwrite the provider and both will be retrieved depending on the parameter of the get call
+     * add(BukkitScheduler.class, (scope) -> new BukkitScheduler(scope));
+     * }</pre>
      *
      * @param providerClass the class of the provider
      * @param supplier the supplier that creates the provider
      * @param <TProvider> the type of the provider
      * @return this bootstrap scope
      */
-    <TProvider extends Provider> BootstrapScope add(Class<TProvider> providerClass, Function<Scope, TProvider> supplier);
+    <TProvider extends Provider> BootstrapScope addProvider(Class<TProvider> providerClass, Function<Scope, TProvider> supplier);
+
+    /**
+     * Registers a new singleton provider for the given class.
+     * <p>Existing providers matching the provider class type will be overwritten, but only
+     * if the class is an exact match.
+     * <p>Use the {@link #addProvider(Class, Function)} method to register providers with different lifetimes.
+     * <pre>{@code
+     * Scheduler scheduler = new BukkitScheduler();
+     * add(Scheduler.class, scheduler);
+     * // this will not overwrite the provider and both will be retrieved depending on the parameter of the get call
+     * add(BukkitScheduler.class, scheduler);
+     * }</pre>
+     *
+     * @param providerClass the class of the provider
+     * @param provider the provider instance that should be registered
+     * @param <TProvider> the type of the provider
+     * @return this bootstrap scope
+     */
+    <TProvider extends Provider> BootstrapScope addSingletonProvider(Class<TProvider> providerClass, TProvider provider);
 
     /**
      * Finishes the bootstrap process, seals the configuration and returns the created scope.
@@ -104,5 +131,5 @@ public interface BootstrapScope extends Scope {
      * @return the scope that was created from the bootstrap process
      * @throws UnsupportedOperationException if the bootstrapping phase has already finished meaning this was called already
      */
-    Scope bootstrap() throws BootstrapException;
+    BootstrapPhase bootstrap() throws BootstrapException;
 }

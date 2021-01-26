@@ -42,45 +42,45 @@ public final class ART {
 
     /**
      * Initializes the art-framework using the given bootstrap scope.
-     * <p>
-     * Bootstrapping is only required by the root module that implements and ships the art-framework.
+     * <p>Make sure to call the {@link BootstrapPhase#loadAll()} and {@link BootstrapPhase#enableAll()} methods
+     * to load and enable all modules contained within the scope.
+     * <p>Bootstrapping is only required by the root module that implements and ships the art-framework.
      * Normal modules should not use this bootstrap method, but instead tag their class with @{@link ArtModule}
      * and use the respective tagged methods ({@link OnBootstrap}, {@link OnLoad} and{@link OnEnable}) to load themselves into the scope.
-     * <p>
-     * By default the module will be bootstrapped into its own scope.
+     * <p>By default the module will be bootstrapped into its own scope.
      * Use the {@link #bootstrap(BootstrapScope, boolean)} method with true to bootstrap the global scope.
      *
      * @param bootstrapScope the bootstrap scope containing the bootstrap module used to start the bootstrap process
-     * @return the scope created by the bootstrap process
+     * @return the bootstrapping phase created for the given scope
      * @throws BootstrapException if an error occurred while bootstrapping the module
      */
-    public static Scope bootstrap(@NonNull BootstrapScope bootstrapScope) throws BootstrapException {
+    public static BootstrapPhase bootstrap(@NonNull BootstrapScope bootstrapScope) throws BootstrapException {
 
         return bootstrap(bootstrapScope, false);
     }
 
     /**
      * Initializes the art-framework using the given bootstrap scope.
-     * <p>
-     * Bootstrapping is only required by the root module that implements and ships the art-framework.
+     * <p>Make sure to call the {@link BootstrapPhase#loadAll()} and {@link BootstrapPhase#enableAll()} methods
+     * to load and enable all modules contained within the scope.
+     * <p>Bootstrapping is only required by the root module that implements and ships the art-framework.
      * Normal modules should not use this bootstrap method, but instead tag their class with @{@link ArtModule}
      * and use the respective tagged methods ({@link OnBootstrap}, {@link OnLoad} and{@link OnEnable}) to load themselves into the scope.
-     * <p>
-     * Set the boolean switch to true to set the resulting scope of the bootstrap process as the global scope.
+     * <p>Set the boolean switch to true to set the resulting scope of the bootstrap process as the global scope.
      *
      * @param bootstrapScope the bootstrap scope containing the bootstrap module used to start the bootstrap process
      * @param global true if the result scope of the bootstrap process should be set as the global scope
-     * @return the scope created by the bootstrap process
+     * @return the bootstrapping phase created for the given scope
      * @throws BootstrapException if an error occurred while bootstrapping the module
      */
-    public static Scope bootstrap(@NonNull BootstrapScope bootstrapScope, boolean global) throws BootstrapException {
+    public static BootstrapPhase bootstrap(@NonNull BootstrapScope bootstrapScope, boolean global) throws BootstrapException {
 
         try {
-            Scope scope = bootstrapScope.bootstrap();
+            BootstrapPhase bootstrap = bootstrapScope.bootstrap();
 
-            if (global) globalScope(scope);
+            if (global) globalScope(bootstrapScope);
 
-            return scope;
+            return bootstrap;
         } catch (Exception e) {
             throw new BootstrapException(e);
         }
