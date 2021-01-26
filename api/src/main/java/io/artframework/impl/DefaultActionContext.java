@@ -95,13 +95,11 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     @Override
     public FutureResult execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
 
-        if (ART.callEvent(new PreActionExecutionEvent<>(meta(), context)).isCancelled()) {
-            return cancelled(target, this);
-        }
-
         if (!isTargetType(target)) return empty(target, this);
+
         FutureResult executionTest = testExecution(target);
         if (executionTest.failure()) return executionTest;
+
         CombinedResult requirementTest = testRequirements(context);
         if (requirementTest.failure()) return of(requirementTest, target, this);
 
@@ -109,20 +107,15 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
 
         Runnable runnable = () -> {
 
-            if (ART.callEvent(new ActionExecutionEvent<>(meta(), context)).isCancelled()) {
-                result.complete(cancelled(target, this));
-                return;
-            }
-
             Result actionResult = action(target, context)
                     .execute(target, context)
                     .with(target, this);
 
-            ART.callEvent(new ActionExecutedEvent<>(meta(), context));
-
             store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
 
-            result.complete(actionResult.combine(executeActions(target, context)));
+            if (!actionResult.error()) {
+                result.complete(actionResult.combine(executeActions(target, context)));
+            }
         };
 
         long delay = this.config().delay();
