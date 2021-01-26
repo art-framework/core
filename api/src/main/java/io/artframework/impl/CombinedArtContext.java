@@ -20,6 +20,7 @@ import io.artframework.ArtContext;
 import io.artframework.CombinedResult;
 import io.artframework.FutureResult;
 import io.artframework.Target;
+import io.artframework.Variable;
 import lombok.NonNull;
 
 import java.util.*;
@@ -28,6 +29,7 @@ public final class CombinedArtContext extends DefaultArtContext implements ArtCo
 
     private final Set<ArtContext> contextSet = new HashSet<>();
     private final Map<String, Object> data = new HashMap<>();
+    private final Map<String, Variable<?>> variables = new HashMap<>();
 
     CombinedArtContext(ArtContext context1, ArtContext context2) {
         super(context1.scope(), context1.settings(), new ArrayList<>());
@@ -40,6 +42,12 @@ public final class CombinedArtContext extends DefaultArtContext implements ArtCo
     @Override
     public @NonNull Map<String, Object> data() {
         return data;
+    }
+
+    @Override
+    public Map<String, Variable<?>> variables() {
+
+        return variables;
     }
 
     @Override

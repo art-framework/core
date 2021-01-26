@@ -39,6 +39,8 @@ public class DefaultArtContext extends AbstractScoped implements ArtContext, Tri
     private final List<ArtObjectContext<?>> artContexts;
     private final Map<Class<?>, List<TriggerListener<?>>> triggerListeners = new HashMap<>();
     private final Map<String, Object> data = new HashMap<>();
+    @Getter
+    private final Map<String, Variable<?>> variables = new HashMap<>();
 
     public DefaultArtContext(Scope scope, ArtSettings settings, Collection<ArtObjectContext<?>> artContexts) {
         super(scope);

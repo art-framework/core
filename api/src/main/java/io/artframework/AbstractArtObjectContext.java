@@ -30,6 +30,7 @@ import java.util.UUID;
 public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> extends AbstractScoped implements ArtObjectContext<TArtObject> {
 
     private final ArtObjectMeta<TArtObject> information;
+    @Getter
     private final Map<String, Object> data = new HashMap<>();
     @Getter
     @Setter
@@ -43,11 +44,6 @@ public abstract class AbstractArtObjectContext<TArtObject extends ArtObject> ext
     @Override
     public ArtObjectMeta<TArtObject> meta() {
         return information;
-    }
-
-    @Override
-    public @NonNull Map<String, Object> data() {
-        return data;
     }
 
     @Override
