@@ -14,13 +14,13 @@ It provides a way to define various **workflows** using **A**ctions, **R**equire
 
 The `art-framework` has three major use cases and each of them have their own documentation. Take a look at the following overview to get a feeling where you need to start.
 
-* **[Creating ART](/developer#your-first-action)** - `DEVELOPER`  
+* **[Creating ART](/developer/)** - `DEVELOPER`  
   This guide is for you if you are a developer and want to provide actions, requirements or triggers from your plugin to others that use the art-framework.  
   *For example: a plugin, e.g. vault, wants to provide actions to give players money.*
-* **[Using ART](/developer#using-art)** - `DEVELOPER`  
+* **[Using ART](/developer/)** - `DEVELOPER`  
   This guide is for you if you want to use the art-framework in your plugin to provide flexiable configuration options to your users.  
   *For example: your plugin needs flexible rewards and wants to use the art-framework to configure those rewards.*
-* **[Configuring ART](/configuration)** - `SERVER ADMINS`  
+* **[Configuring ART](/configuration/)** - `SERVER ADMINS`  
   This guide is for your if you are a server admin and want to learn the art-syntax to configure plugins that use the art-framework.  
   *For example: you saw the config example below and want to know how to write more of this awesome stuff.*
 

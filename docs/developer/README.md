@@ -19,7 +19,7 @@ However if you want to go deeper down the rabitt hole, head to the detailed docu
 
 ## Dependencies
 
-You only need to depend on the `io.art-framework:art-core` dependency using the [jitpack repository](https://jitpack.io/).
+You only need to depend on the `io.art-framework.core:api` dependency using the [jitpack repository](https://jitpack.io/).
 
 !> Do not shade the art-framework into your plugin.
 
@@ -83,11 +83,11 @@ All ART that can be used in configs must be created by others and then be provid
 
 - **[Actions](/developer/actions)** - are used to execute stuff against a defined target type
 - **[Requirements](/developer/requirements)** - check predicates to allow or deny execution of trigger or actions
-- **[Trigger]** - events that trigger action execution
+- **[Trigger](/developer/trigger)** - events that trigger action execution
 
 ### Your first Action
 
-[Actions](creating/actions.md) are used to execute, well actions, against a defined target type. Actions can be used for:
+[Actions](/developer/actions) are used to execute, well actions, against a defined target type. Actions can be used for:
 
 - Teleporting players
 - Giving a player money or items
@@ -218,8 +218,8 @@ For triggers to work you need something that triggers the trigger, e.g. a bukkit
 As the same with the others, we are going to start by implementing the `Trigger` interface. But this time it won't take a target type parameter. We will define that later when we call the trigger.  
 You might have noticed that we don't have any methods that need to be implemented. If you need check some requirements against a target in your trigger, implement the `Requirement` interface.
 
-[PlayerJoinTrigger.java](../../bukkit/src/main/java/io/artframework/bukkit/trigger/PlayerJoinTrigger.java ':include :fragment=demo')
-[PlayerListener.java](../../bukkit/src/main/java/io/artframework/bukkit/trigger/PlayerListener.java ':include :fragment=demo')
+[PlayerJoinTrigger.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/trigger/PlayerJoinTrigger.java ':include')
+[PlayerListener.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/trigger/PlayerListener.java ':include')
 
 As you can see you just need to create a class that implements `Trigger` and is annotated with `@ART`. Then call the trigger from inside a bukkit event with the `scope.trigger(...).with(...targets...).execute()` method.  
 

@@ -26,8 +26,10 @@ import io.artframework.util.TimeUtil;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
+import lombok.extern.java.Log;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,6 +38,7 @@ import java.util.List;
  *
  * @param <TTarget> target type of the action
  */
+@Log(topic = "art-framework:action")
 @Accessors(fluent = true)
 public final class DefaultActionContext<TTarget> extends AbstractArtObjectContext<Action<TTarget>> implements ActionContext<TTarget>, FutureTargetResultCreator {
 
@@ -95,25 +98,41 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
     @Override
     public FutureResult execute(Target<TTarget> target, ExecutionContext<ActionContext<TTarget>> context) {
 
-        if (!isTargetType(target)) return empty(target, this);
+        if (!isTargetType(target)) {
+            log.finest(target.source().getClass().getCanonicalName() + " does not match required target type: " + targetClass().getCanonicalName());
+            return empty(target, this);
+        }
 
         FutureResult executionTest = testExecution(target);
-        if (executionTest.failure()) return executionTest;
+        if (executionTest.failure()) {
+            log.finest("execution test failure: " + Arrays.toString(executionTest.messages()));
+            return executionTest;
+        }
 
         CombinedResult requirementTest = testRequirements(context);
-        if (requirementTest.failure()) return of(requirementTest, target, this);
+        if (requirementTest.failure()) {
+            log.finest("requirements check failure: " + Arrays.toString(requirementTest.messages()));
+            return of(requirementTest, target, this);
+        }
 
         final FutureResult result = empty(target, this);
 
         Runnable runnable = () -> {
 
-            Result actionResult = action(target, context)
+            long startTime = System.nanoTime();
+
+            Action<TTarget> action = action(target, context);
+            log.finest("executing " + action.getClass().getCanonicalName() + " with " + target);
+            Result actionResult = action
                     .execute(target, context)
                     .with(target, this);
 
             store(target, Constants.Storage.LAST_EXECUTION, System.currentTimeMillis());
+            long endTime = System.nanoTime();
+            log.finest("executed in " + (startTime - endTime) / 1000000 + "ms: " + Arrays.toString(actionResult.messages()));
 
             if (!actionResult.error()) {
+                log.finest("executing " + actions().size() + " nested actions");
                 result.complete(actionResult.combine(executeActions(target, context)));
             }
         };
@@ -121,6 +140,7 @@ public final class DefaultActionContext<TTarget> extends AbstractArtObjectContex
         long delay = this.config().delay();
 
         if (configuration().scheduler().isPresent() && delay > 0) {
+            log.finest("running delayed action " + delay + "ms delay");
             configuration().scheduler().get().runTaskLater(runnable, delay);
         } else {
             runnable.run();
