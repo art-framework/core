@@ -21,6 +21,7 @@ import io.artframework.AbstractArtObjectContext;
 import io.artframework.ActionContext;
 import io.artframework.ArtObjectMeta;
 import io.artframework.ConfigMap;
+import io.artframework.Context;
 import io.artframework.ExecutionContext;
 import io.artframework.Requirement;
 import io.artframework.RequirementContext;
@@ -30,6 +31,7 @@ import io.artframework.Trigger;
 import io.artframework.TriggerContext;
 import io.artframework.TriggerFactory;
 import io.artframework.TriggerListener;
+import io.artframework.Variable;
 import io.artframework.conf.Constants;
 import io.artframework.conf.TriggerConfig;
 import lombok.Getter;
@@ -46,13 +48,15 @@ import java.util.Set;
 
 @SuppressWarnings("unused")
 @Accessors(fluent = true)
-public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> implements TriggerContext {
+public class DefaultTriggerContext extends AbstractArtObjectContext<Trigger> implements TriggerContext, Context {
 
     @Getter
     private final List<ActionContext<?>> actions = new ArrayList<>();
     @Getter
     private final List<RequirementContext<?>> requirements = new ArrayList<>();
     private final Map<Class<?>, Set<TriggerListener<?>>> listeners = new HashMap<>();
+    @Getter
+    private final Map<String, Variable<?>> variables = new HashMap<>();
     @Getter
     private final TriggerFactory factory;
     private final ConfigMap artObjectConfig;

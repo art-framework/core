@@ -16,9 +16,22 @@
 
 package io.artframework.impl;
 
-import io.artframework.*;
+import io.artframework.ArtContext;
+import io.artframework.ArtMetaDataException;
+import io.artframework.ArtObjectContext;
+import io.artframework.ExecutionContext;
+import io.artframework.GenericRequirement;
+import io.artframework.ParseException;
+import io.artframework.Requirement;
+import io.artframework.RequirementContext;
+import io.artframework.Result;
+import io.artframework.ResultCreator;
+import io.artframework.ResultStatus;
+import io.artframework.Scope;
+import io.artframework.Target;
 import io.artframework.integration.data.Player;
 import io.artframework.integration.targets.PlayerTarget;
+import lombok.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -29,6 +42,9 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SuppressWarnings("ALL")
@@ -64,5 +80,50 @@ class DefaultArtContextTest implements ResultCreator {
                     .extracting(Result::status)
                     .isEqualTo(ResultStatus.SUCCESS);
         }
+
+        @Test
+        @DisplayName("should store and access variable")
+        void shouldStoreAndAccessVariable() throws ArtMetaDataException, ParseException {
+
+
+            GenericRequirement requirement = spy(new GenericRequirement() {
+                @Override
+                public Result test(@NonNull Target<Object> target, @NonNull ExecutionContext<RequirementContext<Object>> context) {
+
+                    assertThat(context.var("foo", String.class))
+                            .isPresent().get()
+                            .isEqualTo("bar");
+
+                    context.var("test", true);
+
+                    return success();
+                }
+            });
+
+            scope.register().requirements().add("foobar", requirement);
+
+            ArtContext context = scope.load(Arrays.asList(
+                    "?foobar"
+            ));
+
+            context.var("foo", "bar");
+
+            context.test(new Player());
+
+            verify(requirement, times(1)).test(any(), any());
+            assertThat(context.var("test"))
+                    .isPresent().get()
+                    .isEqualTo(true);
+        }
     }
+
+    public static class TestRequirement implements Requirement<String> {
+
+        @Override
+        public Result test(@NonNull Target<String> target, @NonNull ExecutionContext<RequirementContext<String>> context) {
+
+            return success();
+        }
+    }
+
 }

@@ -17,12 +17,26 @@
 package io.artframework.impl;
 
 import com.google.common.collect.ImmutableList;
-import io.artframework.*;
+import io.artframework.AbstractScoped;
+import io.artframework.ArtObject;
+import io.artframework.ArtObjectContext;
+import io.artframework.Context;
+import io.artframework.ExecutionContext;
+import io.artframework.Scope;
+import io.artframework.Target;
+import io.artframework.Variable;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.Stack;
 
 @Accessors(fluent = true)
 public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> extends AbstractScoped implements ExecutionContext<TContext> {
@@ -30,6 +44,7 @@ public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> exten
     private final Context root;
     private final Container container;
     private final TContext currentContext;
+    private final Map<String, Variable<?>> variables = new HashMap<>();
 
     public DefaultExecutionContext(
             @NonNull Scope scope,
@@ -52,6 +67,11 @@ public class DefaultExecutionContext<TContext extends ArtObjectContext<?>> exten
     @Override
     public Optional<Context> root() {
         return Optional.ofNullable(root);
+    }
+
+    public Map<String, Variable<?>> variables() {
+
+        return root().map(Context::variables).orElse(variables);
     }
 
     @Override

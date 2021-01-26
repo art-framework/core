@@ -21,6 +21,7 @@ import lombok.NonNull;
 import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 public interface Context extends Scoped {
 
@@ -95,5 +96,112 @@ public interface Context extends Scoped {
 
     default <TValue> Optional<TValue> data(Target<?> target, String key, Class<TValue> valueClass) {
         return data(target.uniqueId() + "#" + key, valueClass);
+    }
+
+    /**
+     * Use the variables map to directly modify the variables stored in this context.
+     * <p>Any modification to it will be transparent to the root variable store.
+     *
+     * @return a reference to the variable store
+     */
+    Map<String, Variable<?>> variables();
+
+    /**
+     * Tries to find a variable with the given key.
+     *
+     * @param key the key of the variable
+     * @return the value of the variable
+     */
+    default Optional<Object> var(@NonNull String key) {
+
+        return Optional.ofNullable(variables().get(key))
+                .map(Variable::value);
+    }
+
+    /**
+     * Tries to find a variable with the given key and casts it to the provided type.
+     * <p>An empty optional is returned if the value of the variable does not match the given type
+     * or if no variable with the given key is found.
+     *
+     * @param key the key of the variable
+     * @param type the class of the variable type
+     * @param <TValue> the type of the variable
+     * @return the value of the variable cast to the given type
+     */
+    default <TValue> Optional<TValue> var(@NonNull String key, @NonNull Class<TValue> type) {
+
+        return Optional.ofNullable(variables().get(key))
+                .filter(variable -> type.isAssignableFrom(variable.type()))
+                .map(variable -> type.cast(variable.value()));
+    }
+
+    /**
+     * Stores a new variable under the given key.
+     * <p>Any existing variable with the same key is overwritten.
+     * Use the {@link #varIfAbsent(String, Object)} method to honor existing variables.
+     *
+     * @param key      the key of the variable
+     * @param value    the value of the variable
+     * @param <TValue> the type of the variable
+     * @return this execution context
+     */
+    default <TValue> Context var(@NonNull String key, @NonNull TValue value) {
+
+        variables().put(key, new Variable<>(key, value));
+
+        return this;
+    }
+
+    /**
+     * Stores a new variable under the given key that is resolved using the
+     * provided supplier once requested.
+     * <p>Any existing variable with the same key is overwritten.
+     * Use the {@link #varIfAbsent(String, Class, Supplier)} method to honor existing variables.
+     *
+     * @param key the key of the variable
+     * @param type the class of the variable type
+     * @param value the function that is called when the variable value is requested
+     * @param <TValue> the type of the variable
+     * @return this execution context
+     */
+    default <TValue> Context var(@NonNull String key, Class<TValue> type, @NonNull Supplier<TValue> value) {
+
+        variables().put(key, new Variable<>(key, type, value));
+
+        return this;
+    }
+
+    /**
+     * Stores a new variable under the given key if no variable with the same key exists.
+     * <p>Use the {@link #var(String, Object)} method to overwrite any existing variable.
+     *
+     * @param key the key of the variable
+     * @param value the value of the variable
+     * @param <TValue> the type of the variable
+     * @return this execution context
+     */
+    default <TValue> Context varIfAbsent(@NonNull String key, @NonNull TValue value) {
+
+        variables().putIfAbsent(key, new Variable<>(key, value));
+
+        return this;
+    }
+
+    /**
+     * Stores a new variable under the given key that is resolved using the
+     * provided supplier once requested.
+     * <p>Use the {@link #var(String, Class, Supplier)} method to overwrite any existing variable.
+     *
+     * @param key the key of the variable
+     * @param type the class of the variable type
+     * @param value the function that is called when the variable value is requested
+     * @param <TValue> the type of the variable
+     * @return this execution context
+     */
+    default <TValue> Context varIfAbsent(@NonNull String key, Class<TValue> type, @NonNull Supplier<TValue> value) {
+
+        variables().putIfAbsent(key, new Variable<>(key, type, value));
+
+        return this;
     }
 }
