@@ -16,7 +16,6 @@
 
 package io.artframework;
 
-import io.artframework.annotations.OnBootstrap;
 import io.artframework.conf.Settings;
 import io.artframework.impl.DefaultScope;
 
@@ -63,8 +62,7 @@ public interface Scope extends DataProvider {
 
     /**
      * Tries to find a provider for the registered provider class and returns its instance.
-     * <p>By default all providers are singletons that can be registered {@link OnBootstrap}
-     * with the {@link BootstrapScope}.
+     * <p>The lifetime of the underlying provider is handled by the module that registered it.
      *
      * @param providerClass the class of the provider that should be retrieved
      * @param <TProvider> the type of the provider

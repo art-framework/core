@@ -6,7 +6,7 @@ package io.artframework;
  * <p>Use the {@link #loadAll()} and {@link #enableAll()} methods to load and enable
  * all modules in the configuration after the configuration is complete and sealed.
  */
-public interface BootstrapPhase extends Scoped {
+public interface BootstrapPhase extends BootstrapScope {
 
     /**
      * Loads all modules in the scope.

@@ -33,13 +33,13 @@ import java.util.function.Function;
 @Getter
 @Log(topic = "art-framework")
 @Accessors(fluent = true)
-public final class DefaultScope implements BootstrapScope {
+public final class DefaultScope implements BootstrapScope, BootstrapPhase {
 
     private final Settings settings;
     private final BootstrapModule bootstrapModule;
     private final Map<Object, Object> data = new HashMap<>();
-    private final Map<Class<?>, Provider> providers = new HashMap<>();
-    private final Map<Class<? extends Provider>, Function<Scope, ? extends Provider>> providerMap = new HashMap<>();
+    // class of the provider to prover function mapping
+    private final Map<Class<?>, Function<Scope, ? extends Provider>> providerMap = new HashMap<>();
 
     private final Configuration.ConfigurationBuilder configurationBuilder = Configuration.builder()
             .actions(ActionProvider.of(this))
@@ -85,7 +85,7 @@ public final class DefaultScope implements BootstrapScope {
     }
 
     @Override
-    public <TProvider extends Provider> BootstrapScope add(Class<TProvider> providerClass, Function<Scope, TProvider> supplier) {
+    public <TProvider extends Provider> BootstrapScope addProvider(Class<TProvider> providerClass, Function<Scope, TProvider> supplier) {
 
         if (bootstrapped()) {
             throw new UnsupportedOperationException("Cannot register provider after bootstrapping has finished.");
@@ -96,10 +96,17 @@ public final class DefaultScope implements BootstrapScope {
     }
 
     @Override
+    public <TProvider extends Provider> BootstrapScope addSingletonProvider(Class<TProvider> providerClass, TProvider provider) {
+
+        return addProvider(providerClass, scope -> provider);
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <TProvider extends Provider> TProvider get(Class<TProvider> providerClass) {
 
-        return (TProvider) ReflectionUtil.getEntryForTargetClass(providerClass, providers)
+        return (TProvider) ReflectionUtil.getEntryForTargetClass(providerClass, providerMap)
+                .map(scopeFunction -> scopeFunction.apply(this))
                 .orElse(null);
     }
 
@@ -117,24 +124,27 @@ public final class DefaultScope implements BootstrapScope {
     }
 
     @Override
-    public Scope bootstrap() throws BootstrapException {
+    public BootstrapPhase bootstrap() throws BootstrapException {
         if (bootstrapped()) {
-            log.warning("Tried to bootstrap " + bootstrapModule().getClass().getCanonicalName() + " after it was already bootstrapped!");
-            return this;
+            throw new UnsupportedOperationException("Tried to bootstrap " + bootstrapModule().getClass().getCanonicalName() + " after it was already bootstrapped!");
         }
 
-        BootstrapPhase bootstrap = this.configuration.modules().bootstrap(this);
+        this.configuration.modules().bootstrap(this);
         this.bootstrapped = true;
 
-        for (Map.Entry<Class<? extends Provider>, Function<Scope, ? extends Provider>> entry : providerMap.entrySet()) {
-            providers.put(entry.getKey(), entry.getValue().apply(this));
-        }
-        providerMap.clear();
-
-        bootstrap.loadAll();
-        bootstrap.enableAll();
-
         return this;
+    }
+
+    @Override
+    public void loadAll() {
+
+        this.configuration().modules().loadAll();
+    }
+
+    @Override
+    public void enableAll() {
+
+        this.configuration().modules().enableAll();
     }
 
     @Override

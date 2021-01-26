@@ -52,7 +52,7 @@ public class BootstrapTestModule implements BootstrapModule {
         @OnBootstrap
         public void onBootstrap(BootstrapScope scope) {
             called = true;
-            scope.add(CustomProvider.class, CustomProvider::new);
+            scope.addProvider(CustomProvider.class, CustomProvider::new);
         }
     }
 
