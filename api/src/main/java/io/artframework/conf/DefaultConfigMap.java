@@ -16,6 +16,7 @@
 
 package io.artframework.conf;
 
+import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.artframework.*;
@@ -70,8 +71,17 @@ public class DefaultConfigMap implements ConfigMap {
         ArrayList<ConfigValue> resolvedValues = new ArrayList<>();
         for (ConfigValue configValue : configValues()) {
 
-            if (configValue.value() instanceof String) {
-                configValue = configValue.withValue(scope.configuration().replacements().replace(String.valueOf(configValue.value()), new ReplacementContext(scope, target, context)));
+            ReplacementContext replacementContext = new ReplacementContext(scope, target, context);
+            if (configValue.field().type().isArray()) {
+                if (configValue.field().type().isArray() && String.class.isAssignableFrom(configValue.field().type().getComponentType())) {
+                    String[] values = (String[]) configValue.value();
+                    for (int i = 0; i < values.length; i++) {
+                        values[i] = scope.configuration().replacements().replace(values[i], replacementContext);
+                    }
+                    configValue = configValue.withValue(values);
+                }
+            } else {
+                configValue = configValue.withValue(scope.configuration().replacements().replace(String.valueOf(configValue.value()), replacementContext));
             }
 
             ConfigValue finalConfigValue = configValue;
