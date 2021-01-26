@@ -63,6 +63,11 @@ public class Settings extends SettingsBase implements Serializable, Cloneable {
      */
     @Builder.Default
     private boolean autoRegisterAllArt = false;
+    /**
+     * If set to true the art-framework will increase the log level to fines and print debug outputs.
+     */
+    @Builder.Default
+    private boolean debug = false;
 
     @Builder.Default
     private ArtSettings artSettings = ArtSettings.getDefault();

@@ -29,6 +29,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.logging.Handler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @Getter
 @Log(topic = "art-framework")
@@ -129,6 +132,10 @@ public final class DefaultScope implements BootstrapScope, BootstrapPhase {
             throw new UnsupportedOperationException("Tried to bootstrap " + bootstrapModule().getClass().getCanonicalName() + " after it was already bootstrapped!");
         }
 
+        if (settings().debug()) {
+            setDebugLogLevel();
+        }
+
         this.configuration.modules().bootstrap(this);
         this.bootstrapped = true;
 
@@ -157,5 +164,19 @@ public final class DefaultScope implements BootstrapScope, BootstrapPhase {
     public ArtContext load(Collection<String> list) throws ParseException {
 
         return ArtLoader.of(this).parse(list);
+    }
+
+    private void setDebugLogLevel() {
+
+        setLevel(Level.ALL);
+    }
+
+    public static void setLevel(Level targetLevel) {
+        Logger root = Logger.getLogger("");
+        root.setLevel(targetLevel);
+        for (Handler handler : root.getHandlers()) {
+            handler.setLevel(targetLevel);
+        }
+        System.out.println("level set: " + targetLevel.getName());
     }
 }
