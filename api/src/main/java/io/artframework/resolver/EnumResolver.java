@@ -2,7 +2,7 @@ package io.artframework.resolver;
 
 import io.artframework.ResolveException;
 import io.artframework.Resolver;
-import io.artframework.ResolverContext;
+import io.artframework.ResolveContext;
 import io.artframework.annotations.ConfigOption;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
@@ -12,7 +12,7 @@ public class EnumResolver implements Resolver<Enum> {
     String name;
 
     @Override
-    public Enum<?> resolve(ResolverContext context) throws ResolveException {
+    public Enum<?> resolve(ResolveContext context) throws ResolveException {
 
         if (!context.type().isEnum()) {
             throw new ResolveException("The given type " + context.type().getCanonicalName() + " is not an Enum!");

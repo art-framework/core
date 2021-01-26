@@ -67,7 +67,7 @@ class EnumResolverTest {
         private int level;
 
         @Override
-        public Level resolve(ResolverContext context) throws ResolveException {
+        public Level resolve(ResolveContext context) throws ResolveException {
 
             return Level.by(level);
         }

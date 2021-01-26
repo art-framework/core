@@ -19,6 +19,7 @@ package io.artframework.conf;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.artframework.*;
+import io.artframework.impl.ReplacementContext;
 import io.artframework.parser.ConfigParser;
 import io.artframework.util.ReflectionUtil;
 import lombok.Getter;
@@ -68,30 +69,36 @@ public class DefaultConfigMap implements ConfigMap {
 
         ArrayList<ConfigValue> resolvedValues = new ArrayList<>();
         for (ConfigValue configValue : configValues()) {
+
+            if (configValue.value() instanceof String) {
+                configValue = configValue.withValue(scope.configuration().replacements().replace(String.valueOf(configValue.value()), new ReplacementContext(scope, target, context)));
+            }
+
+            ConfigValue finalConfigValue = configValue;
             if (configValue.field().resolve() && configValue.value() instanceof String) {
                 Optional<? extends ResolverFactory<?>> factory;
                 if (configValue.field().resolvers() != null && configValue.field().resolvers().length > 0) {
                     factory = Arrays.stream(configValue.field().resolvers()).findFirst()
-                            .flatMap(aClass -> scope.configuration().resolvers().get(configValue.field().type(), aClass));
+                            .flatMap(aClass -> scope.configuration().resolvers().get(finalConfigValue.field().type(), aClass));
                 } else {
                     factory = scope.configuration().resolvers().get(configValue.field().type());
                 }
                 resolvedValues.add(configValue.withValue(factory.map(resolverFactory -> {
                     try {
                         ConfigParser parser = ConfigParser.of(resolverFactory.configMap());
-                        if (parser.accept(configValue.value().toString())) {
+                        if (parser.accept(finalConfigValue.value().toString())) {
                             List<KeyValuePair> configValues = parser.extractKeyValuePairs();
-                            return resolverFactory.create(configValues).resolve(ResolverContext.of(
+                            return resolverFactory.create(configValues).resolve(ResolveContext.of(
                                     scope,
                                     resolverFactory.configMap(),
-                                    configValue.field().type(),
+                                    finalConfigValue.field().type(),
                                     configValues,
                                     target,
                                     context
                             ));
                         }
                     } catch (ConfigurationException | ParseException | ResolveException e) {
-                        log.severe("unable to resolve config \"" + configValue.value() + "\" for " + configValue.field() + ": " + e.getMessage());
+                        log.severe("unable to resolve config \"" + finalConfigValue.value() + "\" for " + finalConfigValue.field() + ": " + e.getMessage());
                         e.printStackTrace();
                     }
 
@@ -173,12 +180,12 @@ public class DefaultConfigMap implements ConfigMap {
         for (int i = 0; i < keyValuePairs.size(); i++) {
             KeyValuePair keyValue = keyValuePairs.get(i);
             ConfigFieldInformation configFieldInformation = null;
-            if (keyValue.getKey().isPresent() && configFields.containsKey(keyValue.getKey().get())) {
-                configFieldInformation = configFields.get(keyValue.getKey().get());
+            if (keyValue.key().isPresent() && configFields.containsKey(keyValue.key().get())) {
+                configFieldInformation = configFields.get(keyValue.key().get());
                 usedKeyValue = true;
-            } else if (configFields.size() == 1 && keyValue.getKey().isEmpty()) {
+            } else if (configFields.size() == 1 && keyValue.key().isEmpty()) {
                 configFieldInformation = configFields.values().stream().findFirst().get();
-            } else if (keyValue.getKey().isEmpty()) {
+            } else if (keyValue.key().isEmpty()) {
                 if (usedKeyValue) {
                     throw new ConfigurationException("Positioned parameter found after key=value pair usage. Positioned parameters must come first.");
                 }
@@ -191,11 +198,11 @@ public class DefaultConfigMap implements ConfigMap {
             }
 
             if (configFieldInformation == null) {
-                log.warning("No matching field for key " + keyValue.getKey().orElse("n/a") + " found!");
+                log.warning("No matching field for key " + keyValue.key().orElse("n/a") + " found!");
                 continue;
             }
 
-            if (keyValue.getValue().isEmpty()) {
+            if (keyValue.value().isEmpty()) {
                 throw new ConfigurationException("Config " + configFieldInformation.identifier() + " has an empty value.");
             }
 
@@ -204,7 +211,7 @@ public class DefaultConfigMap implements ConfigMap {
                 continue;
             }
 
-            Object value = ReflectionUtil.toObject(configFieldInformation.type(), keyValue.getValue().get());
+            Object value = ReflectionUtil.toObject(configFieldInformation.type(), keyValue.value().get());
 
             fieldValues.add(new ConfigValue(configFieldInformation, value));
             mappedFields.add(configFieldInformation);

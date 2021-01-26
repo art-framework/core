@@ -17,6 +17,7 @@
 package io.artframework.conf;
 
 import lombok.Value;
+import lombok.With;
 import lombok.experimental.Accessors;
 
 import javax.annotation.Nullable;
@@ -28,6 +29,7 @@ import java.util.Optional;
  * to map the parsed values into the {@link io.artframework.ConfigMap}.
  */
 @Value
+@Accessors(fluent = true)
 public class KeyValuePair {
 
     /**
@@ -43,6 +45,7 @@ public class KeyValuePair {
     }
 
     String key;
+    @With
     String value;
 
     private KeyValuePair(String key, String value) {
@@ -50,11 +53,11 @@ public class KeyValuePair {
         this.value = value;
     }
 
-    public Optional<String> getKey() {
+    public Optional<String> key() {
         return Optional.ofNullable(key);
     }
 
-    public Optional<String> getValue() {
+    public Optional<String> value() {
         return Optional.ofNullable(value);
     }
 }
