@@ -156,7 +156,15 @@ public class ArtBukkitModule implements BootstrapModule {
                     .add(Event.class, BukkitEventTarget::new)
                 .and()
                 .resolvers()
-                    .add(MaterialResolver.class);
+                    .add(MaterialResolver.class)
+                .and()
+                .replacements()
+                    .add((value, context) -> value.replace("${player}", context.target()
+                            .filter(target -> target.isTargetType(OfflinePlayer.class))
+                            .map(target -> (OfflinePlayer) target.source())
+                            .map(OfflinePlayer::getName)
+                            .orElse(value)
+                    ));
     }
 
     @OnReload
