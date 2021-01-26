@@ -8,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -52,6 +53,24 @@ class EnumResolverTest {
         assertThat(config)
                 .extracting(testConfig -> testConfig.level)
                 .isEqualTo(Level.MEDIUM);
+    }
+
+    @Test
+    @DisplayName("should use default value if nothing is passed")
+    void shouldKeepDefaultValue() throws ConfigurationException {
+
+        ART.globalScope().register()
+                .resolvers().add(CustomEnumResolver.class);
+
+        TestConfig cfg = new TestConfig();
+        cfg.level = Level.HIGH;
+        TestConfig config = ConfigMap.of(TestConfig.class)
+                .with(new ArrayList<>()).resolve(ART.globalScope())
+                .applyTo(cfg);
+
+        assertThat(config)
+                .extracting(testConfig -> testConfig.level)
+                .isEqualTo(Level.HIGH);
     }
 
     public static class TestConfig {

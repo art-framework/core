@@ -21,6 +21,7 @@ import io.artframework.annotations.ConfigOption;
 import io.artframework.annotations.Resolve;
 import io.artframework.util.ConfigUtil;
 import lombok.Data;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -398,6 +399,29 @@ class ConfigParserTest {
                         .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
                         .contains(1, 2, 3);
             }
+
+            @Test
+            @DisplayName("should keep defaults if resolved value is null")
+            void shouldKeepDefaultsIfResolvedValueIsNull() throws ParseException {
+
+                ConfigParser parser = parser(ResolverExtraConfig.class);
+
+                ResolverExtraConfig config = new ResolverExtraConfig();
+                config.location = new LocationConfig(10, 20, 30);
+
+                assertThat(parser.accept("message=foobar")).isTrue();
+                
+                ResolverExtraConfig actual = parser.parse().resolve(ART.globalScope()).applyTo(config);
+
+                assertThat(actual)
+                        .extracting(resolverConfig -> resolverConfig.getLocation())
+                        .isNotNull()
+                        .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
+                        .contains(10, 20, 30);
+                assertThat(actual)
+                        .extracting(ResolverExtraConfig::getMessage)
+                        .isEqualTo("foobar");
+            }
         }
     }
 
@@ -487,5 +511,14 @@ class ConfigParserTest {
 
         @Resolve
         private LocationConfig location;
+    }
+
+    @Getter
+    public static class ResolverExtraConfig {
+
+        @Resolve
+        private LocationConfig location;
+        @ConfigOption
+        private String message;
     }
 }
