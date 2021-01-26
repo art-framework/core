@@ -1,7 +1,7 @@
 package io.artframework;
 
 import io.artframework.conf.KeyValuePair;
-import io.artframework.impl.DefaultResolverContext;
+import io.artframework.impl.DefaultResolveContext;
 import lombok.NonNull;
 
 import javax.annotation.Nullable;
@@ -9,19 +9,21 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * The ResolverContext holds additional information about the resolution
- * and provides utility methods to help in the resolution of the target type.
+ * The ResolutionContext holds additional information about the resolution of resolvers
+ * and replacement of variables.
+ * <p>Register your {@link Resolver} with the {@link ResolverProvider} and your {@link Replacement}
+ * of variables with the {@link ReplacementProvider}.
  */
-public interface ResolverContext extends Scoped {
+public interface ResolveContext extends Scoped {
 
-    static ResolverContext of(@NonNull Scope scope,
-                              @NonNull ConfigMap configMap,
-                              @NonNull Class<?> type,
-                              @NonNull List<KeyValuePair> configValues,
-                              @Nullable Target<?> target,
-                              @Nullable ExecutionContext<?> executionContext) {
+    static ResolveContext of(@NonNull Scope scope,
+                             @NonNull ConfigMap configMap,
+                             @NonNull Class<?> type,
+                             @NonNull List<KeyValuePair> configValues,
+                             @Nullable Target<?> target,
+                             @Nullable ExecutionContext<?> executionContext) {
 
-        return new DefaultResolverContext(scope, configMap, type, configValues, target, executionContext);
+        return new DefaultResolveContext(scope, configMap, type, configValues, target, executionContext);
     }
 
     /**

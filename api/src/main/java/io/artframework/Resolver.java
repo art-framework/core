@@ -35,5 +35,5 @@ public interface Resolver<TType> {
      * @return the resolved type or null if type was not found
      * @throws ResolveException if the resolution of the target type failed
      */
-    TType resolve(ResolverContext context) throws ResolveException;
+    TType resolve(ResolveContext context) throws ResolveException;
 }

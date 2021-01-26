@@ -1,23 +1,20 @@
 package io.artframework.impl;
 
-import io.artframework.*;
-import io.artframework.conf.KeyValuePair;
+import io.artframework.ExecutionContext;
+import io.artframework.Scope;
+import io.artframework.Target;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
 import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Optional;
 
 @Value
 @Accessors(fluent = true)
-public class DefaultResolverContext implements ResolverContext {
+public class ReplacementContext {
 
     @NonNull Scope scope;
-    @NonNull ConfigMap configMap;
-    @NonNull Class<?> type;
-    @NonNull List<KeyValuePair> configValues;
     @Nullable Target<?> target;
     @Nullable ExecutionContext<?> executionContext;
 

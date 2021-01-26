@@ -218,6 +218,13 @@ class ConfigMapTest {
                 .isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("should replace variables when applying config")
+    void shouldReplaceVariablesInConfig() {
+
+
+    }
+
     @Data
     public static class SingleFieldConfig {
 

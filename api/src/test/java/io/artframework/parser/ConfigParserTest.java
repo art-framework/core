@@ -500,7 +500,7 @@ class ConfigParserTest {
         }
 
         @Override
-        public LocationConfig resolve(ResolverContext context) throws ResolveException {
+        public LocationConfig resolve(ResolveContext context) throws ResolveException {
 
             return new LocationConfig(x, y, z);
         }

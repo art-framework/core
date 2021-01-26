@@ -14,6 +14,7 @@
   - [Scope](/developer/scope)
   - [Targets](/developer/targets)
   - [Resolver](/developer/resolver)
+  - [Variables](/developer/variables)
 - **CONFIGURATION**
 - [Quickstart](/configuration/)
 - [Actions](/configuration/actions)

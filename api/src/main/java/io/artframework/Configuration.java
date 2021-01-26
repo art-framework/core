@@ -44,6 +44,7 @@ public class Configuration {
     TargetProvider targets;
     ResolverProvider resolvers;
     EventProvider events;
+    ReplacementProvider replacements;
     FlowLineParserProvider parser;
     ModuleProvider modules;
     FinderProvider finder;

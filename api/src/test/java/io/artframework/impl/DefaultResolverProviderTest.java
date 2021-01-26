@@ -43,7 +43,7 @@ class DefaultResolverProviderTest {
 
     public static class TestResolver implements Resolver<String> {
         @Override
-        public String resolve(ResolverContext context) throws ResolveException {
+        public String resolve(ResolveContext context) throws ResolveException {
             return null;
         }
     }

@@ -50,6 +50,7 @@ public final class DefaultScope implements BootstrapScope {
             .finder(FinderProvider.of(this))
             .modules(ModuleProvider.of(this))
             .resolvers(ResolverProvider.of(this))
+            .replacements(ReplacementProvider.of(this))
             .parser(FlowLineParserProvider.of(this))
             .requirements(RequirementProvider.of(this))
             .targets(TargetProvider.of(this))
