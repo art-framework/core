@@ -16,7 +16,11 @@
 
 package io.artframework.parser.flow;
 
-import io.artframework.*;
+import io.artframework.ArtObjectMeta;
+import io.artframework.RequirementContext;
+import io.artframework.RequirementFactory;
+import io.artframework.RequirementProvider;
+import io.artframework.Scope;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,7 +35,11 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @SuppressWarnings("ALL")
 @DisplayName("RequirementParser")

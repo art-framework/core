@@ -23,7 +23,11 @@ import io.artframework.Target;
 import io.artframework.Variable;
 import lombok.NonNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public final class CombinedArtContext extends DefaultArtContext implements ArtContext {
 

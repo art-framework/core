@@ -3,7 +3,10 @@ package io.artframework;
 import io.artframework.impl.DefaultResolverProvider;
 import io.artframework.resolver.EnumResolver;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**

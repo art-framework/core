@@ -20,8 +20,6 @@ import io.artframework.annotations.ArtModule;
 import io.artframework.annotations.OnBootstrap;
 import io.artframework.annotations.OnEnable;
 import io.artframework.annotations.OnLoad;
-import io.artframework.events.Event;
-import io.artframework.events.EventManager;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
@@ -84,18 +82,6 @@ public final class ART {
         } catch (Exception e) {
             throw new BootstrapException(e);
         }
-    }
-
-    /**
-     * Calls the given event on all registered scopes.
-     * <p>Use the {@link io.artframework.events.EventListener} to listen on events fired by this.
-     *
-     * @param event the event that is called
-     * @param <TEvent> the type of the event
-     * @return the passed event
-     */
-    public static <TEvent extends Event> TEvent callEvent(TEvent event) {
-        return EventManager.callEvent(event);
     }
 
     /**

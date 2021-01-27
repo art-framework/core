@@ -16,10 +16,23 @@
 
 package io.artframework.impl;
 
-import io.artframework.ART;
-import io.artframework.*;
-import io.artframework.annotations.*;
-import io.artframework.events.*;
+import io.artframework.AbstractProvider;
+import io.artframework.ArtMetaDataException;
+import io.artframework.ArtModuleDependencyResolver;
+import io.artframework.BootstrapException;
+import io.artframework.BootstrapModule;
+import io.artframework.BootstrapScope;
+import io.artframework.ModuleMeta;
+import io.artframework.ModuleProvider;
+import io.artframework.ModuleRegistrationException;
+import io.artframework.ModuleState;
+import io.artframework.Scope;
+import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.OnBootstrap;
+import io.artframework.annotations.OnDisable;
+import io.artframework.annotations.OnEnable;
+import io.artframework.annotations.OnLoad;
+import io.artframework.annotations.OnReload;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.graphs.CycleSearch;
 import lombok.EqualsAndHashCode;
@@ -35,8 +48,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
-import java.util.*;
-import java.util.function.Function;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.reflections.ReflectionUtils.getAllMethods;
@@ -304,7 +324,6 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         try {
             module.onBootstrap(scope);
             updateModuleCache(module.state(ModuleState.BOOTSTRAPPED));
-            ART.callEvent(new ModuleBootstrappedEvent(module.moduleMeta()));
             logState(module);
         } catch (Exception exception) {
             throw new ModuleRegistrationException(module.moduleMeta(), ModuleState.ERROR, exception);
@@ -323,7 +342,6 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         try {
             module.onLoad(scope());
             updateModuleCache(module.state(ModuleState.LOADED));
-            ART.callEvent(new ModuleLoadedEvent(module.moduleMeta()));
             logState(module);
         } catch (Exception e) {
             updateModuleCache(module.state(ModuleState.ERROR));
@@ -340,7 +358,6 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         try {
             module.module().ifPresent(o -> ConfigUtil.injectConfigFields(scope(), o));
             module.onReload(scope());
-            ART.callEvent(new ModuleReloadedEvent(module.moduleMeta()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -356,7 +373,6 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         try {
             module.onEnable(scope());
             updateModuleCache(module.state(ModuleState.ENABLED));
-            ART.callEvent(new ModuleEnabledEvent(module.moduleMeta()));
             logState(module);
         } catch (Exception e) {
             updateModuleCache(module.state(ModuleState.ERROR));
@@ -373,7 +389,6 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         try {
             module.onDisable(scope());
             updateModuleCache(module.state(ModuleState.DISABLED));
-            ART.callEvent(new ModuleDisabledEvent(module.moduleMeta()));
             logState(module);
         } catch (Exception e) {
             updateModuleCache(module.state(ModuleState.ERROR));

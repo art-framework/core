@@ -17,14 +17,31 @@
 package io.artframework.impl;
 
 import com.google.common.collect.ImmutableList;
-import io.artframework.*;
+import io.artframework.AbstractScoped;
+import io.artframework.ActionContext;
+import io.artframework.ArtContext;
+import io.artframework.ArtObjectContext;
+import io.artframework.CombinedResult;
+import io.artframework.ExecutionContext;
+import io.artframework.FutureResult;
+import io.artframework.RequirementContext;
+import io.artframework.Result;
+import io.artframework.Scope;
+import io.artframework.Target;
+import io.artframework.TriggerContext;
+import io.artframework.TriggerListener;
+import io.artframework.Variable;
 import io.artframework.conf.ArtSettings;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 import static io.artframework.util.ReflectionUtil.getEntryForTarget;

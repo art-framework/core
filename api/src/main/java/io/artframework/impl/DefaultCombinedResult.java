@@ -17,14 +17,22 @@
 package io.artframework.impl;
 
 import com.google.common.collect.ImmutableList;
-import io.artframework.*;
+import io.artframework.CombinedResult;
+import io.artframework.Result;
+import io.artframework.ResultStatus;
+import io.artframework.Target;
+import io.artframework.TargetResult;
 import io.artframework.util.ReflectionUtil;
 import lombok.Getter;
 import lombok.Singular;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Value

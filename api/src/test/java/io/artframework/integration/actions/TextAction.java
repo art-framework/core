@@ -16,7 +16,12 @@
 
 package io.artframework.integration.actions;
 
-import io.artframework.*;
+import io.artframework.Action;
+import io.artframework.ActionContext;
+import io.artframework.ExecutionContext;
+import io.artframework.MessageSender;
+import io.artframework.Result;
+import io.artframework.Target;
 import io.artframework.annotations.ART;
 import io.artframework.annotations.ConfigOption;
 import lombok.NonNull;

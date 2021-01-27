@@ -43,7 +43,6 @@ public class Configuration {
     StorageProvider storage;
     TargetProvider targets;
     ResolverProvider resolvers;
-    EventProvider events;
     ReplacementProvider replacements;
     FlowLineParserProvider parser;
     ModuleProvider modules;

@@ -1,6 +1,17 @@
 package io.artframework.impl;
 
-import io.artframework.*;
+import io.artframework.ART;
+import io.artframework.AbstractTarget;
+import io.artframework.Action;
+import io.artframework.ActionContext;
+import io.artframework.ArtMetaDataException;
+import io.artframework.ArtObjectMeta;
+import io.artframework.ExecutionContext;
+import io.artframework.Result;
+import io.artframework.Target;
+import io.artframework.Trigger;
+import io.artframework.TriggerContext;
+import io.artframework.TriggerListener;
 import io.artframework.conf.ActionConfig;
 import io.artframework.conf.Constants;
 import io.artframework.conf.TriggerConfig;
@@ -13,7 +24,11 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @SuppressWarnings("ALL")
 class DefaultTriggerContextTest {

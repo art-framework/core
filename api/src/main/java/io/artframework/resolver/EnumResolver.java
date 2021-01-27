@@ -1,8 +1,8 @@
 package io.artframework.resolver;
 
+import io.artframework.ResolveContext;
 import io.artframework.ResolveException;
 import io.artframework.Resolver;
-import io.artframework.ResolveContext;
 import io.artframework.annotations.ConfigOption;
 
 @SuppressWarnings({"rawtypes", "unchecked"})
