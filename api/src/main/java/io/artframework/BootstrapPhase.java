@@ -10,11 +10,16 @@ public interface BootstrapPhase extends BootstrapScope {
 
     /**
      * Loads all modules in the scope.
+     *
+     * @return the current bootstrap phase
      */
-    void loadAll();
+    BootstrapPhase loadAll();
 
     /**
      * Enables all modules in the scope.
+     * <p>Will also load all modules if they have not been loaded.
+     *
+     * @return the scope of the finished bootstrap phase
      */
-    void enableAll();
+    Scope enableAll();
 }

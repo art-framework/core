@@ -76,7 +76,7 @@ public class ModuleTests {
     @DisplayName("should enable module")
     void shouldEnableModule() {
 
-        ART.bootstrap(bootstrapScope);
+        ART.bootstrap(bootstrapScope).enableAll();
 
         verify(module, times(1)).onEnable(any(Scope.class));
     }
@@ -86,7 +86,7 @@ public class ModuleTests {
     @DisplayName("should load and enable all provided modules")
     void shouldLoadAllProvidedModules() {
 
-        Scope scope = ART.bootstrap(bootstrapScope);
+        Scope scope = ART.bootstrap(bootstrapScope).enableAll();
 
         assertThat(scope.configuration().modules().all())
                 .extracting(ModuleMeta::identifier)
@@ -114,7 +114,7 @@ public class ModuleTests {
     void shouldFindAndRegisterAllArtInSubPackages() {
 
         bootstrapScope.settings().autoRegisterAllArt(true);
-        Scope scope = ART.bootstrap(bootstrapScope);
+        Scope scope = ART.bootstrap(bootstrapScope).enableAll();
 
         assertThat(scope.configuration().actions().all())
                 .hasSizeGreaterThanOrEqualTo(2)
