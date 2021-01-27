@@ -1,5 +1,6 @@
 - [Introduction](/introduction)
 - [Installation](/installation)
+- [Maven/Gradle](/dev-setup)
 - **DEVELOPER**
 - [Quickstart](/developer/)
 - [Actions](/developer/actions)

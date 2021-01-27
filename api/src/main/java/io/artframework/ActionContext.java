@@ -20,8 +20,10 @@ import io.artframework.conf.ActionConfig;
 import io.artframework.impl.DefaultActionContext;
 import lombok.NonNull;
 
+import java.util.function.Consumer;
+
 /**
- * The <pre>ActionContext</pre> wraps the actual {@link Action} and handles
+ * The ActionContext wraps the actual {@link Action} and handles
  * the execution logic of the action.
  *
  * @param <TTarget> type of the target
@@ -54,6 +56,19 @@ public interface ActionContext<TTarget> extends Action<TTarget>, ArtObjectContex
      */
     ActionConfig config();
 
+    /**
+     * Executes the action in this context and all nested actions using
+     * the provided execution context and all targets in the context that match
+     * the target type of the action.
+     * <p>The context will be called sequentially per target that matches the type.
+     * <p>As actions may be delayed a {@link FutureResult} is returned and must be
+     * subscribed with the {@link FutureResult#onCompletion(Consumer)} to listen to
+     * the completion of the action and all of its sub actions. The delay here may be
+     * significant (minutes) depending on the configuration of the action.
+     *
+     * @param context the execution context that called the action context execution
+     * @return the result of the execution
+     */
     @SuppressWarnings("unchecked")
     default FutureResult execute(@NonNull ExecutionContext<?> context) {
         return context.targets().stream()

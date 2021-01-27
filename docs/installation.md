@@ -1,5 +1,7 @@
 # Installation
 
+This installation guide is for Minecraft server owners that want to use the `art-framework`. Developers can look at the [quickstart guide](/developer/) or the [maven/gradle](dev-setup.md) page.
+
 To use the art-framework on your server, you have to do three things:
 
 1. [Download the latest release](https://github.com/art-framework/art-core/releases/latest) and install the ART plugin for your Minecraft distribution.  
