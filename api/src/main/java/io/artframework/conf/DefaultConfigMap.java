@@ -16,10 +16,17 @@
 
 package io.artframework.conf;
 
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import io.artframework.*;
+import io.artframework.ConfigMap;
+import io.artframework.ConfigurationException;
+import io.artframework.ExecutionContext;
+import io.artframework.ParseException;
+import io.artframework.ResolveContext;
+import io.artframework.ResolveException;
+import io.artframework.ResolverFactory;
+import io.artframework.Scope;
+import io.artframework.Target;
 import io.artframework.impl.ReplacementContext;
 import io.artframework.parser.ConfigParser;
 import io.artframework.util.ReflectionUtil;
@@ -33,7 +40,13 @@ import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Value

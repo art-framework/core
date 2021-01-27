@@ -23,7 +23,11 @@ import io.artframework.RequirementContext;
 import io.artframework.TriggerContext;
 import io.artframework.impl.DefaultActionContext;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
