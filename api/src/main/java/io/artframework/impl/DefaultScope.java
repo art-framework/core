@@ -143,15 +143,19 @@ public final class DefaultScope implements BootstrapScope, BootstrapPhase {
     }
 
     @Override
-    public void loadAll() {
+    public BootstrapPhase loadAll() {
 
         this.configuration().modules().loadAll();
+
+        return this;
     }
 
     @Override
-    public void enableAll() {
+    public Scope enableAll() {
 
         this.configuration().modules().enableAll();
+
+        return this;
     }
 
     @Override
