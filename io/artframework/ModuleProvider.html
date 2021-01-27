@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":1,"i7":6,"i8":6,"i9":6,"i10":6,"i11":6,"i12":6};
+var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":1,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6,"i15":6};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -163,7 +163,7 @@ extends <a href="Provider.html" title="interface in io.artframework">Provider</a
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code><a href="BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a></code></td>
+<td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#bootstrap(io.artframework.BootstrapScope)">bootstrap</a></span>&#8203;(<a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;bootstrapScope)</code></th>
 <td class="colLast">
 <div class="block">Bootstraps the given module and all of the supplied sub modules.</div>
@@ -177,67 +177,88 @@ extends <a href="Provider.html" title="interface in io.artframework">Provider</a
 </td>
 </tr>
 <tr id="i3" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#disableAll()">disableAll</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Disables all modules in the scope.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#enable(java.lang.Class)">enable</a></span>&#8203;(@NonNull java.lang.Class&lt;?&gt;&nbsp;moduleClass)</code></th>
 <td class="colLast">
 <div class="block">Loads the given module into the art-framework configuration instance and enables it.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#enable(java.lang.Object)">enable</a></span>&#8203;(@NonNull java.lang.Object&nbsp;module)</code></th>
 <td class="colLast">
 <div class="block">Loads the given module into the art-framework configuration instance and enables it.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#enableAll()">enableAll</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Enables all modules in the scope.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.util.Optional&lt;<a href="ModuleMeta.html" title="interface in io.artframework">ModuleMeta</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#get(java.lang.Object)">get</a></span>&#8203;(java.lang.Object&nbsp;module)</code></th>
 <td class="colLast">
 <div class="block">Tries to find the metadata of the given module.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#loadAll()">loadAll</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Loads all modules in the scope.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>static <a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#of(io.artframework.Scope)">of</a></span>&#8203;(<a href="Scope.html" title="interface in io.artframework">Scope</a>&nbsp;scope)</code></th>
 <td class="colLast">
 <div class="block">Creates a new default instance of the module provider.</div>
 </td>
 </tr>
-<tr id="i7" class="rowColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#register(java.lang.Class)">register</a></span>&#8203;(@NonNull java.lang.Class&lt;?&gt;&nbsp;moduleClass)</code></th>
 <td class="colLast">
 <div class="block">Registers the given class as a module with the provider.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#register(java.lang.Object)">register</a></span>&#8203;(@NonNull java.lang.Object&nbsp;module)</code></th>
 <td class="colLast">
 <div class="block">Registers the given module with the provider, but does not enable it.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reload(java.lang.Class)">reload</a></span>&#8203;(@NonNull java.lang.Class&lt;?&gt;&nbsp;moduleClass)</code></th>
 <td class="colLast">
 <div class="block">Reloads the module with the given class if it exists and is enabled.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reloadAll()">reloadAll</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Reloads all enabled modules calling the tagged reload method if it is present.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code>java.util.Optional&lt;<a href="ArtModuleDependencyResolver.html" title="interface in io.artframework">ArtModuleDependencyResolver</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resolver()">resolver</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resolver(io.artframework.ArtModuleDependencyResolver)">resolver</a></span>&#8203;(<a href="ArtModuleDependencyResolver.html" title="interface in io.artframework">ArtModuleDependencyResolver</a>&nbsp;resolver)</code></th>
 <td class="colLast">
@@ -330,7 +351,7 @@ extends <a href="Provider.html" title="interface in io.artframework">Provider</a
 <ul class="blockList">
 <li class="blockList">
 <h4>bootstrap</h4>
-<pre class="methodSignature"><a href="BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a>&nbsp;bootstrap&#8203;(<a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;bootstrapScope)
+<pre class="methodSignature"><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a>&nbsp;bootstrap&#8203;(<a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;bootstrapScope)
                   throws <a href="BootstrapException.html" title="class in io.artframework">BootstrapException</a></pre>
 <div class="block">Bootstraps the given module and all of the supplied sub modules.</div>
 <dl>
@@ -341,6 +362,36 @@ extends <a href="Provider.html" title="interface in io.artframework">Provider</a
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="BootstrapException.html" title="class in io.artframework">BootstrapException</a></code></dd>
 </dl>
+</li>
+</ul>
+<a id="loadAll()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>loadAll</h4>
+<pre class="methodSignature">void&nbsp;loadAll()</pre>
+<div class="block">Loads all modules in the scope.</div>
+</li>
+</ul>
+<a id="enableAll()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>enableAll</h4>
+<pre class="methodSignature">void&nbsp;enableAll()</pre>
+<div class="block">Enables all modules in the scope.</div>
+</li>
+</ul>
+<a id="disableAll()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>disableAll</h4>
+<pre class="methodSignature">void&nbsp;disableAll()</pre>
+<div class="block">Disables all modules in the scope.</div>
 </li>
 </ul>
 <a id="register(java.lang.Object)">

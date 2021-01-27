@@ -352,7 +352,9 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <div class="block">Resolves all values in this config map using the provided scope.
  <p>All config fields that are tagged with @<a href="annotations/Resolve.html" title="annotation in io.artframework.annotations"><code>Resolve</code></a> and not primitive values
  will be resolved using the registered <a href="Resolver.html" title="interface in io.artframework"><code>Resolver</code></a>.
- <p>Values in this config map can only resolve after they were provided <a href="#with(java.util.List)"><code>with(List)</code></a>.</div>
+ <p>Values in this config map can only resolve after they were provided <a href="#with(java.util.List)"><code>with(List)</code></a>.
+ <p>If an <a href="ExecutionContext.html" title="interface in io.artframework"><code>ExecutionContext</code></a> is provided all variables that are strings or primitive types
+ will be replaced using the ${key} syntax before resolving the config map.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>scope</code> - the scope used when resolving the values of this config map. must not be null.</dd>

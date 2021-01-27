@@ -123,15 +123,15 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Superinterfaces:</dt>
-<dd><code><a href="Scoped.html" title="interface in io.artframework">Scoped</a></code></dd>
+<dd><code><a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a></code>, <code><a href="DataProvider.html" title="interface in io.artframework">DataProvider</a></code>, <code><a href="Scope.html" title="interface in io.artframework">Scope</a></code></dd>
 </dl>
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><code><a href="impl/DefaultModuleProvider.html" title="class in io.artframework.impl">DefaultModuleProvider</a></code></dd>
+<dd><code><a href="impl/DefaultScope.html" title="class in io.artframework.impl">DefaultScope</a></code></dd>
 </dl>
 <hr>
 <pre>public interface <span class="typeNameLabel">BootstrapPhase</span>
-extends <a href="Scoped.html" title="interface in io.artframework">Scoped</a></pre>
+extends <a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a></pre>
 <div class="block">The bootstrap phase is a special state of the module provider
  after bootstrapping all modules has finished and before they are loaded.
  <p>Use the <a href="#loadAll()"><code>loadAll()</code></a> and <a href="#enableAll()"><code>enableAll()</code></a> methods to load and enable
@@ -157,14 +157,14 @@ extends <a href="Scoped.html" title="interface in io.artframework">Scoped</a></p
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code><a href="Scope.html" title="interface in io.artframework">Scope</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#enableAll()">enableAll</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Enables all modules in the scope.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>void</code></td>
+<td class="colFirst"><code><a href="BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#loadAll()">loadAll</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Loads all modules in the scope.</div>
@@ -172,11 +172,25 @@ extends <a href="Scoped.html" title="interface in io.artframework">Scoped</a></p
 </tr>
 </table>
 <ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.io.artframework.Scoped">
+<li class="blockList"><a id="methods.inherited.from.class.io.artframework.BootstrapScope">
 <!--   -->
 </a>
-<h3>Methods inherited from interface&nbsp;io.artframework.<a href="Scoped.html" title="interface in io.artframework">Scoped</a></h3>
-<code><a href="Scoped.html#configuration()">configuration</a>, <a href="Scoped.html#scope()">scope</a></code></li>
+<h3>Methods inherited from interface&nbsp;io.artframework.<a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a></h3>
+<code><a href="BootstrapScope.html#addProvider(java.lang.Class,java.util.function.Function)">addProvider</a>, <a href="BootstrapScope.html#addSingletonProvider(java.lang.Class,TProvider)">addSingletonProvider</a>, <a href="BootstrapScope.html#bootstrap()">bootstrap</a>, <a href="BootstrapScope.html#bootstrapModule()">bootstrapModule</a>, <a href="BootstrapScope.html#configure(java.util.function.Consumer)">configure</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.io.artframework.DataProvider">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;io.artframework.<a href="DataProvider.html" title="interface in io.artframework">DataProvider</a></h3>
+<code><a href="DataProvider.html#data()">data</a>, <a href="DataProvider.html#data(java.lang.Object)">data</a>, <a href="DataProvider.html#data(java.lang.Object,TValue)">data</a></code></li>
+</ul>
+<ul class="blockList">
+<li class="blockList"><a id="methods.inherited.from.class.io.artframework.Scope">
+<!--   -->
+</a>
+<h3>Methods inherited from interface&nbsp;io.artframework.<a href="Scope.html" title="interface in io.artframework">Scope</a></h3>
+<code><a href="Scope.html#configuration()">configuration</a>, <a href="Scope.html#get(java.lang.Class)">get</a>, <a href="Scope.html#load(java.lang.String,java.util.Collection)">load</a>, <a href="Scope.html#load(java.util.Collection)">load</a>, <a href="Scope.html#register()">register</a>, <a href="Scope.html#settings()">settings</a>, <a href="Scope.html#store()">store</a>, <a href="Scope.html#trigger(java.lang.Class)">trigger</a></code></li>
 </ul>
 </li>
 </ul>
@@ -200,8 +214,12 @@ extends <a href="Scoped.html" title="interface in io.artframework">Scoped</a></p
 <ul class="blockList">
 <li class="blockList">
 <h4>loadAll</h4>
-<pre class="methodSignature">void&nbsp;loadAll()</pre>
+<pre class="methodSignature"><a href="BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a>&nbsp;loadAll()</pre>
 <div class="block">Loads all modules in the scope.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the current bootstrap phase</dd>
+</dl>
 </li>
 </ul>
 <a id="enableAll()">
@@ -210,8 +228,13 @@ extends <a href="Scoped.html" title="interface in io.artframework">Scoped</a></p
 <ul class="blockListLast">
 <li class="blockList">
 <h4>enableAll</h4>
-<pre class="methodSignature">void&nbsp;enableAll()</pre>
-<div class="block">Enables all modules in the scope.</div>
+<pre class="methodSignature"><a href="Scope.html" title="interface in io.artframework">Scope</a>&nbsp;enableAll()</pre>
+<div class="block">Enables all modules in the scope.
+ <p>Will also load all modules if they have not been loaded.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the scope of the finished bootstrap phase</dd>
+</dl>
 </li>
 </ul>
 </li>

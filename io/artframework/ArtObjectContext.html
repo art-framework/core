@@ -123,7 +123,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>All Superinterfaces:</dt>
-<dd><code><a href="Context.html" title="interface in io.artframework">Context</a></code>, <code><a href="Scoped.html" title="interface in io.artframework">Scoped</a></code>, <code><a href="TargetHolder.html" title="interface in io.artframework">TargetHolder</a></code></dd>
+<dd><code><a href="TargetHolder.html" title="interface in io.artframework">TargetHolder</a></code></dd>
 </dl>
 <dl>
 <dt>All Known Subinterfaces:</dt>
@@ -135,7 +135,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <hr>
 <pre>public interface <span class="typeNameLabel">ArtObjectContext&lt;TArtObject extends <a href="ArtObject.html" title="interface in io.artframework">ArtObject</a>&gt;</span>
-extends <a href="Context.html" title="interface in io.artframework">Context</a>, <a href="TargetHolder.html" title="interface in io.artframework">TargetHolder</a></pre>
+extends <a href="TargetHolder.html" title="interface in io.artframework">TargetHolder</a></pre>
 <div class="block">Every <a href="ArtObject.html" title="interface in io.artframework"><code>ArtObject</code></a> must be wrapped inside an <a href="ArtObjectContext.html" title="interface in io.artframework"><code>ArtObjectContext</code></a>
  that controls how the <a href="ArtObject.html" title="interface in io.artframework"><code>ArtObject</code></a> is executed or tested. It also provides
  a way to access the <a href="Configuration.html" title="class in io.artframework"><code>Configuration</code></a> and defines a unique id that will be used
@@ -211,20 +211,6 @@ extends <a href="Context.html" title="interface in io.artframework">Context</a>,
 </td>
 </tr>
 </table>
-<ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.io.artframework.Context">
-<!--   -->
-</a>
-<h3>Methods inherited from interface&nbsp;io.artframework.<a href="Context.html" title="interface in io.artframework">Context</a></h3>
-<code><a href="Context.html#data()">data</a>, <a href="Context.html#data(java.lang.String,TValue)">data</a>, <a href="Context.html#data(io.artframework.Target,java.lang.String,java.lang.Class)">data</a>, <a href="Context.html#data(io.artframework.Target,java.lang.String,TValue)">data</a>, <a href="Context.html#data(java.lang.String,java.lang.Class)">data</a></code></li>
-</ul>
-<ul class="blockList">
-<li class="blockList"><a id="methods.inherited.from.class.io.artframework.Scoped">
-<!--   -->
-</a>
-<h3>Methods inherited from interface&nbsp;io.artframework.<a href="Scoped.html" title="interface in io.artframework">Scoped</a></h3>
-<code><a href="Scoped.html#configuration()">configuration</a>, <a href="Scoped.html#scope()">scope</a></code></li>
-</ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.io.artframework.TargetHolder">
 <!--   -->
@@ -344,10 +330,7 @@ extends <a href="Context.html" title="interface in io.artframework">Context</a>,
  This means a unique key is generated from the <a href="Target.html#uniqueId()"><code>Target.uniqueId()</code></a> and
  <a href="#uniqueId()"><code>uniqueId()</code></a> and will be appended by your key.
  <p>
- Then the <a href="StorageProvider.html#set(java.lang.String,TValue)"><code>StorageProvider.set(String, Object)</code></a> method is called and the data is persisted.
- <p>
- Use the <a href="Context.html#data()"><code>Context.data()</code></a> methods to store data that is only available in this scope
- and not persisted to the database.</div>
+ Then the <a href="StorageProvider.html#set(java.lang.String,TValue)"><code>StorageProvider.set(String, Object)</code></a> method is called and the data is persisted.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>TValue</code> - type of the value</dd>
@@ -379,10 +362,7 @@ extends <a href="Context.html" title="interface in io.artframework">Context</a>,
  fails or the data does not exist.
  <p>
  The data that is fetched will be stored under a unique key combination of
- <a href="#uniqueId()"><code>uniqueId()</code></a> and <a href="Target.html#uniqueId()"><code>Target.uniqueId()</code></a>.
- <p>
- Use the <a href="Context.html#data()"><code>Context.data()</code></a> methods to store data that is only available in this scope
- and not persisted to the database.</div>
+ <a href="#uniqueId()"><code>uniqueId()</code></a> and <a href="Target.html#uniqueId()"><code>Target.uniqueId()</code></a>.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>TValue</code> - type of the value</dd>

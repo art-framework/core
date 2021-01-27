@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -187,10 +187,17 @@ extends java.lang.Object</pre>
 </tr>
 <tr id="i5" class="rowColor">
 <td class="colFirst"><code><a href="Settings.SettingsBuilder.html" title="class in io.artframework.conf">Settings.SettingsBuilder</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#debug(boolean)">debug</a></span>&#8203;(boolean&nbsp;debug)</code></th>
+<td class="colLast">
+<div class="block">If set to true the art-framework will increase the log level to fines and print debug outputs.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code><a href="Settings.SettingsBuilder.html" title="class in io.artframework.conf">Settings.SettingsBuilder</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#modulePath(java.lang.String)">modulePath</a></span>&#8203;(java.lang.String&nbsp;modulePath)</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toString()">toString</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
@@ -259,6 +266,20 @@ extends java.lang.Object</pre>
  <p>
  Use the <a href="../ArtProvider.html" title="interface in io.artframework"><code>ArtProvider</code></a> methods to register <a href="../ArtObject.html" title="interface in io.artframework"><code>ArtObject</code></a>s
  that cannot be constructed so easily.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd><code>this</code>.</dd>
+</dl>
+</li>
+</ul>
+<a id="debug(boolean)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>debug</h4>
+<pre class="methodSignature">public&nbsp;<a href="Settings.SettingsBuilder.html" title="class in io.artframework.conf">Settings.SettingsBuilder</a>&nbsp;debug&#8203;(boolean&nbsp;debug)</pre>
+<div class="block">If set to true the art-framework will increase the log level to fines and print debug outputs.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd><code>this</code>.</dd>

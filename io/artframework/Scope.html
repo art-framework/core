@@ -127,7 +127,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <dl>
 <dt>All Known Subinterfaces:</dt>
-<dd><code><a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a></code></dd>
+<dd><code><a href="BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a></code>, <code><a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a></code></dd>
 </dl>
 <dl>
 <dt>All Known Implementing Classes:</dt>
@@ -326,8 +326,7 @@ extends <a href="DataProvider.html" title="interface in io.artframework">DataPro
 <h4>get</h4>
 <pre class="methodSignature">&lt;TProvider extends <a href="Provider.html" title="interface in io.artframework">Provider</a>&gt;&nbsp;TProvider&nbsp;get&#8203;(java.lang.Class&lt;TProvider&gt;&nbsp;providerClass)</pre>
 <div class="block">Tries to find a provider for the registered provider class and returns its instance.
- <p>By default all providers are singletons that can be registered <a href="annotations/OnBootstrap.html" title="annotation in io.artframework.annotations"><code>OnBootstrap</code></a>
- with the <a href="BootstrapScope.html" title="interface in io.artframework"><code>BootstrapScope</code></a>.</div>
+ <p>The lifetime of the underlying provider is handled by the module that registered it.</div>
 <dl>
 <dt><span class="paramLabel">Type Parameters:</span></dt>
 <dd><code>TProvider</code> - the type of the provider</dd>

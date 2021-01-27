@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9,"i6":9};
+var data = {"i0":9,"i1":9,"i2":9,"i3":9,"i4":9,"i5":9};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -153,14 +153,14 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
-<td class="colFirst"><code>static <a href="Scope.html" title="interface in io.artframework">Scope</a></code></td>
+<td class="colFirst"><code>static <a href="BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#bootstrap(io.artframework.BootstrapScope)">bootstrap</a></span>&#8203;(@NonNull <a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;bootstrapScope)</code></th>
 <td class="colLast">
 <div class="block">Initializes the art-framework using the given bootstrap scope.</div>
 </td>
 </tr>
 <tr id="i1" class="rowColor">
-<td class="colFirst"><code>static <a href="Scope.html" title="interface in io.artframework">Scope</a></code></td>
+<td class="colFirst"><code>static <a href="BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#bootstrap(io.artframework.BootstrapScope,boolean)">bootstrap</a></span>&#8203;(@NonNull <a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;bootstrapScope,
          boolean&nbsp;global)</code></th>
 <td class="colLast">
@@ -168,18 +168,11 @@ extends java.lang.Object</pre>
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code>static &lt;TEvent extends <a href="events/Event.html" title="class in io.artframework.events">Event</a>&gt;<br>TEvent</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#callEvent(TEvent)">callEvent</a></span>&#8203;(TEvent&nbsp;event)</code></th>
-<td class="colLast">
-<div class="block">Calls the given event on all registered scopes.</div>
-</td>
-</tr>
-<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static <a href="Scope.html" title="interface in io.artframework">Scope</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#globalScope()">globalScope</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>static <a href="ArtContext.html" title="interface in io.artframework">ArtContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#load(java.lang.String,java.util.Collection)">load</a></span>&#8203;(java.lang.String&nbsp;key,
     java.util.Collection&lt;java.lang.String&gt;&nbsp;list)</code></th>
@@ -187,7 +180,7 @@ extends java.lang.Object</pre>
 <div class="block">Loads the given string list and tries to parse each line into a valid art object.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>static <a href="ArtContext.html" title="interface in io.artframework">ArtContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#load(java.util.Collection)">load</a></span>&#8203;(java.util.Collection&lt;java.lang.String&gt;&nbsp;list)</code></th>
 <td class="colLast">
@@ -195,7 +188,7 @@ extends java.lang.Object</pre>
  into a valid art object.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>static &lt;TTrigger extends <a href="Trigger.html" title="interface in io.artframework">Trigger</a>&gt;<br><a href="TriggerExecution.html" title="class in io.artframework">TriggerExecution</a>&lt;TTrigger&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#trigger(java.lang.Class)">trigger</a></span>&#8203;(java.lang.Class&lt;TTrigger&gt;&nbsp;triggerClass)</code></th>
 <td class="colLast">
@@ -232,22 +225,22 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>bootstrap</h4>
-<pre class="methodSignature">public static&nbsp;<a href="Scope.html" title="interface in io.artframework">Scope</a>&nbsp;bootstrap&#8203;(@NonNull
-                              @NonNull <a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;bootstrapScope)
-                       throws <a href="BootstrapException.html" title="class in io.artframework">BootstrapException</a></pre>
+<pre class="methodSignature">public static&nbsp;<a href="BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a>&nbsp;bootstrap&#8203;(@NonNull
+                                       @NonNull <a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;bootstrapScope)
+                                throws <a href="BootstrapException.html" title="class in io.artframework">BootstrapException</a></pre>
 <div class="block">Initializes the art-framework using the given bootstrap scope.
- <p>
- Bootstrapping is only required by the root module that implements and ships the art-framework.
+ <p>Make sure to call the <a href="BootstrapPhase.html#loadAll()"><code>BootstrapPhase.loadAll()</code></a> and <a href="BootstrapPhase.html#enableAll()"><code>BootstrapPhase.enableAll()</code></a> methods
+ to load and enable all modules contained within the scope.
+ <p>Bootstrapping is only required by the root module that implements and ships the art-framework.
  Normal modules should not use this bootstrap method, but instead tag their class with @<a href="annotations/ArtModule.html" title="annotation in io.artframework.annotations"><code>ArtModule</code></a>
  and use the respective tagged methods (<a href="annotations/OnBootstrap.html" title="annotation in io.artframework.annotations"><code>OnBootstrap</code></a>, <a href="annotations/OnLoad.html" title="annotation in io.artframework.annotations"><code>OnLoad</code></a> and<a href="annotations/OnEnable.html" title="annotation in io.artframework.annotations"><code>OnEnable</code></a>) to load themselves into the scope.
- <p>
- By default the module will be bootstrapped into its own scope.
+ <p>By default the module will be bootstrapped into its own scope.
  Use the <a href="#bootstrap(io.artframework.BootstrapScope,boolean)"><code>bootstrap(BootstrapScope, boolean)</code></a> method with true to bootstrap the global scope.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>bootstrapScope</code> - the bootstrap scope containing the bootstrap module used to start the bootstrap process</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the scope created by the bootstrap process</dd>
+<dd>the bootstrapping phase created for the given scope</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="BootstrapException.html" title="class in io.artframework">BootstrapException</a></code> - if an error occurred while bootstrapping the module</dd>
 </dl>
@@ -259,46 +252,25 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>bootstrap</h4>
-<pre class="methodSignature">public static&nbsp;<a href="Scope.html" title="interface in io.artframework">Scope</a>&nbsp;bootstrap&#8203;(@NonNull
-                              @NonNull <a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;bootstrapScope,
-                              boolean&nbsp;global)
-                       throws <a href="BootstrapException.html" title="class in io.artframework">BootstrapException</a></pre>
+<pre class="methodSignature">public static&nbsp;<a href="BootstrapPhase.html" title="interface in io.artframework">BootstrapPhase</a>&nbsp;bootstrap&#8203;(@NonNull
+                                       @NonNull <a href="BootstrapScope.html" title="interface in io.artframework">BootstrapScope</a>&nbsp;bootstrapScope,
+                                       boolean&nbsp;global)
+                                throws <a href="BootstrapException.html" title="class in io.artframework">BootstrapException</a></pre>
 <div class="block">Initializes the art-framework using the given bootstrap scope.
- <p>
- Bootstrapping is only required by the root module that implements and ships the art-framework.
+ <p>Make sure to call the <a href="BootstrapPhase.html#loadAll()"><code>BootstrapPhase.loadAll()</code></a> and <a href="BootstrapPhase.html#enableAll()"><code>BootstrapPhase.enableAll()</code></a> methods
+ to load and enable all modules contained within the scope.
+ <p>Bootstrapping is only required by the root module that implements and ships the art-framework.
  Normal modules should not use this bootstrap method, but instead tag their class with @<a href="annotations/ArtModule.html" title="annotation in io.artframework.annotations"><code>ArtModule</code></a>
  and use the respective tagged methods (<a href="annotations/OnBootstrap.html" title="annotation in io.artframework.annotations"><code>OnBootstrap</code></a>, <a href="annotations/OnLoad.html" title="annotation in io.artframework.annotations"><code>OnLoad</code></a> and<a href="annotations/OnEnable.html" title="annotation in io.artframework.annotations"><code>OnEnable</code></a>) to load themselves into the scope.
- <p>
- Set the boolean switch to true to set the resulting scope of the bootstrap process as the global scope.</div>
+ <p>Set the boolean switch to true to set the resulting scope of the bootstrap process as the global scope.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>bootstrapScope</code> - the bootstrap scope containing the bootstrap module used to start the bootstrap process</dd>
 <dd><code>global</code> - true if the result scope of the bootstrap process should be set as the global scope</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>the scope created by the bootstrap process</dd>
+<dd>the bootstrapping phase created for the given scope</dd>
 <dt><span class="throwsLabel">Throws:</span></dt>
 <dd><code><a href="BootstrapException.html" title="class in io.artframework">BootstrapException</a></code> - if an error occurred while bootstrapping the module</dd>
-</dl>
-</li>
-</ul>
-<a id="callEvent(io.artframework.events.Event)">
-<!--   -->
-</a><a id="callEvent(TEvent)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>callEvent</h4>
-<pre class="methodSignature">public static&nbsp;&lt;TEvent extends <a href="events/Event.html" title="class in io.artframework.events">Event</a>&gt;&nbsp;TEvent&nbsp;callEvent&#8203;(TEvent&nbsp;event)</pre>
-<div class="block">Calls the given event on all registered scopes.
- <p>Use the <a href="events/EventListener.html" title="interface in io.artframework.events"><code>EventListener</code></a> to listen on events fired by this.</div>
-<dl>
-<dt><span class="paramLabel">Type Parameters:</span></dt>
-<dd><code>TEvent</code> - the type of the event</dd>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>event</code> - the event that is called</dd>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>the passed event</dd>
 </dl>
 </li>
 </ul>

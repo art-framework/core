@@ -148,6 +148,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </ul>
 </li>
 <li class="circle">io.artframework.<a href="TriggerExecution.html" title="class in io.artframework"><span class="typeNameLink">TriggerExecution</span></a>&lt;TTrigger&gt; (implements io.artframework.<a href="Scoped.html" title="interface in io.artframework">Scoped</a>, io.artframework.<a href="TargetCreator.html" title="interface in io.artframework">TargetCreator</a>)</li>
+<li class="circle">io.artframework.<a href="Variable.html" title="class in io.artframework"><span class="typeNameLink">Variable</span></a>&lt;TValue&gt;</li>
 </ul>
 </li>
 </ul>
@@ -194,7 +195,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <ul>
 <li class="circle">io.artframework.<a href="Scope.html" title="interface in io.artframework"><span class="typeNameLink">Scope</span></a>
 <ul>
-<li class="circle">io.artframework.<a href="BootstrapScope.html" title="interface in io.artframework"><span class="typeNameLink">BootstrapScope</span></a></li>
+<li class="circle">io.artframework.<a href="BootstrapScope.html" title="interface in io.artframework"><span class="typeNameLink">BootstrapScope</span></a>
+<ul>
+<li class="circle">io.artframework.<a href="BootstrapPhase.html" title="interface in io.artframework"><span class="typeNameLink">BootstrapPhase</span></a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -213,6 +218,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="circle">io.artframework.<a href="MessageSender.html" title="interface in io.artframework"><span class="typeNameLink">MessageSender</span></a></li>
 <li class="circle">io.artframework.<a href="ModuleMeta.html" title="interface in io.artframework"><span class="typeNameLink">ModuleMeta</span></a></li>
+<li class="circle">io.artframework.<a href="Replacement.html" title="interface in io.artframework"><span class="typeNameLink">Replacement</span></a></li>
 <li class="circle">io.artframework.<a href="RequirementHolder.html" title="interface in io.artframework"><span class="typeNameLink">RequirementHolder</span></a>
 <ul>
 <li class="circle">io.artframework.<a href="ActionContext.html" title="interface in io.artframework"><span class="typeNameLink">ActionContext</span></a>&lt;TTarget&gt; (also extends io.artframework.<a href="Action.html" title="interface in io.artframework">Action</a>&lt;TTarget&gt;, io.artframework.<a href="ActionHolder.html" title="interface in io.artframework">ActionHolder</a>, io.artframework.<a href="ArtObjectContext.html" title="interface in io.artframework">ArtObjectContext</a>&lt;TArtObject&gt;)</li>
@@ -261,18 +267,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">io.artframework.<a href="ArtParser.html" title="interface in io.artframework"><span class="typeNameLink">ArtParser</span></a>&lt;TParser,&#8203;TInput&gt;</li>
 </ul>
 </li>
-<li class="circle">io.artframework.<a href="BootstrapPhase.html" title="interface in io.artframework"><span class="typeNameLink">BootstrapPhase</span></a></li>
 <li class="circle">io.artframework.<a href="ConfigProvider.html" title="interface in io.artframework"><span class="typeNameLink">ConfigProvider</span></a></li>
 <li class="circle">io.artframework.<a href="Context.html" title="interface in io.artframework"><span class="typeNameLink">Context</span></a>
 <ul>
 <li class="circle">io.artframework.<a href="ArtContext.html" title="interface in io.artframework"><span class="typeNameLink">ArtContext</span></a> (also extends io.artframework.<a href="ResultCreator.html" title="interface in io.artframework">ResultCreator</a>, io.artframework.<a href="TargetCreator.html" title="interface in io.artframework">TargetCreator</a>)</li>
-<li class="circle">io.artframework.<a href="ArtObjectContext.html" title="interface in io.artframework"><span class="typeNameLink">ArtObjectContext</span></a>&lt;TArtObject&gt; (also extends io.artframework.<a href="TargetHolder.html" title="interface in io.artframework">TargetHolder</a>)
-<ul>
-<li class="circle">io.artframework.<a href="ActionContext.html" title="interface in io.artframework"><span class="typeNameLink">ActionContext</span></a>&lt;TTarget&gt; (also extends io.artframework.<a href="Action.html" title="interface in io.artframework">Action</a>&lt;TTarget&gt;, io.artframework.<a href="ActionHolder.html" title="interface in io.artframework">ActionHolder</a>, io.artframework.<a href="RequirementHolder.html" title="interface in io.artframework">RequirementHolder</a>)</li>
-<li class="circle">io.artframework.<a href="RequirementContext.html" title="interface in io.artframework"><span class="typeNameLink">RequirementContext</span></a>&lt;TTarget&gt; (also extends io.artframework.<a href="Requirement.html" title="interface in io.artframework">Requirement</a>&lt;TTarget&gt;)</li>
-<li class="circle">io.artframework.<a href="TriggerContext.html" title="interface in io.artframework"><span class="typeNameLink">TriggerContext</span></a> (also extends io.artframework.<a href="ActionHolder.html" title="interface in io.artframework">ActionHolder</a>, io.artframework.<a href="RequirementHolder.html" title="interface in io.artframework">RequirementHolder</a>)</li>
-</ul>
-</li>
 <li class="circle">io.artframework.<a href="ExecutionContext.html" title="interface in io.artframework"><span class="typeNameLink">ExecutionContext</span></a>&lt;TContext&gt;</li>
 </ul>
 </li>
@@ -293,7 +291,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="circle">io.artframework.<a href="TriggerProvider.html" title="interface in io.artframework"><span class="typeNameLink">TriggerProvider</span></a> (also extends io.artframework.<a href="FactoryProvider.html" title="interface in io.artframework">FactoryProvider</a>&lt;TFactory&gt;)</li>
 </ul>
 </li>
-<li class="circle">io.artframework.<a href="EventProvider.html" title="interface in io.artframework"><span class="typeNameLink">EventProvider</span></a></li>
 <li class="circle">io.artframework.<a href="FactoryProvider.html" title="interface in io.artframework"><span class="typeNameLink">FactoryProvider</span></a>&lt;TFactory&gt;
 <ul>
 <li class="circle">io.artframework.<a href="ActionProvider.html" title="interface in io.artframework"><span class="typeNameLink">ActionProvider</span></a> (also extends io.artframework.<a href="ArtProvider.html" title="interface in io.artframework">ArtProvider</a>)</li>
@@ -303,11 +300,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="circle">io.artframework.<a href="FinderProvider.html" title="interface in io.artframework"><span class="typeNameLink">FinderProvider</span></a></li>
 <li class="circle">io.artframework.<a href="ModuleProvider.html" title="interface in io.artframework"><span class="typeNameLink">ModuleProvider</span></a></li>
+<li class="circle">io.artframework.<a href="ReplacementProvider.html" title="interface in io.artframework"><span class="typeNameLink">ReplacementProvider</span></a></li>
 <li class="circle">io.artframework.<a href="ResolverProvider.html" title="interface in io.artframework"><span class="typeNameLink">ResolverProvider</span></a></li>
 <li class="circle">io.artframework.<a href="TargetProvider.html" title="interface in io.artframework"><span class="typeNameLink">TargetProvider</span></a></li>
 </ul>
 </li>
-<li class="circle">io.artframework.<a href="ResolverContext.html" title="interface in io.artframework"><span class="typeNameLink">ResolverContext</span></a></li>
+<li class="circle">io.artframework.<a href="ResolveContext.html" title="interface in io.artframework"><span class="typeNameLink">ResolveContext</span></a></li>
 <li class="circle">io.artframework.<a href="ResolverFactory.html" title="interface in io.artframework"><span class="typeNameLink">ResolverFactory</span></a>&lt;TType&gt;</li>
 <li class="circle">io.artframework.<a href="StorageProvider.html" title="interface in io.artframework"><span class="typeNameLink">StorageProvider</span></a> (also extends java.lang.AutoCloseable)</li>
 <li class="circle">io.artframework.<a href="TargetCreator.html" title="interface in io.artframework"><span class="typeNameLink">TargetCreator</span></a>
@@ -319,7 +317,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </li>
 <li class="circle">io.artframework.<a href="TargetHolder.html" title="interface in io.artframework"><span class="typeNameLink">TargetHolder</span></a>
 <ul>
-<li class="circle">io.artframework.<a href="ArtObjectContext.html" title="interface in io.artframework"><span class="typeNameLink">ArtObjectContext</span></a>&lt;TArtObject&gt; (also extends io.artframework.<a href="Context.html" title="interface in io.artframework">Context</a>)
+<li class="circle">io.artframework.<a href="ArtObjectContext.html" title="interface in io.artframework"><span class="typeNameLink">ArtObjectContext</span></a>&lt;TArtObject&gt;
 <ul>
 <li class="circle">io.artframework.<a href="ActionContext.html" title="interface in io.artframework"><span class="typeNameLink">ActionContext</span></a>&lt;TTarget&gt; (also extends io.artframework.<a href="Action.html" title="interface in io.artframework">Action</a>&lt;TTarget&gt;, io.artframework.<a href="ActionHolder.html" title="interface in io.artframework">ActionHolder</a>, io.artframework.<a href="RequirementHolder.html" title="interface in io.artframework">RequirementHolder</a>)</li>
 <li class="circle">io.artframework.<a href="RequirementContext.html" title="interface in io.artframework"><span class="typeNameLink">RequirementContext</span></a>&lt;TTarget&gt; (also extends io.artframework.<a href="Requirement.html" title="interface in io.artframework">Requirement</a>&lt;TTarget&gt;)</li>

@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -264,6 +264,13 @@ implements <a href="../ExecutionContext.html" title="interface in io.artframewor
 <div class="block">Gets all targets that are linked to this execution context.</div>
 </td>
 </tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;<a href="../Variable.html" title="class in io.artframework">Variable</a>&lt;?&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#variables()">variables</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Use the variables map to directly modify the variables stored in this context.</div>
+</td>
+</tr>
 </table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.io.artframework.AbstractScoped">
@@ -284,7 +291,7 @@ implements <a href="../ExecutionContext.html" title="interface in io.artframewor
 <!--   -->
 </a>
 <h3>Methods inherited from interface&nbsp;io.artframework.<a href="../Context.html" title="interface in io.artframework">Context</a></h3>
-<code><a href="../Context.html#data(java.lang.String,TValue)">data</a>, <a href="../Context.html#data(io.artframework.Target,java.lang.String,java.lang.Class)">data</a>, <a href="../Context.html#data(io.artframework.Target,java.lang.String,TValue)">data</a>, <a href="../Context.html#data(java.lang.String,java.lang.Class)">data</a></code></li>
+<code><a href="../Context.html#data(java.lang.String,TValue)">data</a>, <a href="../Context.html#data(io.artframework.Target,java.lang.String,java.lang.Class)">data</a>, <a href="../Context.html#data(io.artframework.Target,java.lang.String,TValue)">data</a>, <a href="../Context.html#data(java.lang.String,java.lang.Class)">data</a>, <a href="../Context.html#var(java.lang.String)">var</a>, <a href="../Context.html#var(java.lang.String,java.lang.Class)">var</a>, <a href="../Context.html#var(java.lang.String,java.lang.Class,java.util.function.Supplier)">var</a>, <a href="../Context.html#var(java.lang.String,TValue)">var</a>, <a href="../Context.html#varIfAbsent(java.lang.String,java.lang.Class,java.util.function.Supplier)">varIfAbsent</a>, <a href="../Context.html#varIfAbsent(java.lang.String,TValue)">varIfAbsent</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.io.artframework.Scoped">
@@ -352,6 +359,24 @@ implements <a href="../ExecutionContext.html" title="interface in io.artframewor
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the <a href="../ArtContext.html" title="interface in io.artframework"><code>ArtContext</code></a> that initialized the execution tree.
           This may be empty if the execution was manually invoked.</dd>
+</dl>
+</li>
+</ul>
+<a id="variables()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>variables</h4>
+<pre class="methodSignature">public&nbsp;java.util.Map&lt;java.lang.String,&#8203;<a href="../Variable.html" title="class in io.artframework">Variable</a>&lt;?&gt;&gt;&nbsp;variables()</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../Context.html#variables()">Context</a></code></span></div>
+<div class="block">Use the variables map to directly modify the variables stored in this context.
+ <p>Any modification to it will be transparent to the root variable store.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../Context.html#variables()">variables</a></code>&nbsp;in interface&nbsp;<code><a href="../Context.html" title="interface in io.artframework">Context</a></code></dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a reference to the variable store</dd>
 </dl>
 </li>
 </ul>

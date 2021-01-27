@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":18,"i2":18,"i3":18,"i4":18};
+var data = {"i0":6,"i1":18,"i2":18,"i3":18,"i4":18,"i5":18,"i6":18,"i7":18,"i8":18,"i9":6,"i10":18,"i11":18};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"],16:["t5","Default Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -127,11 +127,11 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dl>
 <dl>
 <dt>All Known Subinterfaces:</dt>
-<dd><code><a href="ActionContext.html" title="interface in io.artframework">ActionContext</a>&lt;TTarget&gt;</code>, <code><a href="ArtContext.html" title="interface in io.artframework">ArtContext</a></code>, <code><a href="ArtObjectContext.html" title="interface in io.artframework">ArtObjectContext</a>&lt;TArtObject&gt;</code>, <code><a href="ExecutionContext.html" title="interface in io.artframework">ExecutionContext</a>&lt;TContext&gt;</code>, <code><a href="RequirementContext.html" title="interface in io.artframework">RequirementContext</a>&lt;TTarget&gt;</code>, <code><a href="TriggerContext.html" title="interface in io.artframework">TriggerContext</a></code></dd>
+<dd><code><a href="ArtContext.html" title="interface in io.artframework">ArtContext</a></code>, <code><a href="ExecutionContext.html" title="interface in io.artframework">ExecutionContext</a>&lt;TContext&gt;</code></dd>
 </dl>
 <dl>
 <dt>All Known Implementing Classes:</dt>
-<dd><code><a href="AbstractArtObjectContext.html" title="class in io.artframework">AbstractArtObjectContext</a></code>, <code><a href="impl/CombinedArtContext.html" title="class in io.artframework.impl">CombinedArtContext</a></code>, <code><a href="impl/DefaultActionContext.html" title="class in io.artframework.impl">DefaultActionContext</a></code>, <code><a href="impl/DefaultArtContext.html" title="class in io.artframework.impl">DefaultArtContext</a></code>, <code><a href="impl/DefaultExecutionContext.html" title="class in io.artframework.impl">DefaultExecutionContext</a></code>, <code><a href="impl/DefaultRequirementContext.html" title="class in io.artframework.impl">DefaultRequirementContext</a></code>, <code><a href="impl/DefaultTriggerContext.html" title="class in io.artframework.impl">DefaultTriggerContext</a></code></dd>
+<dd><code><a href="impl/CombinedArtContext.html" title="class in io.artframework.impl">CombinedArtContext</a></code>, <code><a href="impl/DefaultArtContext.html" title="class in io.artframework.impl">DefaultArtContext</a></code>, <code><a href="impl/DefaultExecutionContext.html" title="class in io.artframework.impl">DefaultExecutionContext</a></code>, <code><a href="impl/DefaultTriggerContext.html" title="class in io.artframework.impl">DefaultTriggerContext</a></code></dd>
 </dl>
 <hr>
 <pre>public interface <span class="typeNameLabel">Context</span>
@@ -191,6 +191,64 @@ extends <a href="Scoped.html" title="interface in io.artframework">Scoped</a></p
     java.lang.Class&lt;TValue&gt;&nbsp;valueClass)</code></th>
 <td class="colLast">
 <div class="block">Get some custom data from this <code>Scope</code>.</div>
+</td>
+</tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>default java.util.Optional&lt;java.lang.Object&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#var(java.lang.String)">var</a></span>&#8203;(@NonNull java.lang.String&nbsp;key)</code></th>
+<td class="colLast">
+<div class="block">Tries to find a variable with the given key.</div>
+</td>
+</tr>
+<tr id="i6" class="altColor">
+<td class="colFirst"><code>default &lt;TValue&gt;&nbsp;java.util.Optional&lt;TValue&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#var(java.lang.String,java.lang.Class)">var</a></span>&#8203;(@NonNull java.lang.String&nbsp;key,
+   @NonNull java.lang.Class&lt;TValue&gt;&nbsp;type)</code></th>
+<td class="colLast">
+<div class="block">Tries to find a variable with the given key and casts it to the provided type.</div>
+</td>
+</tr>
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>default &lt;TValue&gt;&nbsp;<a href="Context.html" title="interface in io.artframework">Context</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#var(java.lang.String,java.lang.Class,java.util.function.Supplier)">var</a></span>&#8203;(@NonNull java.lang.String&nbsp;key,
+   java.lang.Class&lt;TValue&gt;&nbsp;type,
+   @NonNull java.util.function.Supplier&lt;TValue&gt;&nbsp;value)</code></th>
+<td class="colLast">
+<div class="block">Stores a new variable under the given key that is resolved using the
+ provided supplier once requested.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>default &lt;TValue&gt;&nbsp;<a href="Context.html" title="interface in io.artframework">Context</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#var(java.lang.String,TValue)">var</a></span>&#8203;(@NonNull java.lang.String&nbsp;key,
+   TValue&nbsp;value)</code></th>
+<td class="colLast">
+<div class="block">Stores a new variable under the given key.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;<a href="Variable.html" title="class in io.artframework">Variable</a>&lt;?&gt;&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#variables()">variables</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Use the variables map to directly modify the variables stored in this context.</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
+<td class="colFirst"><code>default &lt;TValue&gt;&nbsp;<a href="Context.html" title="interface in io.artframework">Context</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#varIfAbsent(java.lang.String,java.lang.Class,java.util.function.Supplier)">varIfAbsent</a></span>&#8203;(@NonNull java.lang.String&nbsp;key,
+           java.lang.Class&lt;TValue&gt;&nbsp;type,
+           @NonNull java.util.function.Supplier&lt;TValue&gt;&nbsp;value)</code></th>
+<td class="colLast">
+<div class="block">Stores a new variable under the given key that is resolved using the
+ provided supplier once requested.</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>default &lt;TValue&gt;&nbsp;<a href="Context.html" title="interface in io.artframework">Context</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#varIfAbsent(java.lang.String,TValue)">varIfAbsent</a></span>&#8203;(@NonNull java.lang.String&nbsp;key,
+           TValue&nbsp;value)</code></th>
+<td class="colLast">
+<div class="block">Stores a new variable under the given key if no variable with the same key exists.</div>
 </td>
 </tr>
 </table>
@@ -307,12 +365,172 @@ extends <a href="Scoped.html" title="interface in io.artframework">Scoped</a></p
 <a id="data(io.artframework.Target,java.lang.String,java.lang.Class)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>data</h4>
 <pre class="methodSignature">default&nbsp;&lt;TValue&gt;&nbsp;java.util.Optional&lt;TValue&gt;&nbsp;data&#8203;(<a href="Target.html" title="interface in io.artframework">Target</a>&lt;?&gt;&nbsp;target,
                                                  java.lang.String&nbsp;key,
                                                  java.lang.Class&lt;TValue&gt;&nbsp;valueClass)</pre>
+</li>
+</ul>
+<a id="variables()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>variables</h4>
+<pre class="methodSignature">java.util.Map&lt;java.lang.String,&#8203;<a href="Variable.html" title="class in io.artframework">Variable</a>&lt;?&gt;&gt;&nbsp;variables()</pre>
+<div class="block">Use the variables map to directly modify the variables stored in this context.
+ <p>Any modification to it will be transparent to the root variable store.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>a reference to the variable store</dd>
+</dl>
+</li>
+</ul>
+<a id="var(java.lang.String)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>var</h4>
+<pre class="methodSignature">default&nbsp;java.util.Optional&lt;java.lang.Object&gt;&nbsp;var&#8203;(@NonNull
+                                                 @NonNull java.lang.String&nbsp;key)</pre>
+<div class="block">Tries to find a variable with the given key.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - the key of the variable</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the value of the variable</dd>
+</dl>
+</li>
+</ul>
+<a id="var(java.lang.String,java.lang.Class)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>var</h4>
+<pre class="methodSignature">default&nbsp;&lt;TValue&gt;&nbsp;java.util.Optional&lt;TValue&gt;&nbsp;var&#8203;(@NonNull
+                                                @NonNull java.lang.String&nbsp;key,
+                                                @NonNull
+                                                @NonNull java.lang.Class&lt;TValue&gt;&nbsp;type)</pre>
+<div class="block">Tries to find a variable with the given key and casts it to the provided type.
+ <p>An empty optional is returned if the value of the variable does not match the given type
+ or if no variable with the given key is found.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>TValue</code> - the type of the variable</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - the key of the variable</dd>
+<dd><code>type</code> - the class of the variable type</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the value of the variable cast to the given type</dd>
+</dl>
+</li>
+</ul>
+<a id="var(java.lang.String,java.lang.Object)">
+<!--   -->
+</a><a id="var(java.lang.String,TValue)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>var</h4>
+<pre class="methodSignature">default&nbsp;&lt;TValue&gt;&nbsp;<a href="Context.html" title="interface in io.artframework">Context</a>&nbsp;var&#8203;(@NonNull
+                             @NonNull java.lang.String&nbsp;key,
+                             @NonNull
+                             TValue&nbsp;value)</pre>
+<div class="block">Stores a new variable under the given key.
+ <p>Any existing variable with the same key is overwritten.
+ Use the <a href="#varIfAbsent(java.lang.String,TValue)"><code>varIfAbsent(String, Object)</code></a> method to honor existing variables.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>TValue</code> - the type of the variable</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - the key of the variable</dd>
+<dd><code>value</code> - the value of the variable</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this execution context</dd>
+</dl>
+</li>
+</ul>
+<a id="var(java.lang.String,java.lang.Class,java.util.function.Supplier)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>var</h4>
+<pre class="methodSignature">default&nbsp;&lt;TValue&gt;&nbsp;<a href="Context.html" title="interface in io.artframework">Context</a>&nbsp;var&#8203;(@NonNull
+                             @NonNull java.lang.String&nbsp;key,
+                             java.lang.Class&lt;TValue&gt;&nbsp;type,
+                             @NonNull
+                             @NonNull java.util.function.Supplier&lt;TValue&gt;&nbsp;value)</pre>
+<div class="block">Stores a new variable under the given key that is resolved using the
+ provided supplier once requested.
+ <p>Any existing variable with the same key is overwritten.
+ Use the <a href="#varIfAbsent(java.lang.String,java.lang.Class,java.util.function.Supplier)"><code>varIfAbsent(String, Class, Supplier)</code></a> method to honor existing variables.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>TValue</code> - the type of the variable</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - the key of the variable</dd>
+<dd><code>type</code> - the class of the variable type</dd>
+<dd><code>value</code> - the function that is called when the variable value is requested</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this execution context</dd>
+</dl>
+</li>
+</ul>
+<a id="varIfAbsent(java.lang.String,java.lang.Object)">
+<!--   -->
+</a><a id="varIfAbsent(java.lang.String,TValue)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>varIfAbsent</h4>
+<pre class="methodSignature">default&nbsp;&lt;TValue&gt;&nbsp;<a href="Context.html" title="interface in io.artframework">Context</a>&nbsp;varIfAbsent&#8203;(@NonNull
+                                     @NonNull java.lang.String&nbsp;key,
+                                     @NonNull
+                                     TValue&nbsp;value)</pre>
+<div class="block">Stores a new variable under the given key if no variable with the same key exists.
+ <p>Use the <a href="#var(java.lang.String,TValue)"><code>var(String, Object)</code></a> method to overwrite any existing variable.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>TValue</code> - the type of the variable</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - the key of the variable</dd>
+<dd><code>value</code> - the value of the variable</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this execution context</dd>
+</dl>
+</li>
+</ul>
+<a id="varIfAbsent(java.lang.String,java.lang.Class,java.util.function.Supplier)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>varIfAbsent</h4>
+<pre class="methodSignature">default&nbsp;&lt;TValue&gt;&nbsp;<a href="Context.html" title="interface in io.artframework">Context</a>&nbsp;varIfAbsent&#8203;(@NonNull
+                                     @NonNull java.lang.String&nbsp;key,
+                                     java.lang.Class&lt;TValue&gt;&nbsp;type,
+                                     @NonNull
+                                     @NonNull java.util.function.Supplier&lt;TValue&gt;&nbsp;value)</pre>
+<div class="block">Stores a new variable under the given key that is resolved using the
+ provided supplier once requested.
+ <p>Use the <a href="#var(java.lang.String,java.lang.Class,java.util.function.Supplier)"><code>var(String, Class, Supplier)</code></a> method to overwrite any existing variable.</div>
+<dl>
+<dt><span class="paramLabel">Type Parameters:</span></dt>
+<dd><code>TValue</code> - the type of the variable</dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>key</code> - the key of the variable</dd>
+<dd><code>type</code> - the class of the variable type</dd>
+<dd><code>value</code> - the function that is called when the variable value is requested</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>this execution context</dd>
+</dl>
 </li>
 </ul>
 </li>
