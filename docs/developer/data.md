@@ -1,5 +1,3 @@
-# Handling Data
-
 There comes the time when you need to store or provide data in your [Actions](actions.md), [Requirements](requirements.md) and [Trigger](trigger.md).  
 The ART-Framework currently supports the following scenarios:
 

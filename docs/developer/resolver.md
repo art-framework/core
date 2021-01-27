@@ -1,5 +1,3 @@
-# Resolver
-
 Resolver can be used to resolve custom objects inside [Actions](actions.md), [Requirements](requirements.md) and [Trigger](trigger.md). An example of this would be enums or an location.
 
 The following code will automatically resolve the item by its name using the built-in `MaterialResolver`.

@@ -1,5 +1,3 @@
-# Targets
-
 Every [Action](actions.md), [Requirement](requirements.md) and [Trigger](trigger.md) takes a `Target<Type>` instead of a direct `Player` reference as an argument.
 Normally you won't notice this as the `Target` is automatically wrapped for you when calling methods in a trigger or the [ArtContext](art-context.md).
 

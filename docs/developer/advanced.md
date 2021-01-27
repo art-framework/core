@@ -1,1 +1,1 @@
-# Advanced Concepts
+The following section

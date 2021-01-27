@@ -1,5 +1,3 @@
-# Modules
-
 Modules are the heart of the art-framework and every addition or modification of the framework comes from a module.
 
 * [Creating Modules](#creating-modules)

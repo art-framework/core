@@ -1,5 +1,3 @@
-# Installation
-
 This installation guide is for Minecraft server owners that want to use the `art-framework`. Developers can look at the [quickstart guide](/developer/) or the [maven/gradle](dev-setup.md) page.
 
 To use the art-framework on your server, you have to do three things:

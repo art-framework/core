@@ -30,6 +30,7 @@
 <body>
   <div id="app"></div>
     <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/docsify-edit-on-github"></script>
     <script>
       // Docsify
       window.$docsify = {
@@ -39,6 +40,7 @@
           repo       : 'https://github.com/art-framework/art-core',
           coverpage  : true,
           loadSidebar: true,
+          autoHeader: true,
           loadNavbar: true,
           relativePath: true,
           homepage: 'introduction.md',
@@ -65,9 +67,20 @@
               placeholder: 'Search...'
           },
 
-          // plugins: [
-          //   EditOnGithubPlugin.create('https://github.com/art-framework/art-core/blob/master/docs/')
-          // ],
+          pagination: {
+            crossChapter: true,
+            crossChapterText: true
+          },
+
+          plugins: [
+            EditOnGithubPlugin.create(
+              'https://github.com/art-framework/core/blob/master/docs/', 
+              null,
+              function(file) {
+                return '<img src="https://icongr.am/devicon/github-original.svg?size=16&amp;color=currentColor" alt="Github"> Edit on Github'
+              }
+            )
+          ],
 
           'flexible-alerts': {
             example: {
@@ -91,7 +104,6 @@
   <script src="https://cdn.jsdelivr.net/npm/docsify-themeable@0"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-tabs@1"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-copy-code@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/docsify-edit-on-github"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-example-panels"></script>
   <script src="https://unpkg.com/docsify-plugin-flexible-alerts"></script>
   <script src="https://cdn.jsdelivr.net/npm/docsify-pagination@2/dist/docsify-pagination.min.js"></script>
