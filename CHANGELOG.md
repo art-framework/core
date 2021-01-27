@@ -1,3 +1,34 @@
+# [4.0.0](https://github.com/art-framework/core/compare/v3.1.0...v4.0.0) (2021-01-27)
+
+
+### Bug Fixes
+
+* do not execute next actions if error occured ([35c7faa](https://github.com/art-framework/core/commit/35c7faa0c103ff9d0b26c6fa1442d5362b0107c6))
+* only replace string values ([c962277](https://github.com/art-framework/core/commit/c96227769a8b02bffff249436893608f42699b12))
+* return scope after BootstrapPhase has ended ([78a788c](https://github.com/art-framework/core/commit/78a788ce0728fe098a7fb13b9fd4812a1275f145))
+* string array variables not replaced ([96a724a](https://github.com/art-framework/core/commit/96a724a706787108d16a97c82b83dc258b29dced))
+
+
+### Code Refactoring
+
+* remove unused events api and cleanup code ([caec71b](https://github.com/art-framework/core/commit/caec71bbe8d7a738195228a9d113f5de51b2bd4a))
+
+
+### Features
+
+* auto replace variables in a config map ([c81f0ae](https://github.com/art-framework/core/commit/c81f0ae6d24b3122dfed5a1932b46a9a96733d01))
+* **config:** add debug flag in configuration to increase log level ([d355357](https://github.com/art-framework/core/commit/d3553578ee484e6f214a9c2a7fb0457ba16b2555))
+* **config:** add debug log output to action context ([e92f1a1](https://github.com/art-framework/core/commit/e92f1a1c08590f341289c0e515db1f7bcdda2ca0))
+* add replacement of ${player} with player name ([66deedf](https://github.com/art-framework/core/commit/66deedfd32c9117c02f68c86698a7f118a99d32b)), closes [#17](https://github.com/art-framework/core/issues/17)
+* add replacement of variables when calling resolve ([25d9d6d](https://github.com/art-framework/core/commit/25d9d6db7245f6dfd12b7a455558a5c55200fbb6)), closes [#17](https://github.com/art-framework/core/issues/17)
+* add variables to the execution and artcontext ([a133ce1](https://github.com/art-framework/core/commit/a133ce152826f202742fc7ae8af011b7e74f5cb3)), closes [#17](https://github.com/art-framework/core/issues/17)
+* bootstrap the art-framework onLoad and call onLoad when enabled and enable after 1 tick ([6f86061](https://github.com/art-framework/core/commit/6f860617d52378b5462fc416169f1054e29a0a8d))
+
+
+### BREAKING CHANGES
+
+* removed unused event api
+
 # [3.1.0](https://github.com/art-framework/core/compare/v3.0.1...v3.1.0) (2021-01-25)
 
 
