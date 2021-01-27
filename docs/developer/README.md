@@ -1,5 +1,3 @@
-# Developer Quickstart
-
 You will be able to create simple actions, requirements and trigger after completing this quickstart guide for ART developers.  
 If you never used the [art-framework](/introduction) before, I highly recommended you take a look at this guide to get a feeling on where to start.
 
@@ -219,6 +217,7 @@ As the same with the others, we are going to start by implementing the `Trigger`
 You might have noticed that we don't have any methods that need to be implemented. If you need check some requirements against a target in your trigger, implement the `Requirement` interface.
 
 [PlayerJoinTrigger.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/trigger/PlayerJoinTrigger.java ':include')
+
 [PlayerListener.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/trigger/PlayerListener.java ':include')
 
 As you can see you just need to create a class that implements `Trigger` and is annotated with `@ART`. Then call the trigger from inside a bukkit event with the `scope.trigger(...).with(...targets...).execute()` method.  
@@ -239,7 +238,7 @@ public class MyPlugin extends JavaPlugin {
     public void onLoad(Scope scope) {
         
         playerListener = new PlayerListener(scope);
-        Bukkit.getPluginManager().registerEvents(playerListener, plugin);
+        Bukkit.getPluginManager().registerEvents(playerListener, this);
 
         scope.register().trigger().add(PlayerJoinTrigger.class);
     }

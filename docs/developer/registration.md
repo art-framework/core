@@ -1,1 +1,0 @@
-# Advanced ART Registration

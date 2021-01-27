@@ -1,12 +1,6 @@
-# Actions
-
 Actions are used to execute actions against a set of [targets](targets.md) fired by a [trigger](trigger.md) after checking [requirements](requirements.md). They can be best compared with commands, but offer far more flexibility and options.
 
 This guide here assumes you have read the [your first action](README.md#your-first-action) part in the [developer quickstart](README.md).
-
-* [Creating Actions](#creating-actions)
-* [Generic Actions](#generic-actions)
-* [The Result](#the-result)
 
 ## Creating Actions
 
@@ -51,7 +45,7 @@ Actions and [Requirements](requirements.md) must return a `Result` that represen
 
 * `success(String...)` - *The action was successfully executed. Takes an optional log message.*
 * `failure(String...)` - *The execution of the action failed, but all next actions are executed. Takes an optional log message why the action failed.*
-* `error(Exception, String...)` - *There was an error in the exection of the action. All following actions are not executed. Takes an exception and/or an error message.*
+* `error(Exception, String...)` - *There was an error in the execution of the action. All following actions are not executed. Takes an exception and/or an error message.*
 
 > [!TIP]
 > Use the `debug: true` setting in the config to increase the log level and show all action execution and results.
