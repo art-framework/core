@@ -118,7 +118,7 @@ public interface Scheduler {
      * Returns a task that will run on the next server tick.
      *
      * @param task the task to be run
-     * @return a BukkitTask that contains the id number
+     * @return a task that contains the id number
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
@@ -132,7 +132,7 @@ public interface Scheduler {
      * Returns a task that will run asynchronously.
      *
      * @param task the task to be run
-     * @return a BukkitTask that contains the id number
+     * @return a task that contains the id number
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
@@ -144,8 +144,8 @@ public interface Scheduler {
      * ticks.
      *
      * @param task  the task to be run
-     * @param delay the ticks to wait before running the task
-     * @return a BukkitTask that contains the id number
+     * @param delay the time in milliseconds to wait before running the task
+     * @return a task that contains the id number
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
@@ -160,8 +160,8 @@ public interface Scheduler {
      * of milliseconds.
      *
      * @param task  the task to be run
-     * @param delay the ticks to wait before running the task
-     * @return a BukkitTask that contains the id number
+     * @param delay the time in milliseconds to wait before running the task
+     * @return a task that contains the id number
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
@@ -173,9 +173,9 @@ public interface Scheduler {
      * the specified number of milliseconds.
      *
      * @param task   the task to be run
-     * @param delay  the ticks to wait before running the task
-     * @param period the ticks to wait between runs
-     * @return a BukkitTask that contains the id number
+     * @param delay  the time in milliseconds to wait before running the task
+     * @param period the time in milliseconds to wait between runs
+     * @return a task that contains the id number
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
@@ -190,10 +190,10 @@ public interface Scheduler {
      * starting after the specified number of milliseconds.
      *
      * @param task   the task to be run
-     * @param delay  the ticks to wait before running the task for the first
+     * @param delay  the time in milliseconds to wait before running the task for the first
      *               time
-     * @param period the ticks to wait between runs
-     * @return a BukkitTask that contains the id number
+     * @param period the time in milliseconds to wait between runs
+     * @return a task that contains the id number
      * @throws IllegalArgumentException if plugin is null
      * @throws IllegalArgumentException if task is null
      */
