@@ -14,6 +14,15 @@ import java.util.Optional;
 @Accessors(fluent = true)
 public class ReplacementContext {
 
+    public static ReplacementContext of(
+            @NonNull Scope scope,
+            @Nullable Target<?> target,
+            @Nullable ExecutionContext<?> executionContext
+    ) {
+
+        return new ReplacementContext(scope, target, executionContext);
+    }
+
     @NonNull Scope scope;
     @Nullable Target<?> target;
     @Nullable ExecutionContext<?> executionContext;

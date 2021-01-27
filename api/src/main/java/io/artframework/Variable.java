@@ -10,6 +10,16 @@ import java.util.function.Supplier;
 @Accessors(fluent = true)
 public class Variable<TValue> {
 
+    public static <TValue> Variable<TValue> of(@NonNull String key, @NonNull TValue value) {
+
+        return new Variable<>(key, value);
+    }
+
+    public static <TValue> Variable<TValue> of(String key, Class<TValue> type, Supplier<TValue> value) {
+
+        return new Variable<>(key, type, value);
+    }
+
     String key;
     Class<TValue> type;
     Supplier<TValue> value;

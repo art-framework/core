@@ -106,6 +106,8 @@ public interface ConfigMap {
      * <p>All config fields that are tagged with @{@link Resolve} and not primitive values
      * will be resolved using the registered {@link Resolver}.
      * <p>Values in this config map can only resolve after they were provided {@link #with(List)}.
+     * <p>If an {@link ExecutionContext} is provided all variables that are strings or primitive types
+     * will be replaced using the ${key} syntax before resolving the config map.
      *
      * @param scope the scope used when resolving the values of this config map. must not be null.
      * @param target the target of the resolution. can be null.
