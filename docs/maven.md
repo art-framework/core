@@ -9,7 +9,7 @@
     <dependencies>
         <dependency>
             <groupId>io.art-framework</groupId>
-            <artifactId>api</artifactId>
+            <artifactId>art-framework</artifactId>
             <version>4.1.0</version>
         </dependency>
     </dependencies>
