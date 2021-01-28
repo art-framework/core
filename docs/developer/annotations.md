@@ -20,7 +20,7 @@ Every [action](actions.md), [requirement](requirements.md) and [trigger](trigger
 
 <!-- div:right-panel -->
 
-[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=header')
+[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=header')
 
 <!-- div:title-panel -->
 ## @ConfigOption
@@ -38,7 +38,7 @@ You can annotate properties of your class with the [`@ConfigOption`](https://jdo
 
 <!-- div:right-panel -->
 
-[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=config')
+[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=config')
 
 <!-- div:title-panel -->
 
@@ -57,7 +57,7 @@ The [`@ArtModule`](https://jdocs.art-framework.io/io/artframework/annotations/Ar
 
 <!-- div:right-panel -->
 
-[ArtBukkitModule.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/ArtBukkitModule.java ':include :fragment=module')
+[ArtBukkitModule.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/ArtBukkitModule.java ':include :fragment=module')
 
 <!-- div:title-panel -->
 
@@ -73,6 +73,6 @@ Use the [`@Resolve`](https://jdocs.art-framework.io/io/artframework/annotations/
 
 <!-- div:right-panel -->
 
-[EquipmentRequirement.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/requirements/EquipmentRequirement.java ':include :fragment=demo')
+[EquipmentRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/requirements/EquipmentRequirement.java ':include :fragment=demo')
 
 <!-- panels:end -->

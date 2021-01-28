@@ -4,6 +4,6 @@ repositories {
 }
 
 dependencies {
-    implementation group: 'io.art-framework.core', name: 'api', version: '4.0.0'
+    implementation group: 'io.art-framework', name: 'api', version: '4.0.0'
 }
 ```

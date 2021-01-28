@@ -8,6 +8,7 @@
 - [Trigger](/configuration/trigger)
 - **DEVELOPER**
 - [Developer Quickstart](/developer/)
+- [Parsing/Loading](/developer/loading)
 - [Actions](/developer/actions)
 - [Requirements](/developer/requirements)
 - [Trigger](/developer/trigger)
@@ -27,4 +28,5 @@
 - **LINKS**
 - [![Download](https://icongr.am/fontawesome/cloud-download.svg?size=18&color=currentColor)Download](https://github.com/art-framework/art-core/releases/latest)
 - [![Github](https://icongr.am/devicon/github-original.svg?size=16&color=currentColor)Github](https://github.com/art-framework)
+- [![Report an Issue](https://icongr.am/devicon/github-original.svg?size=16&color=currentColor)Github](https://github.com/art-framework/art-framework/)
 - [![Javadocs](https://icongr.am/devicon/java-original.svg?size=16&color=currentColor)JavaDocs](https://jdocs.art-framework.io)

@@ -14,4 +14,4 @@ private Material item;
 
 You can register your own `Resolver` by implementing the `Resolver<TType>` interface and registering it with the scope: `scope.register().resolvers().add(MyResolver.class)`. Here is an example on how the `MaterialResolver` is implemented.
 
-[MaterialResolver.java](https://raw.githubusercontent.com/art-framework/core/master/bukkit/src/main/java/io/artframework/bukkit/resolver/MaterialResolver.java ':include')
+[MaterialResolver.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/resolver/MaterialResolver.java ':include')

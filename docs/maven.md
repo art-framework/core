@@ -8,7 +8,7 @@
     </repositories>
     <dependencies>
         <dependency>
-            <groupId>io.art-framework.core</groupId>
+            <groupId>io.art-framework</groupId>
             <artifactId>api</artifactId>
             <version>4.0.0</version>
         </dependency>

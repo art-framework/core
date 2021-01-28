@@ -50,7 +50,7 @@
           // -----------------------------------------------------------------
           // routerMode: 'history',
           alias: {
-              '.*?/changelog': 'https://raw.githubusercontent.com/art-framework/core/master/CHANGELOG.md',
+              '.*?/changelog': 'https://raw.githubusercontent.com/art-framework/art-framework/master/CHANGELOG.md',
               '.*/configuration': '/configuration/',
               '.*/developer': '/developer/'
           },
@@ -74,7 +74,7 @@
 
           plugins: [
             EditOnGithubPlugin.create(
-              'https://github.com/art-framework/core/blob/master/docs/', 
+              'https://github.com/art-framework/art-framework/blob/master/docs/', 
               null,
               function(file) {
                 return '<img src="https://icongr.am/devicon/github-original.svg?size=16&amp;color=currentColor" alt="Github"> Edit on Github'
