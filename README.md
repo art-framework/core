@@ -2,7 +2,7 @@
 
 [![Build Status](https://github.com/art-framework/art-framework/workflows/Build/badge.svg)](../../actions?query=workflow%3ABuild)
 [![Netlify](https://img.shields.io/netlify/dae1bdab-7c51-4172-97ab-f8fdd8f0612e?label=docs)](https://art-framework.io)
-[![jitpack status](https://jitpack.io/v/io.art-framework/api.svg)](https://jitpack.io/#io.art-framework/api)
+[![jitpack status](https://jitpack.io/v/io.art-framework/art-framework.svg)](https://jitpack.io/#io.art-framework/art-framework)
 [![codecov](https://codecov.io/gh/art-framework/art-framework/branch/master/graph/badge.svg?token=Ex9gV4AfK8)](https://codecov.io/gh/art-framework/art-framework)
 [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/art-framework/art-framework?include_prereleases&label=release)](../../releases)
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
