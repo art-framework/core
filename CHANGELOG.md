@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/art-framework/art-framework/compare/v4.0.0...v4.1.0) (2021-01-28)
+
+
+### Features
+
+* migrate packages to io.art-framework:api package ([190804b](https://github.com/art-framework/art-framework/commit/190804b9b1a206a8d45ad35196fd8a417e12f20c))
+
 # [4.0.0](https://github.com/art-framework/core/compare/v3.1.0...v4.0.0) (2021-01-27)
 
 
