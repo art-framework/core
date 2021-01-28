@@ -35,8 +35,8 @@ Then go to the **[Developer Quickstart Guide](/developer/README.md)** to learn h
 
 You are using the art-framework in your plugin? Use the following badge to show how cool you are!
 
-[![art-framework-badge](https://raw.githubusercontent.com/gist/Silthus/a88fd35b722da343658d54c474c0e5c1/raw/12e79cf109e675cfe6999dd08d1a00c00c46b440/badge.svg)](https://art-framework.io)
+[![art-framework-badge](https://raw.githubusercontent.com/gist/Silthus/a88fd35b722da343658d54c474c0e5c1/raw/586ba19363678ffc6880de679490f8abb6db3f19/badge.svg)](https://art-framework.io)
 
 ```markdown
-[![art-framework-badge](https://raw.githubusercontent.com/gist/Silthus/a88fd35b722da343658d54c474c0e5c1/raw/12e79cf109e675cfe6999dd08d1a00c00c46b440/badge.svg)](https://art-framework.io)
+[![art-framework-badge](https://raw.githubusercontent.com/gist/Silthus/a88fd35b722da343658d54c474c0e5c1/raw/586ba19363678ffc6880de679490f8abb6db3f19/badge.svg)](https://art-framework.io)
 ```
