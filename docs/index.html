@@ -25,7 +25,6 @@
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/docsify-themeable@0/dist/css/theme-simple.css" title="Simple">
-  <link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free/css/fontawesome.css" />
 </head>
 <body>
   <div id="app"></div>
@@ -85,17 +84,23 @@
           'flexible-alerts': {
             example: {
               label: "Example",
-
-              // Assuming that we use Font Awesome
               icon: "fas fa-code",
-              className: "info"
+              className: "note"
             },
             success: {
               label: "Success",
-
-              // Assuming that we use Font Awesome
               icon: "fas fa-star",
               className: "tip"
+            },
+            question: {
+              label: "Question",
+              icon: "fas fa-question-circle",
+              className: "note"
+            },
+            usecase: {
+              label: "Use-Case",
+              icon: "fas fa-file-code",
+              className: "note"
             }
           }
       };
@@ -115,5 +120,6 @@
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/components/prism-yaml.min.js"></script>
   <script src="https://unpkg.com/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
   <script src="https://unpkg.com/docsify-fontawesome/dist/docsify-fontawesome.min.js"></script>
+  <script src="https://kit.fontawesome.com/ccafed95d4.js" crossorigin="anonymous"></script>
 </body>
 </html>
