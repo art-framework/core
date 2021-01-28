@@ -1,6 +1,6 @@
 - [Introduction](/introduction)
 - [Installation](/installation)
-- [Maven/Gradle](/dev-setup)
+- [Developer Setup](/dev-setup)
 - **CONFIGURATION**
 - [Admin Quickstart](/configuration/README.md)
 - [Actions](/configuration/actions)
