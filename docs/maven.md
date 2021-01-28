@@ -10,7 +10,7 @@
         <dependency>
             <groupId>io.art-framework</groupId>
             <artifactId>art-framework</artifactId>
-            <version>4.1.0</version>
+            <version>4.1.1</version>
         </dependency>
     </dependencies>
 </project>

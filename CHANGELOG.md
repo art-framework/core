@@ -1,3 +1,10 @@
+## [4.1.1](https://github.com/art-framework/art-framework/compare/v4.1.0...v4.1.1) (2021-01-28)
+
+
+### Bug Fixes
+
+* maven/gradle jitpack reference ([036883c](https://github.com/art-framework/art-framework/commit/036883cb718ce69bbc5ad9b59ec59bbf7c2a70d2))
+
 # [4.1.0](https://github.com/art-framework/art-framework/compare/v4.0.0...v4.1.0) (2021-01-28)
 
 
