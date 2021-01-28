@@ -27,6 +27,6 @@
 - [Bukkit/Spigot/Paper](/platforms/bukkit)
 - **LINKS**
 - [![Download](https://icongr.am/fontawesome/cloud-download.svg?size=18&color=currentColor)Download](https://github.com/art-framework/art-core/releases/latest)
-- [![Github](https://icongr.am/devicon/github-original.svg?size=16&color=currentColor)Github](https://github.com/art-framework)
-- [![Report an Issue](https://icongr.am/devicon/github-original.svg?size=16&color=currentColor)Github](https://github.com/art-framework/art-framework/)
+- [![Github](https://icongr.am/devicon/github-original.svg?size=16&color=currentColor)Source Code](https://github.com/art-framework)
+- [![Report an Issue](https://icongr.am/fontawesome/bug.svg?size=16&color=currentColor)Report an Issue](https://github.com/art-framework/art-framework/issues/new/choose)
 - [![Javadocs](https://icongr.am/devicon/java-original.svg?size=16&color=currentColor)JavaDocs](https://jdocs.art-framework.io)
