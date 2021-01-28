@@ -30,11 +30,14 @@ import org.bukkit.entity.LivingEntity;
 @ART(
         // Every action needs a unique name across all plugins.
         // It is recommended to prefix it with your plugin name to make sure it is unique.
-        value = "entity.damage",
+        value = "art-bukkit:entity.damage",
         // you can define aliases for your ART that will be registered if the alias is not already taken
-        alias = {"damage", "player.damage", "dmg"},
+        alias = {"entity.damage", "damage", "player.damage", "dmg"},
         // You can optionally provide a description about what your action does. I highly recommend to do this.
-        description = "Damages the living entity for the given amount of hitpoints."
+        description = {
+                "Damages the living entity for the given amount of hitpoints.",
+                "The entity can also be damaged for a percentage of its maximum or current health."
+        }
 )
 public class DamageLivingEntityAction implements Action<LivingEntity> {
 /// [header]
@@ -47,13 +50,13 @@ public class DamageLivingEntityAction implements Action<LivingEntity> {
     )
     private double amount;
 
-    @ConfigOption(description = "Set to true if you want the player to be damaged based on his maximum life")
+    @ConfigOption(description = "Set to true if you want the entity to be damaged based on his maximum life")
     private boolean percentage = false;
 
     // all config fields will be exposted as lowercase with underscores
     // so fromCurrent becomes from_current in the config
     // you can override this by providing an explicit config name with @ConfigOption(value = "FROM-CURRENT")
-    @ConfigOption(description = "Set to true if you want to damage the player based on his current health. Only makes sense in combination with percentage=true.")
+    @ConfigOption(description = "Set to true if you want to damage the entity based on his current health. Only makes sense in combination with percentage=true.")
     private boolean fromCurrent = false;
     /// [config]
     /// [action]

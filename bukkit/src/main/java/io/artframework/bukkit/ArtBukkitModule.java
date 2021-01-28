@@ -53,9 +53,13 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 
-@ArtModule("art-bukkit")
+/// [module]
+@ArtModule(
+        value = "art-bukkit",
+        description = {"The base art-module for the bukkit platform, providing various actions, requirements and trigger for bukkit plugins."}
+)
 public class ArtBukkitModule implements BootstrapModule {
-
+/// [module]
     private PlayerListener playerListener;
     private LocationTrigger locationTrigger;
     private EntityDamageTrigger entityDamageTrigger;

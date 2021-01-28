@@ -99,7 +99,7 @@ public @interface ArtModule {
      * Here is an example of a module that depends on the Vault plugin and on the art-commons module.
      * <p><pre>{@code
      * @Module(
-     *      dependencies = {"plugin:Vault", "module:art-commons"}
+     *      depends = {"plugin:Vault", "module:art-commons"}
      * )
      * }</pre>
      *

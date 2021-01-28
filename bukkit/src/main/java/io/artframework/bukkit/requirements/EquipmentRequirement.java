@@ -1,6 +1,10 @@
 package io.artframework.bukkit.requirements;
 
-import io.artframework.*;
+import io.artframework.ExecutionContext;
+import io.artframework.Requirement;
+import io.artframework.RequirementContext;
+import io.artframework.Result;
+import io.artframework.Target;
 import io.artframework.annotations.ART;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.annotations.Resolve;
@@ -8,8 +12,8 @@ import lombok.NonNull;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
 
+/// [demo]
 @ART(value = "player:equipment", alias = {
         "item.in-hand", "equipment", "equipped"
 })
@@ -22,6 +26,7 @@ public class EquipmentRequirement implements Requirement<Player> {
     )
     @Resolve
     private Material item;
+
     @ConfigOption(
             position = 1,
             description = "The slot in which the item must be equipped. One of: hand, off_hand, head, chest, legs, feet"
@@ -35,3 +40,4 @@ public class EquipmentRequirement implements Requirement<Player> {
         return resultOf(target.source().getInventory().getItem(slot).getType() == this.item);
     }
 }
+/// [demo]

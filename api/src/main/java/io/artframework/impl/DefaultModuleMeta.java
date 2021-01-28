@@ -24,6 +24,8 @@ import lombok.NonNull;
 import lombok.Value;
 import lombok.experimental.Accessors;
 
+import java.util.Arrays;
+
 @Value
 @Accessors(fluent = true)
 @EqualsAndHashCode(of = {"identifier", "moduleClass"})
@@ -50,7 +52,8 @@ public class DefaultModuleMeta implements ModuleMeta {
         this.moduleClass = moduleClass;
         this.version = version;
         this.description = description;
-        this.dependencies = dependencies;
+        // TODO: remove the module: replacement when dependency hooks are implemented
+        this.dependencies = Arrays.stream(dependencies).map(s -> s.replace("module:", "")).toArray(String[]::new);
         this.packages = packages.length < 1 ? new String[] {moduleClass.getPackage().getName()} : packages;
     }
 
