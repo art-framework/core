@@ -26,7 +26,7 @@ The `art-framework` has three major use cases and each of them have their own do
 
 The power of the framework comes from the ability to share and reuse ART across plugins without directly depending on them. Take the following *advanced example* of an ART configuration:
 
-> [!NOTE]
+> [!USECASE]
 > In this example the player will receive a one time starter kit when he enters a defined area (spawn) if he has played less then one hour. If he has a play time of more than one hour he will receive ten diamonds every time he enters the spawn area. Everything has a cooldown of 48 hours. So the player can only receive ten diamonds every two days.
 
 ```yaml

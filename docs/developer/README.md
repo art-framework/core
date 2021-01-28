@@ -12,9 +12,6 @@ If you never used the [art-framework](/introduction) before, I highly recommende
 
 However if you want to go deeper down the rabitt hole, head to the detailed documentation of each ART component.
 
-> [!NOTE]
-> Take a look at the [art-example](https://github.com/art-framework/art-examples) project if you are the guy that prefers pure code examples instead of long text.
-
 ## Dependencies
 
 You only need to depend on the `io.art-framework.core:api` dependency using the [jitpack repository](https://jitpack.io/).

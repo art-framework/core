@@ -68,7 +68,7 @@ ArtContext art = ART.load(config.getStringList("rewards"));
 result.execute(player);
 
 // test if all requirements are met
-if (result.test(player)) {
+if (result.test(player).success()) {
   // do stuff
 }
 
