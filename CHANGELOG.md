@@ -1,3 +1,10 @@
+# [4.2.0](https://github.com/art-framework/art-framework/compare/v4.1.1...v4.2.0) (2021-01-29)
+
+
+### Features
+
+* add give item action ([21932ba](https://github.com/art-framework/art-framework/commit/21932ba10530659480b6f188c520536fae969ee7))
+
 ## [4.1.1](https://github.com/art-framework/art-framework/compare/v4.1.0...v4.1.1) (2021-01-28)
 
 
