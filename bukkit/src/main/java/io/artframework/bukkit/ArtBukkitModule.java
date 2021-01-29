@@ -23,6 +23,7 @@ import io.artframework.annotations.ArtModule;
 import io.artframework.annotations.OnReload;
 import io.artframework.bukkit.actions.CancelBukkitEventAction;
 import io.artframework.bukkit.actions.DamageLivingEntityAction;
+import io.artframework.bukkit.actions.GiveItemAction;
 import io.artframework.bukkit.actions.SendMessageAction;
 import io.artframework.bukkit.requirements.EquipmentRequirement;
 import io.artframework.bukkit.requirements.HealthRequirement;
@@ -139,6 +140,7 @@ public class ArtBukkitModule implements BootstrapModule {
                     .add(CancelBukkitEventAction.class)
                     .add(DamageLivingEntityAction.class)
                     .add(SendMessageAction.class)
+                    .add(GiveItemAction.class)
                 .requirements()
                     .add(HealthRequirement.class)
                     .add(LocationTrigger.class, () -> new LocationTrigger(scope))
