@@ -5,11 +5,16 @@ import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import io.artframework.ART;
 import io.artframework.ParseException;
+import io.artframework.bukkit.actions.SendMessageAction;
+import io.artframework.bukkit.replacements.PlayerReplacement;
+import io.artframework.bukkit.targets.PlayerTarget;
+import org.bukkit.entity.Player;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.text.TextAction;
 import java.util.Arrays;
 import java.util.Collections;
 

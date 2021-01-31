@@ -266,7 +266,7 @@ public final class ReflectionUtil {
         methods.addAll(Arrays.asList(type.getDeclaredMethods()));
 
         if (type.getSuperclass() != null) {
-            getAllMethods(type, methods);
+            getAllMethods(type.getSuperclass(), methods);
         }
 
         return methods;

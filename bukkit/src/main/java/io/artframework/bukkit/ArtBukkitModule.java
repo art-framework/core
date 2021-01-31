@@ -25,6 +25,7 @@ import io.artframework.bukkit.actions.CancelBukkitEventAction;
 import io.artframework.bukkit.actions.DamageLivingEntityAction;
 import io.artframework.bukkit.actions.GiveItemAction;
 import io.artframework.bukkit.actions.SendMessageAction;
+import io.artframework.bukkit.replacements.PlayerReplacement;
 import io.artframework.bukkit.requirements.EquipmentRequirement;
 import io.artframework.bukkit.requirements.HealthRequirement;
 import io.artframework.bukkit.resolver.MaterialResolver;
@@ -77,7 +78,7 @@ public class ArtBukkitModule implements BootstrapModule {
         ArrayList<Object> modules = new ArrayList<>();
 
         for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-            if (plugin.getClass().isAnnotationPresent(ArtModule.class)) {
+            if (!plugin.getClass().equals(ArtBukkitPlugin.class) && plugin.getClass().isAnnotationPresent(ArtModule.class)) {
                 modules.add(plugin);
             }
         }
@@ -136,41 +137,36 @@ public class ArtBukkitModule implements BootstrapModule {
         Bukkit.getPluginManager().registerEvents(entityDamageTrigger, plugin);
 
         scope.register()
-                .actions()
-                    .add(CancelBukkitEventAction.class)
-                    .add(DamageLivingEntityAction.class)
-                    .add(SendMessageAction.class)
-                    .add(GiveItemAction.class)
-                .requirements()
-                    .add(HealthRequirement.class)
-                    .add(LocationTrigger.class, () -> new LocationTrigger(scope))
-                    .add(EquipmentRequirement.class)
-                .trigger()
-                    .add(PlayerJoinTrigger.class)
-                    .add(PlayerQuitTrigger.class)
-                    .add(LocationTrigger.class, () -> new LocationTrigger(scope))
-                    .add(EntityDamageTrigger.class, () -> new EntityDamageTrigger(scope))
-                .targets()
-                    .add(Block.class, BlockTarget::new)
-                    .add(Cancellable.class, CancellableEventTarget::new)
-                    .add(CommandSender.class, CommandSenderTarget::new)
-                    .add(Entity.class, EntityTarget::new)
-                    .add(LivingEntity.class, LivingEntityTarget::new)
-                    .add(Location.class, LocationTarget::new)
-                    .add(Player.class, PlayerTarget::new)
-                    .add(OfflinePlayer.class, OfflinePlayerTarget::new)
-                    .add(Event.class, BukkitEventTarget::new)
+//                .actions()
+//                    .add(CancelBukkitEventAction.class)
+//                    .add(DamageLivingEntityAction.class)
+//                    .add(SendMessageAction.class)
+//                    .add(GiveItemAction.class)
+//                .requirements()
+//                    .add(HealthRequirement.class)
+//                    .add(LocationTrigger.class, () -> new LocationTrigger(scope))
+//                    .add(EquipmentRequirement.class)
+//                .trigger()
+//                    .add(PlayerJoinTrigger.class)
+//                    .add(PlayerQuitTrigger.class)
+//                    .add(LocationTrigger.class, () -> new LocationTrigger(scope))
+//                    .add(EntityDamageTrigger.class, () -> new EntityDamageTrigger(scope))
+//                .targets()
+//                    .add(Block.class, BlockTarget::new)
+//                    .add(Cancellable.class, CancellableEventTarget::new)
+//                    .add(CommandSender.class, CommandSenderTarget::new)
+//                    .add(Entity.class, EntityTarget::new)
+//                    .add(LivingEntity.class, LivingEntityTarget::new)
+//                    .add(Location.class, LocationTarget::new)
+//                    .add(Player.class, PlayerTarget::new)
+//                    .add(OfflinePlayer.class, OfflinePlayerTarget::new)
+//                    .add(Event.class, BukkitEventTarget::new)
                 .and()
                 .resolvers()
                     .add(MaterialResolver.class)
                 .and()
                 .replacements()
-                    .add((value, context) -> value.replace("${player}", context.target()
-                            .filter(target -> target.isTargetType(OfflinePlayer.class))
-                            .map(target -> (OfflinePlayer) target.source())
-                            .map(OfflinePlayer::getName)
-                            .orElse(value)
-                    ));
+                    .add(new PlayerReplacement());
     }
 
     @OnReload

@@ -27,6 +27,7 @@ import lombok.Getter;
 import net.silthus.ebean.Config;
 import net.silthus.ebean.EbeanWrapper;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.plugin.java.JavaPluginLoader;
@@ -53,10 +54,16 @@ public class ArtBukkitPlugin extends JavaPlugin {
     public void onLoad() {
 
         try {
+            FileConfiguration config = getConfig();
             bootstrap = ART.bootstrap(BootstrapScope.of(new ArtBukkitModule(this), Settings.builder()
+                    .autoRegisterAllArt(config.getBoolean("auto-register", true))
+                    .debug(config.getBoolean("debug", false))
+                    .configPath(config.getString("configs", "configs"))
+                    .modulePath(config.getString("modules", "modules"))
                     .basePath(getDataFolder().getAbsolutePath())
                     .build()
             ), true);
+
         } catch (BootstrapException e) {
             getLogger().severe("failed to bootstrap the art-framework: " + e.getMessage());
             e.printStackTrace();

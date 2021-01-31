@@ -48,6 +48,7 @@ public class TargetFinder extends AbstractFinder {
 
         FileUtil.findClasses(classLoader, file, Target.class)
                 .stream().filter(predicate)
+                .filter(this::search)
                 .forEach(targetClass -> {
                     Optional<Class<?>> sourceClass = ReflectionUtil.getInterfaceTypeArgument(targetClass, Target.class, 0);
                     if (sourceClass.isPresent()) {

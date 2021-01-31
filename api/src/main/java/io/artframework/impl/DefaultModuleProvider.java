@@ -16,24 +16,10 @@
 
 package io.artframework.impl;
 
-import io.artframework.AbstractProvider;
-import io.artframework.ArtMetaDataException;
-import io.artframework.ArtModuleDependencyResolver;
-import io.artframework.BootstrapException;
-import io.artframework.BootstrapModule;
-import io.artframework.BootstrapScope;
-import io.artframework.ModuleMeta;
-import io.artframework.ModuleProvider;
-import io.artframework.ModuleRegistrationException;
-import io.artframework.ModuleState;
-import io.artframework.Scope;
-import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.OnBootstrap;
-import io.artframework.annotations.OnDisable;
-import io.artframework.annotations.OnEnable;
-import io.artframework.annotations.OnLoad;
-import io.artframework.annotations.OnReload;
+import io.artframework.*;
+import io.artframework.annotations.*;
 import io.artframework.util.ConfigUtil;
+import io.artframework.util.ReflectionUtil;
 import io.artframework.util.graphs.CycleSearch;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -44,23 +30,13 @@ import lombok.extern.java.Log;
 
 import javax.annotation.Nullable;
 import java.io.File;
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
 import java.security.CodeSource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
-
-import static org.reflections.ReflectionUtils.getAllMethods;
-import static org.reflections.ReflectionUtils.withAnnotation;
 
 @Log(topic = "art-framework")
 public class DefaultModuleProvider extends AbstractProvider implements ModuleProvider {
@@ -144,7 +120,8 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
         for (ModuleInformation module : modules.values()) {
             try {
-                bootstrapModule(scope, module);
+                if (!module.moduleMeta().bootstrapModule())
+                    bootstrapModule(scope, module);
             } catch (ModuleRegistrationException e) {
                 e.printStackTrace();
             }
@@ -529,6 +506,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     static class ModuleInformation {
 
         private final ModuleMeta moduleMeta;
+        private final List<Method> allMethods;
         @Nullable private final Object module;
         @Nullable private final Method onBootstrap;
         @Nullable private final Method onLoad;
@@ -542,6 +520,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             this.moduleMeta = moduleMeta;
             this.module = module;
             Class<?> moduleClass = moduleMeta.moduleClass();
+            this.allMethods = ReflectionUtil.getAllMethods(moduleClass, new ArrayList<>());
             if (BootstrapModule.class.isAssignableFrom(moduleClass)) {
                 try {
                     onBootstrap = moduleClass.getMethod("onBootstrap", BootstrapScope.class);
@@ -553,11 +532,11 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
                     throw new RuntimeException(e);
                 }
             } else {
-                onBootstrap = getAllMethods(moduleClass, withAnnotation(OnBootstrap.class)).stream().findFirst().orElse(null);
-                onLoad = getAllMethods(moduleClass, withAnnotation(OnLoad.class)).stream().findFirst().orElse(null);
-                onEnable = getAllMethods(moduleClass, withAnnotation(OnEnable.class)).stream().findFirst().orElse(null);
-                onDisable = getAllMethods(moduleClass, withAnnotation(OnDisable.class)).stream().findFirst().orElse(null);
-                onReload = getAllMethods(moduleClass, withAnnotation(OnReload.class)).stream().findFirst().orElse(null);
+                onBootstrap = findMethod(OnBootstrap.class);
+                onLoad = findMethod(OnLoad.class);
+                onEnable = findMethod(OnEnable.class);
+                onDisable = findMethod(OnDisable.class);
+                onReload = findMethod(OnReload.class);
             }
         }
 
@@ -607,6 +586,14 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             } catch (IllegalAccessException | InvocationTargetException e) {
                 throw new RuntimeException(e);
             }
+        }
+
+        private Method findMethod(Class<? extends Annotation> annotation) {
+
+            return allMethods.stream()
+                    .filter(method -> method.isAnnotationPresent(annotation))
+                    .findFirst()
+                    .orElse(null);
         }
     }
 

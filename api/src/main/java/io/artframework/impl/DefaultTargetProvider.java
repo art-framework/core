@@ -80,7 +80,7 @@ public class DefaultTargetProvider extends AbstractProvider implements TargetPro
             log.warning("overwriting existing target registration for " + sourceClass.getCanonicalName());
         }
         targetProviders.put(sourceClass, targetProvider);
-        log.info("[REGISTERED] " + sourceClass.getCanonicalName());
+        log.info("[REGISTERED] target: " + sourceClass.getCanonicalName());
         return this;
     }
 

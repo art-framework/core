@@ -16,9 +16,27 @@
 
 package io.artframework;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public abstract class AbstractFinder extends AbstractScoped implements Finder {
+
+    private final Set<Class<?>> searchedClasses = new HashSet<>();
 
     protected AbstractFinder(Scope scope) {
         super(scope);
+    }
+
+    /**
+     * Checks if the given class was already searched by this finder.
+     *
+     * @param clazz the class to search
+     * @return true if the class was not searched and false if it was already visited
+     */
+    protected boolean search(Class<?> clazz) {
+
+        if (searchedClasses.contains(clazz)) return false;
+        searchedClasses.add(clazz);
+        return true;
     }
 }

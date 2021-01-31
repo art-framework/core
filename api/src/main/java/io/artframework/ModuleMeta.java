@@ -79,4 +79,9 @@ public interface ModuleMeta {
      * @return a list of packages to search recursively for art objects
      */
     String[] packages();
+
+    /**
+     * @return true if the module is a bootstrap module
+     */
+    boolean bootstrapModule();
 }

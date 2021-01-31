@@ -46,6 +46,7 @@ public final class ArtObjectFinder extends AbstractFinder {
 
         FileUtil.findClasses(classLoader, file, ArtObject.class)
                 .stream().filter(predicate)
+                .filter(this::search)
                 .forEach(artClass -> {
                     try {
                         artObjectMetas.add(ArtObjectMeta.of(artClass));

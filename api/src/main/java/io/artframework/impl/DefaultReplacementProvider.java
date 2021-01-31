@@ -4,12 +4,14 @@ import io.artframework.AbstractProvider;
 import io.artframework.Replacement;
 import io.artframework.ReplacementProvider;
 import io.artframework.Scope;
+import lombok.extern.java.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+@Log(topic = "art-framework")
 public class DefaultReplacementProvider extends AbstractProvider implements ReplacementProvider {
 
     private final List<Replacement> replacements = new ArrayList<>();
@@ -29,6 +31,7 @@ public class DefaultReplacementProvider extends AbstractProvider implements Repl
     @Override
     public ReplacementProvider add(Replacement replacement) {
 
+        log.info("[REGISTERED] replacement: " + replacement.getClass().getCanonicalName());
         replacements.add(replacement);
 
         return this;

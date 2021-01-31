@@ -45,6 +45,7 @@ public class ModuleFinder extends AbstractFinder {
 
         FileUtil.findClasses(classLoader, file, aClass -> aClass.isAnnotationPresent(ArtModule.class))
                 .stream().filter(predicate)
+                .filter(this::search)
                 .forEach(moduleClass -> {
             try {
                 configuration().modules().register(moduleClass);

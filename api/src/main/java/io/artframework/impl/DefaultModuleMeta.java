@@ -17,6 +17,7 @@
 package io.artframework.impl;
 
 import com.google.common.base.Strings;
+import io.artframework.BootstrapModule;
 import io.artframework.ModuleMeta;
 import io.artframework.annotations.ArtModule;
 import lombok.EqualsAndHashCode;
@@ -38,6 +39,7 @@ public class DefaultModuleMeta implements ModuleMeta {
     String[] description;
     String[] dependencies;
     String[] packages;
+    boolean bootstrapModule;
 
     DefaultModuleMeta(@NonNull String identifier,
                       @NonNull String prefix,
@@ -55,6 +57,7 @@ public class DefaultModuleMeta implements ModuleMeta {
         // TODO: remove the module: replacement when dependency hooks are implemented
         this.dependencies = Arrays.stream(dependencies).map(s -> s.replace("module:", "")).toArray(String[]::new);
         this.packages = packages.length < 1 ? new String[] {moduleClass.getPackage().getName()} : packages;
+        this.bootstrapModule = BootstrapModule.class.isAssignableFrom(moduleClass);
     }
 
     public DefaultModuleMeta(@NonNull Class<?> moduleClass,
