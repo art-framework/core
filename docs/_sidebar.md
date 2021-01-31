@@ -23,6 +23,7 @@
 - [Scope](/developer/scope)
 - [Targets](/developer/targets)
 - [Variables/Replacements](/developer/variables)
+- [Utilities](/developer/utilities)
 - **PLATFORMS**
 - [Bukkit/Spigot/Paper](/platforms/bukkit)
 - **LINKS**

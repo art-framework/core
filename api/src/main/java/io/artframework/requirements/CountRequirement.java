@@ -23,6 +23,7 @@ import io.artframework.Result;
 import io.artframework.Target;
 import io.artframework.annotations.ART;
 import io.artframework.annotations.ConfigOption;
+import io.artframework.util.ModifierMatcher;
 import lombok.NonNull;
 
 @ART(
@@ -37,13 +38,13 @@ public class CountRequirement implements GenericRequirement {
     private static final String COUNTER_KEY = "count";
 
     @ConfigOption(description = "Set how often this requirement must be checked before it is successful.")
-    private final int count = 0;
+    private final String count = "0";
 
     @Override
     public Result test(@NonNull Target<Object> target, @NonNull ExecutionContext<RequirementContext<Object>> context) {
         final int currentCount = context.store(target, COUNTER_KEY, Integer.class).orElse(0) + 1;
         context.store(target, COUNTER_KEY, currentCount);
 
-        return resultOf(count <= currentCount);
+        return resultOf(new ModifierMatcher(count).matches(currentCount));
     }
 }

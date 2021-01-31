@@ -16,14 +16,13 @@
 
 package io.artframework.bukkit.requirements;
 
-import com.google.common.base.Strings;
 import io.artframework.*;
 import io.artframework.annotations.ART;
 import io.artframework.annotations.ConfigOption;
+import io.artframework.util.ModifierMatcher;
 import lombok.NonNull;
 import org.bukkit.entity.LivingEntity;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /// [full-example]
@@ -40,35 +39,18 @@ public class HealthRequirement implements Requirement<LivingEntity> {
     /// [config]
     @Override
     public Result test(@NonNull Target<LivingEntity> target, @NonNull ExecutionContext<RequirementContext<LivingEntity>> context) {
-        /// [error]
-        Matcher matcher = pattern.matcher(health);
 
-        if (!matcher.matches()) {
+        ModifierMatcher matcher = new ModifierMatcher(health);
+
+        if (!matcher.matchesPattern()) {
             // return an error if something in the configuration is wrong
             // or an exception occured
             return error("Health modifier '" + health + "' is invalid.",
                     "Use one of the following >, <, >=, <=, = modifier.");
         }
-        /// [error]
         /// [result]
-        String modifier = matcher.group("modifier");
-        double amount = Double.parseDouble(matcher.group("amount"));
-        double health = target.source().getHealth();
-
-        if (Strings.isNullOrEmpty(modifier) || modifier.equals("=")) {
-            // resultOf will create a success() or failure() result based on the boolean of the check
-            return resultOf(health == amount);
-        } else if (modifier.equals(">")) {
-            return resultOf(health > amount);
-        } else if (modifier.equals("<")) {
-            return resultOf(health < amount);
-        } else if (modifier.equals(">=") || modifier.equals("=>")) {
-            return resultOf(health >= amount);
-        } else if (modifier.equals("<=") || modifier.equals("=<")) {
-            return resultOf(health <= amount);
-        }
-
-        return failure();
+        // resultOf will create a success() or failure() result based on the boolean of the check
+        return resultOf(matcher.matches(target.source().getHealth()));
         /// [result]
     }
 }
