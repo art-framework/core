@@ -17,16 +17,8 @@
 package io.artframework.util;
 
 import com.google.common.base.Strings;
-import io.artframework.BootstrapModule;
-import io.artframework.ConfigurationException;
-import io.artframework.FieldNameFormatter;
-import io.artframework.Resolver;
-import io.artframework.Scope;
-import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.Config;
-import io.artframework.annotations.ConfigOption;
-import io.artframework.annotations.Ignore;
-import io.artframework.annotations.Resolve;
+import io.artframework.*;
+import io.artframework.annotations.*;
 import io.artframework.conf.ConfigFieldInformation;
 import io.artframework.conf.FieldNameFormatters;
 import lombok.NonNull;
@@ -34,25 +26,15 @@ import lombok.extern.java.Log;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.reflections.ReflectionUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Array;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Modifier;
+import java.lang.reflect.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -225,12 +207,12 @@ public final class ConfigUtil {
 
         basePath.mkdirs();
 
-        Set<Field> configFields = ReflectionUtils.getAllFields(object.getClass(), field ->
-                !Modifier.isStatic(field.getModifiers())
-                        && !Modifier.isFinal(field.getModifiers())
-                        && field.isAnnotationPresent(Config.class)
-
-        );
+        Set<Field> configFields = ReflectionUtil.getAllFields(object.getClass(), new ArrayList<>())
+                .stream()
+                .filter(field -> !Modifier.isStatic(field.getModifiers()))
+                .filter(field -> !Modifier.isFinal(field.getModifiers()))
+                .filter(field -> field.isAnnotationPresent(Config.class))
+                .collect(Collectors.toSet());
 
         for (Field configField : configFields) {
             String configName = configField.getAnnotation(Config.class).value();

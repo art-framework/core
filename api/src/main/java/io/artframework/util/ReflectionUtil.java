@@ -22,10 +22,7 @@ import lombok.NonNull;
 import lombok.extern.java.Log;
 
 import javax.annotation.Nullable;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -255,5 +252,23 @@ public final class ReflectionUtil {
         }
 
         return fields;
+    }
+
+    /**
+     * Recursively gets all methods from the given class and its superclass.
+     *
+     * @param type the class that should be searched
+     * @param methods the list to store the result in. provide an empty list to start with.
+     * @return a list of all methods of the class and its superclasses
+     */
+    public static List<Method> getAllMethods(Class<?> type, List<Method> methods) {
+
+        methods.addAll(Arrays.asList(type.getDeclaredMethods()));
+
+        if (type.getSuperclass() != null) {
+            getAllMethods(type, methods);
+        }
+
+        return methods;
     }
 }
