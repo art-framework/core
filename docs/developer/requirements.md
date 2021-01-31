@@ -13,14 +13,26 @@ The following section assumes that you have read the [your first requirement](RE
 
 ## Creating Requirements
 
-All requirements must implement the `Requirement<TType>` interface and are annotated with the `@ART` [metadata annotation](annotations.md). They also need to be registered with the art-framework in the [onLoad](modules.md#onload) phase.
+All requirements must implement the `Requirement<TType>` interface and are annotated with the `@ART` [metadata annotation](annotations.md). If they have a public parameterless constructor they will be automagically registered.
+
+If not you can always manually register them with the scope in the [onLoad](modules.md#onload) phase.
 
 ```java
 @OnLoad
 public void onLoad(Scope scope) {
     scope.register().requirements()
-        .add(MyRequirement.class);
+        .add(MyRequirement.class, () -> ...);
 }
+```
+
+Make sure to set `autoRegister = false` in the `@ART` annotation of the requirement if you are manually registering your requirement.
+
+```java
+@ART(
+    ...
+    autoRegister = false
+)
+public class MyRequirement implements Requirement<...> {}
 ```
 
 ## The Result

@@ -119,23 +119,12 @@ Then implement the logic of your action using the config variables and target pa
 
 </details>
 
-Then all thats left todo is to register your action with the art-framework:
-
-```java
-@ArtModule("my-plugin")
-public class MyPlugin extends JavaPlugin {
-
-    @OnLoad
-    public void onLoad(Scope scope) {
-        
-        scope.register().actions().add(DamageLivingEntityAction.class);
-    }
-}
-```
-
 > [!SUCCESS]
 > Thats it! You created your first action :)  
 > Everything else will be automatically handled for you by the ART-Framework.
+
+> [!TIP]
+> Look at the [registration](registration.md) documentation for advanced scenarios where your action requires additional constructor parameters.
 
 *Of course, if you want to you can do a lot more with actions, but thats for another chapter. See the [action documentation](actions.md) if you are interested.*
 
@@ -177,24 +166,14 @@ And if we put everything together we get a requirement that looks like this.
 
 </details>
 
-Then register your requirement with the art-framework in the [OnLoad](modules) hook.
-
-```java
-@ArtModule("my-plugin")
-public class MyPlugin extends JavaPlugin {
-
-    @OnLoad
-    public void onLoad(Scope scope) {
-        
-        scope.register().requirements().add(HealthRequirement.class);
-    }
-}
-```
-
 > [!SUCCESS]
 > You are amazing!  
 >
-> You just finished your first requirement and learned how to create some advanced checks with the art-framework.
+> You just finished your first requirement and learned how to create some advanced checks with the art-framework.  
+> Everything else will be automagically handled for you.
+
+> [!TIP]
+> Look at the [registration](registration.md) documentation for advanced scenarios where your requirement requires additional constructor parameters.
 
 ### Your first Trigger
 
@@ -236,8 +215,9 @@ public class MyPlugin extends JavaPlugin {
         
         playerListener = new PlayerListener(scope);
         Bukkit.getPluginManager().registerEvents(playerListener, this);
-
-        scope.register().trigger().add(PlayerJoinTrigger.class);
     }
 }
 ```
+
+> [!TIP]
+> Look at the [registration](registration.md) documentation for advanced scenarios where your trigger requires additional constructor parameters.

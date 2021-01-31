@@ -4,14 +4,26 @@ This guide here assumes you have read the [your first action](README.md#your-fir
 
 ## Creating Actions
 
-All actions must implement the `Action<TType>` interface and are annotated with the `@ART` [metadata annotation](annotations.md). They also need to be registered with the art-framework in the [onLoad](modules.md#onload) phase.
+All actions must implement the `Action<TType>` interface and are annotated with the `@ART` [metadata annotation](annotations.md). If they have a public parameterless constructor they will be automagically registered.
+
+If not you can always manually register them with the scope in the [onLoad](modules.md#onload) phase.
 
 ```java
 @OnLoad
 public void onLoad(Scope scope) {
     scope.register().actions()
-        .add(MyAction.class);
+        .add(MyAction.class, () -> ...);
 }
+```
+
+Make sure to set `autoRegister = false` in the `@ART` annotation of the action if you are manually registering your action.
+
+```java
+@ART(
+    ...
+    autoRegister = false
+)
+public class MyAction implements Action<...> {}
 ```
 
 ## Generic Actions
