@@ -18,14 +18,18 @@ package io.artframework.finder;
 
 import io.artframework.*;
 import io.artframework.util.FileUtil;
+import io.artframework.util.ReflectionUtil;
+import lombok.Value;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("ALL")
 public class ResolverFinder extends AbstractFinder {
 
     public ResolverFinder(Scope scope) {
@@ -39,22 +43,34 @@ public class ResolverFinder extends AbstractFinder {
         return new ResolverFinderResult(FileUtil.findClasses(classLoader, file, Resolver.class)
                 .stream().filter(predicate)
                 .filter(this::search)
+                .map(aClass -> new ResolverClassWrapper(aClass))
                 .collect(Collectors.toList()));
     }
 
-    public static final class ResolverFinderResult extends AbstractFinderResult<Class<? extends Resolver<?>>> {
+    public static final class ResolverFinderResult extends AbstractFinderResult<ResolverClassWrapper> {
 
-        private ResolverFinderResult(List<Class<? extends Resolver<?>>> resolverClassWrappers) {
+        private ResolverFinderResult(List<ResolverClassWrapper> resolverClassWrappers) {
             super(resolverClassWrappers, new ArrayList<>());
         }
 
         @Override
-        public FinderResult<Class<? extends Resolver<?>>> load(Scope scope) {
-            for (Class<? extends Resolver<?>> result : results()) {
-                scope.configuration().resolvers().add(result);
+        public FinderResult<ResolverClassWrapper> load(Scope scope) {
+            for (ResolverClassWrapper<?, ?> result : results()) {
+                scope.configuration().resolvers().add(result.resolverClass);
             }
 
             return this;
         }
+
+        private <TType, TResolver extends Resolver<TType>> void addResolver(Scope scope, Class<TType> typeClass, Class<TResolver> resolverClass) {
+
+            scope.configuration().resolvers().add(resolverClass);
+        }
+    }
+
+    @Value
+    private static class ResolverClassWrapper<TResolver extends Resolver<TType>, TType> {
+
+        Class<TResolver> resolverClass;
     }
 }
