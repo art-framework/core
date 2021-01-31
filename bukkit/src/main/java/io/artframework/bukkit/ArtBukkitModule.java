@@ -137,36 +137,9 @@ public class ArtBukkitModule implements BootstrapModule {
         Bukkit.getPluginManager().registerEvents(entityDamageTrigger, plugin);
 
         scope.register()
-//                .actions()
-//                    .add(CancelBukkitEventAction.class)
-//                    .add(DamageLivingEntityAction.class)
-//                    .add(SendMessageAction.class)
-//                    .add(GiveItemAction.class)
-//                .requirements()
-//                    .add(HealthRequirement.class)
-//                    .add(LocationTrigger.class, () -> new LocationTrigger(scope))
-//                    .add(EquipmentRequirement.class)
-//                .trigger()
-//                    .add(PlayerJoinTrigger.class)
-//                    .add(PlayerQuitTrigger.class)
-//                    .add(LocationTrigger.class, () -> new LocationTrigger(scope))
-//                    .add(EntityDamageTrigger.class, () -> new EntityDamageTrigger(scope))
-//                .targets()
-//                    .add(Block.class, BlockTarget::new)
-//                    .add(Cancellable.class, CancellableEventTarget::new)
-//                    .add(CommandSender.class, CommandSenderTarget::new)
-//                    .add(Entity.class, EntityTarget::new)
-//                    .add(LivingEntity.class, LivingEntityTarget::new)
-//                    .add(Location.class, LocationTarget::new)
-//                    .add(Player.class, PlayerTarget::new)
-//                    .add(OfflinePlayer.class, OfflinePlayerTarget::new)
-//                    .add(Event.class, BukkitEventTarget::new)
                 .and()
                 .resolvers()
-                    .add(MaterialResolver.class)
-                .and()
-                .replacements()
-                    .add(new PlayerReplacement());
+                    .add(MaterialResolver.class);
     }
 
     @OnReload

@@ -18,6 +18,7 @@ package io.artframework;
 
 import io.artframework.finder.ArtObjectFinder;
 import io.artframework.finder.ModuleFinder;
+import io.artframework.finder.ReplacementFinder;
 import io.artframework.finder.TargetFinder;
 
 import java.io.File;
@@ -29,7 +30,8 @@ public interface Finder extends Scoped {
         return new Finder[]{
                 new ArtObjectFinder(scope),
                 new TargetFinder(scope),
-                new ModuleFinder(scope)
+                new ModuleFinder(scope),
+                new ReplacementFinder(scope)
         };
     }
 

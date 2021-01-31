@@ -3,6 +3,7 @@ package io.artframework;
 import io.artframework.impl.DefaultReplacementProvider;
 import io.artframework.impl.ReplacementContext;
 import io.artframework.replacements.VariableReplacement;
+import lombok.NonNull;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -35,7 +36,7 @@ public interface ReplacementProvider extends Provider {
      * @param replacement the replacement to add
      * @return this replacement provider
      */
-    ReplacementProvider add(Replacement replacement);
+    ReplacementProvider add(@NonNull Replacement replacement);
 
     /**
      * Removes the given replacement from the provider.
@@ -44,7 +45,18 @@ public interface ReplacementProvider extends Provider {
      * @param replacement the replacement that should be removed
      * @return this replacement provider
      */
-    ReplacementProvider remove(Replacement replacement);
+    default ReplacementProvider remove(@NonNull Replacement replacement) {
+
+        return remove(replacement.getClass());
+    }
+
+    /**
+     * Removes the replacement registered for the given class.
+     *
+     * @param clazz the class of the replacement
+     * @return this replacement provider
+     */
+    ReplacementProvider remove(@NonNull Class<? extends Replacement> clazz);
 
     /**
      * Removes all registered replacements from the provider.
