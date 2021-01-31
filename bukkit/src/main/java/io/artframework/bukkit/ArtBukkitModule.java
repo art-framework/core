@@ -33,6 +33,7 @@ import io.artframework.bukkit.storage.EbeanPersistenceProvider;
 import io.artframework.bukkit.storage.MetadataStore;
 import io.artframework.bukkit.targets.*;
 import io.artframework.bukkit.trigger.*;
+import io.artframework.impl.DefaultMapStorageProvider;
 import io.artframework.modules.scripts.ScriptsModule;
 import io.artframework.util.FileUtil;
 import io.ebean.Database;
@@ -108,25 +109,30 @@ public class ArtBukkitModule implements BootstrapModule {
     @Override
     public void onBootstrap(BootstrapScope scope) {
 
-        Database database = new EbeanWrapper(Config.builder(plugin)
-                .entities(
-                    MetadataStore.class
-                )
-                .build()).connect();
+        if (Bukkit.getPluginManager().getPlugin("ebean-wrapper") != null) {
+            Database database = new EbeanWrapper(Config.builder(plugin)
+                    .entities(
+                            MetadataStore.class
+                    )
+                    .build()).connect();
+            storageProvider = new EbeanPersistenceProvider(scope, database);
+        }
 
-        storageProvider = new EbeanPersistenceProvider(scope, database);
-
-        scope.configure(builder -> builder
-                .classLoader(plugin.getClass().getClassLoader())
-                .scheduler(new BukkitScheduler(plugin, Bukkit.getScheduler()))
-                .storage(storageProvider)
-        );
+        scope.configure(builder -> {
+            builder.classLoader(plugin.getClass().getClassLoader())
+                    .scheduler(new BukkitScheduler(plugin, Bukkit.getScheduler()));
+            if (storageProvider != null) {
+                builder.storage(storageProvider);
+            }
+        });
     }
 
     @Override
     public void onLoad(Scope scope) {
 
-        storageProvider.load();
+        if (storageProvider != null) {
+            storageProvider.load();
+        }
 
         playerListener = new PlayerListener(scope);
         locationTrigger = new LocationTrigger(scope);
@@ -135,17 +141,14 @@ public class ArtBukkitModule implements BootstrapModule {
         Bukkit.getPluginManager().registerEvents(playerListener, plugin);
         Bukkit.getPluginManager().registerEvents(locationTrigger, plugin);
         Bukkit.getPluginManager().registerEvents(entityDamageTrigger, plugin);
-
-        scope.register()
-                .and()
-                .resolvers()
-                    .add(MaterialResolver.class);
     }
 
     @OnReload
     public void onReload() {
 
-        storageProvider.reload();
+        if (storageProvider != null) {
+            storageProvider.reload();
+        }
     }
 
     @Override

@@ -32,7 +32,7 @@ spigot {
     authors = [project.property("author")]
     apiVersion = project.property("apiVersion")
     load = STARTUP
-    depends = ['ebean-wrapper']
+    softDepends = ['ebean-wrapper']
 }
 
 archivesBaseName = "${project.property("pluginName")}-bukkit"
