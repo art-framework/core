@@ -1,3 +1,20 @@
+# [4.3.0](https://github.com/art-framework/art-framework/compare/v4.2.0...v4.3.0) (2021-01-31)
+
+
+### Bug Fixes
+
+* automatic registration of art and modules ([2263a27](https://github.com/art-framework/art-framework/commit/2263a27b799b9e40826eea91ff71bb6df3298a93))
+* automatic resolver registration failing ([0684cae](https://github.com/art-framework/art-framework/commit/0684cae0bec67318bddeaef7dc4e1fbf67f93b1b))
+* remove unused reflections library ([10e5f11](https://github.com/art-framework/art-framework/commit/10e5f11a861d52cbaa00ec131a169aa443456524))
+* soft depend on ebean-wrapper and fallback to map storage provider ([125f460](https://github.com/art-framework/art-framework/commit/125f460858258a551336a9195c26bc0e3362ea50))
+
+
+### Features
+
+* add ModifierMatcher to ease the development of pattern matches ([99d64f6](https://github.com/art-framework/art-framework/commit/99d64f69b676b3d8ae3d758758a4db15f4252b93))
+* automatically register replacements found in the class path ([5a68b11](https://github.com/art-framework/art-framework/commit/5a68b11eb579ccd9b3dae24636549ca5e4154cdb))
+* automatically register resolvers found in the classpath ([d949d41](https://github.com/art-framework/art-framework/commit/d949d4186c17e01d9b9eba506687a09acaa2f44a))
+
 # [4.2.0](https://github.com/art-framework/art-framework/compare/v4.1.1...v4.2.0) (2021-01-29)
 
 
