@@ -1,3 +1,11 @@
+# [4.4.0](https://github.com/art-framework/art-framework/compare/v4.3.0...v4.4.0) (2021-02-01)
+
+
+### Features
+
+* add execute command action and parser alias ([52eb3aa](https://github.com/art-framework/art-framework/commit/52eb3aa104962f0e72e03f476d5fd9ed0cebc397))
+* add PermissionRequirement ([72ee6cf](https://github.com/art-framework/art-framework/commit/72ee6cfc25b20d1a92c3c2d6a5441e787de79f35))
+
 # [4.3.0](https://github.com/art-framework/art-framework/compare/v4.2.0...v4.3.0) (2021-01-31)
 
 
