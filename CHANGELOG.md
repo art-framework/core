@@ -1,3 +1,10 @@
+# [4.5.0](https://github.com/art-framework/art-framework/compare/v4.4.0...v4.5.0) (2021-02-01)
+
+
+### Features
+
+* auto apply prefix of module in same code source ([ee30e8c](https://github.com/art-framework/art-framework/commit/ee30e8c4abc0833b90cf733a5f392ab07b401198))
+
 # [4.4.0](https://github.com/art-framework/art-framework/compare/v4.3.0...v4.4.0) (2021-02-01)
 
 
