@@ -52,7 +52,8 @@ The [`@ArtModule`](https://jdocs.art-framework.io/io/artframework/annotations/Ar
 | ------- | ------- | ----------- |
 | `value` | | A required unique identifier of your module. The identifier is used in the `depends` setting of other modules.
 | `description` | `[]` | A multiline description of what your module provides and does. This helps users decide if they want to use your module or not. |
-| `version` | `1.0.0` | A [semantic version](https://semver.org/) of your module. Currently this has no effect, but might be useful in the future when the registry launches.
+| `version` | `1.0.0` | A [semantic version](https://semver.org/) of your module. Currently this has no effect, but might be useful in the future when the registry launches. |
+| `prefix` | | Set a prefix that is applied to all art inside the same jar file as your module. |
 | `depends` | `[]` | A list of dependencies of your module, e.g. `"module:art-bukkit", "plugin:Vault"`. |
 
 <!-- div:right-panel -->

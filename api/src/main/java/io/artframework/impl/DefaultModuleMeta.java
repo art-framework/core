@@ -38,7 +38,6 @@ public class DefaultModuleMeta implements ModuleMeta {
     String version;
     String[] description;
     String[] dependencies;
-    String[] packages;
     boolean bootstrapModule;
 
     DefaultModuleMeta(@NonNull String identifier,
@@ -46,8 +45,7 @@ public class DefaultModuleMeta implements ModuleMeta {
                       @NonNull Class<?> moduleClass,
                       @NonNull String version,
                       @NonNull String[] description,
-                      @NonNull String[] dependencies,
-                      @NonNull String[] packages) {
+                      @NonNull String[] dependencies) {
 
         this.identifier = Strings.isNullOrEmpty(identifier) ? moduleClass.getCanonicalName() : identifier;
         this.prefix = prefix;
@@ -56,7 +54,6 @@ public class DefaultModuleMeta implements ModuleMeta {
         this.description = description;
         // TODO: remove the module: replacement when dependency hooks are implemented
         this.dependencies = Arrays.stream(dependencies).map(s -> s.replace("module:", "")).toArray(String[]::new);
-        this.packages = packages.length < 1 ? new String[] {moduleClass.getPackage().getName()} : packages;
         this.bootstrapModule = BootstrapModule.class.isAssignableFrom(moduleClass);
     }
 
@@ -68,8 +65,7 @@ public class DefaultModuleMeta implements ModuleMeta {
                 moduleClass,
                 annotation.version(),
                 annotation.description(),
-                annotation.depends(),
-                annotation.packages()
+                annotation.depends()
         );
     }
 }

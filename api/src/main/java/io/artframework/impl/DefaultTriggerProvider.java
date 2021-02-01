@@ -64,7 +64,7 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
     @Override
     public TriggerProvider add(Class<? extends Trigger> triggerClass) {
         try {
-            add(Objects.requireNonNull(ArtObjectMeta.of(triggerClass).get()));
+            add(Objects.requireNonNull(ArtObjectMeta.of(scope(), triggerClass).get()));
         } catch (ArtMetaDataException e) {
             log.severe("failed to add " + triggerClass.getCanonicalName() + ": " + e.getMessage());
             e.printStackTrace();
@@ -76,7 +76,7 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
     public <TTrigger extends Trigger> TriggerProvider add(Class<TTrigger> triggerClass, ArtObjectProvider<TTrigger> supplier) {
 
         try {
-            add(Objects.requireNonNull(ArtObjectMeta.of(triggerClass, supplier).get()));
+            add(Objects.requireNonNull(ArtObjectMeta.of(scope(), triggerClass, supplier).get()));
         } catch (ArtMetaDataException e) {
             log.severe("failed to add " + triggerClass.getCanonicalName() + ": " + e.getMessage());
             e.printStackTrace();

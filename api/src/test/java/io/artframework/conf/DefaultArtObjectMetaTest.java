@@ -56,7 +56,7 @@ class DefaultArtObjectMetaTest {
 
             DefaultArtObjectMeta<MyClassOptions> options = new DefaultArtObjectMeta<>(MyClassOptions.class);
 
-            assertThat(options.initialize())
+            assertThat(options.initialize(io.artframework.ART.globalScope()))
                 .extracting(
                         ArtObjectMeta::identifier,
                         ArtObjectMeta::alias,
@@ -78,7 +78,7 @@ class DefaultArtObjectMetaTest {
 
             DefaultArtObjectMeta<MyGenericAction> objectMeta = new DefaultArtObjectMeta<>(MyGenericAction.class);
 
-            assertThatCode(() -> assertThat(objectMeta.initialize())
+            assertThatCode(() -> assertThat(objectMeta.initialize(io.artframework.ART.globalScope()))
                     .extracting(ArtObjectMeta::targetClass)
                     .isEqualTo(Object.class)
                 ).doesNotThrowAnyException();
@@ -90,7 +90,7 @@ class DefaultArtObjectMetaTest {
 
             DefaultArtObjectMeta<MyGenericRequirement> objectMeta = new DefaultArtObjectMeta<>(MyGenericRequirement.class);
 
-            assertThatCode(() -> assertThat(objectMeta.initialize())
+            assertThatCode(() -> assertThat(objectMeta.initialize(io.artframework.ART.globalScope()))
                     .extracting(ArtObjectMeta::targetClass)
                     .isEqualTo(Object.class)
             ).doesNotThrowAnyException();
@@ -102,7 +102,7 @@ class DefaultArtObjectMetaTest {
 
             DefaultArtObjectMeta<MyProvidedAction> objectMeta = new DefaultArtObjectMeta<>(MyProvidedAction.class, () -> new MyProvidedAction(new AlternateConfig()));
 
-            assertThatCode(() -> assertThat(objectMeta.initialize())
+            assertThatCode(() -> assertThat(objectMeta.initialize(io.artframework.ART.globalScope()))
                     .extracting(ArtObjectMeta::configMap)
                     .asInstanceOf(map(String.class, ConfigFieldInformation.class))
                     .containsKey("alt_config")
@@ -116,7 +116,7 @@ class DefaultArtObjectMetaTest {
 
             DefaultArtObjectMeta<MyClassOptions> options = new DefaultArtObjectMeta<>(MyClassOptions.class);
 
-            assertThatCode(() -> assertThat(options.initialize().configMap())
+            assertThatCode(() -> assertThat(options.initialize(io.artframework.ART.globalScope()).configMap())
                     .containsKey("cfg")
                     .extractingByKey("cfg")
                     .extracting(ConfigFieldInformation::defaultValue)

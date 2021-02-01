@@ -70,6 +70,18 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     }
 
     @Override
+    public Optional<ModuleMeta> getSourceModule(@NonNull Class<?> clazz) {
+
+        CodeSource source = clazz.getProtectionDomain().getCodeSource();
+        if (source == null) return Optional.empty();
+
+        return modules.values().stream()
+                .map(ModuleInformation::moduleMeta)
+                .filter(moduleMeta -> source.equals(moduleMeta.moduleClass().getProtectionDomain().getCodeSource()))
+                .findFirst();
+    }
+
+    @Override
     public ModuleProvider resolver(@Nullable ArtModuleDependencyResolver resolver) {
         this.resolver = resolver;
         return this;
@@ -399,20 +411,16 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     private void findAndLoadAllArt(ModuleInformation module) throws ModuleRegistrationException {
         try {
             CodeSource codeSource = module.moduleMeta().moduleClass().getProtectionDomain().getCodeSource();
-            findAndLoadAllArt(module.moduleMeta().moduleClass().getClassLoader(), codeSource);
+            if (codeSource != null) {
+                configuration().finder().findAllAndLoadIn(module.moduleMeta().moduleClass().getClassLoader(), new File(codeSource.getLocation().toURI()),
+                        aClass -> !BootstrapModule.class.isAssignableFrom(aClass) && !aClass.isAnnotationPresent(ArtModule.class)
+                );
+            }
         } catch (URISyntaxException e) {
             updateModuleCache(module.state(ModuleState.ERROR));
             logState(module, e.getMessage());
             throw new ModuleRegistrationException(module.moduleMeta(), ModuleState.ERROR,
                     "An error occured when trying to load the art in module \"" + module.moduleMeta().identifier() + "\": " + e.getMessage(), e);
-        }
-    }
-
-    private void findAndLoadAllArt(ClassLoader classLoader, CodeSource codeSource) throws URISyntaxException {
-        if (codeSource != null) {
-            configuration().finder().findAllAndLoadIn(classLoader, new File(codeSource.getLocation().toURI()),
-                    aClass -> !BootstrapModule.class.isAssignableFrom(aClass) && !aClass.isAnnotationPresent(ArtModule.class)
-            );
         }
     }
 

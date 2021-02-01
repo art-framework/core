@@ -29,28 +29,51 @@ import java.util.Optional;
  * The ArtObjectMeta contains meta information about art object gathered from the @ART annotation
  * and information provided by scanning the class.
  * <p>It is required to construct a new instance of the art object with its {@link Factory} method.
- * <p>{@link #initialize()} must be called before any property of this object can be retrieved.
+ * <p>{@link #initialize(Scope)} must be called before any property of this object can be retrieved.
  * @param <TArtObject> the art object type of this meta object
  */
 public interface ArtObjectMeta<TArtObject extends ArtObject> {
 
     /**
      * Creates a new default art meta object from the given art class.
-     * <p>Automatically calls {@link #initialize()} on the meta object and throws an exception if the initialization failed.
+     * <p>Automatically calls {@link #initialize(Scope)} on the meta object and throws an exception if the initialization failed.
      *
-     * @param artObjectClass the class of the art object that should be initialized
      * @param <TArtObject> the type of the art object
+     * @param scope the scope used to intialize the art object meta
+     * @param artObjectClass the class of the art object that should be initialized
      * @return the created and initialized art object meta
      * @throws ArtMetaDataException if the initialization of the art object failed
      */
-    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass) throws ArtMetaDataException {
-        return new DefaultArtObjectMeta<>(artObjectClass).initialize();
+    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(Scope scope, @NonNull Class<TArtObject> artObjectClass) throws ArtMetaDataException {
+        return new DefaultArtObjectMeta<>(artObjectClass).initialize(scope);
     }
 
-    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider) throws ArtMetaDataException {
-        return new DefaultArtObjectMeta<>(artObjectClass, provider).initialize();
+    /**
+     * Creates a new default art meta object from the given art class and provider.
+     * <p>Automatically calls {@link #initialize(Scope)} on the meta object and throws an exception if the initialization failed.
+     *
+     * @param <TArtObject> the type of the art object
+     * @param scope the scope used to intialize the art object meta
+     * @param artObjectClass the class of the art object that should be initialized
+     * @param provider the provider used to create new instances of the art object
+     * @return the created and initialized art object meta
+     * @throws ArtMetaDataException if the initialization of the art object failed
+     */
+    static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(Scope scope, @NonNull Class<TArtObject> artObjectClass, @Nullable ArtObjectProvider<TArtObject> provider) throws ArtMetaDataException {
+        return new DefaultArtObjectMeta<>(artObjectClass, provider).initialize(scope);
     }
 
+    /**
+     * Creates a new default art meta object with the given identifier and target type.
+     * <p>The art-object should hold no configuration as it will be treated as a singleton.
+     * <p>It is not required to call {@link #initialize(Scope)} when creating a new meta instance with this method.
+     *
+     * @param identifier the identifier of the art object
+     * @param targetClass the class of the target type
+     * @param artObject the singleton instance of the art object
+     * @param <TArtObject> the type of the art object
+     * @return the created and initialized art object meta
+     */
     static <TArtObject extends ArtObject> ArtObjectMeta<TArtObject> of(@NonNull String identifier, @NonNull Class<?> targetClass, @NonNull TArtObject artObject) {
         return new DefaultArtObjectMeta<>(identifier, targetClass, artObject);
     }
@@ -156,6 +179,7 @@ public interface ArtObjectMeta<TArtObject extends ArtObject> {
      * If not a {@link ArtMetaDataException} is thrown.
      *
      * @throws ArtMetaDataException if the {@link ArtObject} could not be registered.
+     * @param scope
      */
-    ArtObjectMeta<TArtObject> initialize() throws ArtMetaDataException;
+    ArtObjectMeta<TArtObject> initialize(Scope scope) throws ArtMetaDataException;
 }

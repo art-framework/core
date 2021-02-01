@@ -16,13 +16,17 @@
 
 package io.artframework.impl;
 
+import io.artframework.ArtObjectMeta;
 import io.artframework.Configuration;
+import io.artframework.Factory;
+import io.artframework.ModuleMeta;
 import io.artframework.ModuleRegistrationException;
 import io.artframework.Scope;
 import io.artframework.annotations.ArtModule;
 import io.artframework.annotations.OnDisable;
 import io.artframework.annotations.OnEnable;
 import io.artframework.annotations.OnLoad;
+import io.artframework.integration.actions.DamageAction;
 import lombok.SneakyThrows;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,13 +49,14 @@ import static org.mockito.Mockito.verify;
 @SuppressWarnings("ALL")
 class DefaultModuleProviderTest {
 
+    Scope scope;
     DefaultModuleProvider provider;
     TestModule module;
 
     @BeforeEach
     void setUp() {
-        Scope scope = Scope.defaultScope();
-        provider = new DefaultModuleProvider(scope);
+        scope = Scope.defaultScope();
+        provider = (DefaultModuleProvider) scope.configuration().modules();
         module = spy(new TestModule());
     }
 
@@ -162,6 +167,29 @@ class DefaultModuleProviderTest {
                     .extracting("created")
                     .isEqualTo(true);
         }
+
+        @Test
+        @DisplayName("should find module source of class")
+        void shouldFindModuleSourceOfClass() {
+
+            assertThatCode(() -> provider.register(TestModule.class)).doesNotThrowAnyException();
+            assertThat(provider.getSourceModule(DamageAction.class))
+                    .isNotEmpty().get()
+                    .extracting(ModuleMeta::moduleClass)
+                    .isEqualTo(TestModule.class);
+        }
+
+        @Test
+        @DisplayName("should apply prefix to art loaded from same module source")
+        void shouldApplyPrefixToArtLoadedFromModuleSources() {
+
+            assertThatCode(() -> provider.enable(PrefixModule.class)).doesNotThrowAnyException();
+            assertThat(scope.configuration().actions().get("damage"))
+                    .isPresent().get()
+                    .extracting(Factory::meta)
+                    .extracting(ArtObjectMeta::identifier, ArtObjectMeta::alias)
+                    .contains("test:damage", new String[] {"damage", "hit", "dmg"});
+        }
     }
 
     @ArtModule(value = "test")
@@ -184,6 +212,9 @@ class DefaultModuleProviderTest {
 
         }
     }
+
+    @ArtModule(value = "prefix", prefix = "test")
+    static class PrefixModule {}
 
     @ArtModule(value = "test")
     static class DuplicateModule {

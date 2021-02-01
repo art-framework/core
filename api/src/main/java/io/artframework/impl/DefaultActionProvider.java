@@ -58,7 +58,7 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
 
     public ActionProvider add(@NonNull Class<? extends Action<?>> aClass) {
         try {
-            return add(Objects.requireNonNull(ArtObjectMeta.of(aClass).get()));
+            return add(Objects.requireNonNull(ArtObjectMeta.of(scope(), aClass).get()));
         } catch (ArtMetaDataException e) {
             log.severe("failed to add " + aClass.getCanonicalName() + ": " + e.getMessage());
             e.printStackTrace();
@@ -68,7 +68,7 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
 
     public <TAction extends Action<TTarget>, TTarget> ActionProvider add(Class<TAction> aClass, ArtObjectProvider<TAction> artObjectProvider) {
         try {
-            return add(Objects.requireNonNull(ArtObjectMeta.of(aClass, artObjectProvider).get()));
+            return add(Objects.requireNonNull(ArtObjectMeta.of(scope(), aClass, artObjectProvider).get()));
         } catch (ArtMetaDataException e) {
             log.severe("failed to add " + aClass.getCanonicalName() + ": " + e.getMessage());
             e.printStackTrace();

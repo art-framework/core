@@ -34,7 +34,7 @@ public interface TriggerProvider extends ArtProvider, FactoryProvider<TriggerFac
     /**
      * Registers a new trigger using the provided information.
      * <p>
-     * This will call {@link ArtObjectMeta#initialize()} if the information is not initialized and will fail
+     * This will call {@link ArtObjectMeta#initialize(Scope)} if the information is not initialized and will fail
      * silently if there are any exceptions.
      * Using {@link #add(Class)} or {@link #add(Class, ArtObjectProvider)} is preferred since it will handle all the dirty work for you.
      *

@@ -27,7 +27,9 @@ import io.artframework.Configurable;
 import io.artframework.ConfigurationException;
 import io.artframework.GenericAction;
 import io.artframework.GenericRequirement;
+import io.artframework.ModuleMeta;
 import io.artframework.Requirement;
+import io.artframework.Scope;
 import io.artframework.Trigger;
 import io.artframework.annotations.ART;
 import io.artframework.util.ConfigUtil;
@@ -36,6 +38,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
@@ -207,7 +210,7 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
     }
 
     @Override
-    public ArtObjectMeta<TArtObject> initialize() throws ArtMetaDataException {
+    public ArtObjectMeta<TArtObject> initialize(Scope scope) throws ArtMetaDataException {
         if (this.initialized()) return this;
 
         try {
@@ -226,6 +229,13 @@ public final class DefaultArtObjectMeta<TArtObject extends ArtObject> implements
                         ArtObjectError.Reason.NO_IDENTIFIER,
                         artObjectClass()
                 ));
+            }
+
+            Optional<ModuleMeta> sourceModule = scope.configuration().modules().getSourceModule(artObjectClass())
+                    .filter(moduleMeta -> !Strings.isNullOrEmpty(moduleMeta.prefix()));
+            if (sourceModule.isPresent()) {
+                alias = ArrayUtils.insert(0, alias, identifier);
+                identifier = sourceModule.get().prefix() + ":" + identifier;
             }
 
             return new DefaultArtObjectMeta<>(artObjectClass, identifier, description, alias, autoRegister, configClass, targetClass, configMap, provider);

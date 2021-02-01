@@ -49,7 +49,7 @@ public final class ArtObjectFinder extends AbstractFinder {
                 .filter(this::search)
                 .forEach(artClass -> {
                     try {
-                        artObjectMetas.add(ArtObjectMeta.of(artClass));
+                        artObjectMetas.add(ArtObjectMeta.of(scope(), artClass));
                     } catch (ArtMetaDataException e) {
                         errors.add(e.error());
                     }

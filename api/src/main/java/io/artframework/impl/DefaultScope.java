@@ -71,7 +71,7 @@ public final class DefaultScope implements BootstrapScope, BootstrapPhase {
             .storage(StorageProvider.of(this))
             .classLoader(getClass().getClassLoader())
             .finder(FinderProvider.of(this))
-            .modules(ModuleProvider.of(this))
+            .modules(ModuleProvider.getSourceModule(this))
             .resolvers(ResolverProvider.of(this))
             .replacements(ReplacementProvider.of(this))
             .parser(FlowLineParserProvider.of(this))

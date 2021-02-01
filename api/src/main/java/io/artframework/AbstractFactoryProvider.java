@@ -93,7 +93,7 @@ public abstract class AbstractFactoryProvider<TFactory extends Factory<?, ?>> im
     public FactoryProvider<TFactory> remove(Class<? extends ArtObject> artClass) {
 
         try {
-            remove(ArtObjectMeta.of(artClass).identifier());
+            remove(ArtObjectMeta.of(scope(), artClass).identifier());
         } catch (ArtMetaDataException ignored) {
         }
         return this;

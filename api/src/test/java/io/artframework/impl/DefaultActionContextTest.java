@@ -42,7 +42,7 @@ class DefaultActionContextTest {
     private ActionContext<MyTarget> context(Action<MyTarget> action) {
 
         return ActionContext.of(ART.globalScope(),
-                (ArtObjectMeta) ArtObjectMeta.of(TestAction.class),
+                (ArtObjectMeta) ArtObjectMeta.of(ART.globalScope(), TestAction.class),
                 action,
                 new ActionConfig()
         );

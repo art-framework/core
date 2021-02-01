@@ -41,7 +41,7 @@ class DefaultRequirementContextTest {
         context = new DefaultRequirementContext<>(
                 ART.globalScope(),
                 config,
-                RequirementFactory.of(ART.globalScope(), (ArtObjectMeta) ArtObjectMeta.of(TestRequirement.class, () -> requirement)),
+                RequirementFactory.of(ART.globalScope(), (ArtObjectMeta) ArtObjectMeta.of(ART.globalScope(), TestRequirement.class, () -> requirement)),
                 ConfigMap.of(TestRequirement.class)
         );
 

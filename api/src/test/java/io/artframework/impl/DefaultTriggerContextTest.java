@@ -48,7 +48,7 @@ class DefaultTriggerContextTest {
         );
         action = spy(new TestAction());
         ActionContext actionContext = ActionContext.of(ART.globalScope(),
-                (ArtObjectMeta) ArtObjectMeta.of(TestAction.class),
+                (ArtObjectMeta) ArtObjectMeta.of(ART.globalScope(), TestAction.class),
                 action,
                 new ActionConfig()
         );

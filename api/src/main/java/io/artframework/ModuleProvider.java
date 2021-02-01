@@ -39,7 +39,7 @@ public interface ModuleProvider extends Provider {
      * @param scope the configuration instance to use
      * @return a new default instance of the module provider
      */
-    static ModuleProvider of(Scope scope) {
+    static ModuleProvider getSourceModule(Scope scope) {
         return new DefaultModuleProvider(scope);
     }
 
@@ -193,6 +193,17 @@ public interface ModuleProvider extends Provider {
      * @return the metadata of the module or an empty optional if the provided object is not an module
      */
     Optional<ModuleMeta> get(@Nullable Object module);
+
+    /**
+     * Tries to find the module that contains the given class.
+     * <p>This will compare the code source of the class with the code source of the modules.
+     * If the given class is in the same code source as the module it is a match.
+     * <p>Only the first module is returned if multiple modules exist inside the code source.
+     *
+     * @param clazz the class whos module should be found
+     * @return the module of the class
+     */
+    Optional<ModuleMeta> getSourceModule(@NonNull Class<?> clazz);
 
     /**
      * Gets all registered modules regardless of their current state.

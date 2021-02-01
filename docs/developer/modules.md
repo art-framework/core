@@ -17,6 +17,9 @@ Modules are the heart of the art-framework and every addition or modification of
 * are be used to parse an [art-configuration](/configuration) into its [art-context](/developer/art-context)
 * are runtime independent - *your plugin will work without shading if the art-framework is not present*
 
+> [!TIP]
+> Use the [art-module-template](https://github.com/art-framework/art-module-template) to quickstart your module development. Simply click on "**use template**" and you are good to go.
+
 ## Creating Modules
 
 Any class can be a module. You just need to tag the class with the `@ArtModule` annotation and provide a unique identifier for your module.

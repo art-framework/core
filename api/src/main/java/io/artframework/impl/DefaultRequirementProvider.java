@@ -58,7 +58,7 @@ public class DefaultRequirementProvider extends AbstractFactoryProvider<Requirem
 
     public RequirementProvider add(@NonNull Class<? extends Requirement<?>> aClass) {
         try {
-            return add(Objects.requireNonNull(ArtObjectMeta.of(aClass).get()));
+            return add(Objects.requireNonNull(ArtObjectMeta.of(scope(), aClass).get()));
         } catch (ArtMetaDataException e) {
             log.severe("failed to add " + aClass.getCanonicalName() + ": " + e.getMessage());
             e.printStackTrace();
@@ -68,7 +68,7 @@ public class DefaultRequirementProvider extends AbstractFactoryProvider<Requirem
 
     public <TRequirement extends Requirement<TTarget>, TTarget> RequirementProvider add(Class<TRequirement> aClass, ArtObjectProvider<TRequirement> artObjectProvider) {
         try {
-            return add(Objects.requireNonNull(ArtObjectMeta.of(aClass, artObjectProvider).get()));
+            return add(Objects.requireNonNull(ArtObjectMeta.of(scope(), aClass, artObjectProvider).get()));
         } catch (ArtMetaDataException e) {
             log.severe("failed to add " + aClass.getCanonicalName() + ": " + e.getMessage());
             e.printStackTrace();
