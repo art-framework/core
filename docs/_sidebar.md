@@ -1,6 +1,7 @@
 - [Introduction](/introduction)
 - [Installation](/installation)
 - [Developer Setup](/dev-setup)
+- [Module List](/module-list)
 - **CONFIGURATION**
 - [Admin Quickstart](/configuration/README.md)
 - [Actions](/configuration/actions)
