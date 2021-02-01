@@ -6,7 +6,9 @@ This list is by no means complete and if you want your plugin or module to be in
 > To install a module download it and drop it into the `plugins/art-framework/modules/` directory.  
 > See the [installation documentation](installation.md) for more details.
 
-## [PlaceholderAPI](https://github.com/art-framework/art-placeholderapi) [![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/art-framework/art-placeholderapi?include_prereleases&label=release)](https://github.com/art-framework/art-placeholderapi/releases)
+## [PlaceholderAPI](https://github.com/art-framework/art-placeholderapi)
+
+[![GitHub release (latest SemVer including pre-releases)](https://img.shields.io/github/v/release/art-framework/art-placeholderapi?include_prereleases&label=release)](https://github.com/art-framework/art-placeholderapi/releases)
 
 Replaces placeholders in any art-framework parsed config.
 
