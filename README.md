@@ -11,8 +11,8 @@
 This framework enables you to easily provide actions, requirements and triggers that can be used in configs for any number of plugins. One very common use case would be to support the art-framework additionally to executing commands for giving rewards or doing stuff when something in your plugin happens.
 
 <p align="center">
-  <img height="250px" src="docs/_media/logo.png"><br/>
-  <a href="https://art-framework.io" target="_blank"><img src="docs/_media/text_only_docs.png" height="20px"/></a>&nbsp;<img height="20px" src="docs/_media/spacer.png"/>&nbsp;<a href="https://art-framework.io/#/platforms/bukkit" target="_blank"><img src="docs/_media/text_only_spigot.png" height="20px"/></a>&nbsp;<img height="20px" src="docs/_media/spacer.png"/>&nbsp;<a href="https://jdocs.art-framework.io" target="_blank"><img src="docs/_media/text_only_javadocs.png" height="20px"/></a>
+  <a href="https://art-framework.io"><img height="250px" src="docs/_media/logo.png"/></a><br/>
+  <a href="https://art-framework.io/#/introduction" target="_blank"><img src="docs/_media/text_only_docs.png" height="20px"/></a>&nbsp;<img height="20px" src="docs/_media/spacer.png"/>&nbsp;<a href="https://art-framework.io/#/platforms/bukkit" target="_blank"><img src="docs/_media/text_only_spigot.png" height="20px"/></a>&nbsp;<img height="20px" src="docs/_media/spacer.png"/>&nbsp;<a href="https://jdocs.art-framework.io" target="_blank"><img src="docs/_media/text_only_javadocs.png" height="20px"/></a>
 </p>
 
 ## Features
