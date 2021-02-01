@@ -8,33 +8,32 @@
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release)
 
-This framework enables you to easily provide actions, requirements and triggers that can be used in configs for any number of plugins.
+This framework enables you to easily provide actions, requirements and triggers that can be used in configs for any number of plugins. One very common use case would be to support the art-framework additionally to executing commands for giving rewards or doing stuff when something in your plugin happens.
 
-* [Getting started](#getting-started)
-* [Features](#features)
-
-## Getting started
-
-You can find all the documentation on the project homepage: [art-framework.io](https://art-framework.io/).
+<p align="center">
+  <img height="250px" src="docs/_media/logo.png"><br/>
+  <a href="https://art-framework.io" target="_blank"><img src="docs/_media/text_only_docs.png" height="20px"/></a>&nbsp;<img height="20px" src="docs/_media/spacer.png"/>&nbsp;<a href="releases/" target="_blank"><img src="docs/_media/text_only_spigot.png" height="20px"/></a>&nbsp;<img height="20px" src="docs/_media/spacer.png"/>&nbsp;<a href="https://jdocs.art-framework.io" target="_blank"><img src="docs/_media/text_only_javadocs.png" height="20px"/></a>
+</p>
 
 ## Features
 
-The **ART-Framework** was built with one goal in mind:
+* Easy to use API. `ART.load(...)` is all you need!
+* Support for [multiple parsers](https://art-framework.io/#/developer/parser) and one built in `flow-parser`.
+* Easy to learn configuration syntax: `!action`, `?requirement`, `@trigger`.
+* Classpath scanning to remove tedious configuration code.
+* Extremly [modular](https://art-framework.io/#/developer/modules). Every provider and configuration can be changed.
+* Platform independent, can be implemented for use in Minecraft plugins or any other software.  
+  Available platforms: [Bukkit/Spigot/Paper](https://art-framework.io/#/platforms/bukkit)
+* Enhanced command usage: `/minecraft:give(cooldown:4h) ${player} golden_apple 5`
+* [PlaceholderAPI support](https://github.com/art-framework/art-placeholderapi): `!money.add %vault_eco_balance%` doubles the players balance.
 
-> Make **sharing** of **actions**, **requirements** and **trigger** accross plugins super easy, without depending on them.
+## Example
 
-*Okay, but what does this mean exactly?*
+You have a plugin that allows the configuration of executable commands when an action in your plugin occurs, e.g. for giving rewards.
 
-Let's take the following example:
+One of many use cases of the art-framework is to empower exactly those plugins that use commands as a compability layer between other plugins.
 
-> You have a plugin and want to add a feature that rewards players for doing stuff.  
-> You want the rewards to be configurable by admins but don't want to depend on too many plugins.
-
-This is where the ART-Framework comes in. Just like [Vault](https://github.com/MilkBowl/Vault) it provides a possibility for plugins to use any number of other plugins without directly depending on them.
-
-*Ok I got that, but what does the config look like?*
-
-It looks like this:
+Take the following art-example:
 
 ```yaml
 # you can use ART inside any of your configs mixed with all of you config stuff
@@ -43,10 +42,13 @@ It looks like this:
 # see the developer documentation for more details on how to do that
 rewards:
   # no need to depend on vault directly to give players money
-  - '!vault:player.money.add 20'
+  - '!vault:player.money.add 1000'
   # you want to add some custom items from an unknown plugin?
   # no problem!
   - '!my-custom-item-plugin:player.item.add mighty-sword_1337, amount=5'
+  - '?permission ranks.donor'
+  # fallback to using commands enhanced with the power of the art-framework
+  - '/goldencrates(cooldown:24h) givekey art-somekey'
   # every reward has a cost!
   # damage the player for 10 hitpoints
   # but only if his health is above 15 hitpoint
@@ -54,27 +56,56 @@ rewards:
   - '!player.damage damage=10'
 ```
 
-And this is just using actions for rewards. We dind't even get to the requirements and trigger yet :)
-
-*And how does it look on the developer side?*
-
-It is as easy as parsing a config and creating your ART. After that you can use the actions anywhere you want.
+That was the configuration side, and here is how you can implement exactly that in your plugin:
 
 ```java
-// parse the config and get your art result
-ArtContext art = ART.load(config.getStringList("rewards"));
-
-// execute all configured actions
-result.execute(player);
-
-// test if all requirements are met
-if (result.test(player).success()) {
-  // do stuff
+try {
+  // parse the config and get your art result
+  ArtContext rewards = ART.load(config.getStringList("rewards"));
+  // execute all configured rewards
+  result.execute(player);
+} catch (ParseException e) {
+  // invalid art configuration
 }
-
-// or listen to triggers
-art.enableTrigger();
-art.onTrigger((target, context) -> {
-    
-});
 ```
+
+That is for loading and [using art](https://art-framework.io/#/developer/). Here is a veriy basic example on how to create art, e.g. the `vault:player.money.add` action.
+
+```java
+@ART(
+  value = "vault:player.money.add",
+  description = "Adds the given amount of money to the player. Can be an offline player.",
+  alias = {"money.add", "player.money.add", "money", "vault:money.add", "vault:money"}
+)
+public class AddMoneyAction implements Action<OfflinePlayer> {
+
+  private final Economy economy;
+
+  public AddMoneyAction(Economy economy) {
+    this.economy = economy;
+  }
+
+  @ConfigOption(
+    required = true,
+    position = 0,
+    description = "The amount of money that should be added to the player."
+  )
+  private int amount;
+
+  @Override
+  public Result execute(@NonNull Target<OfflinePlayer> target, @NonNull ExecutionContext<ActionContext<OfflinePlayer>> context) {
+
+    economy.depositPlayer(target.source(), amount);
+
+    return success();
+  }
+}
+```
+
+## Roadmap
+
+The following is planned for the future of the art-framework:
+
+* Online editor with auto completion support
+* Public registry of art-modules
+* Auto downloading of required art-modules from the registry
