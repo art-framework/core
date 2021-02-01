@@ -21,34 +21,18 @@ import io.artframework.BootstrapScope;
 import io.artframework.Scope;
 import io.artframework.annotations.ArtModule;
 import io.artframework.annotations.OnReload;
-import io.artframework.bukkit.actions.CancelBukkitEventAction;
-import io.artframework.bukkit.actions.DamageLivingEntityAction;
-import io.artframework.bukkit.actions.GiveItemAction;
-import io.artframework.bukkit.actions.SendMessageAction;
-import io.artframework.bukkit.replacements.PlayerReplacement;
-import io.artframework.bukkit.requirements.EquipmentRequirement;
-import io.artframework.bukkit.requirements.HealthRequirement;
-import io.artframework.bukkit.resolver.MaterialResolver;
+import io.artframework.bukkit.parser.CommandLineParser;
 import io.artframework.bukkit.storage.EbeanPersistenceProvider;
 import io.artframework.bukkit.storage.MetadataStore;
-import io.artframework.bukkit.targets.*;
-import io.artframework.bukkit.trigger.*;
-import io.artframework.impl.DefaultMapStorageProvider;
+import io.artframework.bukkit.trigger.EntityDamageTrigger;
+import io.artframework.bukkit.trigger.LocationTrigger;
+import io.artframework.bukkit.trigger.PlayerListener;
 import io.artframework.modules.scripts.ScriptsModule;
 import io.artframework.util.FileUtil;
 import io.ebean.Database;
 import net.silthus.ebean.Config;
 import net.silthus.ebean.EbeanWrapper;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.block.Block;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 
@@ -133,6 +117,8 @@ public class ArtBukkitModule implements BootstrapModule {
         if (storageProvider != null) {
             storageProvider.load();
         }
+
+        scope.configuration().parser().add(CommandLineParser::new);
 
         playerListener = new PlayerListener(scope);
         locationTrigger = new LocationTrigger(scope);
