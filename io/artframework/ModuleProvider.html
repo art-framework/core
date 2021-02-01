@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":1,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6,"i15":6};
+var data = {"i0":6,"i1":6,"i2":6,"i3":6,"i4":6,"i5":6,"i6":6,"i7":6,"i8":6,"i9":1,"i10":6,"i11":6,"i12":6,"i13":6,"i14":6,"i15":6,"i16":6};
 var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],2:["t2","Instance Methods"],4:["t3","Abstract Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -212,53 +212,60 @@ extends <a href="Provider.html" title="interface in io.artframework">Provider</a
 </td>
 </tr>
 <tr id="i8" class="altColor">
+<td class="colFirst"><code>java.util.Optional&lt;<a href="ModuleMeta.html" title="interface in io.artframework">ModuleMeta</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSourceModule(java.lang.Class)">getSourceModule</a></span>&#8203;(@NonNull java.lang.Class&lt;?&gt;&nbsp;clazz)</code></th>
+<td class="colLast">
+<div class="block">Tries to find the module that contains the given class.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>static <a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSourceModule(io.artframework.Scope)">getSourceModule</a></span>&#8203;(<a href="Scope.html" title="interface in io.artframework">Scope</a>&nbsp;scope)</code></th>
+<td class="colLast">
+<div class="block">Creates a new default instance of the module provider.</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#loadAll()">loadAll</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Loads all modules in the scope.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
-<td class="colFirst"><code>static <a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#of(io.artframework.Scope)">of</a></span>&#8203;(<a href="Scope.html" title="interface in io.artframework">Scope</a>&nbsp;scope)</code></th>
-<td class="colLast">
-<div class="block">Creates a new default instance of the module provider.</div>
-</td>
-</tr>
-<tr id="i10" class="altColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#register(java.lang.Class)">register</a></span>&#8203;(@NonNull java.lang.Class&lt;?&gt;&nbsp;moduleClass)</code></th>
 <td class="colLast">
 <div class="block">Registers the given class as a module with the provider.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#register(java.lang.Object)">register</a></span>&#8203;(@NonNull java.lang.Object&nbsp;module)</code></th>
 <td class="colLast">
 <div class="block">Registers the given module with the provider, but does not enable it.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reload(java.lang.Class)">reload</a></span>&#8203;(@NonNull java.lang.Class&lt;?&gt;&nbsp;moduleClass)</code></th>
 <td class="colLast">
 <div class="block">Reloads the module with the given class if it exists and is enabled.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reloadAll()">reloadAll</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Reloads all enabled modules calling the tagged reload method if it is present.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code>java.util.Optional&lt;<a href="ArtModuleDependencyResolver.html" title="interface in io.artframework">ArtModuleDependencyResolver</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resolver()">resolver</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code><a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resolver(io.artframework.ArtModuleDependencyResolver)">resolver</a></span>&#8203;(<a href="ArtModuleDependencyResolver.html" title="interface in io.artframework">ArtModuleDependencyResolver</a>&nbsp;resolver)</code></th>
 <td class="colLast">
@@ -296,13 +303,13 @@ extends <a href="Provider.html" title="interface in io.artframework">Provider</a
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="of(io.artframework.Scope)">
+<a id="getSourceModule(io.artframework.Scope)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>of</h4>
-<pre class="methodSignature">static&nbsp;<a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a>&nbsp;of&#8203;(<a href="Scope.html" title="interface in io.artframework">Scope</a>&nbsp;scope)</pre>
+<h4>getSourceModule</h4>
+<pre class="methodSignature">static&nbsp;<a href="ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a>&nbsp;getSourceModule&#8203;(<a href="Scope.html" title="interface in io.artframework">Scope</a>&nbsp;scope)</pre>
 <div class="block">Creates a new default instance of the module provider.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
@@ -583,6 +590,26 @@ extends <a href="Provider.html" title="interface in io.artframework">Provider</a
 <dd><code>module</code> - the module to get data for</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the metadata of the module or an empty optional if the provided object is not an module</dd>
+</dl>
+</li>
+</ul>
+<a id="getSourceModule(java.lang.Class)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSourceModule</h4>
+<pre class="methodSignature">java.util.Optional&lt;<a href="ModuleMeta.html" title="interface in io.artframework">ModuleMeta</a>&gt;&nbsp;getSourceModule&#8203;(@NonNull
+                                               @NonNull java.lang.Class&lt;?&gt;&nbsp;clazz)</pre>
+<div class="block">Tries to find the module that contains the given class.
+ <p>This will compare the code source of the class with the code source of the modules.
+ If the given class is in the same code source as the module it is a match.
+ <p>Only the first module is returned if multiple modules exist inside the code source.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>clazz</code> - the class whos module should be found</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the module of the class</dd>
 </dl>
 </li>
 </ul>

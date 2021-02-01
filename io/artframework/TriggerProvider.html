@@ -281,7 +281,7 @@ extends <a href="ArtProvider.html" title="interface in io.artframework">ArtProvi
                     @NonNull <a href="ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a>&lt;<a href="Trigger.html" title="interface in io.artframework">Trigger</a>&gt;&nbsp;triggerInformation)</pre>
 <div class="block">Registers a new trigger using the provided information.
  <p>
- This will call <a href="ArtObjectMeta.html#initialize()"><code>ArtObjectMeta.initialize()</code></a> if the information is not initialized and will fail
+ This will call <a href="ArtObjectMeta.html#initialize(io.artframework.Scope)"><code>ArtObjectMeta.initialize(Scope)</code></a> if the information is not initialized and will fail
  silently if there are any exceptions.
  Using <a href="#add(java.lang.Class)"><code>add(Class)</code></a> or <a href="#add(java.lang.Class,io.artframework.ArtObjectProvider)"><code>add(Class, ArtObjectProvider)</code></a> is preferred since it will handle all the dirty work for you.</div>
 <dl>

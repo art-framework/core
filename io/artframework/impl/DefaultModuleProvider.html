@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10,"i13":10,"i14":10,"i15":10,"i16":10,"i17":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -278,46 +278,53 @@ implements <a href="../ModuleProvider.html" title="interface in io.artframework"
 </td>
 </tr>
 <tr id="i10" class="altColor">
+<td class="colFirst"><code>java.util.Optional&lt;<a href="../ModuleMeta.html" title="interface in io.artframework">ModuleMeta</a>&gt;</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSourceModule(java.lang.Class)">getSourceModule</a></span>&#8203;(@NonNull java.lang.Class&lt;?&gt;&nbsp;clazz)</code></th>
+<td class="colLast">
+<div class="block">Tries to find the module that contains the given class.</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#loadAll()">loadAll</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Loads all modules in the scope.</div>
 </td>
 </tr>
-<tr id="i11" class="rowColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code><a href="../ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#register(java.lang.Class)">register</a></span>&#8203;(@NonNull java.lang.Class&lt;?&gt;&nbsp;moduleClass)</code></th>
 <td class="colLast">
 <div class="block">Registers the given class as a module with the provider.</div>
 </td>
 </tr>
-<tr id="i12" class="altColor">
+<tr id="i13" class="rowColor">
 <td class="colFirst"><code><a href="../ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#register(java.lang.Object)">register</a></span>&#8203;(@NonNull java.lang.Object&nbsp;module)</code></th>
 <td class="colLast">
 <div class="block">Registers the given module with the provider, but does not enable it.</div>
 </td>
 </tr>
-<tr id="i13" class="rowColor">
+<tr id="i14" class="altColor">
 <td class="colFirst"><code><a href="../ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reload(java.lang.Class)">reload</a></span>&#8203;(@NonNull java.lang.Class&lt;?&gt;&nbsp;moduleClass)</code></th>
 <td class="colLast">
 <div class="block">Reloads the module with the given class if it exists and is enabled.</div>
 </td>
 </tr>
-<tr id="i14" class="altColor">
+<tr id="i15" class="rowColor">
 <td class="colFirst"><code><a href="../ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#reloadAll()">reloadAll</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Reloads all enabled modules calling the tagged reload method if it is present.</div>
 </td>
 </tr>
-<tr id="i15" class="rowColor">
+<tr id="i16" class="altColor">
 <td class="colFirst"><code>java.util.Optional&lt;<a href="../ArtModuleDependencyResolver.html" title="interface in io.artframework">ArtModuleDependencyResolver</a>&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resolver()">resolver</a></span>()</code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr id="i16" class="altColor">
+<tr id="i17" class="rowColor">
 <td class="colFirst"><code><a href="../ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#resolver(io.artframework.ArtModuleDependencyResolver)">resolver</a></span>&#8203;(<a href="../ArtModuleDependencyResolver.html" title="interface in io.artframework">ArtModuleDependencyResolver</a>&nbsp;resolver)</code></th>
 <td class="colLast">
@@ -432,6 +439,29 @@ implements <a href="../ModuleProvider.html" title="interface in io.artframework"
 <dd><code>module</code> - the module to get data for</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the metadata of the module or an empty optional if the provided object is not an module</dd>
+</dl>
+</li>
+</ul>
+<a id="getSourceModule(java.lang.Class)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getSourceModule</h4>
+<pre class="methodSignature">public&nbsp;java.util.Optional&lt;<a href="../ModuleMeta.html" title="interface in io.artframework">ModuleMeta</a>&gt;&nbsp;getSourceModule&#8203;(@NonNull
+                                                      @NonNull java.lang.Class&lt;?&gt;&nbsp;clazz)</pre>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="../ModuleProvider.html#getSourceModule(java.lang.Class)">ModuleProvider</a></code></span></div>
+<div class="block">Tries to find the module that contains the given class.
+ <p>This will compare the code source of the class with the code source of the modules.
+ If the given class is in the same code source as the module it is a match.
+ <p>Only the first module is returned if multiple modules exist inside the code source.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
+<dd><code><a href="../ModuleProvider.html#getSourceModule(java.lang.Class)">getSourceModule</a></code>&nbsp;in interface&nbsp;<code><a href="../ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>clazz</code> - the class whos module should be found</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>the module of the class</dd>
 </dl>
 </li>
 </ul>

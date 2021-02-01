@@ -1965,6 +1965,16 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/finder/ReplacementFinder.ReplacementClassWrapper.html#getReplacementClass()">getReplacementClass()</a></span> - Method in class io.artframework.finder.<a href="io/artframework/finder/ReplacementFinder.ReplacementClassWrapper.html" title="class in io.artframework.finder">ReplacementFinder.ReplacementClassWrapper</a></dt>
 <dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultModuleProvider.html#getSourceModule(java.lang.Class)">getSourceModule(Class&lt;?&gt;)</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultModuleProvider.html" title="class in io.artframework.impl">DefaultModuleProvider</a></dt>
+<dd>&nbsp;</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/ModuleProvider.html#getSourceModule(java.lang.Class)">getSourceModule(Class&lt;?&gt;)</a></span> - Method in interface io.artframework.<a href="io/artframework/ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></dt>
+<dd>
+<div class="block">Tries to find the module that contains the given class.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/ModuleProvider.html#getSourceModule(io.artframework.Scope)">getSourceModule(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></dt>
+<dd>
+<div class="block">Creates a new default instance of the module provider.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/finder/TargetFinder.TargetClassWrapper.html#getTargetClass()">getTargetClass()</a></span> - Method in class io.artframework.finder.<a href="io/artframework/finder/TargetFinder.TargetClassWrapper.html" title="class in io.artframework.finder">TargetFinder.TargetClassWrapper</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/Task.html#getTaskId()">getTaskId()</a></span> - Method in interface io.artframework.<a href="io/artframework/Task.html" title="interface in io.artframework">Task</a></dt>
@@ -2091,12 +2101,12 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/IllegalArtAccessException.html#%3Cinit%3E(java.lang.String,java.lang.Throwable)">IllegalArtAccessException(String, Throwable)</a></span> - Constructor for exception io.artframework.<a href="io/artframework/IllegalArtAccessException.html" title="class in io.artframework">IllegalArtAccessException</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/ArtObjectMeta.html#initialize()">initialize()</a></span> - Method in interface io.artframework.<a href="io/artframework/ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/ArtObjectMeta.html#initialize(io.artframework.Scope)">initialize(Scope)</a></span> - Method in interface io.artframework.<a href="io/artframework/ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a></dt>
 <dd>
 <div class="block">Initializes the <a href="io/artframework/Factory.html" title="interface in io.artframework"><code>Factory</code></a>, loads all annotations and checks
  if the <a href="io/artframework/ArtObject.html" title="interface in io.artframework"><code>ArtObject</code></a> is configured correctly.</div>
 </dd>
-<dt><span class="memberNameLink"><a href="io/artframework/conf/DefaultArtObjectMeta.html#initialize()">initialize()</a></span> - Method in class io.artframework.conf.<a href="io/artframework/conf/DefaultArtObjectMeta.html" title="class in io.artframework.conf">DefaultArtObjectMeta</a></dt>
+<dt><span class="memberNameLink"><a href="io/artframework/conf/DefaultArtObjectMeta.html#initialize(io.artframework.Scope)">initialize(Scope)</a></span> - Method in class io.artframework.conf.<a href="io/artframework/conf/DefaultArtObjectMeta.html" title="class in io.artframework.conf">DefaultArtObjectMeta</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtObjectMeta.html#initialized()">initialized()</a></span> - Method in interface io.artframework.<a href="io/artframework/ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a></dt>
 <dd>&nbsp;</dd>
@@ -2539,14 +2549,10 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/impl/ReplacementContext.html#of(io.artframework.Scope,io.artframework.Target,io.artframework.ExecutionContext)">of(Scope, Target&lt;?&gt;, ExecutionContext&lt;?&gt;)</a></span> - Static method in class io.artframework.impl.<a href="io/artframework/impl/ReplacementContext.html" title="class in io.artframework.impl">ReplacementContext</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/ArtObjectMeta.html#of(java.lang.Class)">of(Class&lt;TArtObject&gt;)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a></dt>
-<dd>
-<div class="block">Creates a new default art meta object from the given art class.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/ArtObjectMeta.html#of(java.lang.Class,io.artframework.ArtObjectProvider)">of(Class&lt;TArtObject&gt;, ArtObjectProvider&lt;TArtObject&gt;)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtObjectMeta.html#of(java.lang.String,java.lang.Class,TArtObject)">of(String, Class&lt;?&gt;, TArtObject)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a></dt>
-<dd>&nbsp;</dd>
+<dd>
+<div class="block">Creates a new default art meta object with the given identifier and target type.</div>
+</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/Variable.html#of(java.lang.String,TValue)">of(String, TValue)</a></span> - Static method in class io.artframework.<a href="io/artframework/Variable.html" title="class in io.artframework">Variable</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtObjectError.html#of(io.artframework.ArtObjectError.Reason,java.lang.Class,java.lang.Exception)">of(ArtObjectError.Reason, Class&lt;?&gt;, Exception)</a></span> - Static method in class io.artframework.<a href="io/artframework/ArtObjectError.html" title="class in io.artframework">ArtObjectError</a></dt>
@@ -2595,10 +2601,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/InjectionProvider.html#of(io.artframework.Scope)">of(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/InjectionProvider.html" title="interface in io.artframework">InjectionProvider</a></dt>
 <dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/ModuleProvider.html#of(io.artframework.Scope)">of(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ModuleProvider.html" title="interface in io.artframework">ModuleProvider</a></dt>
-<dd>
-<div class="block">Creates a new default instance of the module provider.</div>
-</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/parser/flow/FlowLineParserProvider.html#of(io.artframework.Scope)">of(Scope)</a></span> - Static method in interface io.artframework.parser.flow.<a href="io/artframework/parser/flow/FlowLineParserProvider.html" title="interface in io.artframework.parser.flow">FlowLineParserProvider</a></dt>
 <dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ReplacementProvider.html#of(io.artframework.Scope)">of(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ReplacementProvider.html" title="interface in io.artframework">ReplacementProvider</a></dt>
@@ -2614,6 +2616,14 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <dt><span class="memberNameLink"><a href="io/artframework/TriggerProvider.html#of(io.artframework.Scope)">of(Scope)</a></span> - Static method in interface io.artframework.<a href="io/artframework/TriggerProvider.html" title="interface in io.artframework">TriggerProvider</a></dt>
 <dd>
 <div class="block">Creates a new default implementation of this trigger provider using the given configuration.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/ArtObjectMeta.html#of(io.artframework.Scope,java.lang.Class)">of(Scope, Class&lt;TArtObject&gt;)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a></dt>
+<dd>
+<div class="block">Creates a new default art meta object from the given art class.</div>
+</dd>
+<dt><span class="memberNameLink"><a href="io/artframework/ArtObjectMeta.html#of(io.artframework.Scope,java.lang.Class,io.artframework.ArtObjectProvider)">of(Scope, Class&lt;TArtObject&gt;, ArtObjectProvider&lt;TArtObject&gt;)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ArtObjectMeta.html" title="interface in io.artframework">ArtObjectMeta</a></dt>
+<dd>
+<div class="block">Creates a new default art meta object from the given art class and provider.</div>
 </dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ArtContext.html#of(io.artframework.Scope,io.artframework.conf.ArtSettings,java.util.Collection)">of(Scope, ArtSettings, Collection&lt;ArtObjectContext&lt;?&gt;&gt;)</a></span> - Static method in interface io.artframework.<a href="io/artframework/ArtContext.html" title="interface in io.artframework">ArtContext</a></dt>
 <dd>&nbsp;</dd>
@@ -2738,14 +2748,6 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 </a>
 <h2 class="title">P</h2>
 <dl>
-<dt><span class="memberNameLink"><a href="io/artframework/annotations/ArtModule.html#packages()">packages()</a></span> - Method in annotation type io.artframework.annotations.<a href="io/artframework/annotations/ArtModule.html" title="annotation in io.artframework.annotations">ArtModule</a></dt>
-<dd>
-<div class="block">A list of packages that should be scanned for art classes.</div>
-</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/impl/DefaultModuleMeta.html#packages()">packages()</a></span> - Method in class io.artframework.impl.<a href="io/artframework/impl/DefaultModuleMeta.html" title="class in io.artframework.impl">DefaultModuleMeta</a></dt>
-<dd>&nbsp;</dd>
-<dt><span class="memberNameLink"><a href="io/artframework/ModuleMeta.html#packages()">packages()</a></span> - Method in interface io.artframework.<a href="io/artframework/ModuleMeta.html" title="interface in io.artframework">ModuleMeta</a></dt>
-<dd>&nbsp;</dd>
 <dt><span class="memberNameLink"><a href="io/artframework/ExecutionContext.html#parent()">parent()</a></span> - Method in interface io.artframework.<a href="io/artframework/ExecutionContext.html" title="interface in io.artframework">ExecutionContext</a></dt>
 <dd>
 <div class="block">Gets the parent of this <a href="io/artframework/ExecutionContext.html" title="interface in io.artframework"><code>ExecutionContext</code></a> that
