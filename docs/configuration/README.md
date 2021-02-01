@@ -53,4 +53,16 @@ Each [ART Type](#art-types) has its own `ART Object Config` that can be used to 
 > The `ART Object Config` must be placed directly after the identifier into square brackets <kbd>[ ]</kbd>.  
 > For example: `!teleport[delay=5s] 1,2,3` teleports the player after five seconds.
 
-Look at each of the documentation for [Actions](actions.md), [Requirements](requirements.md) and [Trigger](trigger.md) to learn more about the individual config artObjectMeta.
+Look at each of the documentation for [Actions](actions.md), [Requirements](requirements.md) and [Trigger](trigger.md) to learn more about the individual config.
+
+## Special Command Syntax
+
+When using the [bukkit platform](../bukkit.md) you can use the special command syntax <kbd>/</kbd> to issue server commands wrapped as an action. This gives you the full power to perform requirement checks and cooldowns, etc. on the command.
+
+```yaml
+art:
+  - '/minecraft:give[cooldown:1h] ${player} diamond 16'
+  # is the same as
+  - '!command[cooldown:1h] "minecraft:give ${player} diamond 16"'
+```
+
