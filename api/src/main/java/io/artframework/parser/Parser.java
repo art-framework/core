@@ -54,7 +54,7 @@ public interface Parser<TInput> extends Scoped {
     /**
      * Parses the given input into an {@link ArtContext}.
      *
-     * @param input the input that should be parses. must not be null.
+     * @param input the input that should be parses. must not be null, but can be empty.
      * @return the resulting art context
      * @throws ParseException if the parse operation fails, e.g. when the syntax is incorrect.
      */

@@ -54,7 +54,7 @@ public final class FlowParser implements Parser<Collection<String>> {
     public ArtContext parse(@NonNull Collection<String> input) throws ParseException {
 
         if (input.isEmpty()) {
-            throw new ParseException("Cannot parse an empty list into an art context!");
+            return ArtContext.empty();
         }
 
         Collection<ArtObjectContext<?>> contexts = new ArrayList<>();
