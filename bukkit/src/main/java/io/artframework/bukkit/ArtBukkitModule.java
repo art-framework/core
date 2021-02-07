@@ -127,6 +127,11 @@ public class ArtBukkitModule implements BootstrapModule {
         Bukkit.getPluginManager().registerEvents(playerListener, plugin);
         Bukkit.getPluginManager().registerEvents(locationTrigger, plugin);
         Bukkit.getPluginManager().registerEvents(entityDamageTrigger, plugin);
+
+        scope.register()
+                .trigger()
+                .add(LocationTrigger.class, () -> new LocationTrigger(scope))
+                .add(EntityDamageTrigger.class, () -> new EntityDamageTrigger(scope));
     }
 
     @OnReload
