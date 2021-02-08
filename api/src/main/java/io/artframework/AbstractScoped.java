@@ -16,6 +16,9 @@
 
 package io.artframework;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode(of = {"scope"})
 public abstract class AbstractScoped implements Scoped {
 
     private final Scope scope;

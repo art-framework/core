@@ -21,6 +21,7 @@ import io.artframework.CombinedResult;
 import io.artframework.FutureResult;
 import io.artframework.Target;
 import io.artframework.Variable;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+@EqualsAndHashCode(callSuper = false, of = {"contextSet", "data", "variables"})
 public final class CombinedArtContext extends DefaultArtContext implements ArtContext {
 
     private final Set<ArtContext> contextSet = new HashSet<>();

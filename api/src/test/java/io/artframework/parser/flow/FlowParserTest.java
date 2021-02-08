@@ -194,11 +194,12 @@ class FlowParserTest {
         }
 
         @Test
-        @DisplayName("should throw if input is empty list")
-        void shouldThrowIfInputListIsEmpty() {
+        @DisplayName("should return empty artcontext if input is empty list")
+        void shouldThrowIfInputListIsEmpty() throws ParseException {
 
-            assertThatExceptionOfType(ParseException.class)
-                    .isThrownBy(() -> parser.parse(new ArrayList<>()));
+            assertThat(parser.parse(new ArrayList<>()))
+                    .isNotNull()
+                    .isEqualTo(ArtContext.empty());
         }
     }
 }

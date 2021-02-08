@@ -32,6 +32,7 @@ import io.artframework.TriggerContext;
 import io.artframework.TriggerListener;
 import io.artframework.Variable;
 import io.artframework.conf.ArtSettings;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
@@ -47,6 +48,7 @@ import java.util.function.Function;
 import static io.artframework.util.ReflectionUtil.getEntryForTarget;
 
 @Accessors(fluent = true)
+@EqualsAndHashCode(of = {"settings", "artContexts", "data", "triggerListeners", "variables"}, callSuper = true)
 @Log(topic = "art-framework")
 public class DefaultArtContext extends AbstractScoped implements ArtContext, TriggerListener<Object> {
 
