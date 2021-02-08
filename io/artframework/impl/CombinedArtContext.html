@@ -26,7 +26,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -168,34 +168,49 @@ implements <a href="../ArtContext.html" title="interface in io.artframework">Art
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>protected boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#canEqual(java.lang.Object)">canEqual</a></span>&#8203;(java.lang.Object&nbsp;other)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i1" class="rowColor">
 <td class="colFirst"><code><a href="../ArtContext.html" title="interface in io.artframework">ArtContext</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#combine(io.artframework.ArtContext)">combine</a></span>&#8203;(<a href="../ArtContext.html" title="interface in io.artframework">ArtContext</a>&nbsp;context)</code></th>
 <td class="colLast">
 <div class="block">Combines this <a href="../ArtContext.html" title="interface in io.artframework"><code>ArtContext</code></a> with the given <a href="../ArtContext.html" title="interface in io.artframework"><code>ArtContext</code></a>.</div>
 </td>
 </tr>
-<tr id="i1" class="rowColor">
+<tr id="i2" class="altColor">
 <td class="colFirst"><code>@NonNull java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#data()">data</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get all custom data from this <code>Scope</code>.</div>
 </td>
 </tr>
-<tr id="i2" class="altColor">
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#equals(java.lang.Object)">equals</a></span>&#8203;(java.lang.Object&nbsp;o)</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code><a href="../FutureResult.html" title="interface in io.artframework">FutureResult</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#execute(io.artframework.Target...)">execute</a></span>&#8203;(@NonNull <a href="../Target.html" title="interface in io.artframework">Target</a>&lt;?&gt;...&nbsp;targets)</code></th>
 <td class="colLast">
 <div class="block">Executes all <a href="../Action.html" title="interface in io.artframework"><code>Action</code></a>s and child actions of actions against the given target.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#hashCode()">hashCode</a></span>()</code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>&lt;TTarget&gt;&nbsp;<a href="../CombinedResult.html" title="interface in io.artframework">CombinedResult</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#test(io.artframework.Target)">test</a></span>&#8203;(@NonNull <a href="../Target.html" title="interface in io.artframework">Target</a>&lt;TTarget&gt;&nbsp;target)</code></th>
 <td class="colLast">
 <div class="block">Tests if all requirements for the given target pass.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i7" class="rowColor">
 <td class="colFirst"><code>java.util.Map&lt;java.lang.String,&#8203;<a href="../Variable.html" title="class in io.artframework">Variable</a>&lt;?&gt;&gt;</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#variables()">variables</a></span>()</code></th>
 <td class="colLast">
@@ -222,7 +237,7 @@ implements <a href="../ArtContext.html" title="interface in io.artframework">Art
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;java.lang.Object</h3>
-<code>clone, equals, finalize, getClass, hashCode, notify, notifyAll, toString, wait, wait, wait</code></li>
+<code>clone, finalize, getClass, notify, notifyAll, toString, wait, wait, wait</code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.io.artframework.ArtContext">
@@ -377,7 +392,7 @@ public&nbsp;@NonNull java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&g
 <a id="combine(io.artframework.ArtContext)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>combine</h4>
 <pre class="methodSignature">public&nbsp;<a href="../ArtContext.html" title="interface in io.artframework">ArtContext</a>&nbsp;combine&#8203;(<a href="../ArtContext.html" title="interface in io.artframework">ArtContext</a>&nbsp;context)</pre>
@@ -394,6 +409,45 @@ public&nbsp;@NonNull java.util.Map&lt;java.lang.String,&#8203;java.lang.Object&g
 <dd><code>context</code> - The <a href="../ArtContext.html" title="interface in io.artframework"><code>ArtContext</code></a> that should be combined with this context</dd>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>the new combined <a href="../ArtContext.html" title="interface in io.artframework"><code>ArtContext</code></a></dd>
+</dl>
+</li>
+</ul>
+<a id="equals(java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>equals</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;equals&#8203;(java.lang.Object&nbsp;o)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="DefaultArtContext.html#equals(java.lang.Object)">equals</a></code>&nbsp;in class&nbsp;<code><a href="DefaultArtContext.html" title="class in io.artframework.impl">DefaultArtContext</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="canEqual(java.lang.Object)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>canEqual</h4>
+<pre class="methodSignature">protected&nbsp;boolean&nbsp;canEqual&#8203;(java.lang.Object&nbsp;other)</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="DefaultArtContext.html#canEqual(java.lang.Object)">canEqual</a></code>&nbsp;in class&nbsp;<code><a href="DefaultArtContext.html" title="class in io.artframework.impl">DefaultArtContext</a></code></dd>
+</dl>
+</li>
+</ul>
+<a id="hashCode()">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>hashCode</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;hashCode()</pre>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="DefaultArtContext.html#hashCode()">hashCode</a></code>&nbsp;in class&nbsp;<code><a href="DefaultArtContext.html" title="class in io.artframework.impl">DefaultArtContext</a></code></dd>
 </dl>
 </li>
 </ul>
