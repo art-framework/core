@@ -1,3 +1,13 @@
+## [4.5.1](https://github.com/art-framework/art-framework/compare/v4.5.0...v4.5.1) (2021-02-08)
+
+
+### Bug Fixes
+
+* add missing location and entity damage trigger ([e7b2d5d](https://github.com/art-framework/art-framework/commit/e7b2d5dff90e994db860655bbdb09683d7f46e87))
+* allow empty flow lists when parsing art ([5b91261](https://github.com/art-framework/art-framework/commit/5b9126167d7637712df70bbc2c12521d3b15fa34))
+* default finder not all registered ([c60f1c6](https://github.com/art-framework/art-framework/commit/c60f1c6fac8416de55db12205ad06a4373279e28))
+* equals and hashcode of artcontext not correct ([ba6c240](https://github.com/art-framework/art-framework/commit/ba6c240ff58155fc313750d6d5da1390d1adaffa))
+
 # [4.5.0](https://github.com/art-framework/art-framework/compare/v4.4.0...v4.5.0) (2021-02-01)
 
 
