@@ -23,13 +23,13 @@ import io.artframework.FinderProvider;
 import io.artframework.Scope;
 import lombok.NonNull;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class DefaultFinderProvider extends AbstractProvider implements FinderProvider {
 
-    private final Set<Finder> finders = new HashSet<>();
+    private final List<Finder> finders = new ArrayList<>();
 
     public DefaultFinderProvider(@NonNull Scope scope) {
         super(scope);
