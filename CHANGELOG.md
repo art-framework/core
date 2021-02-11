@@ -1,3 +1,11 @@
+## [4.5.3](https://github.com/art-framework/art-framework/compare/v4.5.2...v4.5.3) (2021-02-11)
+
+
+### Bug Fixes
+
+* generic actions and requirements not auto loaded ([e5aca43](https://github.com/art-framework/art-framework/commit/e5aca43759a23c6c7783b835523f3834f15d0f19))
+* use reflections to safely scan classpath ([970c14f](https://github.com/art-framework/art-framework/commit/970c14fa490e8e2557d3393c561af314f04590bd))
+
 ## [4.5.2](https://github.com/art-framework/art-framework/compare/v4.5.1...v4.5.2) (2021-02-11)
 
 
