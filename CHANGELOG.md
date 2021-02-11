@@ -1,3 +1,10 @@
+## [4.5.2](https://github.com/art-framework/art-framework/compare/v4.5.1...v4.5.2) (2021-02-11)
+
+
+### Bug Fixes
+
+* load and enable all art after all other plugins are loaded ([6bb89df](https://github.com/art-framework/art-framework/commit/6bb89df1f77170b515d0823e7c4c41688d636487))
+
 ## [4.5.1](https://github.com/art-framework/art-framework/compare/v4.5.0...v4.5.1) (2021-02-08)
 
 
