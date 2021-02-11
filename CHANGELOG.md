@@ -1,3 +1,10 @@
+## [4.5.4](https://github.com/art-framework/art-framework/compare/v4.5.3...v4.5.4) (2021-02-11)
+
+
+### Bug Fixes
+
+* load art in onenable phase ([b9873a9](https://github.com/art-framework/art-framework/commit/b9873a9dd1eaea66dd5080ac08a8893bd4af017c))
+
 ## [4.5.3](https://github.com/art-framework/art-framework/compare/v4.5.2...v4.5.3) (2021-02-11)
 
 
