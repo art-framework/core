@@ -21,11 +21,8 @@ import io.artframework.BootstrapException;
 import io.artframework.BootstrapPhase;
 import io.artframework.BootstrapScope;
 import io.artframework.conf.Settings;
-import io.ebean.Database;
 import kr.entree.spigradle.annotations.Plugin;
 import lombok.Getter;
-import net.silthus.ebean.Config;
-import net.silthus.ebean.EbeanWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
@@ -77,9 +74,10 @@ public class ArtBukkitPlugin extends JavaPlugin {
         getDataFolder().mkdirs();
 
         if (bootstrap != null) {
-            bootstrap.loadAll();
-
-            Bukkit.getScheduler().runTaskLater(this, () -> bootstrap.enableAll(), 1L);
+            Bukkit.getScheduler().runTaskLater(this, () -> {
+                bootstrap.loadAll();
+                bootstrap.enableAll();
+            }, 1L);
         }
     }
 }
