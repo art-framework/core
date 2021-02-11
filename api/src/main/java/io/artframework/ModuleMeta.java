@@ -71,6 +71,11 @@ public interface ModuleMeta {
     String[] dependencies();
 
     /**
+     * @return a list of packages that should be loaded by the art-framework
+     */
+    String[] packages();
+
+    /**
      * @return the prefix that should be used on all art objects
      */
     String prefix();

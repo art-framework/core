@@ -25,7 +25,7 @@ package io.artframework;
  * @param <TType> the type that is resolved by this resolver
  */
 @FunctionalInterface
-public interface Resolver<TType> {
+public interface Resolver<TType> extends ArtObject {
 
     /**
      * Resolves the type of this resolver using the provided and injected config values.

@@ -18,6 +18,7 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import io.artframework.annotations.*;
+import io.artframework.annotations.ART;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.ReflectionUtil;
 import io.artframework.util.graphs.CycleSearch;
@@ -27,10 +28,17 @@ import lombok.NonNull;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import lombok.extern.java.Log;
+import org.reflections.Reflections;
+import org.reflections.scanners.SubTypesScanner;
+import org.reflections.scanners.TypeAnnotationsScanner;
+import org.reflections.util.ClasspathHelper;
+import org.reflections.util.ConfigurationBuilder;
+import org.reflections.util.FilterBuilder;
 
 import javax.annotation.Nullable;
 import java.io.File;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.URISyntaxException;
@@ -408,19 +416,62 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         }
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private void findAndLoadAllArt(ModuleInformation module) throws ModuleRegistrationException {
-        try {
-            CodeSource codeSource = module.moduleMeta().moduleClass().getProtectionDomain().getCodeSource();
-            if (codeSource != null) {
-                configuration().finder().findAllAndLoadIn(module.moduleMeta().moduleClass().getClassLoader(), new File(codeSource.getLocation().toURI()),
-                        aClass -> !BootstrapModule.class.isAssignableFrom(aClass) && !aClass.isAnnotationPresent(ArtModule.class)
-                );
+
+        Reflections reflections = new Reflections(new ConfigurationBuilder()
+                .setUrls(module.moduleMeta.moduleClass().getProtectionDomain().getCodeSource().getLocation())
+                .setScanners(new SubTypesScanner(), new TypeAnnotationsScanner())
+                .filterInputsBy(new FilterBuilder().includePackage(module.moduleMeta.packages()))
+        );
+
+        // actions
+        for (Class<? extends Action> aClass : reflections.getSubTypesOf(Action.class)) {
+            if (!GenericAction.class.isAssignableFrom(aClass)) {
+                scope().register().actions().add((Class<? extends Action<?>>) aClass);
             }
-        } catch (URISyntaxException e) {
-            updateModuleCache(module.state(ModuleState.ERROR));
-            logState(module, e.getMessage());
-            throw new ModuleRegistrationException(module.moduleMeta(), ModuleState.ERROR,
-                    "An error occured when trying to load the art in module \"" + module.moduleMeta().identifier() + "\": " + e.getMessage(), e);
+        }
+        // requirements
+        for (Class<? extends Requirement> aClass : reflections.getSubTypesOf(Requirement.class)) {
+            if (!GenericRequirement.class.isAssignableFrom(aClass)) {
+                scope().register().requirements().add((Class<? extends Requirement<?>>) aClass);
+            }
+        }
+        // trigger
+        for (Class<? extends Trigger> aClass : reflections.getSubTypesOf(Trigger.class)) {
+            scope().register().trigger().add(aClass);
+        }
+        // targets
+        for (Class<? extends Target> aClass : reflections.getSubTypesOf(Target.class)) {
+            Optional<Class<?>> sourceClass = ReflectionUtil.getInterfaceTypeArgument(aClass, Target.class, 0);
+            sourceClass.ifPresent(targetClass -> {
+                try {
+                    Constructor<? extends Target> constructor = aClass.getDeclaredConstructor(targetClass);
+                    scope().register().targets().add(targetClass, target -> {
+                        try {
+                            constructor.setAccessible(true);
+                            return constructor.newInstance(target);
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    });
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        // replacements
+        for (Class<? extends Replacement> aClass : reflections.getSubTypesOf(Replacement.class)) {
+            try {
+                configuration().replacements().add(aClass.getConstructor().newInstance());
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+                log.warning("failed to create instance of replacement: " + aClass.getCanonicalName());
+            }
+        }
+        // resolver
+        for (Class<? extends Resolver> aClass : reflections.getSubTypesOf(Resolver.class)) {
+            scope().register().resolvers().add(aClass);
         }
     }
 
@@ -442,7 +493,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         for (int i = 0; i < graph.size(); i++) {
             sb.append(graph.get(i).identifier()).append(" --> ");
 
-            if (i == graph.size() -1) {
+            if (i == graph.size() - 1) {
                 sb.append(sourceModule.identifier());
             }
         }
@@ -515,12 +566,18 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
         private final ModuleMeta moduleMeta;
         private final List<Method> allMethods;
-        @Nullable private final Object module;
-        @Nullable private final Method onBootstrap;
-        @Nullable private final Method onLoad;
-        @Nullable private final Method onEnable;
-        @Nullable private final Method onDisable;
-        @Nullable private final Method onReload;
+        @Nullable
+        private final Object module;
+        @Nullable
+        private final Method onBootstrap;
+        @Nullable
+        private final Method onLoad;
+        @Nullable
+        private final Method onEnable;
+        @Nullable
+        private final Method onDisable;
+        @Nullable
+        private final Method onReload;
         private ModuleState state;
 
         @SuppressWarnings("unchecked")

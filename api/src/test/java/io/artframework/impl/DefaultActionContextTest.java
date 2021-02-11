@@ -95,7 +95,7 @@ class DefaultActionContextTest {
 
         private final UUID uuid;
 
-        protected MyTargetWrapper(MyTarget source) {
+        public MyTargetWrapper(MyTarget source) {
             super(source);
             this.uuid = UUID.randomUUID();
         }

@@ -60,8 +60,7 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
         try {
             return add(Objects.requireNonNull(ArtObjectMeta.of(scope(), aClass).get()));
         } catch (ArtMetaDataException e) {
-            log.severe("failed to add " + aClass.getCanonicalName() + ": " + e.getMessage());
-            e.printStackTrace();
+            log.warning("failed to add " + aClass.getCanonicalName() + ": " + e.error().message());
         }
         return this;
     }
@@ -70,8 +69,7 @@ public class DefaultActionProvider extends AbstractFactoryProvider<ActionFactory
         try {
             return add(Objects.requireNonNull(ArtObjectMeta.of(scope(), aClass, artObjectProvider).get()));
         } catch (ArtMetaDataException e) {
-            log.severe("failed to add " + aClass.getCanonicalName() + ": " + e.getMessage());
-            e.printStackTrace();
+            log.warning("failed to add " + aClass.getCanonicalName() + ": " + e.error().message());
         }
         return this;
     }

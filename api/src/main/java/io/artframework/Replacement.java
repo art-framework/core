@@ -7,7 +7,7 @@ import io.artframework.impl.ReplacementContext;
  * <p>Register your replacement with the {@link ReplacementProvider}.
  */
 @FunctionalInterface
-public interface Replacement {
+public interface Replacement extends ArtObject {
 
     /**
      * Replaces the given string with a new value based on the resolution context.

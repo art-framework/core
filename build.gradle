@@ -56,6 +56,9 @@ subprojects {
         implementation group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.2'
         implementation group: 'com.fasterxml.jackson.dataformat', name: 'jackson-dataformat-yaml', version: '2.9.2'
 
+        implementation group: 'org.reflections', name: 'reflections', version: '0.9.12'
+        implementation group: 'org.javassist', name: 'javassist', version: '3.26.0-GA'
+
         //Test dependencies
         testImplementation 'org.junit.jupiter:junit-jupiter:5.+'
         testImplementation "org.mockito:mockito-core:3.+"
@@ -72,10 +75,15 @@ subprojects {
             include(dependency('com.google.guava:guava:'))
             include(dependency('com.fasterxml.jackson.core::'))
             include(dependency('com.fasterxml.jackson.dataformat::'))
+            include(dependency('org.reflections::'))
+            include(dependency('org.javassist::'))
         }
         relocate 'org.apache.commons', "shadow.${packageName}.commonslang"
         relocate 'com.google', "shadow.${packageName}.google"
         relocate 'com.fasterxml.jackson', "shadow.${packageName}.jackson"
+        relocate 'org.reflections', "shadow.${packageName}.reflections"
+        relocate 'javassist', "shadow.${packageName}.javassist"
+        relocate 'org.javassist', "shadow.${packageName}.javassist"
     }
 
     tasks.build.dependsOn(shadowJar)

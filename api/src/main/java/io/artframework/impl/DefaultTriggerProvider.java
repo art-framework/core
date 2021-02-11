@@ -66,8 +66,7 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
         try {
             add(Objects.requireNonNull(ArtObjectMeta.of(scope(), triggerClass).get()));
         } catch (ArtMetaDataException e) {
-            log.severe("failed to add " + triggerClass.getCanonicalName() + ": " + e.getMessage());
-            e.printStackTrace();
+            log.warning("failed to add " + triggerClass.getCanonicalName() + ": " + e.error().message());
         }
         return this;
     }
@@ -78,8 +77,7 @@ public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFacto
         try {
             add(Objects.requireNonNull(ArtObjectMeta.of(scope(), triggerClass, supplier).get()));
         } catch (ArtMetaDataException e) {
-            log.severe("failed to add " + triggerClass.getCanonicalName() + ": " + e.getMessage());
-            e.printStackTrace();
+            log.warning("failed to add " + triggerClass.getCanonicalName() + ": " + e.error().message());
         }
 
         return this;

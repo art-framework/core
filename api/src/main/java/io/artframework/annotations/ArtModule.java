@@ -96,4 +96,14 @@ public @interface ArtModule {
      * @return a list of dependencies
      */
     String[] depends() default {};
+
+    /**
+     * A list of packages that should be searched when automatically
+     * loading art-objects from your module.
+     * <p>The package of your art-module will be used if none are specified.
+     * <p>Packages are searched recursively for valid art-objects.
+     *
+     * @return a list of packages to search for art
+     */
+    String[] packages() default {};
 }
