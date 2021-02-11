@@ -26,7 +26,6 @@ import io.artframework.integration.targets.EntityTarget;
 import io.artframework.integration.targets.PlayerTarget;
 import io.artframework.integration.trigger.PlayerDamangeTrigger;
 import io.artframework.integration.trigger.PlayerMoveTrigger;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -37,11 +36,7 @@ import java.util.Optional;
 
 import static io.artframework.Result.success;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
 @DisplayName("ART Integration Tests")

@@ -1,14 +1,6 @@
 package io.artframework.impl;
 
-import io.artframework.ART;
-import io.artframework.AbstractTarget;
-import io.artframework.Action;
-import io.artframework.ActionContext;
-import io.artframework.ArtMetaDataException;
-import io.artframework.ArtObjectMeta;
-import io.artframework.ExecutionContext;
-import io.artframework.Result;
-import io.artframework.Target;
+import io.artframework.*;
 import io.artframework.conf.ActionConfig;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -19,11 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static io.artframework.Result.error;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
 class DefaultActionContextTest {

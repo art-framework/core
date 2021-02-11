@@ -17,18 +17,7 @@
 package io.artframework.impl;
 
 import com.google.common.base.Strings;
-import io.artframework.AbstractArtObjectContext;
-import io.artframework.ArtObjectMeta;
-import io.artframework.CombinedResultCreator;
-import io.artframework.ConfigMap;
-import io.artframework.ExecutionContext;
-import io.artframework.Requirement;
-import io.artframework.RequirementContext;
-import io.artframework.RequirementFactory;
-import io.artframework.Result;
-import io.artframework.Scope;
-import io.artframework.Target;
-import io.artframework.TargetResult;
+import io.artframework.*;
 import io.artframework.conf.Constants;
 import io.artframework.conf.RequirementConfig;
 import lombok.Getter;

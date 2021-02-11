@@ -18,7 +18,6 @@ package io.artframework.impl;
 
 import io.artframework.*;
 import io.artframework.annotations.*;
-import io.artframework.annotations.ART;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.ReflectionUtil;
 import io.artframework.util.graphs.CycleSearch;
@@ -31,17 +30,14 @@ import lombok.extern.java.Log;
 import org.reflections.Reflections;
 import org.reflections.scanners.SubTypesScanner;
 import org.reflections.scanners.TypeAnnotationsScanner;
-import org.reflections.util.ClasspathHelper;
 import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
 import javax.annotation.Nullable;
-import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
 import java.security.CodeSource;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -427,13 +423,13 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
         // actions
         for (Class<? extends Action> aClass : reflections.getSubTypesOf(Action.class)) {
-            if (!GenericAction.class.isAssignableFrom(aClass)) {
+            if (!GenericAction.class.equals(aClass)) {
                 scope().register().actions().add((Class<? extends Action<?>>) aClass);
             }
         }
         // requirements
         for (Class<? extends Requirement> aClass : reflections.getSubTypesOf(Requirement.class)) {
-            if (!GenericRequirement.class.isAssignableFrom(aClass)) {
+            if (!GenericRequirement.class.equals(aClass)) {
                 scope().register().requirements().add((Class<? extends Requirement<?>>) aClass);
             }
         }

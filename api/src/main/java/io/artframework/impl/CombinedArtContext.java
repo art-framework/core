@@ -16,19 +16,11 @@
 
 package io.artframework.impl;
 
-import io.artframework.ArtContext;
-import io.artframework.CombinedResult;
-import io.artframework.FutureResult;
-import io.artframework.Target;
-import io.artframework.Variable;
+import io.artframework.*;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @EqualsAndHashCode(callSuper = false, of = {"contextSet", "data", "variables"})
 public final class CombinedArtContext extends DefaultArtContext implements ArtContext {

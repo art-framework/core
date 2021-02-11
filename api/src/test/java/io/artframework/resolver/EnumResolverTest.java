@@ -1,11 +1,6 @@
 package io.artframework.resolver;
 
-import io.artframework.ART;
-import io.artframework.ConfigMap;
-import io.artframework.ConfigurationException;
-import io.artframework.ResolveContext;
-import io.artframework.ResolveException;
-import io.artframework.Resolver;
+import io.artframework.*;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.annotations.Resolve;
 import io.artframework.conf.KeyValuePair;

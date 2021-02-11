@@ -16,19 +16,7 @@
 
 package io.artframework.impl;
 
-import io.artframework.ArtContext;
-import io.artframework.ArtMetaDataException;
-import io.artframework.ArtObjectContext;
-import io.artframework.ExecutionContext;
-import io.artframework.GenericRequirement;
-import io.artframework.ParseException;
-import io.artframework.Requirement;
-import io.artframework.RequirementContext;
-import io.artframework.Result;
-import io.artframework.ResultCreator;
-import io.artframework.ResultStatus;
-import io.artframework.Scope;
-import io.artframework.Target;
+import io.artframework.*;
 import io.artframework.integration.data.Player;
 import io.artframework.integration.targets.PlayerTarget;
 import lombok.NonNull;
@@ -41,11 +29,7 @@ import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
 class DefaultArtContextTest implements ResultCreator {

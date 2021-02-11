@@ -16,12 +16,7 @@
 
 package io.artframework.parser.flow;
 
-import io.artframework.ActionContext;
-import io.artframework.ActionFactory;
-import io.artframework.ActionProvider;
-import io.artframework.ArtObjectMeta;
-import io.artframework.ParseException;
-import io.artframework.Scope;
+import io.artframework.*;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.conf.ActionConfig;
 import io.artframework.conf.ContextConfig;
@@ -37,14 +32,9 @@ import org.mockito.ArgumentCaptor;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
 class ArtObjectContextParserTest {

@@ -16,17 +16,7 @@
 
 package io.artframework.conf;
 
-import io.artframework.Action;
-import io.artframework.ActionContext;
-import io.artframework.ArtObjectMeta;
-import io.artframework.ExecutionContext;
-import io.artframework.GenericAction;
-import io.artframework.GenericRequirement;
-import io.artframework.Requirement;
-import io.artframework.RequirementContext;
-import io.artframework.Result;
-import io.artframework.Target;
-import io.artframework.Trigger;
+import io.artframework.*;
 import io.artframework.annotations.ART;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.integration.data.Player;

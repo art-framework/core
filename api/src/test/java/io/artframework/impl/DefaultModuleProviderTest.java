@@ -16,17 +16,11 @@
 
 package io.artframework.impl;
 
-import io.artframework.ArtObjectMeta;
-import io.artframework.Configuration;
-import io.artframework.Factory;
-import io.artframework.ModuleMeta;
-import io.artframework.ModuleRegistrationException;
-import io.artframework.Scope;
-import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.OnDisable;
-import io.artframework.annotations.OnEnable;
-import io.artframework.annotations.OnLoad;
+import io.artframework.*;
+import io.artframework.annotations.ART;
+import io.artframework.annotations.*;
 import io.artframework.integration.actions.DamageAction;
+import lombok.NonNull;
 import lombok.SneakyThrows;
 import org.assertj.core.api.AbstractObjectAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,14 +31,8 @@ import org.mockito.InOrder;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.assertj.core.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
 class DefaultModuleProviderTest {
@@ -215,6 +203,15 @@ class DefaultModuleProviderTest {
 
     @ArtModule(value = "prefix", prefix = "test")
     static class PrefixModule {}
+
+    @ART(value = "damage", alias = {"hit", "dmg"})
+    public static class TestAction implements Action<Object> {
+
+        @Override
+        public Result execute(@NonNull Target<Object> target, @NonNull ExecutionContext<ActionContext<Object>> context) {
+            return null;
+        }
+    }
 
     @ArtModule(value = "test")
     static class DuplicateModule {

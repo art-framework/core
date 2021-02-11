@@ -16,29 +16,13 @@
 
 package io.artframework.impl;
 
-import io.artframework.AbstractFactoryProvider;
-import io.artframework.ArtMetaDataException;
-import io.artframework.ArtObjectMeta;
-import io.artframework.ArtObjectProvider;
-import io.artframework.ArtProvider;
-import io.artframework.CombinedResultCreator;
-import io.artframework.Scope;
-import io.artframework.Trigger;
-import io.artframework.TriggerContext;
-import io.artframework.TriggerExecution;
-import io.artframework.TriggerFactory;
-import io.artframework.TriggerProvider;
+import io.artframework.*;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.ReflectionUtil;
 import lombok.NonNull;
 import lombok.extern.java.Log;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Log(topic = "art-framework")
 public class DefaultTriggerProvider extends AbstractFactoryProvider<TriggerFactory> implements TriggerProvider, CombinedResultCreator {

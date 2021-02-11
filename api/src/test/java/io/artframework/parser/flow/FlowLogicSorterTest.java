@@ -16,15 +16,7 @@
 
 package io.artframework.parser.flow;
 
-import io.artframework.Action;
-import io.artframework.ActionContext;
-import io.artframework.ArtObjectContext;
-import io.artframework.ArtObjectMeta;
-import io.artframework.Requirement;
-import io.artframework.RequirementContext;
-import io.artframework.Scope;
-import io.artframework.Trigger;
-import io.artframework.TriggerContext;
+import io.artframework.*;
 import io.artframework.conf.ActionConfig;
 import io.artframework.conf.RequirementConfig;
 import io.artframework.conf.TriggerConfig;

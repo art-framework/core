@@ -17,34 +17,14 @@
 package io.artframework.impl;
 
 import com.google.common.base.Strings;
-import io.artframework.AbstractArtObjectContext;
-import io.artframework.ActionContext;
-import io.artframework.ArtObjectMeta;
-import io.artframework.ConfigMap;
-import io.artframework.Context;
-import io.artframework.ExecutionContext;
-import io.artframework.Requirement;
-import io.artframework.RequirementContext;
-import io.artframework.Scope;
-import io.artframework.Target;
-import io.artframework.Trigger;
-import io.artframework.TriggerContext;
-import io.artframework.TriggerFactory;
-import io.artframework.TriggerListener;
-import io.artframework.Variable;
+import io.artframework.*;
 import io.artframework.conf.Constants;
 import io.artframework.conf.TriggerConfig;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("unused")
 @Accessors(fluent = true)

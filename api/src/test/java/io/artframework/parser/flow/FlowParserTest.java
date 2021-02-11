@@ -16,13 +16,7 @@
 
 package io.artframework.parser.flow;
 
-import io.artframework.ArtContext;
-import io.artframework.ArtObjectContext;
-import io.artframework.ArtObjectMeta;
-import io.artframework.ConfigMap;
-import io.artframework.Factory;
-import io.artframework.ParseException;
-import io.artframework.Scope;
+import io.artframework.*;
 import io.artframework.conf.ActionConfig;
 import lombok.SneakyThrows;
 import org.assertj.core.api.InstanceOfAssertFactories;
@@ -39,15 +33,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.anyString;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @SuppressWarnings("ALL")
 @DisplayName("FlowParser")

@@ -16,12 +16,7 @@
 
 package io.artframework;
 
-import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.OnBootstrap;
-import io.artframework.annotations.OnDisable;
-import io.artframework.annotations.OnEnable;
-import io.artframework.annotations.OnLoad;
-import io.artframework.annotations.OnReload;
+import io.artframework.annotations.*;
 
 import java.util.ArrayList;
 import java.util.Collection;

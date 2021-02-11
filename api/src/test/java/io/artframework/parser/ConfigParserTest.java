@@ -16,12 +16,7 @@
 
 package io.artframework.parser;
 
-import io.artframework.ART;
-import io.artframework.ConfigMap;
-import io.artframework.ParseException;
-import io.artframework.ResolveContext;
-import io.artframework.ResolveException;
-import io.artframework.Resolver;
+import io.artframework.*;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.annotations.Resolve;
 import io.artframework.util.ConfigUtil;
@@ -33,9 +28,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
+import static org.assertj.core.api.Assertions.*;
 
 @SuppressWarnings("ALL")
 @DisplayName("ConfigParser")
