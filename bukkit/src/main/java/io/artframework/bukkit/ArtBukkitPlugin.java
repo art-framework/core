@@ -74,8 +74,8 @@ public class ArtBukkitPlugin extends JavaPlugin {
         getDataFolder().mkdirs();
 
         if (bootstrap != null) {
+            bootstrap.loadAll();
             Bukkit.getScheduler().runTaskLater(this, () -> {
-                bootstrap.loadAll();
                 bootstrap.enableAll();
             }, 1L);
         }
