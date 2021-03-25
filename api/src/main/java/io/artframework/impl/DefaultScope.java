@@ -17,6 +17,7 @@
 package io.artframework.impl;
 
 import io.artframework.*;
+import io.artframework.Module;
 import io.artframework.conf.Settings;
 import io.artframework.parser.flow.FlowLineParserProvider;
 import io.artframework.util.ReflectionUtil;
@@ -69,8 +70,8 @@ public final class DefaultScope implements BootstrapScope, BootstrapPhase {
         this.bootstrapped = true;
     }
 
-    public DefaultScope(BootstrapModule module, Settings settings) {
-        this.bootstrapModule = module;
+    public DefaultScope(BootstrapModule bootstrapModule, Settings settings) {
+        this.bootstrapModule = bootstrapModule;
         this.settings = settings;
     }
 
@@ -101,6 +102,30 @@ public final class DefaultScope implements BootstrapScope, BootstrapPhase {
     public <TProvider extends Provider> BootstrapScope addSingletonProvider(Class<TProvider> providerClass, TProvider provider) {
 
         return addProvider(providerClass, scope -> provider);
+    }
+
+    @Override
+    public BootstrapScope register(Module module) throws ModuleRegistrationException {
+
+        // TODO: implement
+
+        return this;
+    }
+
+    @Override
+    public BootstrapScope register(Object module) throws ModuleRegistrationException {
+
+        // TODO: implement
+
+        return this;
+    }
+
+    @Override
+    public BootstrapScope register(Class<? extends Module> moduleClass) throws ModuleRegistrationException {
+
+        // TODO: implement
+
+        return this;
     }
 
     @Override

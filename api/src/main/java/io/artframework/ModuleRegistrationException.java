@@ -16,31 +16,36 @@
 
 package io.artframework;
 
-public class ModuleRegistrationException extends ModuleException {
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
+@Getter
+@Accessors(fluent = true)
+public class ModuleRegistrationException extends ArtRuntimeException {
+
+    private final ModuleMeta moduleMeta;
     private final ModuleState state;
 
     public ModuleRegistrationException(ModuleMeta moduleMeta, ModuleState state) {
-
-        super(moduleMeta);
+        this.moduleMeta = moduleMeta;
         this.state = state;
     }
 
     public ModuleRegistrationException(ModuleMeta moduleMeta, ModuleState state, String message) {
-
-        super(moduleMeta, message);
+        super(message);
+        this.moduleMeta = moduleMeta;
         this.state = state;
     }
 
     public ModuleRegistrationException(ModuleMeta moduleMeta, ModuleState state, String message, Throwable cause) {
-
-        super(moduleMeta, message, cause);
+        super(message, cause);
+        this.moduleMeta = moduleMeta;
         this.state = state;
     }
 
     public ModuleRegistrationException(ModuleMeta moduleMeta, ModuleState state, Throwable cause) {
-
-        super(moduleMeta, cause);
+        super(cause);
+        this.moduleMeta = moduleMeta;
         this.state = state;
     }
 }

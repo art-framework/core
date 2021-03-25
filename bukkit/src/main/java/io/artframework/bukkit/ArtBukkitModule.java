@@ -58,39 +58,6 @@ public class ArtBukkitModule implements BootstrapModule {
     }
 
     @Override
-    public Collection<Object> modules(BootstrapScope scope) {
-
-        ArrayList<Object> modules = new ArrayList<>();
-
-        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-            if (!plugin.getClass().equals(ArtBukkitPlugin.class) && plugin.getClass().isAnnotationPresent(ArtModule.class)) {
-                modules.add(plugin);
-            }
-        }
-
-        File modulesDir = scope.settings().modulePath();
-        modulesDir.mkdirs();
-
-        File[] files = modulesDir.listFiles();
-        if (files != null) {
-            for (File moduleFile : files) {
-                if (moduleFile.isFile() && moduleFile.getName().endsWith(".jar")) {
-                    modules.addAll(FileUtil.findClasses(
-                            scope.configuration().classLoader(),
-                            moduleFile,
-                            moduleClass -> moduleClass.isAnnotationPresent(ArtModule.class))
-                    );
-                }
-            }
-        }
-
-        // add static modules that are included by default
-        modules.add(new ScriptsModule());
-
-        return modules;
-    }
-
-    @Override
     public void onBootstrap(BootstrapScope scope) {
 
         if (Bukkit.getPluginManager().getPlugin("ebean-wrapper") != null) {
@@ -109,6 +76,8 @@ public class ArtBukkitModule implements BootstrapModule {
                 builder.storage(storageProvider);
             }
         });
+
+        findModules(scope).forEach(scope::register);
     }
 
     @Override
@@ -147,5 +116,37 @@ public class ArtBukkitModule implements BootstrapModule {
 
         HandlerList.unregisterAll(playerListener);
         HandlerList.unregisterAll(entityDamageTrigger);
+    }
+
+    private Collection<Object> findModules(BootstrapScope scope) {
+
+        ArrayList<Object> modules = new ArrayList<>();
+
+        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
+            if (!plugin.getClass().equals(ArtBukkitPlugin.class) && plugin.getClass().isAnnotationPresent(ArtModule.class)) {
+                modules.add(plugin);
+            }
+        }
+
+        File modulesDir = scope.settings().modulePath();
+        modulesDir.mkdirs();
+
+        File[] files = modulesDir.listFiles();
+        if (files != null) {
+            for (File moduleFile : files) {
+                if (moduleFile.isFile() && moduleFile.getName().endsWith(".jar")) {
+                    modules.addAll(FileUtil.findClasses(
+                            scope.configuration().classLoader(),
+                            moduleFile,
+                            moduleClass -> moduleClass.isAnnotationPresent(ArtModule.class))
+                    );
+                }
+            }
+        }
+
+        // add static modules that are included by default
+        modules.add(new ScriptsModule());
+
+        return modules;
     }
 }
