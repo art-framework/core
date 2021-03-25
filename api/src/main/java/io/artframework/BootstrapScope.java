@@ -16,6 +16,7 @@
 
 package io.artframework;
 
+import io.artframework.annotations.ArtModule;
 import io.artframework.conf.Settings;
 import io.artframework.impl.DefaultScope;
 
@@ -121,6 +122,43 @@ public interface BootstrapScope extends Scope {
      * @return this bootstrap scope
      */
     <TProvider extends Provider> BootstrapScope addSingletonProvider(Class<TProvider> providerClass, TProvider provider);
+
+    /**
+     * Registers the given module with the provider and immediately calls the bootstrap method on it.
+     * <p>
+     * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
+     *
+     * @param module the module that should be registered
+     * @return this module provider
+     * @throws ModuleRegistrationException if the registration of the module failed,
+     *                                     e.g. if no {@code @ArtModule} annotation is present on the class
+     */
+    BootstrapScope register(Module module) throws ModuleRegistrationException;
+
+    /**
+     * Registers the given module with the provider and immediately calls the bootstrap method on it.
+     * <p>
+     * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
+     *
+     * @param module the module that should be registered
+     * @return this module provider
+     * @throws ModuleRegistrationException if the registration of the module failed,
+     *                                     e.g. if no {@code @ArtModule} annotation is present on the class
+     */
+    BootstrapScope register(Object module) throws ModuleRegistrationException;
+
+    /**
+     * Registers the given module class with the provider,
+     * creates an instance of it and immediately calls the bootstrap method on it.
+     * <p>
+     * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
+     *
+     * @param moduleClass the module that should be registered
+     * @return this module provider
+     * @throws ModuleRegistrationException if the registration of the module failed,
+     *                                     e.g. if no {@code @ArtModule} annotation is present on the class
+     */
+    BootstrapScope register(Class<? extends Module> moduleClass) throws ModuleRegistrationException;
 
     /**
      * Finishes the bootstrap process, seals the configuration and returns the created scope.

@@ -16,6 +16,7 @@
 
 package io.artframework;
 
+import io.artframework.annotations.ArtModule;
 import io.artframework.conf.Settings;
 import io.artframework.impl.DefaultScope;
 

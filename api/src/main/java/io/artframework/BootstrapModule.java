@@ -21,7 +21,7 @@ import io.artframework.annotations.*;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public interface BootstrapModule {
+public interface BootstrapModule extends Module {
 
     /**
      * Gets a list of submodules that should be bootstrapped together with this module.
@@ -36,18 +36,7 @@ public interface BootstrapModule {
         return new ArrayList<>();
     }
 
-    @OnBootstrap
-    default void onBootstrap(BootstrapScope scope) {}
+    default void onBootstrapped(Scope scope) {
 
-    @OnLoad
-    default void onLoad(Scope scope) {}
-
-    @OnReload
-    default void onReload(Scope scope) {}
-
-    @OnEnable
-    default void onEnable(Scope scope) {}
-
-    @OnDisable
-    default void onDisable(Scope scope) {}
+    }
 }

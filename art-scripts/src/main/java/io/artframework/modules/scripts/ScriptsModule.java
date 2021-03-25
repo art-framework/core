@@ -2,6 +2,7 @@ package io.artframework.modules.scripts;
 
 import io.artframework.ArtContext;
 import io.artframework.ArtException;
+import io.artframework.Module;
 import io.artframework.ParseException;
 import io.artframework.Scope;
 import io.artframework.annotations.*;
@@ -22,7 +23,7 @@ import java.util.stream.Stream;
 
 @Log(topic = "art-scripts")
 @ArtModule("art-scripts")
-public class ScriptsModule {
+public class ScriptsModule implements Module {
 
     @Getter
     final List<Script> loadedScripts = new ArrayList<>();
