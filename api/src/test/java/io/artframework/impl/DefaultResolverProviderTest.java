@@ -14,7 +14,7 @@ class DefaultResolverProviderTest {
     @BeforeEach
     void setUp() {
 
-        provider = new DefaultResolverProvider(ART.globalScope());
+        provider = new DefaultResolverProvider(ART.scope());
     }
 
     @Test

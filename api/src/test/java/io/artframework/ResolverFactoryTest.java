@@ -20,7 +20,7 @@ class ResolverFactoryTest {
         @DisplayName("should create a resolver factory from a class")
         void shouldCreateResolverFactoryFromClass() {
 
-            assertThatCode(() -> assertThat(ResolverFactory.of(ART.globalScope(), TestResolver.class))
+            assertThatCode(() -> assertThat(ResolverFactory.of(ART.scope(), TestResolver.class))
                     .isNotNull()
             ).doesNotThrowAnyException();
         }
@@ -30,7 +30,7 @@ class ResolverFactoryTest {
         void shouldThrowIfResolverHasNoConstructor() {
 
             assertThatExceptionOfType(ConfigurationException.class)
-                    .isThrownBy(() -> ResolverFactory.of(ART.globalScope(), ErrorResolver.class));
+                    .isThrownBy(() -> ResolverFactory.of(ART.scope(), ErrorResolver.class));
         }
     }
 
@@ -42,7 +42,7 @@ class ResolverFactoryTest {
         @DisplayName("should create resolver factory with supplier")
         void shouldCreateResolverFactory() {
 
-            assertThatCode(() -> assertThat(ResolverFactory.of(ART.globalScope(), TestResolver.class, TestResolver::new))
+            assertThatCode(() -> assertThat(ResolverFactory.of(ART.scope(), TestResolver.class, TestResolver::new))
                     .isNotNull()
             ).doesNotThrowAnyException();
         }
@@ -52,7 +52,7 @@ class ResolverFactoryTest {
     @DisplayName("should map the config options to the created instance")
     void shouldCreateAndMapTheConfigOptions() throws ConfigurationException {
 
-        Resolver<String> resolver = ResolverFactory.of(ART.globalScope(), TestResolver.class).create(Arrays.asList(
+        Resolver<String> resolver = ResolverFactory.of(ART.scope(), TestResolver.class).create(Arrays.asList(
                 KeyValuePair.of("test", "foobar"),
                 KeyValuePair.of("foo", "bar")
         ));

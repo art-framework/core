@@ -27,13 +27,13 @@ class DefaultTriggerContextTest {
     void setUp() throws ArtMetaDataException {
 
         config = new TriggerConfig();
-        context = new DefaultTriggerContext(ART.globalScope(),
+        context = new DefaultTriggerContext(ART.scope(),
                 ArtObjectMeta.of("test", TestTrigger.class, new TestTrigger()),
                 new TestTrigger(), config
         );
         action = spy(new TestAction());
-        ActionContext actionContext = ActionContext.of(ART.globalScope(),
-                (ArtObjectMeta) ArtObjectMeta.of(ART.globalScope(), TestAction.class),
+        ActionContext actionContext = ActionContext.of(ART.scope(),
+                (ArtObjectMeta) ArtObjectMeta.of(ART.scope(), TestAction.class),
                 action,
                 new ActionConfig()
         );

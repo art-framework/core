@@ -3,12 +3,7 @@ package io.artframework.bukkit.trigger;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import io.artframework.ART;
-import io.artframework.ArtContext;
-import io.artframework.ExecutionContext;
-import io.artframework.Target;
-import io.artframework.TriggerContext;
-import io.artframework.TriggerListener;
+import io.artframework.*;
 import io.artframework.bukkit.targets.BukkitEventTarget;
 import io.artframework.bukkit.targets.EntityTarget;
 import io.artframework.bukkit.targets.PlayerTarget;
@@ -18,21 +13,12 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 class LocationTriggerTest {
 
@@ -42,13 +28,13 @@ class LocationTriggerTest {
     @BeforeAll
     static void beforeAll() {
         server = MockBukkit.mock();
-        trigger = new LocationTrigger(ART.globalScope());
+        trigger = new LocationTrigger(ART.scope());
 
-        ART.globalScope().register()
+        ART.scope().register()
                 .targets().add(Entity.class, EntityTarget::new)
                 .add(Event.class, BukkitEventTarget::new)
                 .and()
-                .trigger().add(LocationTrigger.class, () -> new LocationTrigger(ART.globalScope()));
+                .trigger().add(LocationTrigger.class, () -> new LocationTrigger(ART.scope()));
     }
 
     @AfterAll

@@ -28,9 +28,9 @@ class DefaultRequirementContextTest {
         config = new RequirementConfig();
         requirement = spy(new TestRequirement());
         context = new DefaultRequirementContext<>(
-                ART.globalScope(),
+                ART.scope(),
                 config,
-                RequirementFactory.of(ART.globalScope(), (ArtObjectMeta) ArtObjectMeta.of(ART.globalScope(), TestRequirement.class, () -> requirement)),
+                RequirementFactory.of(ART.scope(), (ArtObjectMeta) ArtObjectMeta.of(ART.scope(), TestRequirement.class, () -> requirement)),
                 ConfigMap.of(TestRequirement.class)
         );
 
@@ -39,7 +39,7 @@ class DefaultRequirementContextTest {
 
     private ExecutionContext<RequirementContext<MyTarget>> executionContext() {
 
-        return ExecutionContext.of(ART.globalScope(), null, target).next(context);
+        return ExecutionContext.of(ART.scope(), null, target).next(context);
     }
 
     @Nested

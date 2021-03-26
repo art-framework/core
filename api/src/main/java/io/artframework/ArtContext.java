@@ -72,11 +72,11 @@ public interface ArtContext extends Context, ResultCreator, TargetCreator {
     }
 
     static ArtContext of(ArtSettings settings, Collection<ArtObjectContext<?>> art) {
-        return of(ART.globalScope(), settings, art);
+        return of(ART.scope(), settings, art);
     }
 
     static ArtContext of(Collection<ArtObjectContext<?>> art) {
-        return of(ART.globalScope(), art);
+        return of(ART.scope(), art);
     }
 
     /**

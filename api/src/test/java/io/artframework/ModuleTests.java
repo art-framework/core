@@ -38,7 +38,7 @@ public class ModuleTests {
     @BeforeEach
     void setUp() {
 
-        ART.globalScope(new DefaultScope());
+        ART.scope(new DefaultScope());
         module = spy(new BootstrapTestModule());
         bootstrapScope = spy(BootstrapScope.of(module));
     }

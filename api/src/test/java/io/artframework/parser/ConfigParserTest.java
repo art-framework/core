@@ -346,7 +346,7 @@ class ConfigParserTest {
             ConfigParser parser = parser(ResolverConfig.class);
 
             assertThat(parser.accept("location=$(1, 2, 3)")).isTrue();
-            assertThat(parser.parse().resolve(ART.globalScope()).applyTo(new ResolverConfig()))
+            assertThat(parser.parse().resolve(ART.scope()).applyTo(new ResolverConfig()))
                     .extracting(ResolverConfig::getLocation)
                     .isEqualTo(null);
         }
@@ -357,7 +357,7 @@ class ConfigParserTest {
             @BeforeEach
             void setUp() {
 
-                ART.globalScope().configuration()
+                ART.scope().configuration()
                         .resolvers().add(LocationConfig.class);
             }
 
@@ -368,7 +368,7 @@ class ConfigParserTest {
                 ConfigParser parser = parser(ResolverConfig.class);
 
                 assertThat(parser.accept("location=$(1, 2, 3)")).isTrue();
-                assertThat(parser.parse().resolve(ART.globalScope()).applyTo(new ResolverConfig()))
+                assertThat(parser.parse().resolve(ART.scope()).applyTo(new ResolverConfig()))
                         .extracting(ResolverConfig::getLocation)
                         .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
                         .contains(1, 2, 3);
@@ -381,7 +381,7 @@ class ConfigParserTest {
                 ConfigParser parser = parser(ResolverConfig.class);
 
                 assertThat(parser.accept("1, 2, 3")).isTrue();
-                assertThat(parser.parse().resolve(ART.globalScope()).applyTo(new ResolverConfig()))
+                assertThat(parser.parse().resolve(ART.scope()).applyTo(new ResolverConfig()))
                         .extracting(ResolverConfig::getLocation)
                         .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
                         .contains(1, 2, 3);
@@ -394,7 +394,7 @@ class ConfigParserTest {
                 ConfigParser parser = parser(ResolverConfig.class);
 
                 assertThat(parser.accept("$(1, 2, 3)")).isTrue();
-                assertThat(parser.parse().resolve(ART.globalScope()).applyTo(new ResolverConfig()))
+                assertThat(parser.parse().resolve(ART.scope()).applyTo(new ResolverConfig()))
                         .extracting(ResolverConfig::getLocation)
                         .extracting(LocationConfig::getX, LocationConfig::getY, LocationConfig::getZ)
                         .contains(1, 2, 3);
@@ -411,7 +411,7 @@ class ConfigParserTest {
 
                 assertThat(parser.accept("message=foobar")).isTrue();
                 
-                ResolverExtraConfig actual = parser.parse().resolve(ART.globalScope()).applyTo(config);
+                ResolverExtraConfig actual = parser.parse().resolve(ART.scope()).applyTo(config);
 
                 assertThat(actual)
                         .extracting(resolverConfig -> resolverConfig.getLocation())
