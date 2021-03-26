@@ -18,7 +18,7 @@ class EnumResolverTest {
     @BeforeEach
     void setUp() {
 
-        ART.globalScope().register()
+        ART.scope().register()
                 .resolvers().add(EnumResolver.class);
     }
 
@@ -29,7 +29,7 @@ class EnumResolverTest {
         TestConfig config = ConfigMap.of(TestConfig.class)
                 .with(Collections.singletonList(
                         KeyValuePair.of(null, "low")
-                )).resolve(ART.globalScope())
+                )).resolve(ART.scope())
                 .applyTo(new TestConfig());
 
         assertThat(config)
@@ -41,13 +41,13 @@ class EnumResolverTest {
     @DisplayName("should use more concrete custom resolver")
     void shouldUseMoreConcreteResolver() throws ConfigurationException {
 
-        ART.globalScope().register()
+        ART.scope().register()
                 .resolvers().add(CustomEnumResolver.class);
 
         TestConfig config = ConfigMap.of(TestConfig.class)
                 .with(Collections.singletonList(
                         KeyValuePair.of(null, "2")
-                )).resolve(ART.globalScope())
+                )).resolve(ART.scope())
                 .applyTo(new TestConfig());
 
         assertThat(config)
@@ -59,13 +59,13 @@ class EnumResolverTest {
     @DisplayName("should use default value if nothing is passed")
     void shouldKeepDefaultValue() throws ConfigurationException {
 
-        ART.globalScope().register()
+        ART.scope().register()
                 .resolvers().add(CustomEnumResolver.class);
 
         TestConfig cfg = new TestConfig();
         cfg.level = Level.HIGH;
         TestConfig config = ConfigMap.of(TestConfig.class)
-                .with(new ArrayList<>()).resolve(ART.globalScope())
+                .with(new ArrayList<>()).resolve(ART.scope())
                 .applyTo(cfg);
 
         assertThat(config)

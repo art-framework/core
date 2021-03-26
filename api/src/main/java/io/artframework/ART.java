@@ -21,7 +21,6 @@ import io.artframework.annotations.OnBootstrap;
 import io.artframework.annotations.OnEnable;
 import io.artframework.annotations.OnLoad;
 import io.artframework.impl.DefaultScope;
-import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
 
@@ -32,10 +31,24 @@ public final class ART {
 
     private ART() {}
 
-    @Getter
     private static Scope globalScope = new DefaultScope();
 
-    static void globalScope(@NonNull Scope scope) {
+    /**
+     * Gets the global art scope, which is the main entrypoint for the art-framework.
+     * <p>The global scope is set when the bootstrap module is initialized
+     * and can be safely used as it is the only scope in most cases.
+     * <p>All methods in this static class reference this global scope.
+     * <p>Use the {@link #bootstrap(BootstrapScope)} method to register your boostrap module
+     * and register it as the global scope.
+     *
+     * @return the global scope that was registered when bootstrapping
+     */
+    public static Scope scope() {
+
+        return globalScope;
+    }
+
+    static void scope(@NonNull Scope scope) {
         globalScope = scope;
     }
 
@@ -46,8 +59,8 @@ public final class ART {
      * <p>Bootstrapping is only required by the root module that implements and ships the art-framework.
      * Normal modules should not use this bootstrap method, but instead tag their class with @{@link ArtModule}
      * and use the respective tagged methods ({@link OnBootstrap}, {@link OnLoad} and{@link OnEnable}) to load themselves into the scope.
-     * <p>By default the module will be bootstrapped into its own scope.
-     * Use the {@link #bootstrap(BootstrapScope, boolean)} method with true to bootstrap the global scope.
+     * <p>By default the module will be bootstrapped and set as the global scope.
+     * Use the {@link #bootstrap(BootstrapScope, boolean)} method with false to bootstrap without setting the global scope.
      *
      * @param bootstrapScope the bootstrap scope containing the bootstrap module used to start the bootstrap process
      * @return the bootstrapping phase created for the given scope
@@ -55,7 +68,7 @@ public final class ART {
      */
     public static BootstrapPhase bootstrap(@NonNull BootstrapScope bootstrapScope) throws BootstrapException {
 
-        return bootstrap(bootstrapScope, false);
+        return bootstrap(bootstrapScope, true);
     }
 
     /**
@@ -77,7 +90,7 @@ public final class ART {
         try {
             BootstrapPhase bootstrap = bootstrapScope.bootstrap();
 
-            if (global) globalScope(bootstrapScope);
+            if (global) scope(bootstrapScope);
 
             return bootstrap;
         } catch (Exception e) {
@@ -100,7 +113,7 @@ public final class ART {
      */
     public static ArtContext load(String key, Collection<String> list) throws ParseException {
 
-        return globalScope().load(key, list);
+        return scope().load(key, list);
     }
 
     /**
@@ -116,7 +129,7 @@ public final class ART {
      */
     public static ArtContext load(Collection<String> list) throws ParseException {
 
-        return globalScope().load(list);
+        return scope().load(list);
     }
 
     /**
@@ -130,6 +143,6 @@ public final class ART {
      */
     public static <TTrigger extends Trigger> TriggerExecution<TTrigger> trigger(Class<TTrigger> triggerClass) {
 
-        return globalScope().trigger(triggerClass);
+        return scope().trigger(triggerClass);
     }
 }

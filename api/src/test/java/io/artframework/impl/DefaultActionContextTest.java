@@ -29,8 +29,8 @@ class DefaultActionContextTest {
     @SneakyThrows
     private ActionContext<MyTarget> context(Action<MyTarget> action) {
 
-        return ActionContext.of(ART.globalScope(),
-                (ArtObjectMeta) ArtObjectMeta.of(ART.globalScope(), TestAction.class),
+        return ActionContext.of(ART.scope(),
+                (ArtObjectMeta) ArtObjectMeta.of(ART.scope(), TestAction.class),
                 action,
                 new ActionConfig()
         );
@@ -38,7 +38,7 @@ class DefaultActionContextTest {
 
     private ExecutionContext<ActionContext<MyTarget>> executionContext(ActionContext<MyTarget> context) {
 
-        return ExecutionContext.of(ART.globalScope(), null, new MyTargetWrapper(new MyTarget())).next(context);
+        return ExecutionContext.of(ART.scope(), null, new MyTargetWrapper(new MyTarget())).next(context);
     }
 
     @Test

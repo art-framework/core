@@ -28,7 +28,7 @@ class VariableReplacementTest {
         replacement = new VariableReplacement();
         ExecutionContext<?> context = mock(ExecutionContext.class);
         when(context.variables()).thenAnswer(invocation -> variables);
-        this.context = new ReplacementContext(ART.globalScope(), null, context);
+        this.context = new ReplacementContext(ART.scope(), null, context);
     }
 
     @Test

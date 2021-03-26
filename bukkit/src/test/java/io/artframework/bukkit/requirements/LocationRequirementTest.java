@@ -33,7 +33,7 @@ class LocationRequirementTest {
     @BeforeEach
     void setUp() {
 
-        requirement = new LocationTrigger(ART.globalScope());
+        requirement = new LocationTrigger(ART.scope());
     }
 
     @AfterAll
