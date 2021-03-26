@@ -1,11 +1,9 @@
 package io.artframework.modules.scripts;
 
-import io.artframework.ArtContext;
-import io.artframework.ArtException;
 import io.artframework.Module;
-import io.artframework.ParseException;
-import io.artframework.Scope;
-import io.artframework.annotations.*;
+import io.artframework.*;
+import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.Config;
 import io.artframework.modules.scripts.actions.ExecuteScriptAction;
 import lombok.Getter;
 import lombok.extern.java.Log;
@@ -19,7 +17,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Log(topic = "art-scripts")
 @ArtModule("art-scripts")
@@ -31,13 +28,13 @@ public class ScriptsModule implements Module {
     @Config("config.yml")
     private ScriptModuleConfig config = new ScriptModuleConfig();
 
-    @OnLoad
+    @Override
     public void onLoad(Scope scope) {
 
         scope.register().actions().add(() -> new ExecuteScriptAction(this));
     }
 
-    @OnEnable
+    @Override
     public void onEnable(Scope scope) throws ArtException {
 
         try {
@@ -76,7 +73,7 @@ public class ScriptsModule implements Module {
         loadedScripts.forEach(Script::enable);
     }
 
-    @OnDisable
+    @Override
     public void onDisable(Scope scope) {
 
         loadedScripts.clear();

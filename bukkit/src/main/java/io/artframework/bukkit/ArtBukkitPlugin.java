@@ -64,7 +64,7 @@ public class ArtBukkitPlugin extends JavaPlugin {
         } catch (BootstrapException e) {
             getLogger().severe("failed to bootstrap the art-framework: " + e.getMessage());
             e.printStackTrace();
-            throw new RuntimeException(e);
+            throw e;
         }
     }
 
@@ -75,9 +75,7 @@ public class ArtBukkitPlugin extends JavaPlugin {
 
         if (bootstrap != null) {
             bootstrap.loadAll();
-            Bukkit.getScheduler().runTaskLater(this, () -> {
-                bootstrap.enableAll();
-            }, 1L);
+            Bukkit.getScheduler().runTaskLater(this, () -> bootstrap.enableAll(), 1L);
         }
     }
 }

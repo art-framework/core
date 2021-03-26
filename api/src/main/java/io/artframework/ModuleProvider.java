@@ -17,8 +17,6 @@
 package io.artframework;
 
 import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.OnLoad;
-import io.artframework.annotations.OnReload;
 import io.artframework.impl.DefaultModuleProvider;
 import lombok.NonNull;
 
@@ -83,33 +81,26 @@ public interface ModuleProvider extends Provider {
     void disableAll();
 
     /**
-     * Registers the given module with the provider, but does not enable it.
-     * <p>
-     * This is useful if you need to load multiple modules that depend upon each other
-     * and do not want to directly enable them.
+     * Registers the given module with the provider and then loads
+     * and enables it based on the current lifecycle state of the art-framework.
      * <p>
      * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
-     * <p>
-     * If you want to directly load and enable your module, call {@link #enable(Object)} instead.
-     * And if you don't have an instance of your module use the {@link #register(Class)} method instead.
      *
      * @param module the module that should be registered
      * @return this module provider
      * @throws ModuleRegistrationException if the registration of the module failed,
      *                                     e.g. if no {@code @ArtModule} annotation is present on the class
      */
-    ModuleProvider register(@NonNull Object module) throws ModuleRegistrationException;
+    ModuleProvider register(@NonNull Module module) throws ModuleRegistrationException;
 
     /**
-     * Registers the given class as a module with the provider.
-     * <p>
-     * Use this if you do not have an instance of the module and one should be created for you.
-     * This could be the case if the module was loaded from a classpath search inside one of the module JAR files.
+     * Registers the given class as a module with the provider and then loads
+     * and enables it based on the current lifecycle state of the art-framework.
      * <p>
      * The class must provide a parameterless public constructor or the module won't be registered.
      * Also make sure it is annotated with @{@link ArtModule} or else the registration will fail also.
      * <p>
-     * Use {@link #register(Object)} if you already have an instance of your module, e.g. it was loaded as a plugin.
+     * Use {@link #register(Module)} if you already have an instance of your module, e.g. it was loaded as by a plugin.
      *
      * @param moduleClass the class of the module
      * @return this module provider
@@ -117,67 +108,35 @@ public interface ModuleProvider extends Provider {
      *                                     e.g. if no {@code @ArtModule} annotation is present on the class
      *                                     or no instance of the module could be created.
      */
-    ModuleProvider register(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
+    ModuleProvider register(@NonNull Class<? extends Module> moduleClass) throws ModuleRegistrationException;
 
     /**
-     * Loads the given module into the art-framework configuration instance and enables it.
+     * Enables the given module instance registered with the art-framework.
      * <p>
-     * This will call any methods inside the module that are annotated with one of the {@code On...} annotations.
-     * <p>
-     * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
-     *
-     * @param module the module that should be loaded
-     * @return this module provider
-     * @throws ModuleRegistrationException if the registration of the module failed,
-     *                                     e.g. if no {@code @ArtModule} annotation is present on the class
-     *                                     or if one of the annotated methods encountered an exception.
-     * @see io.artframework.annotations.OnEnable
-     * @see io.artframework.annotations.OnDisable
-     * @see OnLoad
-     */
-    ModuleProvider enable(@NonNull Object module) throws ModuleRegistrationException;
-
-    /**
-     * Loads the given module into the art-framework configuration instance and enables it.
-     * <p>
-     * Use this if you do not have an instance of the module and one should be created for you.
-     * This could be the case if the module was loaded from a classpath search inside one of the module JAR files.
-     * <p>
-     * The class must provide a parameterless public constructor or the module won't be registered.
-     * Also make sure it is annotated with @{@link ArtModule} or else the registration will fail also.
-     * <p>
-     * This will then call any methods inside the module that are annotated with one of the {@code On...} annotations.
-     * <p>
-     * Use {@link #enable(Object)} if you already have an instance of your module, e.g. it was loaded as a plugin.
+     * The module must be registered ({@link #register(Module)} or {@link #register(Class)}) before using this method.
+     * The method primarily exists to enable disabled modules on the fly,
+     * because any module that is registered will be enabled anyways.
      *
      * @param moduleClass the class of the module
      * @return this module provider
-     * @throws ModuleRegistrationException if the registration or instance creation of the module failed,
-     *                                     e.g. if no {@code @ArtModule} annotation is present on the class,
-     *                                     no instance of the module could be created
-     *                                     or if one of the annotated methods encountered an exception.
-     * @see io.artframework.annotations.OnEnable
-     * @see io.artframework.annotations.OnDisable
-     * @see OnLoad
      */
-    ModuleProvider enable(@NonNull Class<?> moduleClass) throws ModuleRegistrationException;
+    ModuleProvider enable(@NonNull Class<? extends Module> moduleClass);
 
     /**
-     * Disabled the given module and unloads it from the art-framework configuration instance.
+     * Disabled the given module and unloads it from the art-framework scope.
      *
      * @param module the module that should be unloaded
      * @return this module provider
      */
-    ModuleProvider disable(@NonNull Object module);
+    ModuleProvider disable(@NonNull Class<? extends Module> module);
 
     /**
      * Reloads the module with the given class if it exists and is enabled.
-     * <p>The module also must have a method tagged with the @{@link OnReload} annotation.
      *
      * @param moduleClass the class of the module that should be reloaded
      * @return this module provider
      */
-    ModuleProvider reload(@NonNull Class<?> moduleClass);
+    ModuleProvider reload(@NonNull Class<? extends Module> moduleClass);
 
     /**
      * Reloads all enabled modules calling the tagged reload method if it is present.
@@ -187,12 +146,22 @@ public interface ModuleProvider extends Provider {
     ModuleProvider reloadAll();
 
     /**
-     * Tries to find the metadata of the given module.
+     * Tries to find a registered module for the given module class.
+     * <p>The module must be registered with the provider, but may be
+     * disabled and not active.
      *
-     * @param module the module to get data for
-     * @return the metadata of the module or an empty optional if the provided object is not an module
+     * @param moduleClass the module class to get the registered instance for
+     * @return the registered module instance or an empty optional
      */
-    Optional<ModuleMeta> get(@Nullable Object module);
+    <TModule extends Module> Optional<TModule> get(@NonNull Class<TModule> moduleClass);
+
+    /**
+     * Tries to find the metadata information for the given module class.
+     *
+     * @param moduleClass the module class to find the metadata information for
+     * @return the metadata for the given module if the module is registered
+     */
+    Optional<ModuleMeta> getMetadata(@NonNull Class<? extends Module> moduleClass);
 
     /**
      * Tries to find the module that contains the given class.

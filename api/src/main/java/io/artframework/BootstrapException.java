@@ -16,7 +16,7 @@
 
 package io.artframework;
 
-public class BootstrapException extends ArtException {
+public class BootstrapException extends ArtRuntimeException {
 
     public BootstrapException(String message, Throwable cause) {
         super(message, cause);
@@ -24,5 +24,9 @@ public class BootstrapException extends ArtException {
 
     public BootstrapException(Throwable cause) {
         super(cause);
+    }
+
+    public BootstrapException(String message) {
+        super(message);
     }
 }

@@ -16,27 +16,6 @@
 
 package io.artframework;
 
-import io.artframework.annotations.*;
-
-import java.util.ArrayList;
-import java.util.Collection;
-
 public interface BootstrapModule extends Module {
 
-    /**
-     * Gets a list of submodules that should be bootstrapped together with this module.
-     * <p>
-     * The list may contained mixed objects and classes, but all must be annotated with the {@link ArtModule} annotation.
-     * An empty list must be returned if no modules exist.
-     *
-     * @param scope the scope that is used to bootstrap this module
-     * @return a list of submodules in this module
-     */
-    default Collection<Object> modules(BootstrapScope scope) {
-        return new ArrayList<>();
-    }
-
-    default void onBootstrapped(Scope scope) {
-
-    }
 }

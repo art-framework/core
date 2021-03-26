@@ -32,7 +32,7 @@ public interface ModuleMeta {
      * @param moduleClass the class of the module meta data should be extracted from
      * @return a new default module meta instance
      */
-    static ModuleMeta of(Class<?> moduleClass) throws ArtMetaDataException {
+    static ModuleMeta of(Class<? extends Module> moduleClass) throws ArtMetaDataException {
 
         if (!moduleClass.isAnnotationPresent(ArtModule.class)) {
             throw new ArtMetaDataException(ArtObjectError.of(
@@ -53,7 +53,7 @@ public interface ModuleMeta {
     /**
      * @return the class of the module.
      */
-    Class<?> moduleClass();
+    Class<? extends Module> moduleClass();
 
     /**
      * @return the description of the module

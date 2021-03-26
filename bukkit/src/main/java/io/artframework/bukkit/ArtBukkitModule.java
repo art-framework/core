@@ -20,7 +20,6 @@ import io.artframework.BootstrapModule;
 import io.artframework.BootstrapScope;
 import io.artframework.Scope;
 import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.OnReload;
 import io.artframework.bukkit.parser.CommandLineParser;
 import io.artframework.bukkit.storage.EbeanPersistenceProvider;
 import io.artframework.bukkit.storage.MetadataStore;
@@ -103,8 +102,8 @@ public class ArtBukkitModule implements BootstrapModule {
                 .add(EntityDamageTrigger.class, () -> new EntityDamageTrigger(scope));
     }
 
-    @OnReload
-    public void onReload() {
+    @Override
+    public void onReload(Scope scope) {
 
         if (storageProvider != null) {
             storageProvider.reload();

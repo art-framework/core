@@ -57,8 +57,9 @@ public interface StorageProvider extends Scoped, AutoCloseable {
      * @param <TValue> the type of the value
      * @return the previously stored value or an empty optional
      */
-    default <TValue> Optional<TValue> set(@Nullable Object module, @NonNull String key, @NonNull TValue value) {
-        return scope().configuration().modules().get(module)
+    default <TValue> Optional<TValue> set(@Nullable Module module, @NonNull String key, @NonNull TValue value) {
+        return Optional.ofNullable(module)
+                .map(Module::metadata)
                 .map(info -> "module#" + info.identifier() + "#" + key)
                 .flatMap(storageKey -> set(storageKey, value));
     }
@@ -117,8 +118,9 @@ public interface StorageProvider extends Scoped, AutoCloseable {
      * @param <TValue> the type of the data
      * @return the stored value or an empty optional
      */
-    default <TValue> Optional<TValue> get(@Nullable Object module, @NonNull String key, @NonNull Class<TValue> valueClass) {
-        return scope().configuration().modules().get(module)
+    default <TValue> Optional<TValue> get(@Nullable Module module, @NonNull String key, @NonNull Class<TValue> valueClass) {
+        return Optional.ofNullable(module)
+                .map(Module::metadata)
                 .map(info -> "module#" + info.identifier() + "#" + key)
                 .flatMap(storageKey -> get(storageKey, valueClass));
     }

@@ -53,7 +53,7 @@ public @interface ArtModule {
      * <p>
      * This is useful if you want to prefix all of your ART with your plugin name for example.
      *
-     * @return the prefix used for all art objects found in this module
+     * @return the prefix used for all art objects found in this module's packages
      */
     String prefix() default "";
 
@@ -69,7 +69,7 @@ public @interface ArtModule {
     /**
      * The version of your ART module.
      * <p>
-     * This is completely optional, but can help your users in understading new features
+     * This is completely optional, but can help your users in understanding new features
      * and breaking changes of your module.
      * <p>
      * You should use the semantic versioning schema to version your ART: https://semver.org/

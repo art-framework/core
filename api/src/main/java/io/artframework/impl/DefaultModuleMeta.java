@@ -18,6 +18,7 @@ package io.artframework.impl;
 
 import com.google.common.base.Strings;
 import io.artframework.BootstrapModule;
+import io.artframework.Module;
 import io.artframework.ModuleMeta;
 import io.artframework.annotations.ArtModule;
 import lombok.EqualsAndHashCode;
@@ -34,7 +35,7 @@ public class DefaultModuleMeta implements ModuleMeta {
 
     String identifier;
     String prefix;
-    Class<?> moduleClass;
+    Class<? extends Module> moduleClass;
     String version;
     String[] description;
     String[] dependencies;
@@ -43,7 +44,7 @@ public class DefaultModuleMeta implements ModuleMeta {
 
     DefaultModuleMeta(@NonNull String identifier,
                       @NonNull String prefix,
-                      @NonNull Class<?> moduleClass,
+                      @NonNull Class<? extends Module> moduleClass,
                       @NonNull String version,
                       @NonNull String[] description,
                       @NonNull String[] dependencies,
@@ -60,7 +61,7 @@ public class DefaultModuleMeta implements ModuleMeta {
         this.bootstrapModule = BootstrapModule.class.isAssignableFrom(moduleClass);
     }
 
-    public DefaultModuleMeta(@NonNull Class<?> moduleClass,
+    public DefaultModuleMeta(@NonNull Class<? extends Module> moduleClass,
                              @NonNull ArtModule annotation) {
         this(
                 annotation.value(),

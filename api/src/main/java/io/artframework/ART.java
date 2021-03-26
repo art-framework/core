@@ -145,4 +145,25 @@ public final class ART {
 
         return scope().trigger(triggerClass);
     }
+
+    /**
+     * Registers the given module with the provider and immediately calls all methods that
+     * represent the current lifecycle.
+     * <p>
+     * This means if modules have been enabled, this module will be loaded and then enabled.
+     * If the lifecycle is still in the loading phase the module will only be loaded.
+     * <p>
+     * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
+     *
+     * @param module the module that is registered with the scope
+     * @return the global scope where the module was registered
+     * @throws ModuleRegistrationException if the registration of the module failed,
+     *                                     e.g. if no {@code @ArtModule} annotation is present on the class
+     *                                     or if one of the annotated methods encountered an exception.
+     * @see Scope#register(Module)
+     */
+    public static Scope register(Module module) throws ModuleRegistrationException {
+
+        return scope().register(module);
+    }
 }

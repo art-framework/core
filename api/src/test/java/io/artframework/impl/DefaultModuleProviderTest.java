@@ -16,9 +16,10 @@
 
 package io.artframework.impl;
 
+import io.artframework.Module;
 import io.artframework.*;
 import io.artframework.annotations.ART;
-import io.artframework.annotations.*;
+import io.artframework.annotations.ArtModule;
 import io.artframework.integration.actions.DamageAction;
 import lombok.NonNull;
 import lombok.SneakyThrows;
@@ -50,7 +51,7 @@ class DefaultModuleProviderTest {
     }
 
     @Nested
-    @DisplayName("load(...)")
+    @DisplayName("register(...)")
     class load {
 
         @Test
@@ -58,8 +59,10 @@ class DefaultModuleProviderTest {
         @DisplayName("should not enable already enabled modules")
         void shouldNotLoadModuleIfAlreadyEnabled() {
 
-            provider.enable(module);
-            provider.enable(module);
+            provider.register(module);
+
+            provider.enable(TestModule.class);
+            provider.enable(TestModule.class);
 
             verify(module, times(1)).onEnable(any());
         }
@@ -68,9 +71,9 @@ class DefaultModuleProviderTest {
         @DisplayName("should throw if a module with the same identifier and different class exists")
         void shouldThrowIfDuplicateModuleExists() {
 
-            assertThatCode(() -> provider.enable(module)).doesNotThrowAnyException();
+            assertThatCode(() -> provider.register(module)).doesNotThrowAnyException();
             assertThatExceptionOfType(ModuleRegistrationException.class)
-                    .isThrownBy(() -> provider.enable(new DuplicateModule()))
+                    .isThrownBy(() -> provider.register(new DuplicateModule()))
                     .withMessageContaining("There is already a module named \"test\" registered");
         }
 
@@ -79,7 +82,7 @@ class DefaultModuleProviderTest {
         void shouldThrowIfModuleIsMissingAnnotation() {
 
             assertThatExceptionOfType(ModuleRegistrationException.class)
-                    .isThrownBy(() -> provider.enable(new MissingAnnotationModule()))
+                    .isThrownBy(() -> provider.register(new MissingAnnotationModule()))
                     .withMessageContaining("missing the required @ArtModule annotation");
         }
 
@@ -88,7 +91,7 @@ class DefaultModuleProviderTest {
         void shouldThrowIfModuleHasMissingDependencies() {
 
             assertThatExceptionOfType(ModuleRegistrationException.class)
-                    .isThrownBy(() -> provider.enable(new FooModule()))
+                    .isThrownBy(() -> provider.register(new FooModule()))
                     .withMessageContaining("is missing the following dependencies: bar");
 
         }
@@ -98,18 +101,20 @@ class DefaultModuleProviderTest {
         void shouldThrowIfModuleThrowsException() {
 
             assertThatExceptionOfType(ModuleRegistrationException.class)
-                    .isThrownBy(() -> provider.enable(new ErrorModule()));
+                    .isThrownBy(() -> provider.register(new ErrorModule()));
         }
 
         @Test
         @DisplayName("should enable the child modules first")
-        void shouldEnableTheChildModulesFirst() {
+        void shouldEnableTheChildModulesFirst() throws Exception {
 
             BarModule barModule = spy(new BarModule());
             FooModule fooModule = spy(new FooModule());
 
             assertThatCode(() -> provider.register(barModule)).doesNotThrowAnyException();
-            assertThatCode(() -> provider.enable(fooModule)).doesNotThrowAnyException();
+            assertThatCode(() -> provider.register(fooModule)).doesNotThrowAnyException();
+
+            provider.enableAll();
 
             InOrder inOrder = inOrder(barModule, fooModule);
             inOrder.verify(barModule, times(1)).onEnable(any());
@@ -172,7 +177,7 @@ class DefaultModuleProviderTest {
         @DisplayName("should apply prefix to art loaded from same module source")
         void shouldApplyPrefixToArtLoadedFromModuleSources() {
 
-            assertThatCode(() -> provider.enable(PrefixModule.class)).doesNotThrowAnyException();
+            assertThatCode(() -> provider.register(PrefixModule.class)).doesNotThrowAnyException();
             assertThat(scope.configuration().actions().get("damage"))
                     .isPresent().get()
                     .extracting(Factory::meta)
@@ -182,7 +187,7 @@ class DefaultModuleProviderTest {
     }
 
     @ArtModule(value = "test")
-    static class TestModule {
+    static class TestModule implements Module {
 
         private boolean created = false;
 
@@ -190,20 +195,10 @@ class DefaultModuleProviderTest {
 
             created = true;
         }
-
-        @OnEnable
-        public void onEnable(Configuration configuration) {
-
-        }
-
-        @OnDisable
-        public void onDisable(Configuration configuration) {
-
-        }
     }
 
     @ArtModule(value = "prefix", prefix = "test")
-    static class PrefixModule {}
+    static class PrefixModule implements Module {}
 
     @ART(value = "damage", alias = {"hit", "dmg"})
     public static class TestAction implements Action<Object> {
@@ -215,110 +210,42 @@ class DefaultModuleProviderTest {
     }
 
     @ArtModule(value = "test")
-    static class DuplicateModule {
-
-        @OnEnable
-        public void onEnable(Configuration configuration) {
-
-        }
-
-        @OnDisable
-        public void onDisable(Configuration configuration) {
-
-        }
+    static class DuplicateModule implements Module {
     }
 
-    static class MissingAnnotationModule {
-        @OnEnable
-        public void onEnable(Configuration configuration) {
-
-        }
-
-        @OnDisable
-        public void onDisable(Configuration configuration) {
-
-        }
+    static class MissingAnnotationModule implements Module {
     }
 
     @ArtModule("error")
-    static class ErrorModule {
+    static class ErrorModule implements Module{
 
-        @OnLoad
         public void onLoad(Scope scope) throws Exception {
             throw new Exception("foo");
         }
     }
 
     @ArtModule(value = "foo", depends = "bar")
-    static class FooModule {
-        @OnEnable
-        public void onEnable(Configuration configuration) {
-
-        }
-
-        @OnDisable
-        public void onDisable(Configuration configuration) {
-
-        }
+    static class FooModule implements Module {
     }
 
     @ArtModule(value = "bar")
-    static class BarModule {
-        @OnEnable
-        public void onEnable(Configuration configuration) {
-
-        }
-
-        @OnDisable
-        public void onDisable(Configuration configuration) {
-
-        }
+    static class BarModule implements Module {
     }
 
     @ArtModule(value = "module 1", depends = {"module 2", "foo"})
-    static class Module1 {
-
-        @OnEnable
-        public void onEnable(Configuration configuration) {
-
-        }
-
-        @OnDisable
-        public void onDisable(Configuration configuration) {
-
-        }
+    static class Module1 implements Module {
     }
 
     @ArtModule(value = "module 2", depends = "module 3")
-    static class Module2 {
-
-        @OnEnable
-        public void onEnable(Configuration configuration) {
-
-        }
-
-        @OnDisable
-        public void onDisable(Configuration configuration) {
-
-        }
+    static class Module2 implements Module {
     }
 
     @ArtModule(value = "module 3", description = "module 1")
-    static class Module3 {
-
-        @OnEnable
-        public void onEnable(Configuration configuration) {
-
-        }
-
-        @OnDisable
-        public void onDisable(Configuration configuration) {
-
-        }
+    static class Module3 implements Module {
     }
 
     @ArtModule(value = "foobar")
-    static class RandomModule {
+    static class RandomModule implements Module {
 
     }
 }
