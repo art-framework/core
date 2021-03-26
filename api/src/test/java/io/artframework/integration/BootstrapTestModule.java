@@ -16,40 +16,20 @@
 
 package io.artframework.integration;
 
-import io.artframework.BootstrapModule;
-import io.artframework.BootstrapScope;
-import io.artframework.Provider;
-import io.artframework.Scope;
+import io.artframework.Module;
+import io.artframework.*;
 import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.OnBootstrap;
-import io.artframework.annotations.OnEnable;
-import io.artframework.annotations.OnLoad;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 @ArtModule("test")
 public class BootstrapTestModule implements BootstrapModule {
 
-    @Override
-    public Collection<Object> modules(BootstrapScope scope) {
-
-        List<Object> objects = new ArrayList<>();
-        objects.add(BootstrapModule.class);
-        objects.add(new LoadModule());
-        objects.add(EnableModule.class);
-        return objects;
-    }
-
     @ArtModule("bootstrap")
-    public static class BootstrapModule {
+    public static class BootstrapModule implements Module {
 
         public static boolean called = false;
 
-        @OnBootstrap
         public void onBootstrap(BootstrapScope scope) {
             called = true;
             scope.addProvider(CustomProvider.class, CustomProvider::new);
@@ -69,64 +49,64 @@ public class BootstrapTestModule implements BootstrapModule {
     }
 
     @ArtModule("load")
-    public static class LoadModule {
+    public static class LoadModule implements Module {
 
         public static boolean called = false;
 
-        @OnLoad
-        public void onLoad() {
+        @Override
+        public void onLoad(Scope scope) throws Exception {
             called = true;
         }
     }
 
     @ArtModule("enable")
-    public static class EnableModule {
+    public static class EnableModule implements Module {
 
         public static boolean called = false;
 
-        @OnEnable
-        public void onEnable() {
+        @Override
+        public void onEnable(Scope scope) throws Exception {
             called = true;
         }
     }
 
     @ArtModule("error-bootstrap")
-    public static class ErrorBootstrapModule {
+    public static class ErrorBootstrapModule implements Module {
 
         public static boolean called = false;
 
-        @OnBootstrap
-        public void onBootstrap() throws Exception {
+        @Override
+        public void onBootstrap(BootstrapScope scope) throws Exception {
             throw new Exception("error");
         }
 
-        @OnLoad
-        public void onLoad() {
+        @Override
+        public void onLoad(Scope scope) {
             called = true;
         }
     }
 
     @ArtModule("error-load")
-    public static class ErrorLoadModule {
+    public static class ErrorLoadModule implements Module {
 
         public static boolean called = false;
 
-        @OnLoad
-        public void onLoad() throws Exception {
+        @Override
+        public void onLoad(Scope scope) throws Exception {
             throw new Exception("error");
         }
 
-        @OnEnable
-        public void onEnable() {
+        @Override
+        public void onEnable(Scope scope) {
             called = true;
         }
     }
 
     @ArtModule("error-enable")
-    public static class ErrorEnableModule {
+    public static class ErrorEnableModule implements Module {
 
-        @OnEnable
-        public void onEnable() throws Exception {
+        @Override
+        public void onEnable(Scope scope) throws Exception {
             throw new Exception("error");
         }
     }

@@ -18,7 +18,6 @@ package io.artframework.impl;
 
 import io.artframework.Module;
 import io.artframework.*;
-import io.artframework.annotations.*;
 import io.artframework.util.ConfigUtil;
 import io.artframework.util.ReflectionUtil;
 import io.artframework.util.graphs.CycleSearch;
@@ -35,10 +34,8 @@ import org.reflections.util.ConfigurationBuilder;
 import org.reflections.util.FilterBuilder;
 
 import javax.annotation.Nullable;
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.security.CodeSource;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -46,15 +43,18 @@ import java.util.stream.Collectors;
 @Log(topic = "art-framework")
 public class DefaultModuleProvider extends AbstractProvider implements ModuleProvider {
 
-    final Map<Class<?>, ModuleInformation> modules = new HashMap<>();
+    final Map<Class<? extends Module>, ModuleInformation> modules = new HashMap<>();
     private CycleSearch<ModuleMeta> cycleSearcher = new CycleSearch<>(new boolean[0][0], new ModuleMeta[0]);
     private ArtModuleDependencyResolver resolver;
+
+    private BootstrapScope bootstrapScope;
+    private Lifecycle lifecycle = Lifecycle.PRE_BOOTSTRAP;
 
     public DefaultModuleProvider(@NonNull Scope scope) {
         super(scope);
     }
 
-    public Optional<ModuleInformation> get(Class<?> moduleClass) {
+    protected Optional<ModuleInformation> getModuleInformation(Class<? extends Module> moduleClass) {
 
         return Optional.ofNullable(modules.get(moduleClass));
     }
@@ -67,10 +67,17 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     }
 
     @Override
-    public Optional<ModuleMeta> get(@Nullable Object module) {
-        if (module == null) return Optional.empty();
+    public <TModule extends Module> Optional<TModule> get(@NonNull Class<TModule> moduleClass) {
 
-        return Optional.ofNullable(modules.get(module.getClass()))
+        return getModuleInformation(moduleClass)
+                .flatMap(ModuleInformation::module)
+                .map(moduleClass::cast);
+    }
+
+    @Override
+    public Optional<ModuleMeta> getMetadata(@NonNull Class<? extends Module> moduleClass) {
+
+        return getModuleInformation(moduleClass)
                 .map(ModuleInformation::moduleMeta);
     }
 
@@ -100,31 +107,21 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     @Override
     public ModuleProvider bootstrap(BootstrapScope bootstrapScope) throws BootstrapException {
 
+        if (lifecycle != Lifecycle.PRE_BOOTSTRAP) {
+            throw new BootstrapException("The art-framework is already bootstrapped and cannot initialize again!");
+        }
+
         try {
-            log.fine("Starting bootstrap process with: " + bootstrapScope.bootstrapModule().getClass().getSimpleName());
+            log.fine("Starting bootstrap process with: " + bootstrapScope.bootstrapModule().getClass().getCanonicalName());
             ModuleInformation bootstrapModule = registerModule(bootstrapScope.bootstrapModule());
             bootstrapModule(bootstrapScope, bootstrapModule);
 
-            for (Object module : bootstrapScope.bootstrapModule().modules(bootstrapScope)) {
-                try {
-                    if (module instanceof Class) {
-                        if (((Class<?>) module).isAnnotationPresent(ArtModule.class)) {
-                            registerModule((Class<?>) module);
-                        }
-                    } else {
-                        if (module.getClass().isAnnotationPresent(ArtModule.class)) {
-                            registerModule(module);
-                        }
-                    }
-                } catch (ModuleRegistrationException e) {
-                    log.warning("failed to load module " + module.getClass().getCanonicalName() + ": " + e.getMessage());
-                    e.printStackTrace();
-                }
-            }
+            lifecycle = Lifecycle.BOOTSTRAPPED_ROOT_MODULE;
+            this.bootstrapScope = bootstrapScope;
 
             bootstrapAll(bootstrapScope);
 
-            log.fine("Successfully bootstrapped the art-framework with: " + bootstrapScope.bootstrapModule().getClass().getSimpleName());
+            log.fine("Successfully bootstrapped the art-framework with: " + bootstrapScope.bootstrapModule().getClass().getCanonicalName());
         } catch (ModuleRegistrationException e) {
             disableAll();
             throw new BootstrapException(e);
@@ -135,6 +132,10 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
     public void bootstrapAll(BootstrapScope scope) {
 
+        if (lifecycle.cannotBootstrap()) {
+            throw new BootstrapException("The art-framework modules have already been bootstrapped and cannot be bootstrapped again!");
+        }
+
         for (ModuleInformation module : modules.values()) {
             try {
                 if (!module.moduleMeta().bootstrapModule())
@@ -143,10 +144,16 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
                 e.printStackTrace();
             }
         }
+
+        lifecycle = Lifecycle.BOOTSTRAPPED;
     }
 
     @Override
     public void loadAll() {
+
+        if (lifecycle.loaded()) {
+            throw new BootstrapException("The art-framework modules have already been loaded and cannot be loaded again!");
+        }
 
         for (ModuleInformation module : modules.values()) {
             try {
@@ -155,10 +162,16 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
                 e.printStackTrace();
             }
         }
+
+        lifecycle = Lifecycle.LOADED;
     }
 
     @Override
     public void enableAll() {
+
+        if (lifecycle.enabled()) {
+            throw new BootstrapException("The art-framework modules have already been enabled and cannot be enabled again!");
+        }
 
         for (ModuleInformation module : modules.values()) {
             try {
@@ -167,10 +180,16 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
                 e.printStackTrace();
             }
         }
+
+        lifecycle = Lifecycle.ENABLED;
     }
 
     @Override
     public void disableAll() {
+
+        if (lifecycle.disabled()) {
+            throw new BootstrapException("The art-framework modules have already been disabled and cannot be disabled again!");
+        }
 
         for (ModuleInformation module : modules.values()) {
             try {
@@ -179,10 +198,12 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
                 e.printStackTrace();
             }
         }
+
+        lifecycle = Lifecycle.DISABLED;
     }
 
     @Override
-    public ModuleProvider register(@NonNull Object module) throws ModuleRegistrationException {
+    public ModuleProvider register(@NonNull Module module) throws ModuleRegistrationException {
 
         registerModule(module);
 
@@ -190,47 +211,33 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     }
 
     @Override
-    public ModuleProvider register(@NonNull Class<?> moduleClass) throws ModuleRegistrationException {
+    public ModuleProvider register(@NonNull Class<? extends Module> moduleClass) throws ModuleRegistrationException {
 
         registerModule(moduleClass);
 
         return this;
     }
 
-    public ModuleProvider enable(@NonNull Object module) throws ModuleRegistrationException {
+    @Override
+    public ModuleProvider enable(@NonNull Class<? extends Module> moduleClass) throws ModuleRegistrationException {
 
-        enableModule(registerModule(module));
+        getModuleInformation(moduleClass).ifPresent(this::enableModule);
 
         return this;
     }
 
     @Override
-    public ModuleProvider enable(@NonNull Class<?> moduleClass) throws ModuleRegistrationException {
+    public ModuleProvider disable(@NonNull Class<? extends Module> moduleClass) {
 
-        enableModule(registerModule(moduleClass));
-
-        return this;
-    }
-
-    @Override
-    public ModuleProvider disable(@NonNull Object module) {
-
-        ModuleInformation information = modules.remove(module.getClass());
-        if (information != null) {
-            try {
-                disableModule(information);
-            } catch (ModuleRegistrationException e) {
-                e.printStackTrace();
-            }
-        }
+        getModuleInformation(moduleClass).ifPresent(this::disableModule);
 
         return this;
     }
 
     @Override
-    public ModuleProvider reload(@NonNull Class<?> moduleClass) {
+    public ModuleProvider reload(@NonNull Class<? extends Module> moduleClass) {
 
-        get(moduleClass).ifPresent(this::reloadModule);
+        getModuleInformation(moduleClass).ifPresent(this::reloadModule);
 
         return this;
     }
@@ -243,18 +250,19 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         return this;
     }
 
-    private ModuleInformation registerModule(Class<?> moduleClass) throws ModuleRegistrationException {
+    private void registerModule(Class<? extends Module> moduleClass) throws ModuleRegistrationException {
 
         if (modules.containsKey(moduleClass)) {
-            return modules.get(moduleClass);
+            modules.get(moduleClass);
+            return;
         }
 
         try {
             ModuleMeta moduleMeta = ModuleMeta.of(moduleClass);
 
             try {
-                Object artModule = scope().configuration().injector().create(moduleClass, scope());
-                return registerModule(moduleMeta, artModule);
+                Module artModule = scope().configuration().injector().create(moduleClass, scope());
+                registerModule(moduleMeta, artModule);
             } catch (ReflectiveOperationException e) {
                 String errorMessage = "Unable to create a new instance of the ArtModule " + moduleClass.getSimpleName() + ". " +
                         "Does it have a parameterless public constructor?";
@@ -271,7 +279,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         }
     }
 
-    private ModuleInformation registerModule(@NonNull Object module) throws ModuleRegistrationException {
+    private ModuleInformation registerModule(@NonNull Module module) throws ModuleRegistrationException {
 
         try {
             ConfigUtil.injectConfigFields(scope(), module);
@@ -281,13 +289,15 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         }
     }
 
-    private ModuleInformation registerModule(@NonNull ModuleMeta moduleMeta, @NonNull Object module) throws ModuleRegistrationException {
+    private ModuleInformation registerModule(@NonNull ModuleMeta moduleMeta, @NonNull Module module) throws ModuleRegistrationException {
 
         Optional<ModuleMeta> existingModule = modules.values().stream().map(ModuleInformation::moduleMeta)
-                .filter(meta -> meta.identifier().equals(moduleMeta.identifier()) && !meta.moduleClass().equals(moduleMeta.moduleClass())).findAny();
+                .filter(meta -> meta.identifier().equals(moduleMeta.identifier())
+                        && !meta.moduleClass().equals(moduleMeta.moduleClass())).findAny();
         if (existingModule.isPresent()) {
             throw new ModuleRegistrationException(moduleMeta, ModuleState.DUPLICATE_MODULE,
-                    "There is already a module named \"" + moduleMeta.identifier() + "\" registered: " + existingModule.get().moduleClass().getCanonicalName());
+                    "There is already a module named \"" + moduleMeta.identifier() + "\" registered: "
+                            + existingModule.get().moduleClass().getCanonicalName());
         }
 
         ModuleInformation moduleInformation;
@@ -304,8 +314,17 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
             if (dependencyGraph.isPresent()) {
                 updateModuleCache(moduleInformation.state(ModuleState.CYCLIC_DEPENDENCIES));
                 throw new ModuleRegistrationException(moduleInformation.moduleMeta(), moduleInformation.state(),
-                        "The module \"" + moduleInformation.moduleMeta().identifier() + "\" has cyclic dependencies: " + dependencyGraphToString(dependencyGraph.get()));
+                        "The module \"" + moduleInformation.moduleMeta().identifier()
+                                + "\" has cyclic dependencies: " + dependencyGraphToString(dependencyGraph.get()));
             }
+        }
+
+        if (lifecycle.enabled()) {
+            enableModule(moduleInformation);
+        } else if (lifecycle.loaded()) {
+            loadModule(moduleInformation);
+        } else if (lifecycle.bootstrapped()) {
+            bootstrapModule(bootstrapScope, moduleInformation);
         }
 
         return moduleInformation;
@@ -562,99 +581,53 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     static class ModuleInformation {
 
         private final ModuleMeta moduleMeta;
-        private final List<Method> allMethods;
         @Nullable
-        private final Object module;
-        @Nullable
-        private final Method onBootstrap;
-        @Nullable
-        private final Method onLoad;
-        @Nullable
-        private final Method onEnable;
-        @Nullable
-        private final Method onDisable;
-        @Nullable
-        private final Method onReload;
+        private final Module module;
         private ModuleState state;
 
-        public ModuleInformation(ModuleMeta moduleMeta, @Nullable Object module) {
+        public ModuleInformation(ModuleMeta moduleMeta, @Nullable Module module) {
             this.moduleMeta = moduleMeta;
             this.module = module;
-            Class<?> moduleClass = moduleMeta.moduleClass();
-            this.allMethods = ReflectionUtil.getAllMethods(moduleClass, new ArrayList<>());
-            if (Module.class.isAssignableFrom(moduleClass)) {
-                try {
-                    onBootstrap = moduleClass.getMethod("onBootstrap", BootstrapScope.class);
-                    onLoad = moduleClass.getMethod("onLoad", Scope.class);
-                    onEnable = moduleClass.getMethod("onEnable", Scope.class);
-                    onDisable = moduleClass.getMethod("onDisable", Scope.class);
-                    onReload = moduleClass.getMethod("onReload", Scope.class);
-                } catch (NoSuchMethodException e) {
-                    throw new RuntimeException(e);
-                }
-            } else {
-                onBootstrap = findMethod(OnBootstrap.class);
-                onLoad = findMethod(OnLoad.class);
-                onEnable = findMethod(OnEnable.class);
-                onDisable = findMethod(OnDisable.class);
-                onReload = findMethod(OnReload.class);
-            }
         }
 
-        public Optional<Object> module() {
+        public Optional<Module> module() {
 
             return Optional.ofNullable(module);
         }
 
-        public void onBootstrap(BootstrapScope scope) {
-            if (onBootstrap == null) return;
-            invokeMethod(onBootstrap, scope);
-        }
+        void onBootstrap(BootstrapScope scope) throws Exception {
 
-        public void onLoad(Scope scope) {
-            if (onLoad == null) return;
-            invokeMethod(onLoad, scope);
-        }
-
-        public void onEnable(Scope scope) {
-            if (onEnable == null) return;
-            invokeMethod(onEnable, scope);
-        }
-
-        public void onDisable(Scope scope) {
-            if (onDisable == null) return;
-            invokeMethod(onDisable, scope);
-        }
-
-        public void onReload(Scope scope) {
-            if (onReload == null) return;
-            invokeMethod(onReload, scope);
-        }
-
-        private void invokeMethod(@NonNull Method method, Scope scope) {
-            try {
-                Class<?>[] parameterTypes = method.getParameterTypes();
-                Object[] parameters = new Object[parameterTypes.length];
-                for (int i = 0; i < parameterTypes.length; i++) {
-                    if (parameterTypes[i].isInstance(scope)) {
-                        parameters[i] = scope;
-                    } else {
-                        parameters[i] = null;
-                    }
-                }
-                method.setAccessible(true);
-                method.invoke(module, parameters);
-            } catch (IllegalAccessException | InvocationTargetException e) {
-                throw new RuntimeException(e);
+            if (module().isPresent()) {
+                module().get().onBootstrap(scope);
             }
         }
 
-        private Method findMethod(Class<? extends Annotation> annotation) {
+        void onLoad(Scope scope) throws Exception {
 
-            return allMethods.stream()
-                    .filter(method -> method.isAnnotationPresent(annotation))
-                    .findFirst()
-                    .orElse(null);
+            if (module().isPresent()) {
+                module().get().onLoad(scope);
+            }
+        }
+
+        void onEnable(Scope scope) throws Exception {
+
+            if (module().isPresent()) {
+                module().get().onEnable(scope);
+            }
+        }
+
+        void onDisable(Scope scope) throws Exception {
+
+            if (module().isPresent()) {
+                module().get().onDisable(scope);
+            }
+        }
+
+        void onReload(Scope scope) throws Exception {
+
+            if (module().isPresent()) {
+                module().get().onReload(scope);
+            }
         }
     }
 
@@ -662,5 +635,46 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     public interface ChildModuleLoader {
 
         void accept(ModuleInformation moduleInformation) throws ModuleRegistrationException;
+    }
+
+    enum Lifecycle {
+        PRE_BOOTSTRAP,
+        BOOTSTRAPPED_ROOT_MODULE,
+        BOOTSTRAPPED,
+        LOADED,
+        ENABLED,
+        DISABLED;
+
+        boolean cannotBootstrap() {
+
+            return this != BOOTSTRAPPED_ROOT_MODULE;
+        }
+
+        public boolean bootstrapped() {
+
+            return this == BOOTSTRAPPED;
+        }
+
+        boolean loaded() {
+
+            switch (this) {
+                case LOADED:
+                case ENABLED:
+                case DISABLED:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        boolean enabled() {
+
+            return this == Lifecycle.ENABLED;
+        }
+
+        boolean disabled() {
+
+            return this == Lifecycle.DISABLED;
+        }
     }
 }

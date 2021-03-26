@@ -57,7 +57,7 @@ public class ModuleTests {
     @DisplayName("should bootstrap module")
     void shouldBootstrapModule() {
 
-        ART.bootstrap(bootstrapScope);
+        ART.bootstrap(bootstrapScope, false);
 
         verify(module, times(1)).onBootstrap(bootstrapScope);
     }
@@ -67,7 +67,7 @@ public class ModuleTests {
     @DisplayName("should provide instance of custom provider")
     void shouldProvideInstanceOfCustomProvider() {
 
-        Scope scope = ART.bootstrap(bootstrapScope);
+        Scope scope = ART.bootstrap(bootstrapScope, false);
 
         assertThat(scope.get(BootstrapTestModule.CustomProvider.class))
                 .isNotNull();
@@ -78,7 +78,7 @@ public class ModuleTests {
     @DisplayName("should enable module")
     void shouldEnableModule() {
 
-        ART.bootstrap(bootstrapScope).enableAll();
+        ART.bootstrap(bootstrapScope, false).enableAll();
 
         verify(module, times(1)).onEnable(any(Scope.class));
     }
@@ -88,7 +88,7 @@ public class ModuleTests {
     @DisplayName("should load and enable all provided modules")
     void shouldLoadAllProvidedModules() {
 
-        Scope scope = ART.bootstrap(bootstrapScope).enableAll();
+        Scope scope = ART.bootstrap(bootstrapScope, false).enableAll();
 
         assertThat(scope.configuration().modules().all())
                 .extracting(ModuleMeta::identifier)
@@ -104,7 +104,7 @@ public class ModuleTests {
     @DisplayName("should not call other module methods if an error occured")
     void shouldNotCallMethodsAfterError() {
 
-        ART.bootstrap(bootstrapScope);
+        ART.bootstrap(bootstrapScope, false);
 
         assertThat(BootstrapTestModule.ErrorLoadModule.called).isFalse();
         assertThat(BootstrapTestModule.ErrorBootstrapModule.called).isFalse();
@@ -140,7 +140,7 @@ public class ModuleTests {
     @DisplayName("should not register art that has autoRegister=false")
     void shouldNotRegisterArtWithAutoRegisterFalse() {
 
-        Scope scope = ART.bootstrap(bootstrapScope);
+        Scope scope = ART.bootstrap(bootstrapScope, false);
 
         assertThat(scope.configuration().actions().all())
                 .doesNotContainKey("no-autoregister");

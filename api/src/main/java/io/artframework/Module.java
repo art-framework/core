@@ -1,8 +1,55 @@
 package io.artframework;
 
-import io.artframework.annotations.*;
+import io.artframework.annotations.ArtModule;
+import io.artframework.annotations.OnEnable;
+import io.artframework.annotations.OnLoad;
+import io.artframework.annotations.OnReload;
+
+import java.util.Optional;
 
 public interface Module {
+
+    /**
+     * The metadata of the module is only available if using the
+     * global scope and after the module has been registered.
+     *
+     * @return the metadata of this module
+     */
+    default ModuleMeta metadata() {
+
+        return ART.scope().configuration().modules()
+                .getMetadata(getClass())
+                .or(() -> {
+                    try {
+                        return Optional.of(ModuleMeta.of(getClass()));
+                    } catch (ArtMetaDataException e) {
+                        e.printStackTrace();
+                        return Optional.empty();
+                    }
+                })
+                .orElseThrow(() -> new ModuleRegistrationException(null,
+                        ModuleState.INVALID_MODULE,
+                        "module " + getClass().getCanonicalName() + " has an invalid registration state: no metadata found!"));
+    }
+
+    /**
+     * Registers the given module with the global scope and immediately calls all methods that
+     * represent the current lifecycle.
+     * <p>
+     * This means if modules have been enabled, this module will be loaded and then enabled.
+     * If the lifecycle is still in the loading phase the module will only be loaded.
+     * <p>
+     * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
+
+     * @throws ModuleRegistrationException if the registration of the module failed,
+     *                                     e.g. if no {@code @ArtModule} annotation is present on the class
+     *                                     or if one of the annotated methods encountered an exception.
+     */
+    default void register() throws ModuleRegistrationException {
+
+        ART.register(this);
+    }
+
     /**
      * The bootstrap method is called once on all modules before any module is loaded or enabled.
      * You can configure the {@link BootstrapScope} provide your own provider implementations.
@@ -22,7 +69,6 @@ public interface Module {
      *
      * @param scope the bootstrap scope that is loading this module
      */
-    @OnBootstrap
     default void onBootstrap(BootstrapScope scope) throws Exception {}
 
     /**
@@ -41,7 +87,6 @@ public interface Module {
      *
      * @param scope the scope that is loading this module
      */
-    @OnLoad
     default void onLoad(Scope scope) throws Exception {}
 
     /**
@@ -52,7 +97,6 @@ public interface Module {
      *
      * @param scope the scope that is calling the reload on the module
      */
-    @OnReload
     default void onReload(Scope scope) throws Exception {}
 
     /**
@@ -67,7 +111,6 @@ public interface Module {
      *
      * @param scope the scope that is enabling the module
      */
-    @OnEnable
     default void onEnable(Scope scope) throws Exception {}
 
     /**
@@ -81,6 +124,5 @@ public interface Module {
      *
      * @param scope the scope that is disabling the module
      */
-    @OnDisable
     default void onDisable(Scope scope) throws Exception {}
 }

@@ -18,10 +18,8 @@ package io.artframework;
 
 import io.artframework.annotations.ArtModule;
 import io.artframework.conf.Settings;
-import io.artframework.impl.DefaultScope;
 
 import java.util.Collection;
-import java.util.function.Consumer;
 
 public interface Scope extends DataProvider {
 
@@ -82,6 +80,23 @@ public interface Scope extends DataProvider {
 
         return configuration().art();
     }
+
+    /**
+     * Registers the given module with the provider and immediately calls all methods that
+     * represent the current lifecycle.
+     * <p>
+     * This means if modules have been enabled, this module will be loaded and then enabled.
+     * If the lifecycle is still in the loading phase the module will only be loaded.
+     * <p>
+     * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
+     *
+     * @param module the module that is registered with the scope
+     * @return this scope
+     * @throws ModuleRegistrationException if the registration of the module failed,
+     *                                     e.g. if no {@code @ArtModule} annotation is present on the class
+     *                                     or if one of the annotated methods encountered an exception.
+     */
+    Scope register(Module module) throws ModuleRegistrationException;
 
     /**
      * Loads the given string list and tries to parse each line into a valid art object.

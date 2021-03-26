@@ -16,6 +16,7 @@
 
 package io.artframework.finder;
 
+import io.artframework.Module;
 import io.artframework.*;
 import io.artframework.annotations.ArtModule;
 import io.artframework.util.FileUtil;
@@ -36,10 +37,10 @@ public class ModuleFinder extends AbstractFinder {
     @Override
     public FinderResult<?> findAllIn(ClassLoader classLoader, File file, Predicate<Class<?>> predicate) {
 
-        final List<Class<?>> moduleClasses = new ArrayList<>();
+        final List<Class<? extends Module>> moduleClasses = new ArrayList<>();
         final List<ArtObjectError> errors = new ArrayList<>();
 
-        FileUtil.findClasses(classLoader, file, aClass -> aClass.isAnnotationPresent(ArtModule.class))
+        FileUtil.findClasses(classLoader, file, Module.class, aClass -> aClass.isAnnotationPresent(ArtModule.class))
                 .stream().filter(predicate)
                 .filter(this::search)
                 .forEach(moduleClass -> {
@@ -54,17 +55,17 @@ public class ModuleFinder extends AbstractFinder {
         return new ModuleFinderResult(moduleClasses, errors);
     }
 
-    public static final class ModuleFinderResult extends AbstractFinderResult<Class<?>> {
+    public static final class ModuleFinderResult extends AbstractFinderResult<Class<? extends Module>> {
 
-        private ModuleFinderResult(Collection<Class<?>> classes, Collection<ArtObjectError> errors) {
+        private ModuleFinderResult(Collection<Class<? extends Module>> classes, Collection<ArtObjectError> errors) {
 
             super(classes, errors);
         }
 
         @Override
-        public FinderResult<Class<?>> load(Scope scope) {
+        public FinderResult<Class<? extends Module>> load(Scope scope) {
 
-            for (Class<?> result : results()) {
+            for (Class<? extends Module> result : results()) {
                 try {
                     scope.configuration().modules().enable(result);
                 } catch (ModuleRegistrationException e) {

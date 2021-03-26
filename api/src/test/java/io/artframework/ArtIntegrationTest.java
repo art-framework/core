@@ -32,6 +32,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.InOrder;
 
 import java.util.Arrays;
 import java.util.Optional;
@@ -44,7 +45,7 @@ import static org.mockito.Mockito.*;
 @DisplayName("ART Integration Tests")
 public class ArtIntegrationTest {
 
-    private Scope scope;
+    private DefaultScope scope;
 
     @BeforeEach
     void setUp() {
@@ -192,8 +193,42 @@ public class ArtIntegrationTest {
 
                 assertThat(scope.configuration().modules().all())
                         .anyMatch(moduleMeta -> moduleMeta.moduleClass().equals(ExternalTestModule.class));
+                verify(module, times(1)).onBootstrap(scope);
+            }
 
-                verify(module, times(1)).onBootstrap((BootstrapScope) scope);
+            @Test
+            @DisplayName("should call load on registered module if in loading phase")
+            void shouldCallLoadIfInLoadingPhase() throws Exception {
+
+                ExternalTestModule module = spy(new ExternalTestModule());
+                scope.loadAll();
+
+                scope.register(module);
+
+                InOrder inOrder = inOrder(module);
+                assertThat(scope.configuration().modules().all())
+                        .anyMatch(moduleMeta -> moduleMeta.moduleClass().equals(ExternalTestModule.class));
+
+                inOrder.verify(module, times(1)).onBootstrap(scope);
+                inOrder.verify(module, times(1)).onLoad(scope);
+            }
+
+            @Test
+            @DisplayName("should call enable on registered module if in enabling phase")
+            void shouldCallEnableIfInLoadingPhase() throws Exception {
+
+                ExternalTestModule module = spy(new ExternalTestModule());
+                scope.loadAll();
+
+                scope.register(module);
+
+                InOrder inOrder = inOrder(module);
+                assertThat(scope.configuration().modules().all())
+                        .anyMatch(moduleMeta -> moduleMeta.moduleClass().equals(ExternalTestModule.class));
+
+                inOrder.verify(module, times(1)).onBootstrap(scope);
+                inOrder.verify(module, times(1)).onLoad(scope);
+                inOrder.verify(module, times(1)).onEnable(scope);
             }
         }
     }
