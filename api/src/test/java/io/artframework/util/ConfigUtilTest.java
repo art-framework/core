@@ -22,6 +22,7 @@ import io.artframework.annotations.ArtModule;
 import io.artframework.annotations.Config;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.annotations.Ignore;
+import io.artframework.impl.DefaultScope;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -77,7 +78,7 @@ public class ConfigUtilTest {
         @BeforeEach
         void setUp(@TempDir File tempDir) {
 
-            scope = Scope.defaultScope();
+            scope = new DefaultScope();
             scope.settings().basePath(tempDir);
             basePath = tempDir;
         }

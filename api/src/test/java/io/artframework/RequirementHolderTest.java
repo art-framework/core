@@ -16,6 +16,7 @@
 
 package io.artframework;
 
+import io.artframework.impl.DefaultScope;
 import io.artframework.integration.data.Block;
 import io.artframework.integration.data.Location;
 import io.artframework.integration.data.Player;
@@ -51,8 +52,9 @@ class RequirementHolderTest implements CombinedResultCreator {
     }
 
     private ExecutionContext<?> executionContext(Class<?>... targets) {
+
         return ExecutionContext.of(
-                Scope.defaultScope(),
+                new DefaultScope(),
                 null,
                 Arrays.stream(targets)
                         .map(this::target)
@@ -61,7 +63,8 @@ class RequirementHolderTest implements CombinedResultCreator {
     }
 
     private ExecutionContext<?> executionContext(Target<?>... targets) {
-        return ExecutionContext.of(Scope.defaultScope(), null, targets);
+
+        return ExecutionContext.of(new DefaultScope(), null, targets);
     }
 
     private <TTarget> Target<TTarget> target(Class<TTarget> targetClass) {

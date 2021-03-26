@@ -38,7 +38,8 @@ class DefaultArtContextTest implements ResultCreator {
 
     @BeforeEach
     void setUp() {
-        scope = Scope.defaultScope();
+
+        scope = new DefaultScope();
         scope.configuration().targets()
                 .add(Player.class, PlayerTarget::new);
     }

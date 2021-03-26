@@ -20,6 +20,7 @@ import io.artframework.*;
 import io.artframework.annotations.ConfigOption;
 import io.artframework.conf.ActionConfig;
 import io.artframework.conf.ContextConfig;
+import io.artframework.impl.DefaultScope;
 import io.artframework.util.ConfigUtil;
 import lombok.Data;
 import lombok.SneakyThrows;
@@ -55,7 +56,7 @@ class ArtObjectContextParserTest {
         when(artObjectMeta.configMap()).thenReturn(ConfigUtil.getConfigFields(TestConfig.class));
         when(actions.get(anyString())).thenAnswer(invocation -> Optional.of(factory));
 
-        this.parser = new ActionLineParser(Arrays.asList("").iterator(), Scope.of(configurationBuilder -> configurationBuilder.actions(actions)));
+        this.parser = new ActionLineParser(Arrays.asList("").iterator(), new DefaultScope(configurationBuilder -> configurationBuilder.actions(actions)));
     }
 
     private <TConfig> TConfig extractArtConfig(TConfig config) {

@@ -133,18 +133,6 @@ public interface BootstrapScope extends Scope {
      * @throws ModuleRegistrationException if the registration of the module failed,
      *                                     e.g. if no {@code @ArtModule} annotation is present on the class
      */
-    BootstrapScope register(Module module) throws ModuleRegistrationException;
-
-    /**
-     * Registers the given module with the provider and immediately calls the bootstrap method on it.
-     * <p>
-     * Make sure the class is annotated with @{@link ArtModule} or the registration will fail with an exception.
-     *
-     * @param module the module that should be registered
-     * @return this module provider
-     * @throws ModuleRegistrationException if the registration of the module failed,
-     *                                     e.g. if no {@code @ArtModule} annotation is present on the class
-     */
     BootstrapScope register(Object module) throws ModuleRegistrationException;
 
     /**

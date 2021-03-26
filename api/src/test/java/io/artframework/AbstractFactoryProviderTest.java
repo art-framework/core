@@ -16,6 +16,7 @@
 
 package io.artframework;
 
+import io.artframework.impl.DefaultScope;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -32,7 +33,9 @@ class AbstractFactoryProviderTest {
 
     @BeforeEach
     void setUp() {
-        factory = new AbstractFactoryProvider<Factory<?, ?>>(Scope.defaultScope()) {};
+
+        factory = new AbstractFactoryProvider<>(new DefaultScope()) {
+        };
         mock = mock(Factory.class);
         factory.factories.put("foo", mock);
         factory.aliasMappings.put("bar", "foo");

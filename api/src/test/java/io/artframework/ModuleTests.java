@@ -16,6 +16,7 @@
 
 package io.artframework;
 
+import io.artframework.impl.DefaultScope;
 import io.artframework.integration.BootstrapTestModule;
 import io.artframework.integration.data.Block;
 import io.artframework.integration.data.Entity;
@@ -36,7 +37,8 @@ public class ModuleTests {
 
     @BeforeEach
     void setUp() {
-        ART.globalScope(Scope.defaultScope());
+
+        ART.globalScope(new DefaultScope());
         module = spy(new BootstrapTestModule());
         bootstrapScope = spy(BootstrapScope.of(module));
     }

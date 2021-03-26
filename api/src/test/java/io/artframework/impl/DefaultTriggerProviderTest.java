@@ -16,7 +16,6 @@
 
 package io.artframework.impl;
 
-import io.artframework.Scope;
 import io.artframework.Trigger;
 import io.artframework.annotations.ART;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +32,8 @@ class DefaultTriggerProviderTest {
 
     @BeforeEach
     void setUp() {
-        provider = spy(new DefaultTriggerProvider(Scope.defaultScope()));
+
+        provider = spy(new DefaultTriggerProvider(new DefaultScope()));
     }
 
     @Nested
