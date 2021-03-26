@@ -16,6 +16,8 @@
 
 package io.artframework;
 
+import io.artframework.impl.DefaultScope;
+import io.artframework.integration.ExternalTestModule;
 import io.artframework.integration.actions.DamageAction;
 import io.artframework.integration.actions.TestGenericAction;
 import io.artframework.integration.actions.TextAction;
@@ -47,7 +49,7 @@ public class ArtIntegrationTest {
     @BeforeEach
     void setUp() {
 
-        scope = Scope.defaultScope();
+        scope = new DefaultScope();
     }
 
     @Nested
@@ -175,10 +177,29 @@ public class ArtIntegrationTest {
                         .isNotEmpty();
             }
         }
+
+        @Nested
+        @DisplayName("Modules")
+        class Modules {
+
+            @Test
+            @DisplayName("should register module and call bootstrap method")
+            void shouldRegisterExternalTestModuleAndCallBootstrap() throws Exception {
+
+                ExternalTestModule module = spy(new ExternalTestModule());
+
+                scope.register(module);
+
+                assertThat(scope.configuration().modules().all())
+                        .anyMatch(moduleMeta -> moduleMeta.moduleClass().equals(ExternalTestModule.class));
+
+                verify(module, times(1)).onBootstrap((BootstrapScope) scope);
+            }
+        }
     }
 
     @Nested
-    @DisplayName("Events")
+    @DisplayName("Trigger")
     class Events {
 
         @Test

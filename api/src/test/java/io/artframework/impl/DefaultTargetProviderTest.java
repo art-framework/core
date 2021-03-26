@@ -1,6 +1,5 @@
 package io.artframework.impl;
 
-import io.artframework.Scope;
 import io.artframework.Target;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +12,7 @@ class DefaultTargetProviderTest {
     @BeforeEach
     void setUp() {
 
-        provider = new DefaultTargetProvider(Scope.defaultScope());
+        provider = new DefaultTargetProvider(new DefaultScope());
         provider.add(MyTarget.class, MyTargetWrapper::new);
     }
 

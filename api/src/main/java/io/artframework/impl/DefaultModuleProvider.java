@@ -16,6 +16,7 @@
 
 package io.artframework.impl;
 
+import io.artframework.Module;
 import io.artframework.*;
 import io.artframework.annotations.*;
 import io.artframework.util.ConfigUtil;
@@ -576,13 +577,12 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         private final Method onReload;
         private ModuleState state;
 
-        @SuppressWarnings("unchecked")
         public ModuleInformation(ModuleMeta moduleMeta, @Nullable Object module) {
             this.moduleMeta = moduleMeta;
             this.module = module;
             Class<?> moduleClass = moduleMeta.moduleClass();
             this.allMethods = ReflectionUtil.getAllMethods(moduleClass, new ArrayList<>());
-            if (BootstrapModule.class.isAssignableFrom(moduleClass)) {
+            if (Module.class.isAssignableFrom(moduleClass)) {
                 try {
                     onBootstrap = moduleClass.getMethod("onBootstrap", BootstrapScope.class);
                     onLoad = moduleClass.getMethod("onLoad", Scope.class);

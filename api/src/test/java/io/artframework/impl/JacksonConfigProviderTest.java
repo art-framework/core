@@ -16,7 +16,6 @@
 
 package io.artframework.impl;
 
-import io.artframework.Scope;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.SneakyThrows;
@@ -42,7 +41,8 @@ class JacksonConfigProviderTest {
     @BeforeEach
     void setUp(@TempDir File tempDir) {
         this.tempDir = tempDir;
-        provider = new JacksonConfigProvider(Scope.defaultScope());
+
+        provider = new JacksonConfigProvider(new DefaultScope());
 
         Files.copy(new File(new File("src/test/resources"), "test-config.yml").toPath(), new File(tempDir, "test-config.yml").toPath());
     }

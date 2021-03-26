@@ -20,6 +20,7 @@ import io.artframework.*;
 import io.artframework.conf.ActionConfig;
 import io.artframework.conf.RequirementConfig;
 import io.artframework.conf.TriggerConfig;
+import io.artframework.impl.DefaultScope;
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,15 +46,18 @@ class FlowLogicSorterTest {
     }
 
     private ActionContext<?> action() {
-        return spy(ActionContext.of(Scope.defaultScope(), mock(ArtObjectMeta.class), mock(Action.class), mock(ActionConfig.class)));
+
+        return spy(ActionContext.of(new DefaultScope(), mock(ArtObjectMeta.class), mock(Action.class), mock(ActionConfig.class)));
     }
 
     private RequirementContext<?> requirement() {
-        return spy(RequirementContext.of(Scope.defaultScope(), mock(ArtObjectMeta.class), mock(Requirement.class), mock(RequirementConfig.class)));
+
+        return spy(RequirementContext.of(new DefaultScope(), mock(ArtObjectMeta.class), mock(Requirement.class), mock(RequirementConfig.class)));
     }
 
     private TriggerContext trigger() {
-        return spy(TriggerContext.of(Scope.defaultScope(),
+
+        return spy(TriggerContext.of(new DefaultScope(),
                 mock(ArtObjectMeta.class),
                 mock(Trigger.class),
                 mock(TriggerConfig.class))

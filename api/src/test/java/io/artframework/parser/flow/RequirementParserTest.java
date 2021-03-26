@@ -16,7 +16,11 @@
 
 package io.artframework.parser.flow;
 
-import io.artframework.*;
+import io.artframework.ArtObjectMeta;
+import io.artframework.RequirementContext;
+import io.artframework.RequirementFactory;
+import io.artframework.RequirementProvider;
+import io.artframework.impl.DefaultScope;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +53,7 @@ class RequirementParserTest {
         when(requirementProvider.get(anyString())).thenReturn(Optional.of(requirementFactory));
         when(requirementFactory.createContext(any())).thenReturn(mock(RequirementContext.class));
 
-        this.parser = new RequirementLineParser(Arrays.asList("").iterator(), Scope.of(configurationBuilder -> configurationBuilder.requirements(requirementProvider)));
+        this.parser = new RequirementLineParser(Arrays.asList("").iterator(), new DefaultScope(configurationBuilder -> configurationBuilder.requirements(requirementProvider)));
     }
 
     @Nested

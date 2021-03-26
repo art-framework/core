@@ -16,6 +16,7 @@
 
 package io.artframework;
 
+import io.artframework.impl.DefaultScope;
 import io.artframework.integration.data.Player;
 import io.artframework.integration.targets.PlayerTarget;
 import org.junit.jupiter.api.BeforeEach;
@@ -70,7 +71,8 @@ class ActionHolderTest {
         actionHolder.addAction(action1);
 
         Target target = new PlayerTarget(new Player());
-        actionHolder.executeActions(ExecutionContext.of(Scope.defaultScope(), null, target));
+
+        actionHolder.executeActions(ExecutionContext.of(new DefaultScope(), null, target));
 
         InOrder inOrder = inOrder(action, action1);
         inOrder.verify(action, times(1)).execute(eq(target), any());

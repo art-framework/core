@@ -18,6 +18,7 @@ package io.artframework.parser.flow;
 
 import io.artframework.*;
 import io.artframework.conf.ActionConfig;
+import io.artframework.impl.DefaultScope;
 import lombok.SneakyThrows;
 import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.BeforeEach;
@@ -47,7 +48,7 @@ class FlowParserTest {
     @SneakyThrows
     void beforeEach() {
 
-        Scope scope = Scope.defaultScope();
+        Scope scope = new DefaultScope();
         flowParser = spy(new ArtObjectContextLineParser<>(scope, Arrays.asList("").iterator(), new FlowType("test", ".")) {
             @Override
             protected Optional<Factory<?, ?>> factory(String identifier) {

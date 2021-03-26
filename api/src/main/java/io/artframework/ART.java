@@ -20,6 +20,7 @@ import io.artframework.annotations.ArtModule;
 import io.artframework.annotations.OnBootstrap;
 import io.artframework.annotations.OnEnable;
 import io.artframework.annotations.OnLoad;
+import io.artframework.impl.DefaultScope;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
@@ -32,9 +33,9 @@ public final class ART {
     private ART() {}
 
     @Getter
-    private static Scope globalScope = Scope.defaultScope();
+    private static Scope globalScope = new DefaultScope();
 
-    static void globalScope(Scope scope) {
+    static void globalScope(@NonNull Scope scope) {
         globalScope = scope;
     }
 
@@ -129,6 +130,6 @@ public final class ART {
      */
     public static <TTrigger extends Trigger> TriggerExecution<TTrigger> trigger(Class<TTrigger> triggerClass) {
 
-        return globalScope.trigger(triggerClass);
+        return globalScope().trigger(triggerClass);
     }
 }

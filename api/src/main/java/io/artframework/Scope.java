@@ -25,19 +25,6 @@ import java.util.function.Consumer;
 
 public interface Scope extends DataProvider {
 
-    static Scope defaultScope() {
-
-        return new DefaultScope();
-    }
-
-    static Scope of(Consumer<Configuration.ConfigurationBuilder> config) {
-        return new DefaultScope(config);
-    }
-
-    static Scope of(Configuration configuration) {
-        return new DefaultScope(configuration);
-    }
-
     /**
      * Gets the current settings of this scope.
      * <p>

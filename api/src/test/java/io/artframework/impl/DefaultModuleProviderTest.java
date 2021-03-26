@@ -43,7 +43,8 @@ class DefaultModuleProviderTest {
 
     @BeforeEach
     void setUp() {
-        scope = Scope.defaultScope();
+
+        scope = new DefaultScope();
         provider = (DefaultModuleProvider) scope.configuration().modules();
         module = spy(new TestModule());
     }
