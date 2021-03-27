@@ -90,10 +90,6 @@ public final class DefaultScope implements BootstrapScope, BootstrapPhase {
     @Override
     public <TProvider extends Provider> BootstrapScope addProvider(Class<TProvider> providerClass, Function<Scope, TProvider> supplier) {
 
-        if (bootstrapped()) {
-            throw new UnsupportedOperationException("Cannot register provider after bootstrapping has finished.");
-        }
-
         providerMap.put(providerClass, supplier);
         return this;
     }
@@ -107,15 +103,7 @@ public final class DefaultScope implements BootstrapScope, BootstrapPhase {
     @Override
     public BootstrapScope register(Module module) throws ModuleRegistrationException {
 
-        // TODO: implement
-
-        return this;
-    }
-
-    @Override
-    public BootstrapScope register(Object module) throws ModuleRegistrationException {
-
-        // TODO: implement
+        configuration().modules().register(module);
 
         return this;
     }
@@ -123,7 +111,7 @@ public final class DefaultScope implements BootstrapScope, BootstrapPhase {
     @Override
     public BootstrapScope register(Class<? extends Module> moduleClass) throws ModuleRegistrationException {
 
-        // TODO: implement
+        configuration().modules().register(moduleClass);
 
         return this;
     }

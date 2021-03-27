@@ -91,7 +91,7 @@ class DefaultModuleProviderTest {
         void shouldThrowIfModuleHasMissingDependencies() {
 
             assertThatExceptionOfType(ModuleRegistrationException.class)
-                    .isThrownBy(() -> provider.register(new FooModule()))
+                    .isThrownBy(() -> provider.register(new FooModule()).enable(FooModule.class))
                     .withMessageContaining("is missing the following dependencies: bar");
 
         }
@@ -101,7 +101,7 @@ class DefaultModuleProviderTest {
         void shouldThrowIfModuleThrowsException() {
 
             assertThatExceptionOfType(ModuleRegistrationException.class)
-                    .isThrownBy(() -> provider.register(new ErrorModule()));
+                    .isThrownBy(() -> provider.register(new ErrorModule()).enable(ErrorModule.class));
         }
 
         @Test
@@ -154,7 +154,7 @@ class DefaultModuleProviderTest {
         @DisplayName("should create new instance of module class")
         void shouldCreateNewInstanceOfModule() {
 
-            assertThatCode(() -> provider.register(TestModule.class)).doesNotThrowAnyException();
+            assertThatCode(() -> provider.register(TestModule.class).enableAll()).doesNotThrowAnyException();
             DefaultModuleProvider.ModuleInformation information = provider.modules.get(TestModule.class);
             assertThat(information.module())
                     .isNotEmpty().get()
@@ -166,7 +166,7 @@ class DefaultModuleProviderTest {
         @DisplayName("should find module source of class")
         void shouldFindModuleSourceOfClass() {
 
-            assertThatCode(() -> provider.register(TestModule.class)).doesNotThrowAnyException();
+            assertThatCode(() -> provider.register(TestModule.class).enableAll()).doesNotThrowAnyException();
             assertThat(provider.getSourceModule(DamageAction.class))
                     .isNotEmpty().get()
                     .extracting(ModuleMeta::moduleClass)
@@ -177,7 +177,7 @@ class DefaultModuleProviderTest {
         @DisplayName("should apply prefix to art loaded from same module source")
         void shouldApplyPrefixToArtLoadedFromModuleSources() {
 
-            assertThatCode(() -> provider.register(PrefixModule.class)).doesNotThrowAnyException();
+            assertThatCode(() -> provider.register(PrefixModule.class).enableAll()).doesNotThrowAnyException();
             assertThat(scope.configuration().actions().get("damage"))
                     .isPresent().get()
                     .extracting(Factory::meta)

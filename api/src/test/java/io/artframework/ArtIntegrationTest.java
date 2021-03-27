@@ -16,7 +16,7 @@
 
 package io.artframework;
 
-import io.artframework.impl.DefaultScope;
+import io.artframework.integration.BootstrapTestModule;
 import io.artframework.integration.ExternalTestModule;
 import io.artframework.integration.actions.DamageAction;
 import io.artframework.integration.actions.TestGenericAction;
@@ -45,12 +45,14 @@ import static org.mockito.Mockito.*;
 @DisplayName("ART Integration Tests")
 public class ArtIntegrationTest {
 
-    private DefaultScope scope;
+    private BootstrapScope scope;
+    private BootstrapPhase phase;
 
     @BeforeEach
     void setUp() {
 
-        scope = new DefaultScope();
+        scope = BootstrapScope.of(new BootstrapTestModule());
+        phase = ART.bootstrap(scope);
     }
 
     @Nested
@@ -201,7 +203,8 @@ public class ArtIntegrationTest {
             void shouldCallLoadIfInLoadingPhase() throws Exception {
 
                 ExternalTestModule module = spy(new ExternalTestModule());
-                scope.loadAll();
+
+                phase.loadAll();
 
                 scope.register(module);
 
@@ -218,7 +221,7 @@ public class ArtIntegrationTest {
             void shouldCallEnableIfInLoadingPhase() throws Exception {
 
                 ExternalTestModule module = spy(new ExternalTestModule());
-                scope.loadAll();
+                phase.enableAll();
 
                 scope.register(module);
 
