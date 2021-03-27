@@ -32,7 +32,7 @@ spigot {
     authors = [project.property("author")]
     apiVersion = project.property("apiVersion")
     load = STARTUP
-    softDepends = ['ebean-wrapper']
+    softDepends = ['ebean-wrapper', 'PlaceholderAPI']
 }
 
 archivesBaseName = "${project.property("pluginName")}-bukkit"
@@ -49,6 +49,7 @@ dependencies {
 
     api project(':api')
     implementation project(':art-scripts')
+    implementation 'io.art-framework:art-placeholderapi:1.0.1'
 
     testImplementation 'io.ebean:ebean-test:12.6.5'
     testImplementation 'com.github.seeseemelk:MockBukkit-v1.16:0.20.0'
@@ -66,6 +67,7 @@ shadowJar {
     dependencies {
         include(project(':api'))
         include(project(':art-scripts'))
+        include(dependency('io.art-framework:art-placeholderapi:'))
         include(dependency('com.google.code.gson:gson:'))
     }
     relocate 'com.google.gson', "shadow.${packageName}.gson"

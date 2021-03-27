@@ -27,6 +27,7 @@ import io.artframework.bukkit.storage.MetadataStore;
 import io.artframework.bukkit.trigger.EntityDamageTrigger;
 import io.artframework.bukkit.trigger.LocationTrigger;
 import io.artframework.bukkit.trigger.PlayerListener;
+import io.artframework.modules.placeholderapi.PlaceholderReplacement;
 import io.artframework.modules.scripts.ScriptsModule;
 import io.artframework.util.FileUtil;
 import io.ebean.Database;
@@ -79,6 +80,14 @@ public class ArtBukkitModule implements BootstrapModule {
         findModules(scope).forEach(scope::register);
 
         scope.register(new ScriptsModule());
+
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            try {
+                scope.configuration().replacements().add(new PlaceholderReplacement());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
