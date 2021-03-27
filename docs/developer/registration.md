@@ -1,4 +1,4 @@
-By default the art-framework scans the classpath and registers all [actions](actions.md), [requirements](requirements.md), [trigger](trigger.md), [targets](targets.md), [resolvers](resolver.md) and [replacements](variables.md) it can find.
+By default the art-framework scans the classpath and registers all [actions](actions.md), [requirements](requirements.md), [trigger](trigger.md), [targets](targets.md), [resolvers](resolver.md) and [replacements](variables.md) it can find if a [module](modules.md) exists and is registered in the same package.
 
 !> This is only possible for classes that have a public parameterless constructor.
 
@@ -6,9 +6,9 @@ For all other cases (except targets) you need to register your class manually in
 
 ```java
 @ArtModule("my-module")
-public class MyModule {
+public class MyModule implements Module {
 
-    @OnLoad
+    @Override
     public void onLoad(Scope scope) {
 
         scope.register()

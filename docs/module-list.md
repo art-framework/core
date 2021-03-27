@@ -1,6 +1,6 @@
 As said in the [introduction](introduction.md) the art-framework is [highly modular](developer/modules.md) and you add new modules to it anytime. Here is a list of modules or plugins providing modules for the art-framework.
 
-This list is by no means complete and if you want your plugin or module to be included here, [create a pull request](https://github.com/art-framework/art-framework/edit/master/docs/module-list.md) or contact me.
+This list is by no means complete and if you want your plugin or module to be included here, [create a pull request](https://github.com/art-framework/art-framework/edit/main/docs/module-list.md) or contact me.
 
 > [!NOTE]
 > To install a module download it and drop it into the `plugins/art-framework/modules/` directory.  

@@ -1,7 +1,7 @@
 Loading or parsing a [configuration](/configuration) or list of strings into an [ArtContext](art-context.md) is the central function of the art-framework. It allows you to take an input from your users and apply the powerfull art-framework engine to it.
 
 > [!EXAMPLE]
-> The [RCAchievements](https://github.com/raidcraft/rcachievements/) plugin uses all of the following methods to [load trigger](https://github.com/raidcraft/rcachievements/blob/master/src/main/java/de/raidcraft/achievements/types/ArtAchievement.java#L49), [check requirements](https://github.com/raidcraft/rcachievements/blob/master/src/main/java/de/raidcraft/achievements/types/ArtAchievement.java#L52) and [execute actions](https://github.com/raidcraft/rcachievements/blob/master/src/main/java/de/raidcraft/achievements/listener/RewardListener.java#L55) to give player rewards when completing an achievement.
+> The [RCAchievements](https://github.com/raidcraft/rcachievements/) plugin uses all of the following methods to [load trigger](https://github.com/raidcraft/rcachievements/blob/main/src/main/java/de/raidcraft/achievements/types/ArtAchievement.java#L49), [check requirements](https://github.com/raidcraft/rcachievements/blob/main/src/main/java/de/raidcraft/achievements/types/ArtAchievement.java#L52) and [execute actions](https://github.com/raidcraft/rcachievements/blob/main/src/main/java/de/raidcraft/achievements/listener/RewardListener.java#L55) to give player rewards when completing an achievement.
 
 <!-- panels:start -->
 <!-- div:title-panel -->

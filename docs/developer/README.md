@@ -4,6 +4,7 @@ If you never used the [art-framework](/introduction) before, I highly recommende
 * [Dependencies](#dependencies)
   * [Gradle](#gradle)
   * [Maven](#maven)
+  * [Plugin](#plugin)
 * [Using ART](#using-art)
 * [Creating ART](#creating-art)
   * [Your first Action](#your-first-action)
@@ -26,6 +27,30 @@ You only need to depend on the `io.art-framework.core:api` dependency using the 
 
 [maven](../maven.md ':include')
 
+### Plugin
+
+Add the `art-framework` as a soft dependency to your `plugin.yml` to make sure that is loaded before your plugin.
+
+```yaml
+name: ExamplePlugin
+version: 1.0
+author: author
+main: your.main.path.here
+
+softdepend: [art-framework] # This is used, if your plugin works without the art-framework.
+```
+
+Or add it as a hard dependency if your plugin does not work without the art-framework.
+
+```yaml
+name: ExamplePlugin
+version: 1.0
+author: author
+main: your.main.path.here
+
+depend: [art-framework] # This makes sure that the art-framework is present. Your plugin will not work without it.
+```
+
 ## Using ART
 
 One powerfull feature of the framework is the reuseability of actions, requirements and trigger accross multiple plugins without knowing the implementation and config of those.
@@ -47,14 +72,14 @@ rewards:
     - '!item.add(cooldown:48h) diamond amount:16'
 ```
 
-Register your plugin as an [art-module](/developer/modules) and use the `@OnEnable` tag on a method to parse your config as an `ArtContext`.
+All you need todo is to call the `ART.load(...)` method when your plugin gets enabled. Use the returned [ArtContext](art-context.md) to execute, test and trigger art.
 
 ```java
-@ArtModule("my-plugin")
 public class MyPlugin extends JavaPlugin {
 
-    @OnEnable
-    public void enableArt(Scope scope) {
+    @Override
+    public void onEnable() {
+
         try {
             ArtContext context = scope.load(config.getStringList("rewards"));
             // store the reference to the rewards in a variable somewhere and then execute them when you are ready
@@ -62,6 +87,8 @@ public class MyPlugin extends JavaPlugin {
             context.execute(player);
         } catch (ParseException e) {
             getLogger().severe("failed to load rewards: " + e.getMessage());
+        } catch (ClassNotFoundException ex) {
+            // the art-framework is not present or not enabled
         }
     }
 }
@@ -70,7 +97,7 @@ public class MyPlugin extends JavaPlugin {
 You also have the option to test requirements with `context.test(...)` and listen for trigger execution with `context.onTrigger(...)`. See the [ArtContext documentation](/developer/art-context) for more details.
 
 > [!TIP]
-> Take a look at the [module documentation](/developer/modules) to find out more about the lifecycle of modules and what you can do with them.
+> Take a look at the [module documentation](/developer/modules) to find out more about modules and how you can use the to strcuture and package your art.
 
 ## Creating ART
 
@@ -101,27 +128,45 @@ The `Action` interface takes a `TTarget` type argument that should be the broade
 !> Make sure your class has a parameterless public constructor, as it will be created on the fly everytime it is used.  
   Or take a look at the advanced [art-registration documentation](/developer/registration) how to register your class if it requires some parameters.
 
-[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=header')
+[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=header')
 
 You can then use any member variable in your class as a config option by annotating it with `@ConfigOption`.  
 These fields will be injected with the configured values when your action is loaded and before the `execute(...)` method is called.
 
-[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=config')
+[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=config')
 
 Then implement the logic of your action using the config variables and target parameter.
 
-[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=action')
+[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=action')
 
 <details>
 <summary>Full example action (click to expand)</summary>
 
-[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=full-example')
+[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=full-example')
 
 </details>
 
+Now all that is left is to register your awesome action with the art-framework when your plugin is loaded.
+
+```java
+public class MyPlugin extends JavaPlugin {
+
+    @Override
+    public void onLoad() {
+
+        try {
+            ART.register().actions().add(DamageLivingEntityAction.class);
+        } catch (ClassNotFoundException ex) {
+            // the art-framework is not present or not enabled
+        }
+    }
+}
+```
+
 > [!SUCCESS]
-> Thats it! You created your first action :)  
-> Everything else will be automatically handled for you by the ART-Framework.
+> Thats it! You created your first action :)
+
+There is also the possibilty to automatically register your action using [modules](modules.md). Take a look at the module documentation to learn more about it.
 
 > [!TIP]
 > Look at the [registration](registration.md) documentation for advanced scenarios where your action requires additional constructor parameters.
@@ -143,34 +188,54 @@ We are still going to keep it simple and implement a requirement that checks the
 
 The process is pretty much the same as the one with the action, except this time we are implementing the `Requirement<TTarget>` interface.
 
-[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=header')
+[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=header')
 
 The next part is the config, which will be a bit more complicated and take a regex input. This is just to make the requirement more convenient to use. You will see why in the next code example.
 
-[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=config')
+[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=config')
 
 Then inside the `test(...)` method we are going to check our requirement logic. Here you will see the `return error(...)` statement that can be used when exceptions or config error occur.
 
-[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=error')
+[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=error')
 
 After no error in the config exists, we are going to check if the actual requirement succeeds and wrap our `boolean` check inside a `resultOf(...)`. If the underlying boolean is `true` a `success()` will be returned and if it is `false` a `failure()` will be returned.
 
-[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=result')
+[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=result')
 
 And if we put everything together we get a requirement that looks like this.
 
 <details>
 <summary>Full example requirement (click to expand)</summary>
 
-[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=full-example')
+[HealthRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/requirements/HealthRequirement.java ':include :fragment=full-example')
 
 </details>
 
 > [!SUCCESS]
 > You are amazing!  
 >
-> You just finished your first requirement and learned how to create some advanced checks with the art-framework.  
-> Everything else will be automagically handled for you.
+> You just finished your first requirement and learned how to create some advanced checks with the art-framework.
+
+Now simply add the requirement to the same registration as your [first action](#your-first-action):
+
+```java
+public class MyPlugin extends JavaPlugin {
+
+    @Override
+    public void onLoad() {
+
+        try {
+            ART.register()
+                .actions()
+                    .add(DamageLivingEntityAction.class)
+                .requirements()
+                    .add(HealthRequirement.class);
+        } catch (ClassNotFoundException ex) {
+            // the art-framework is not present or not enabled
+        }
+    }
+}
+```
 
 > [!TIP]
 > Look at the [registration](registration.md) documentation for advanced scenarios where your requirement requires additional constructor parameters.
@@ -192,9 +257,9 @@ For triggers to work you need something that triggers the trigger, e.g. a bukkit
 As the same with the others, we are going to start by implementing the `Trigger` interface. But this time it won't take a target type parameter. We will define that later when we call the trigger.  
 You might have noticed that we don't have any methods that need to be implemented. If you need check some requirements against a target in your trigger, implement the `Requirement` interface.
 
-[PlayerJoinTrigger.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/trigger/PlayerJoinTrigger.java ':include')
+[PlayerJoinTrigger.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/trigger/PlayerJoinTrigger.java ':include')
 
-[PlayerListener.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/trigger/PlayerListener.java ':include')
+[PlayerListener.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/trigger/PlayerListener.java ':include')
 
 As you can see you just need to create a class that implements `Trigger` and is annotated with `@ART`. Then call the trigger from inside a bukkit event with the `scope.trigger(...).with(...targets...).execute()` method.  
 
@@ -206,12 +271,32 @@ As you can see you just need to create a class that implements `Trigger` and is 
 
 To register your trigger simply add the class to the trigger provider and register your bukkit listeners.
 
+> [!TIP]
+> You can get rid of the long and tedious registration part in the `onLoad` method by packaging your art into a [module](modules.md).
+
 ```java
-@ArtModule("my-plugin")
 public class MyPlugin extends JavaPlugin {
 
-    @OnLoad
-    public void onLoad(Scope scope) {
+    @Override
+    public void onLoad() {
+
+        try {
+            ART.register()
+                .actions()
+                    .add(DamageLivingEntityAction.class)
+                .requirements()
+                    .add(HealthRequirement.class)
+                .trigger()
+                    .add(PlayerJoinTrigger.class)
+                    .add(PlayerQuitTrigger.class)
+                    .add(PlayerKickTrigger.class);
+        } catch (ClassNotFoundException ex) {
+            // the art-framework is not present or not enabled
+        }
+    }
+
+    @Override
+    public void onEnable() {
         
         playerListener = new PlayerListener(scope);
         Bukkit.getPluginManager().registerEvents(playerListener, this);

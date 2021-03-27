@@ -9,7 +9,7 @@ All actions must implement the `Action<TType>` interface and are annotated with 
 If not you can always manually register them with the scope in the [onLoad](modules.md#onload) phase.
 
 ```java
-@OnLoad
+@Override
 public void onLoad(Scope scope) {
     scope.register().actions()
         .add(MyAction.class, () -> ...);

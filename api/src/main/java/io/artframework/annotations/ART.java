@@ -28,6 +28,7 @@ import java.lang.annotation.Target;
  * <p>
  * Make sure that the provided identifier is unique across all ART. To do this it is highly recommended
  * to prefix your ART with a groupId (java) like prefix, e.g. <code>io.art-framework:my-action</code>.
+ * You can also globally prefix all of your art-objects by using the {@link ArtModule#prefix()} setting.
  * <p>
  * Use this annotation to provide additional aliases and descriptions for your {@link ArtObject} and {@link ArtModule}s.
  */

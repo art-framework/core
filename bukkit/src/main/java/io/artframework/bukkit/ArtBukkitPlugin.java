@@ -23,7 +23,6 @@ import io.artframework.BootstrapScope;
 import io.artframework.conf.Settings;
 import kr.entree.spigradle.annotations.Plugin;
 import lombok.Getter;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -61,6 +60,8 @@ public class ArtBukkitPlugin extends JavaPlugin {
                     .build()
             ), true);
 
+            bootstrap.loadAll();
+
         } catch (BootstrapException e) {
             getLogger().severe("failed to bootstrap the art-framework: " + e.getMessage());
             e.printStackTrace();
@@ -74,8 +75,7 @@ public class ArtBukkitPlugin extends JavaPlugin {
         getDataFolder().mkdirs();
 
         if (bootstrap != null) {
-            bootstrap.loadAll();
-            Bukkit.getScheduler().runTaskLater(this, () -> bootstrap.enableAll(), 1L);
+            bootstrap.enableAll();
         }
     }
 }

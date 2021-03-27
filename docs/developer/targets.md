@@ -22,7 +22,7 @@ The art-framework comes with several built in targets. If this is not enough for
 * **LivingEntity**: Wraps any living entity into a target. Will use the same unique identifier as the `Player` if it is a player.
 * **Entity**: Wraps any entity as a target. Will use the same unique identifier as the `Player` if it is a player.
 
-Take a look at the [`io.artframework.bukkit.targets`](https://github.com/art-framework/art-core/tree/master/bukkit/src/main/java/io/artframework/bukkit/targets) package for a complete list of all built-in bukkit target types.
+Take a look at the [`io.artframework.bukkit.targets`](https://github.com/art-framework/art-core/tree/main/bukkit/src/main/java/io/artframework/bukkit/targets) package for a complete list of all built-in bukkit target types.
 
 ## Creating Custom Target Types
 
