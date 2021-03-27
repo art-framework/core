@@ -40,6 +40,7 @@ archivesBaseName = "${project.property("pluginName")}-bukkit"
 repositories {
     jitpack()
     spigot()
+    maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
 }
 
 dependencies {
