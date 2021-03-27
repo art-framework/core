@@ -16,6 +16,8 @@
 
 package io.artframework.annotations;
 
+import io.artframework.Module;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -24,14 +26,10 @@ import java.lang.annotation.Target;
 /**
  * This annotation marks the given class as an art module and provides additional meta data for it.
  * <p>
- * You can then mark individual methods in the module class with one of the following annotations:
- * <ul>
- *     <li>@{@link OnLoad} - the load method is called when the module is loaded and before it is enabled.
- *     It also takes an optional config class to load config data from a file.
- *     <li>@{@link OnEnable} - the enable method is called when the module gets enabled and all dependencies are resolved.
- *     <li>@{@link OnDisable} - the disable method is called when the module is disabled and unloaded.
- *     A module may be disabled and enabled multiple times in a lifecycle - acting as a reload.
- * </ul>
+ * The class tagged as an module must also implement {@link io.artframework.Module} and registered
+ * with the art-framework if not loaded through the modules directory (e.g. it is a plugin).
+ * Use the {@link io.artframework.ART#register(Module)} method to register your modules
+ * if they are provided by a plugin.
  * <p>
  * It is highly recommended that every module provides a description and a prefix that is used for all ART.
  * You can optionally provide a version if you added features or fixed bugs in your module.
