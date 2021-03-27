@@ -17,6 +17,7 @@
 package io.artframework.parser.flow;
 
 import io.artframework.ArtObjectContext;
+import io.artframework.BootstrapScope;
 import io.artframework.Scope;
 import io.artframework.Scoped;
 import io.artframework.parser.LineParser;
@@ -33,7 +34,7 @@ import java.util.regex.Pattern;
 /**
  * The flow line parser takes a single String (line) and parses it into an art object context.
  * <p>You can provide your own flow parsers by implementing this interface and registering it
- * with the {@link FlowLineParserProvider} in the {@link io.artframework.annotations.OnBootstrap} phase.
+ * with the {@link FlowLineParserProvider} in the {@link io.artframework.Module#onBootstrap(BootstrapScope)} phase.
  * <p>This is useful if you added new {@link io.artframework.ArtObject}s and need to provide a way
  * to parse the corresponding {@link ArtObjectContext} from an input.
  *

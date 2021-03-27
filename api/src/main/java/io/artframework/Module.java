@@ -1,9 +1,6 @@
 package io.artframework;
 
 import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.OnEnable;
-import io.artframework.annotations.OnLoad;
-import io.artframework.annotations.OnReload;
 
 import java.util.Optional;
 
@@ -57,15 +54,16 @@ public interface Module {
      * Loading modules that require bootstrapping after the bootstrap stage is finished will fail.
      * Removing bootstrap modules and then reloading the art-framework will fail also. A complete restart is needed.
      * <p>
-     * Make sure you only use this method if you really need it and are configuring parts of the art-framework.
+     * Make sure you only use this method if you really need it and if you are configuring parts of the art-framework.
      * If you do not use this method your module will be hot pluggable and can be loaded and unloaded on the fly without a restart.
+     * An example for this would be replacing the storage provider.
      * <p>
      * The bootstrap lifecycle method is called exactly once in the lifecycle of the module.
      * <p>
      * Any dependencies of this module will be bootstrapped before this module.
      * The lifecycle methods of this module will never be called if this module has missing dependencies.
      * <p>
-     * The class must be annotated with the @{@link ArtModule} annotation for the method to be called.
+     * The class must be annotated with the @{@link ArtModule} annotation for the module to work.
      *
      * @param scope the bootstrap scope that is loading this module
      */
@@ -77,10 +75,10 @@ public interface Module {
      * <p>
      * Do not use it to start background jobs, open database connections or anything else that should
      * be running when your module is enabled.
-     * Use the {@link OnEnable} lifecycle method for that.
+     * Use the {@link #onEnable(Scope)} lifecycle method for that.
      * <p>
      * The load lifecycle method is called exactly once in the lifecycle of the module.
-     * Any reloading will happen with the @{@link OnReload} method.
+     * Any reloading will happen with the {@link #onReload(Scope)} method.
      * <p>
      * Any dependencies of this module will be loaded before this module.
      * The lifecycle methods of this module will never be called if this module has missing dependencies.
@@ -100,11 +98,14 @@ public interface Module {
     default void onReload(Scope scope) throws Exception {}
 
     /**
-     * The enable method is called after bootstrapping has finished and the @{@link OnLoad} method was called.
+     * The enable method is called after bootstrapping has finished and the {@link #onLoad(Scope)} method was called.
      * Use it to do the core tasks of your module, e.g. open a database connection, start services, and so on.
      * <p>
      * The enable lifecycle method is called exactly once in the lifecycle of the module.
-     * Any reloading will happen with the @{@link OnReload} method.
+     * Any reloading will happen with the {@link #onReload(Scope)} method.
+     * <p>
+     * An exception to this rule is that your module can be manually disabled and enabled.
+     * In this case the disable and then enable method would be called multiple times.
      * <p>
      * Any dependencies of this module will be enabled before this module.
      * The lifecycle methods of this module will never be called if this module has missing dependencies.
@@ -118,7 +119,10 @@ public interface Module {
      * Use it to cleanup any connections, cached data, and so on to prevent memory leaks.
      * <p>
      * The disable lifecycle method is called exactly once in the lifecycle of the module.
-     * Any reloading will happen with the @{@link OnReload} method.
+     * Any reloading will happen with the {@link #onReload(Scope)} method.
+     * <p>
+     * An exception to this rule is that your module can be manually disabled and enabled.
+     * In this case the disable and then enable method would be called multiple times.
      * <p>
      * Any modules that depend on this module will be disabled before disabling this module.
      *

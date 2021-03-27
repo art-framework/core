@@ -17,9 +17,6 @@
 package io.artframework;
 
 import io.artframework.annotations.ArtModule;
-import io.artframework.annotations.OnBootstrap;
-import io.artframework.annotations.OnEnable;
-import io.artframework.annotations.OnLoad;
 import io.artframework.impl.DefaultScope;
 import lombok.NonNull;
 import lombok.experimental.Accessors;
@@ -57,8 +54,8 @@ public final class ART {
      * <p>Make sure to call the {@link BootstrapPhase#loadAll()} and {@link BootstrapPhase#enableAll()} methods
      * to load and enable all modules contained within the scope.
      * <p>Bootstrapping is only required by the root module that implements and ships the art-framework.
-     * Normal modules should not use this bootstrap method, but instead tag their class with @{@link ArtModule}
-     * and use the respective tagged methods ({@link OnBootstrap}, {@link OnLoad} and{@link OnEnable}) to load themselves into the scope.
+     * Normal modules should not use this bootstrap method, but instead implement {@link Module}
+     * and {@link ART#register(Module)} themselves with the {@link Scope}.
      * <p>By default the module will be bootstrapped and set as the global scope.
      * Use the {@link #bootstrap(BootstrapScope, boolean)} method with false to bootstrap without setting the global scope.
      *
@@ -76,12 +73,12 @@ public final class ART {
      * <p>Make sure to call the {@link BootstrapPhase#loadAll()} and {@link BootstrapPhase#enableAll()} methods
      * to load and enable all modules contained within the scope.
      * <p>Bootstrapping is only required by the root module that implements and ships the art-framework.
-     * Normal modules should not use this bootstrap method, but instead tag their class with @{@link ArtModule}
-     * and use the respective tagged methods ({@link OnBootstrap}, {@link OnLoad} and{@link OnEnable}) to load themselves into the scope.
+     * Normal modules should not use this bootstrap method, but instead implement {@link Module}
+     * and {@link ART#register(Module)} themselves with the {@link Scope}.
      * <p>Set the boolean switch to true to set the resulting scope of the bootstrap process as the global scope.
      *
      * @param bootstrapScope the bootstrap scope containing the bootstrap module used to start the bootstrap process
-     * @param global true if the result scope of the bootstrap process should be set as the global scope
+     * @param global false if the result scope of the bootstrap process should not be set as the global scope
      * @return the bootstrapping phase created for the given scope
      * @throws BootstrapException if an error occurred while bootstrapping the module
      */
