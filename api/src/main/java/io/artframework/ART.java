@@ -23,6 +23,13 @@ import lombok.experimental.Accessors;
 
 import java.util.Collection;
 
+/**
+ * This is the primary entrypoint to the art-framework.
+ * Use it to register and load your art configuration and objects.
+ * <p>
+ * Take a look at the <a href="https://art-framework.io">art-documentation</a> for a
+ * detailed guide on how to use the art-framework and all of its components.
+ */
 @Accessors(fluent = true)
 public final class ART {
 
@@ -162,5 +169,16 @@ public final class ART {
     public static Scope register(Module module) throws ModuleRegistrationException {
 
         return scope().register(module);
+    }
+
+    /**
+     * Gets the art-provider from the global scope to register your art objects.
+     *
+     * @return the art-provider to register actions, requirements and trigger
+     * @see ArtProvider
+     */
+    public static ArtProvider register() {
+
+        return scope().register();
     }
 }

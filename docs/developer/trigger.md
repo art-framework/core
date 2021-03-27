@@ -14,7 +14,7 @@ Triggers use the `Trigger` marker interface and must be annotated with the `@ART
 Everything will be automagically registered by the art-framework if your trigger has a public parameterless constructor. If not register it using the [scope](scope.md) in the `onLoad()` [lifecycle](modules.md#onload).
 
 ```java
-@OnLoad
+@Override
 public void onLoad(Scope scope) {
     scope.register().trigger()
         .add(MyTrigger.class, () -> ...);

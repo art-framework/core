@@ -18,7 +18,7 @@ All requirements must implement the `Requirement<TType>` interface and are annot
 If not you can always manually register them with the scope in the [onLoad](modules.md#onload) phase.
 
 ```java
-@OnLoad
+@Override
 public void onLoad(Scope scope) {
     scope.register().requirements()
         .add(MyRequirement.class, () -> ...);

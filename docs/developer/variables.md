@@ -19,6 +19,6 @@ ART.trigger(PlayerMoveTrigger.class).with(player).execute();
 
 Additionally to the automatic variable replacements, you have the option to register your own custom replacements, e.g. implementing a [PlaceholderAPI](https://github.com/PlaceholderAPI/PlaceholderAPI) module.
 
-[PlaceholderReplacement.java](https://raw.githubusercontent.com/art-framework/art-placeholderapi/master/src/main/java/io/artframework/modules/placeholderapi/PlaceholderReplacement.java ':include')
+[PlaceholderReplacement.java](https://raw.githubusercontent.com/art-framework/art-placeholderapi/main/src/main/java/io/artframework/modules/placeholderapi/PlaceholderReplacement.java ':include')
 
-[ArtPlaceholderApiPlugin.java](https://raw.githubusercontent.com/art-framework/art-placeholderapi/master/src/main/java/io/artframework/modules/placeholderapi/ArtPlaceholderApiPlugin.java ':include')
+[ArtPlaceholderApiPlugin.java](https://raw.githubusercontent.com/art-framework/art-placeholderapi/main/src/main/java/io/artframework/modules/placeholderapi/ArtPlaceholderApiPlugin.java ':include')

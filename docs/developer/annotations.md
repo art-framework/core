@@ -20,7 +20,7 @@ Every [action](actions.md), [requirement](requirements.md) and [trigger](trigger
 
 <!-- div:right-panel -->
 
-[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=header')
+[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=header')
 
 <!-- div:title-panel -->
 ## @ConfigOption
@@ -38,7 +38,7 @@ You can annotate properties of your class with the [`@ConfigOption`](https://jdo
 
 <!-- div:right-panel -->
 
-[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=config')
+[DamageLivingEntityAction.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/actions/DamageLivingEntityAction.java ':include :fragment=config')
 
 <!-- div:title-panel -->
 
@@ -55,10 +55,12 @@ The [`@ArtModule`](https://jdocs.art-framework.io/io/artframework/annotations/Ar
 | `version` | `1.0.0` | A [semantic version](https://semver.org/) of your module. Currently this has no effect, but might be useful in the future when the registry launches. |
 | `prefix` | | Set a prefix that is applied to all art inside the same jar file as your module. |
 | `depends` | `[]` | A list of dependencies of your module, e.g. `"module:art-bukkit", "plugin:Vault"`. |
+| `packages` | `[]` | A list of packages that are automatically scanned and used to register your art-objects. Defaults to the package of the module. |
+| `autoRegister` | `true` | Automatically searches the `packages` for valid art-objects and registers them. |
 
 <!-- div:right-panel -->
 
-[ArtBukkitModule.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/ArtBukkitModule.java ':include :fragment=module')
+[ArtBukkitModule.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/ArtBukkitModule.java ':include :fragment=module')
 
 <!-- div:title-panel -->
 
@@ -74,6 +76,6 @@ Use the [`@Resolve`](https://jdocs.art-framework.io/io/artframework/annotations/
 
 <!-- div:right-panel -->
 
-[EquipmentRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/master/bukkit/src/main/java/io/artframework/bukkit/requirements/EquipmentRequirement.java ':include :fragment=demo')
+[EquipmentRequirement.java](https://raw.githubusercontent.com/art-framework/art-framework/main/bukkit/src/main/java/io/artframework/bukkit/requirements/EquipmentRequirement.java ':include :fragment=demo')
 
 <!-- panels:end -->
