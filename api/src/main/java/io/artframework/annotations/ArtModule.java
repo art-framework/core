@@ -17,6 +17,8 @@
 package io.artframework.annotations;
 
 import io.artframework.Module;
+import io.artframework.Scope;
+import io.artframework.conf.Settings;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -94,6 +96,22 @@ public @interface ArtModule {
      * @return a list of dependencies
      */
     String[] depends() default {};
+
+    /**
+     * All art-objects inside the same package as the module, or in the packages
+     * defined by {@link #packages()} will be searched and registered.
+     * <p>
+     * Settings this to false means that all art must be manually registered
+     * in the {@link Module#onLoad(Scope)} phase of the module.
+     * <p>
+     * Individual art-objects can be excluded from the auto registration by
+     * setting the {@link ART#autoRegister()} setting to false.
+     * <p>
+     * The auto registration can additionally be turned off globally with the {@link Settings#autoRegisterAllArt()} setting.
+     *
+     * @return true if all art-objects inside this modules package should be auto registered
+     */
+    boolean autoRegisterArt() default true;
 
     /**
      * A list of packages that should be searched when automatically

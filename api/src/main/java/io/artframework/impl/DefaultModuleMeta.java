@@ -39,6 +39,7 @@ public class DefaultModuleMeta implements ModuleMeta {
     String version;
     String[] description;
     String[] dependencies;
+    boolean autoRegisterArt;
     String[] packages;
     boolean bootstrapModule;
 
@@ -48,6 +49,7 @@ public class DefaultModuleMeta implements ModuleMeta {
                       @NonNull String version,
                       @NonNull String[] description,
                       @NonNull String[] dependencies,
+                      @NonNull boolean autoRegisterArt,
                       @NonNull String[] packages) {
 
         this.identifier = Strings.isNullOrEmpty(identifier) ? moduleClass.getCanonicalName() : identifier;
@@ -57,6 +59,7 @@ public class DefaultModuleMeta implements ModuleMeta {
         this.description = description;
         // TODO: remove the module: replacement when dependency hooks are implemented
         this.dependencies = Arrays.stream(dependencies).map(s -> s.replace("module:", "")).toArray(String[]::new);
+        this.autoRegisterArt = autoRegisterArt;
         this.packages = packages.length == 0 ? new String[] {moduleClass.getPackageName()} : packages;
         this.bootstrapModule = BootstrapModule.class.isAssignableFrom(moduleClass);
     }
@@ -70,6 +73,7 @@ public class DefaultModuleMeta implements ModuleMeta {
                 annotation.version(),
                 annotation.description(),
                 annotation.depends(),
+                annotation.autoRegisterArt(),
                 annotation.packages());
     }
 }
