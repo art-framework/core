@@ -54,6 +54,11 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
         super(scope);
     }
 
+    private boolean bootstrapped() {
+
+        return lifecycle.bootstrapped() && bootstrapScope != null;
+    }
+
     protected Optional<ModuleInformation> getModuleInformation(Class<? extends Module> moduleClass) {
 
         return Optional.ofNullable(modules.get(moduleClass));
@@ -346,6 +351,10 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     private void loadModule(ModuleInformation module) throws ModuleRegistrationException {
 
         if (!module.state().canLoad()) return;
+
+        if (bootstrapped()) {
+            bootstrapModule(bootstrapScope, module);
+        }
 
         checkDependencies(module, this::loadModule);
         if (scope().settings().autoRegisterAllArt()) {
@@ -652,7 +661,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
 
         public boolean bootstrapped() {
 
-            return this == BOOTSTRAPPED;
+            return this == BOOTSTRAPPED || loaded();
         }
 
         boolean loaded() {

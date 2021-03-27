@@ -39,8 +39,8 @@ public class ModuleTests {
     void setUp() {
 
         ART.scope(new DefaultScope());
-        module = spy(new BootstrapTestModule());
-        bootstrapScope = spy(BootstrapScope.of(module));
+        module = new BootstrapTestModule();
+        bootstrapScope = BootstrapScope.of(module);
     }
 
     @AfterEach
@@ -57,6 +57,8 @@ public class ModuleTests {
     @DisplayName("should bootstrap module")
     void shouldBootstrapModule() {
 
+        module = spy(new BootstrapTestModule());
+        bootstrapScope = BootstrapScope.of(module);
         ART.bootstrap(bootstrapScope, false);
 
         verify(module, times(1)).onBootstrap(bootstrapScope);
@@ -68,6 +70,7 @@ public class ModuleTests {
     void shouldProvideInstanceOfCustomProvider() {
 
         Scope scope = ART.bootstrap(bootstrapScope, false);
+        scope.register(new BootstrapTestModule.BootstrapModule());
 
         assertThat(scope.get(BootstrapTestModule.CustomProvider.class))
                 .isNotNull();
@@ -78,6 +81,8 @@ public class ModuleTests {
     @DisplayName("should enable module")
     void shouldEnableModule() {
 
+        module = spy(new BootstrapTestModule());
+        bootstrapScope = BootstrapScope.of(module);
         ART.bootstrap(bootstrapScope, false).enableAll();
 
         verify(module, times(1)).onEnable(any(Scope.class));

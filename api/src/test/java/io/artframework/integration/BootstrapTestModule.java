@@ -25,11 +25,20 @@ import lombok.experimental.Accessors;
 @ArtModule("test")
 public class BootstrapTestModule implements BootstrapModule {
 
+    @Override
+    public void onBootstrap(BootstrapScope scope) throws Exception {
+
+        scope.register(new BootstrapTestModule.LoadModule())
+                .register(new BootstrapTestModule.BootstrapModule())
+                .register(new BootstrapTestModule.EnableModule());
+    }
+
     @ArtModule("bootstrap")
     public static class BootstrapModule implements Module {
 
         public static boolean called = false;
 
+        @Override
         public void onBootstrap(BootstrapScope scope) {
             called = true;
             scope.addProvider(CustomProvider.class, CustomProvider::new);
