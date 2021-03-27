@@ -503,8 +503,7 @@ public class DefaultModuleProvider extends AbstractProvider implements ModulePro
     private Optional<List<ModuleMeta>> getDependencyGraph(ModuleInformation information) {
 
         return this.cycleSearcher.getCycles().stream()
-                .filter(moduleMetas -> !moduleMetas.isEmpty())
-                .filter(moduleMetas -> moduleMetas.get(0).equals(information.moduleMeta()))
+                .filter(moduleMetas -> moduleMetas.contains(information.moduleMeta()))
                 .findFirst();
     }
 

@@ -184,6 +184,18 @@ class DefaultModuleProviderTest {
                     .extracting(ArtObjectMeta::identifier, ArtObjectMeta::alias)
                     .contains("test:damage", new String[] {"damage", "hit", "dmg"});
         }
+
+        @Test
+        @DisplayName("should throw if cyclic dependency is found")
+        void shouldThrowIfCyclicDependencyIsFound() {
+
+            provider.register(new Module1())
+                    .register(new Module2());
+
+            assertThatExceptionOfType(ModuleRegistrationException.class)
+                    .isThrownBy(() -> provider.register(new Module3()))
+                    .withMessageContaining("has cyclic dependencies");
+        }
     }
 
     @ArtModule(value = "test")
@@ -240,7 +252,7 @@ class DefaultModuleProviderTest {
     static class Module2 implements Module {
     }
 
-    @ArtModule(value = "module 3", description = "module 1")
+    @ArtModule(value = "module 3", depends = "module 1")
     static class Module3 implements Module {
     }
 
