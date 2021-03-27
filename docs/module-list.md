@@ -17,3 +17,6 @@ art:
   - '@player.join'
   - '!broadcast "%player_name% &ajoined the server! They are rank &f%vault_rank%"'
 ```
+
+> [!NOTE]
+> The PlacerholderAPI module is included in the [bukkit platform](platforms/bukkit.md) and must not be added seperatly.
