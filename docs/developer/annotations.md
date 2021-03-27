@@ -56,7 +56,7 @@ The [`@ArtModule`](https://jdocs.art-framework.io/io/artframework/annotations/Ar
 | `prefix` | | Set a prefix that is applied to all art inside the same jar file as your module. |
 | `depends` | `[]` | A list of dependencies of your module, e.g. `"module:art-bukkit", "plugin:Vault"`. |
 | `packages` | `[]` | A list of packages that are automatically scanned and used to register your art-objects. Defaults to the package of the module. |
-| `autoRegister` | `true` | Automatically searches the `packages` for valid art-objects and registers them. |
+| `autoRegisterArt` | `true` | Automatically searches the `packages` for valid art-objects and registers them. |
 
 <!-- div:right-panel -->
 
