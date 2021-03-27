@@ -41,7 +41,7 @@ repositories {
     mavenCentral()
     jcenter()
     maven { url 'https://jitpack.io' }
-    spigot()
+    maven { url 'https://hub.spigotmc.org/nexus/content/groups/public/' }
     maven { url 'https://repo.extendedclip.com/content/repositories/placeholderapi/' }
 }
 
