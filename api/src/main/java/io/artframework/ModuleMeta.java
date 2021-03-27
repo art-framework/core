@@ -71,6 +71,11 @@ public interface ModuleMeta {
     String[] dependencies();
 
     /**
+     * @return true if the package of the module is searched and any art-object registered
+     */
+    boolean autoRegisterArt();
+
+    /**
      * @return a list of packages that should be loaded by the art-framework
      */
     String[] packages();

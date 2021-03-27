@@ -196,6 +196,48 @@ class DefaultModuleProviderTest {
                     .isThrownBy(() -> provider.register(new Module3()))
                     .withMessageContaining("has cyclic dependencies");
         }
+
+        @Test
+        @DisplayName("should auto load art in the module package")
+        void shouldAutoLoadArtInModulesPackage() {
+
+            provider.register(new io.artframework.impl.test.TestModule()).enableAll();
+
+            assertThat(scope.configuration().actions().get("test-action"))
+                    .isPresent()
+                    .get().extracting(actionFactory -> actionFactory.meta())
+                    .extracting(ArtObjectMeta::artObjectClass)
+                    .isEqualTo(io.artframework.impl.test.TestAction.class);
+        }
+
+        @Test
+        @DisplayName("should not auto register art if disabled in annoation")
+        void shouldNotAutoRegisterArtIfDisabled() {
+
+            provider.register(new io.artframework.impl.test.DisabledTestModule()).enableAll();
+
+            assertThat(scope.configuration().actions().get("test-action"))
+                    .isEmpty();
+        }
+
+        @Test
+        @DisplayName("should prefix art objects in the same package as the module")
+        void shouldPrefixModulesInTheSamePackage() {
+
+            provider.register(new io.artframework.impl.test.TestModule()).enableAll();
+
+            assertThat(scope.configuration().actions().get("test-action"))
+                    .isPresent()
+                    .get().extracting(actionFactory -> actionFactory.meta())
+                    .extracting(ArtObjectMeta::identifier)
+                    .isEqualTo("test:test-action");
+
+            assertThat(scope.configuration().requirements().get("test-req"))
+                    .isPresent()
+                    .get().extracting(requirementFactory -> requirementFactory.meta())
+                    .extracting(ArtObjectMeta::identifier)
+                    .isEqualTo("test:test-req");
+        }
     }
 
     @ArtModule(value = "test")

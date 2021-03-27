@@ -18,6 +18,7 @@ package io.artframework.bukkit;
 
 import io.artframework.BootstrapModule;
 import io.artframework.BootstrapScope;
+import io.artframework.Module;
 import io.artframework.Scope;
 import io.artframework.annotations.ArtModule;
 import io.artframework.bukkit.parser.CommandLineParser;
@@ -33,7 +34,6 @@ import net.silthus.ebean.Config;
 import net.silthus.ebean.EbeanWrapper;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.Plugin;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -77,6 +77,8 @@ public class ArtBukkitModule implements BootstrapModule {
         });
 
         findModules(scope).forEach(scope::register);
+
+        scope.register(new ScriptsModule());
     }
 
     @Override
@@ -117,15 +119,9 @@ public class ArtBukkitModule implements BootstrapModule {
         HandlerList.unregisterAll(entityDamageTrigger);
     }
 
-    private Collection<Object> findModules(BootstrapScope scope) {
+    private Collection<Class<? extends Module>> findModules(BootstrapScope scope) {
 
-        ArrayList<Object> modules = new ArrayList<>();
-
-        for (Plugin plugin : Bukkit.getPluginManager().getPlugins()) {
-            if (!plugin.getClass().equals(ArtBukkitPlugin.class) && plugin.getClass().isAnnotationPresent(ArtModule.class)) {
-                modules.add(plugin);
-            }
-        }
+        ArrayList<Class<? extends Module>> modules = new ArrayList<>();
 
         File modulesDir = scope.settings().modulePath();
         modulesDir.mkdirs();
@@ -137,14 +133,12 @@ public class ArtBukkitModule implements BootstrapModule {
                     modules.addAll(FileUtil.findClasses(
                             scope.configuration().classLoader(),
                             moduleFile,
+                            Module.class,
                             moduleClass -> moduleClass.isAnnotationPresent(ArtModule.class))
                     );
                 }
             }
         }
-
-        // add static modules that are included by default
-        modules.add(new ScriptsModule());
 
         return modules;
     }
