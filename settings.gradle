@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-rootProject.name = 'art-core'
+rootProject.name = 'core'
 include 'bukkit'
 include 'art-scripts'
 include 'api'
