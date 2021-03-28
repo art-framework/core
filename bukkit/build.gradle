@@ -52,7 +52,9 @@ dependencies {
 
     api project(':api')
     implementation project(':art-scripts')
-    implementation 'io.art-framework:art-placeholderapi:1.0.1'
+    implementation('io.art-framework:art-placeholderapi:1.0.1') {
+        exclude group: 'org.bstats'
+    }
 
     testImplementation 'io.ebean:ebean-test:12.6.5'
     testImplementation 'com.github.seeseemelk:MockBukkit-v1.16:0.20.0'

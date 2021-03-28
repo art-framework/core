@@ -49,7 +49,7 @@ public class DefaultModuleMeta implements ModuleMeta {
                       @NonNull String version,
                       @NonNull String[] description,
                       @NonNull String[] dependencies,
-                      @NonNull boolean autoRegisterArt,
+                      boolean autoRegisterArt,
                       @NonNull String[] packages) {
 
         this.identifier = Strings.isNullOrEmpty(identifier) ? moduleClass.getCanonicalName() : identifier;
