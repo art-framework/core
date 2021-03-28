@@ -1,3 +1,36 @@
+# [5.0.0-beta.1](https://github.com/art-framework/core/compare/v4.5.4...v5.0.0-beta.1) (2021-03-28)
+
+
+### Bug Fixes
+
+* **release:** correct semantic-release config ([1c99f9b](https://github.com/art-framework/core/commit/1c99f9b34a361c1522542be0f1dae2eeaad810d9))
+* **release:** remove pre-release branches ([5caf953](https://github.com/art-framework/core/commit/5caf953547c275ead65d72010015ce8a98449e2f))
+* cyclic dependency graph check not working ([f3a5d16](https://github.com/art-framework/core/commit/f3a5d16e6ebfd229356ce67ea4580ff10e48f987))
+* onBootstrap not called after modules have been enabled ([6d39b4e](https://github.com/art-framework/core/commit/6d39b4ef819c3f09b9e1c65d4b355c7f3bd4a639))
+* remove methods that can directly create a scope to avoid misuse and cleanup api surface ([9f46e2d](https://github.com/art-framework/core/commit/9f46e2dd29ed2af64e4a743a9ed7b567535bb715))
+
+
+### Code Refactoring
+
+* removed old @On... lifecycle phase annotations in favor of strongly typed modules implementing Module ([32459a9](https://github.com/art-framework/core/commit/32459a9fe6992f5b33f59f9558d0ccf6944e38d5))
+
+
+### Features
+
+* add new module interface with strongly typed lifecycle methods ([f7c3978](https://github.com/art-framework/core/commit/f7c39783eaaf5ac50c42910cd81950f88a170e96))
+* add the option to disable automatic module registration within the ArtModule annotation ([4b1da6b](https://github.com/art-framework/core/commit/4b1da6be74fe732b4bbb78f34fb04bc46b32212f))
+* allow registration of modules on the fly without relying on magic methods ([b3591e4](https://github.com/art-framework/core/commit/b3591e4115a0313c74fd6cbf059e44e5055ddb4c))
+* automatically register the bootstrap scope as a global scope ([1cd6016](https://github.com/art-framework/core/commit/1cd60163e6fc5f55eba6b678478710d26862aefa))
+* include the placeholderapi replacements module in the bukkit platform ([fc78038](https://github.com/art-framework/core/commit/fc78038e980ae34afd4bde67acd425ddfdce223c))
+
+
+### BREAKING CHANGES
+
+* the @On... annotations have been removed in favor of implementing Module
+* all modules must now extend Module and no longer need the @On... annotations
+* the ART.bootstrap(BootstrapScope) method now automatically registers the scope as a global scope. Use the ART.bootstrap(BootstrapScope, boolean) method to prevent that.
+* removed Scope.defaultScope() and Scope.of(...) methods as they should not be used to obtain a scope. Directly create a scope for use in tests: new DefaultScope() or use the default global scope ART.globalScope().
+
 # [5.0.0](https://github.com/art-framework/core/compare/v4.5.4...v5.0.0) (2021-03-28)
 
 
