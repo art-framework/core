@@ -13,6 +13,7 @@
     "semantic-release": "npx semantic-release"
   },
   "release": {
+    "branches": ["main", "beta", "alpha"],
     "plugins": [
       "@semantic-release/commit-analyzer",
       [
