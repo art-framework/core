@@ -90,7 +90,7 @@ art:
 
 ### Configurable rewards
 
-The ART-Framework can be used by many other plugins to allow server admins the maximum flexibility when configuring rewards and a lot of other stuff. Here is just one example of this using the popular [EssentialsX](https://github.com/EssentialsX/Essentials) plugin. In this example we wrap the `/kits` command into a `!cmd` action. This could potentially also be an own `!essentials:kit` action if you ask the author to add support for the [ART-Framework](https://github.com/art-framework/art-framework).
+The ART-Framework can be used by many other plugins to allow server admins the maximum flexibility when configuring rewards and a lot of other stuff. Here is just one example of this using the popular [EssentialsX](https://github.com/EssentialsX/Essentials) plugin. In this example we wrap the `/kits` command into a `!cmd` action. This could potentially also be an own `!essentials:kit` action if you ask the author to add support for the [ART-Framework](https://github.com/art-framework/core).
 
 ```yaml
 art:

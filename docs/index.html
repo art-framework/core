@@ -37,7 +37,7 @@
           // GENERAL
           // -----------------------------------------------------------------
           name       : 'art-framework',
-          repo       : 'https://github.com/art-framework/art-core',
+          repo       : 'https://github.com/art-framework/core',
           coverpage  : true,
           loadSidebar: true,
           autoHeader: true,
@@ -50,7 +50,7 @@
           // -----------------------------------------------------------------
           // routerMode: 'history',
           alias: {
-              '.*?/changelog': 'https://raw.githubusercontent.com/art-framework/art-framework/master/CHANGELOG.md',
+              '.*?/changelog': 'https://raw.githubusercontent.com/art-framework/core/main/CHANGELOG.md',
               '.*/configuration': '/configuration/',
               '.*/developer': '/developer/'
           },
@@ -74,7 +74,7 @@
 
           plugins: [
             EditOnGithubPlugin.create(
-              'https://github.com/art-framework/art-framework/blob/master/docs/', 
+              'https://github.com/art-framework/core/blob/main/docs/', 
               null,
               function(file) {
                 return '<img src="https://icongr.am/devicon/github-original.svg?size=16&amp;color=currentColor" alt="Github"> Edit on Github'
@@ -121,6 +121,6 @@
   <script src="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/components/prism-yaml.min.js"></script>
   <script src="https://unpkg.com/docsify-sidebar-collapse/dist/docsify-sidebar-collapse.min.js"></script>
   <script src="https://unpkg.com/docsify-fontawesome/dist/docsify-fontawesome.min.js"></script>
-  <script src="https://kit.fontawesome.com/ccafed95d4.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6/css/all.min.css">
 </body>
 </html>
